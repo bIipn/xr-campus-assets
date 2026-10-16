@@ -1,0 +1,268 @@
+/* ================================================================
+   Library: subjects and readable books (original primers written for this preview)
+   ================================================================ */
+const SUBJECTS = [
+  { id:'history', name:'History', side:'N', slot:0, color:'#6e2a22' },
+  { id:'civics', name:'Civics', side:'N', slot:1, color:'#24324f' },
+  { id:'money', name:'Money & Work', side:'N', slot:2, color:'#2f4a33' },
+  { id:'science', name:'Science', side:'N', slot:3, color:'#2a5555' },
+  { id:'tech', name:'Technology', side:'S', slot:3, color:'#3b3550' },
+  { id:'sky', name:'Nature & Sky', side:'S', slot:2, color:'#1f2c44' },
+  { id:'local', name:'Local History', side:'S', slot:1, color:'#5a3b22' },
+  { id:'writing', name:'Writing & Arts', side:'S', slot:0, color:'#5e1f2c' }
+];
+const SUBJ = {}; SUBJECTS.forEach((s) => SUBJ[s.id] = s);
+
+const BOOKS = [
+  { id:'reading-past', subject:'history', icon:'lens', title:'Reading the Past', sub:'How to use primary sources', pages:[
+    { h:'What is a primary source?', b:[
+      'A primary source is something made at the time you are studying, by people who were there. A newspaper from 1897, a photograph of Main Street, a letter, a map, a diary and a recorded interview are all primary sources.',
+      'A secondary source is made later by someone looking back, like a textbook or a documentary. Both are useful. Primary sources let you meet the past up close, in its own words and pictures. Secondary sources help you see the bigger story around them.' ] },
+    { h:'Five questions to ask', b:[
+      { li:['Who made this?', 'When and where was it made?', 'Why was it made, and who was it for?', 'What does it show or say?', 'What does it leave out?'] },
+      'A newspaper might cheer for a new railroad because the editor owned shares in it. A photograph might show the busiest corner of town but not the quiet farms. These questions are not about deciding a source is good or bad. They help you understand what each source can and cannot tell you.' ] },
+    { h:'Look closely', b:[
+      'Slow down and describe before you decide. In a photograph, look at clothing, signs, tools, vehicles and the weather. In a newspaper, read the ads as well as the headlines, because prices and products tell you about daily life.',
+      'Notice handwriting, spelling and the words people used. Some words from the past are now known to be hurtful. Historians study them carefully without repeating them casually.' ] },
+    { h:'Compare sources', b:[
+      'One source is a clue. Several sources together start to make a case. If a newspaper says four hundred people met the first train, does a photograph or a diary agree?',
+      'When sources disagree, that is interesting, not a problem. Ask why. Each person saw the event from a different place, with different reasons for remembering it.' ] },
+    { h:'Find your own', b:[
+      'Many libraries and historical societies keep local newspapers, photographs and maps. The Library of Congress runs a free website called Chronicling America with millions of digitized newspaper pages from across the United States.',
+      'Your family is an archive too. Old photos, letters, recipes and the stories your elders tell are primary sources for the history of your town.' ] }
+  ]},
+  { id:'rails-west', subject:'history', icon:'train', title:'Rails Across the West', sub:'How railroads changed small towns', pages:[
+    { h:'Before the railroad', b:[
+      'In the early 1800s, crossing the country took months by wagon, horse or ship. Moving heavy goods like lumber, grain or ore over mountains was slow and expensive, so most towns traded mainly with places nearby.' ] },
+    { h:'The first transcontinental railroad', b:[
+      'In 1863 the Central Pacific Railroad began building east from Sacramento, California, while the Union Pacific built west from the Missouri River. Thousands of Chinese immigrants did much of the hardest and most dangerous work on the Central Pacific, blasting tunnels through the granite of the Sierra Nevada. Irish immigrants and Civil War veterans made up much of the Union Pacific crews.',
+      'The two lines met at Promontory Summit, Utah, on May 10, 1869, where a ceremonial golden spike was driven.' ] },
+    { h:'What changed', b:[
+      'A trip across the country dropped from months to about a week. Farmers, miners and mills could ship to distant markets. Towns the railroad reached often boomed, and towns it passed by sometimes faded away.',
+      'Trains also carried mail, newspapers and catalogs, connecting small towns to the wider world.' ] },
+    { h:'Railroad time', b:[
+      'Before the 1880s, each town set its clocks by the sun, so noon in one town could be minutes different from noon in the next. That made train schedules confusing.',
+      'On November 18, 1883, American railroads adopted standard time zones. The federal government made the system official in 1918.' ] },
+    { h:'The cost', b:[
+      'The railroads crossed the homelands of many Native nations, often without their consent. They brought waves of settlers, and the great buffalo herds that Plains nations depended on were destroyed within a few decades.',
+      'A full history of the railroad includes the workers who built it, the people whose lands it crossed and the towns it changed.' ] }
+  ]},
+  { id:'government', subject:'civics', icon:'capitol', title:'How Your Government Works', sub:'Levels, branches and your voice', pages:[
+    { h:'Three levels', b:[
+      'In the United States, government works at three main levels. The federal government in Washington, D.C., handles things for the whole country, like the military, the money supply and relations with other nations.',
+      'State governments handle things like driver’s licenses, state highways and rules for public schools. Local governments, such as cities, counties and school districts, run the things closest to you: parks, libraries, police and fire departments, and local roads.' ] },
+    { h:'Three branches', b:[
+      'The U.S. Constitution splits the federal government into three branches so that no one group holds all the power. The legislative branch, Congress, writes laws. The executive branch, led by the President, carries out laws. The judicial branch, led by the Supreme Court, decides what laws mean and whether they follow the Constitution.',
+      'Each branch can check the others. This is called checks and balances.' ] },
+    { h:'Congress', b:[
+      'Congress has two parts. The Senate has 100 members, two from each state. The House of Representatives has 435 voting members, and states with more people get more seats.',
+      'For a bill to become a law, both the House and the Senate must pass it, and the President must sign it. If the President vetoes a bill, Congress can still pass it with a two-thirds vote in both houses.' ] },
+    { h:'Close to home', b:[
+      'Many decisions that affect you are made locally. A city council or a county board of supervisors votes on budgets for parks, roads and libraries. An elected school board makes decisions about local schools. Their meetings are usually open to the public, and anyone can speak during public comment.',
+      'In California, the state legislature has two houses, the Assembly and the Senate, and the governor leads the executive branch.' ] },
+    { h:'Your voice', b:[
+      'U.S. citizens can vote at 18. In California you can pre-register to vote at 16 and you are registered automatically when you turn 18.',
+      'You don’t have to wait to take part. You can write to your representatives, speak at a public meeting, volunteer or start a petition. Good citizens also check facts before they share them.' ] }
+  ]},
+  { id:'bill-of-rights', subject:'civics', icon:'scroll', title:'The Bill of Rights', sub:'The full text, with plain-language notes', pages:[
+    { h:'What it is', b:[
+      'The Bill of Rights is the first ten amendments to the United States Constitution. It was ratified on December 15, 1791. James Madison wrote the first draft after several states asked for clear protections for individual freedoms.',
+      'These pages give the full text of each amendment, followed by a short note in plain language.' ] },
+    { h:'Amendments I to III', b:[
+      { q:'I. Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances.' },
+      { note:'Freedom of religion, speech and the press, the right to gather peacefully, and the right to ask the government to fix problems.' },
+      { q:'II. A well regulated Militia, being necessary to the security of a free State, the right of the people to keep and bear Arms, shall not be infringed.' },
+      { note:'The right to keep and bear arms.' },
+      { q:'III. No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner, nor in time of war, but in a manner to be prescribed by law.' },
+      { note:'The government can’t make people house soldiers in their homes in peacetime.' } ] },
+    { h:'Amendments IV and V', b:[
+      { q:'IV. The right of the people to be secure in their persons, houses, papers, and effects, against unreasonable searches and seizures, shall not be violated, and no Warrants shall issue, but upon probable cause, supported by Oath or affirmation, and particularly describing the place to be searched, and the persons or things to be seized.' },
+      { note:'Protection from unreasonable searches. Police usually need a warrant based on probable cause.' },
+      { q:'V. No person shall be held to answer for a capital, or otherwise infamous crime, unless on a presentment or indictment of a Grand Jury, except in cases arising in the land or naval forces, or in the Militia, when in actual service in time of War or public danger; nor shall any person be subject for the same offence to be twice put in jeopardy of life or limb; nor shall be compelled in any criminal case to be a witness against himself, nor be deprived of life, liberty, or property, without due process of law; nor shall private property be taken for public use, without just compensation.' },
+      { note:'Rights of people accused of crimes, including the right not to testify against yourself and the right to due process. The government must pay fairly if it takes private property.' } ] },
+    { h:'Amendments VI to VIII', b:[
+      { q:'VI. In all criminal prosecutions, the accused shall enjoy the right to a speedy and public trial, by an impartial jury of the State and district wherein the crime shall have been committed, which district shall have been previously ascertained by law, and to be informed of the nature and cause of the accusation; to be confronted with the witnesses against him; to have compulsory process for obtaining witnesses in his favor, and to have the Assistance of Counsel for his defence.' },
+      { note:'The right to a speedy, public trial by jury and the right to a lawyer.' },
+      { q:'VII. In Suits at common law, where the value in controversy shall exceed twenty dollars, the right of trial by jury shall be preserved, and no fact tried by a jury, shall be otherwise re-examined in any Court of the United States, than according to the rules of the common law.' },
+      { note:'The right to a jury trial in many civil cases.' },
+      { q:'VIII. Excessive bail shall not be required, nor excessive fines imposed, nor cruel and unusual punishments inflicted.' },
+      { note:'No excessive bail or fines, and no cruel and unusual punishment.' } ] },
+    { h:'Amendments IX and X', b:[
+      { q:'IX. The enumeration in the Constitution, of certain rights, shall not be construed to deny or disparage others retained by the people.' },
+      { note:'Listing some rights doesn’t mean people don’t have others.' },
+      { q:'X. The powers not delegated to the United States by the Constitution, nor prohibited by it to the States, are reserved to the States respectively, or to the people.' },
+      { note:'Powers not given to the federal government belong to the states or to the people.' } ] }
+  ]},
+  { id:'money-basics', subject:'money', icon:'coin', title:'Money Basics', sub:'Earning, saving and spending', pages:[
+    { h:'Earning', b:[
+      'Money usually comes from work. Your gross pay is what you earn before anything is taken out. Your net pay, or take-home pay, is what’s left after taxes and other deductions.',
+      'On a paycheck you’ll often see federal income tax, state income tax and FICA, which is Social Security at 6.2 percent and Medicare at 1.45 percent.' ] },
+    { h:'Budgeting', b:[
+      'A budget is a plan for your money. A simple starting point is the 50/30/20 rule: about 50 percent for needs like rent, food and transportation, 30 percent for wants, and 20 percent for savings and paying off debt.',
+      'Write down what you earn and spend for one month. Most people are surprised by where their money actually goes.' ] },
+    { h:'Saving and interest', b:[
+      'Savings accounts pay interest, which is money the bank pays you for keeping your money there. With compound interest, you earn interest on your interest too. $100 earning 5 percent a year grows to $105 after one year, $110.25 after two years and about $162.89 after ten.',
+      'The rule of 72 is a quick estimate: divide 72 by the interest rate to see roughly how many years it takes money to double. At 6 percent, that’s about 12 years.' ] },
+    { h:'Borrowing and credit', b:[
+      'When you borrow, you pay interest instead of earning it. Credit cards often charge high rates, so a balance that isn’t paid off can grow fast.',
+      'A credit score, usually between 300 and 850, tells lenders how reliably you’ve paid back what you owe. Paying bills on time is the biggest thing you can do to build good credit.' ] },
+    { h:'Smart habits', b:[
+      'Pay yourself first by moving some savings out of every paycheck. Keep an emergency fund for surprises like a car repair. Compare prices before big purchases, and wait a day before buying something you didn’t plan to buy.',
+      'Never share bank passwords or account numbers with anyone who contacts you out of the blue. That’s how many scams start.' ] }
+  ]},
+  { id:'first-job', subject:'money', icon:'case', title:'Your First Job', sub:'Finding it, getting it, keeping it', pages:[
+    { h:'Where to start', b:[
+      'First jobs are often in restaurants, stores, summer camps and farms, or helping neighbors with yard work and babysitting. Think about what you like to do and what you’re good at.',
+      'Ask family, teachers, coaches and neighbors. Many jobs are found through people you know. In many states, workers under 18 need a work permit, often issued through their school.' ] },
+    { h:'Your résumé', b:[
+      'A résumé is a one-page summary of you as a worker. Include your contact information, your school, any jobs or volunteer work, skills like languages, computers or tools, and activities that show responsibility, such as sports, clubs or caring for younger siblings.',
+      'Keep it neat, short and honest, and ask someone to proofread it.' ] },
+    { h:'The interview', b:[
+      'Before an interview, learn about the business. Dress a little nicer than the job requires and arrive five to ten minutes early.',
+      'Look people in the eye, listen closely and give specific examples. “I walked my neighbor’s dogs every day for a summer” shows reliability better than “I’m responsible.” At the end, ask a question about the job and thank the interviewer.' ] },
+    { h:'On the job', b:[
+      'Show up on time, put your phone away and ask questions when you’re not sure. Mistakes happen to everyone. Own them and fix them.',
+      'Learn your coworkers’ names. Reliability is the quality employers value most in a new worker, and it’s how you earn a good reference for your next job.' ] },
+    { h:'Your rights', b:[
+      'Workers have rights. You must be paid at least the minimum wage, which in many places is higher than the federal minimum. Teens have limits on how many hours they can work on school days.',
+      'You have the right to a safe workplace and to speak up about unsafe conditions. If something feels wrong, talk to a trusted adult or your state’s labor office.' ] }
+  ]},
+  { id:'water-cycle', subject:'science', icon:'drop', title:'The Water Cycle', sub:'Where every drop has been', pages:[
+    { h:'Water on the move', b:[
+      'The water you drink today may once have been part of an ocean, a cloud or a glacier. Earth’s water moves in a loop called the water cycle, powered by energy from the sun.',
+      'About 97 percent of Earth’s water is salty ocean water. Less than 3 percent is fresh, and most of that is frozen in ice sheets and glaciers.' ] },
+    { h:'Evaporation and transpiration', b:[
+      'Heat from the sun turns liquid water into an invisible gas called water vapor. This is evaporation.',
+      'Plants add water vapor too. They pull water up from the soil and release it through tiny pores in their leaves, a process called transpiration. Warm air can hold more water vapor than cold air.' ] },
+    { h:'Condensation', b:[
+      'As moist air rises, it cools. Cooler air can’t hold as much water vapor, so the vapor condenses into tiny droplets around specks of dust, and those droplets form clouds.',
+      'You can see condensation when a cold glass “sweats” on a hot day.' ] },
+    { h:'Precipitation and collection', b:[
+      'When cloud droplets join into drops heavy enough to fall, we get precipitation: rain, snow, sleet or hail.',
+      'Water collects in oceans, lakes and rivers, soaks into the ground to become groundwater, or is stored as snow and ice. Then the cycle starts again.' ] },
+    { h:'California’s water', b:[
+      'In California, much of the year’s water falls as winter snow in the Sierra Nevada. The snowpack works like a frozen reservoir, melting slowly through spring and summer into rivers and reservoirs.',
+      'In dry years there’s less snowpack, and in very wet years rivers can flood. The flood Ruth Alder remembers in the Pine Hollow museum is part of the same cycle.' ] }
+  ]},
+  { id:'sand-glass', subject:'science', icon:'hourglass', title:'From Sand to Glass', sub:'Rocks, minerals and the stuff of windows', pages:[
+    { h:'What is sand?', b:[
+      'Sand is made of tiny grains of rock and minerals, between about 1/16 of a millimeter and 2 millimeters across. Much of the world’s sand is quartz, a hard mineral made of silicon and oxygen, called silicon dioxide.',
+      'Quartz rates a 7 on the Mohs hardness scale, so it survives for millions of years as other rocks break down.' ] },
+    { h:'Three families of rock', b:[
+      'Igneous rocks, like granite, form when melted rock cools. Sedimentary rocks, like sandstone, form when layers of sand, mud or shells are pressed and cemented together. Metamorphic rocks, like quartzite, form when heat and pressure change other rocks.',
+      'Over time, any rock can become any other kind. That slow loop is called the rock cycle.' ] },
+    { h:'Silica sand', b:[
+      'Some sand is almost pure quartz. This silica sand is mined, washed and sorted by grain size.',
+      'Sand plants test samples in a lab to check purity and grain size, because customers need sand that meets exact specifications. Even a little iron in the sand can tint glass green.' ] },
+    { h:'Making glass', b:[
+      'Glass is mostly silica sand melted with soda ash, which is sodium carbonate, and limestone, which is calcium carbonate. The mix melts in a furnace at around 1,500 °C, or about 2,700 °F.',
+      'The soda ash lowers the melting point, and the limestone makes the glass strong and keeps it from dissolving in water. As the hot liquid cools, it hardens without forming crystals, which helps make glass clear.' ] },
+    { h:'Sand all around you', b:[
+      'Windows, bottles, drinking glasses, fiberglass insulation, solar panels and the cover glass on phones all start with silica. Sand also filters drinking water and makes the molds for metal castings.',
+      'Next time you look through a window, remember that it started as a handful of quartz grains.' ] }
+  ]},
+  { id:'code', subject:'tech', icon:'code', title:'How Computers Follow Instructions', sub:'A first look at code', pages:[
+    { h:'Instructions all the way down', b:[
+      'A computer doesn’t think the way you do. It follows instructions very fast and exactly as written.',
+      'A list of step-by-step instructions that solves a problem is called an algorithm. A recipe is an algorithm for cooking. A program is an algorithm written in a language a computer can run.' ] },
+    { h:'Bits and bytes', b:[
+      'Inside, computers store everything as bits, which are 1s and 0s. Eight bits make a byte, which can stand for a number from 0 to 255, a letter, or part of a color or a sound.',
+      'The letter A, for example, is stored as the number 65, which in binary is 01000001.' ] },
+    { h:'Building blocks', b:[
+      { li:['Variables are named boxes that hold values, like score = 0.', 'Conditionals make choices: if the score is more than 10, show “You win!”', 'Loops repeat steps: for each student in the class, print their name.', 'Functions bundle steps into a named action you can reuse.'] },
+      'Almost every program, from a calculator to a video game, is built from these few ideas.' ] },
+    { h:'A tiny program', b:[
+      { code:'total = 0\nfor each number from 1 to 5:\n    total = total + number\nshow total' },
+      'This program adds 1 + 2 + 3 + 4 + 5 and shows 15. Change the 5 to 100 and the computer adds the numbers from 1 to 100 just as easily. The answer is 5,050.' ] },
+    { h:'Bugs', b:[
+      'A mistake in a program is called a bug. In 1947, engineers working on the Harvard Mark II computer found a real moth stuck in a relay and taped it into their logbook as the “first actual case of bug being found.”',
+      'Every programmer writes bugs. Good programmers test their code, read error messages carefully and fix one thing at a time.' ] }
+  ]},
+  { id:'ai', subject:'tech', icon:'network', title:'How AI Works', sub:'And when to double-check it', pages:[
+    { h:'What is AI?', b:[
+      'Artificial intelligence, or AI, is software that learns patterns from examples instead of following only hand-written rules.',
+      'A spam filter learns from millions of emails which ones are junk. A photo app learns what faces look like. A chat assistant learns patterns of language from huge amounts of text.' ] },
+    { h:'How a language model writes', b:[
+      'A language model writes a little bit of text at a time, choosing what is likely to come next based on the patterns it learned. That’s why it can write smooth sentences on almost any topic.',
+      'It’s also why it can sometimes state something false in a confident voice. People call these mistakes hallucinations.' ] },
+    { h:'Using AI well', b:[
+      'Treat AI like a helpful but imperfect study partner. Ask it to explain ideas in different ways, quiz you or give feedback on your writing.',
+      'Check important facts against trusted sources like textbooks, encyclopedias or official websites. If you use AI for schoolwork, follow your teacher’s rules and be honest about how you used it.' ] },
+    { h:'Privacy and safety', b:[
+      'Don’t share private information like your address, passwords or photos of other people with AI tools or websites you don’t trust.',
+      'Images, videos and voices can be made by AI, so a shocking clip online may not be real. Look for the original source before you believe it or share it.' ] },
+    { h:'The staff on this campus', b:[
+      'Margaret, Rosa and Mr. Hale are virtual staff. They answer common questions from what they know about this campus, and when AI is available they can answer more.',
+      'They are not real people. A real library or tribe would decide what its own guides know and how they speak.' ] }
+  ]},
+  { id:'night-sky', subject:'sky', icon:'moon', title:'Reading the Night Sky', sub:'Stars, planets and the Moon', pages:[
+    { h:'Getting started', b:[
+      'You don’t need a telescope to explore the night sky. Find a dark spot away from streetlights and give your eyes about 20 minutes to adjust.',
+      'A red flashlight helps because red light doesn’t ruin your night vision. A star chart or an app can help you match what you see to names.' ] },
+    { h:'The North Star', b:[
+      'Polaris, the North Star, sits almost directly above Earth’s North Pole, so it stays nearly still while the other stars circle around it through the night.',
+      'To find it, look for the Big Dipper. The two stars at the end of the Dipper’s bowl point to Polaris. When you face Polaris, you are facing north.' ] },
+    { h:'Stars and planets', b:[
+      'Stars twinkle because their light passes through moving layers of air. Planets usually shine with a steadier light because they are much closer and look like tiny disks instead of points.',
+      'Venus is often the brightest point in the sky after the Moon. Look for it near sunset or sunrise.' ] },
+    { h:'The Moon', b:[
+      'The Moon doesn’t make its own light. It reflects sunlight. As it orbits Earth, we see different amounts of its sunlit side. These are its phases: new, crescent, quarter, gibbous and full.',
+      'A full cycle of phases takes about 29.5 days, and the same side of the Moon always faces Earth.' ] },
+    { h:'Seasons in the sky', b:[
+      'Different constellations are visible in different seasons because Earth travels around the sun. On winter evenings in the Northern Hemisphere, look for Orion, with three bright stars in a row making his belt.',
+      'In summer, the band of the Milky Way stretches across dark skies. Light pollution hides many stars, which is one reason some towns protect their night skies.' ] }
+  ]},
+  { id:'pine-hollow', subject:'local', icon:'pine', title:'The Pine Hollow Story', sub:'A made-up town, from the railroad to the fair', pages:[
+    { h:'A made-up town', b:[
+      'Pine Hollow is a made-up town created for this preview. Its museum items were invented to show how a library’s collection becomes a museum you can walk through.',
+      'This book retells the town’s story using those items, one gallery at a time.' ] },
+    { h:'The Founding Years, 1891 to 1919', b:[
+      'In June 1897 the Courier reported that the first train had arrived, greeted by some four hundred people at the depot. The town plat of 1899 laid out 24 blocks between the river and the railroad.',
+      'By 1905, false-front stores lined Main Street. In 1912, thirty-one students posed in front of the two-room schoolhouse on Third Street.' ] },
+    { h:'Boom and Hard Times, 1920 to 1945', b:[
+      'At its peak the lumber mill employed 212 people. After the stock market crash of 1929, mill owner Josiah Pell promised no layoffs through the winter, and he kept that promise until 1932.',
+      'In 1937 the river came up Mill Street in the night. Ruth Alder, then nine, remembered sleeping three nights in the church loft. During the war, families used ration books, and the Courier printed an extra edition on August 15, 1945.' ] },
+    { h:'Main Street Years, 1946 to 1974', b:[
+      'The Rialto opened on March 3, 1951, with the first neon sign in town. In 1958 the new library opened on Second Street, and six hundred people signed up for cards on the first day.',
+      'A highway bypass opened in 1969, and six Main Street businesses closed within two years. The mill’s last shift ended in 1972. In 1974 the county fair still brought a Ferris wheel to the old mill grounds.' ] },
+    { h:'Your town’s story', b:[
+      'Every real town has a story like this, scattered across newspapers, photo albums, maps and memories. Libraries, historical societies and tribal archives work to keep those pieces safe and to share them.',
+      'With Walk the Archive, a community can turn its own collection into a place anyone can walk through.' ] }
+  ]},
+  { id:'oral-history', subject:'local', icon:'mic', title:'Recording an Oral History', sub:'How to save the stories of your elders', pages:[
+    { h:'What is oral history?', b:[
+      'An oral history is a recorded interview with someone about their own memories and experiences. It captures things no newspaper wrote down: how a place smelled, what people joked about, how it felt to live through a flood or a war.',
+      'The recordings of Ruth Alder and Tom Reyes in the Pine Hollow museum are oral histories.' ] },
+    { h:'Before the interview', b:[
+      'Choose someone whose story you want to save, like a grandparent, a neighbor or an elder. Ask permission, explain why you are recording, and tell them where the recording will be kept.',
+      'In many communities, including many Native nations, some stories belong to a family or to the community, so ask who has the right to share them. Prepare questions, but be ready to follow where the conversation goes.' ] },
+    { h:'Good questions', b:[
+      'Start easy: “Where did you grow up?” Ask open questions that can’t be answered with yes or no, like “What was a normal school day like?” or “Tell me about your first job.”',
+      'Ask for details: “What did it look like? Who was there?” Then listen. Silence is fine. People often remember more if you wait.' ] },
+    { h:'Recording tips', b:[
+      'A phone works well. Find a quiet room away from fans, TVs and kitchens. Set the phone close to the speaker on something soft, and test a short clip first.',
+      'At the start, say the date, the place and both of your names. Keep interviews to about an hour so no one gets too tired.' ] },
+    { h:'After the interview', b:[
+      'Thank the person and give them a copy. Label the file with names, the date and the place, write a short summary of what it covers, and keep a backup.',
+      'Ask your local library, historical society or tribal archive whether they collect oral histories. Your recording could help someone a hundred years from now understand your town.' ] }
+  ]},
+  { id:'writing-news', subject:'writing', icon:'quill', title:'Writing the News', sub:'Headlines, ledes and the five W’s', pages:[
+    { h:'The five W’s', b:[
+      'Good news stories answer five questions quickly: Who? What? When? Where? Why? Many reporters add a sixth: How?',
+      'Before you write, jot down the answers. If you can’t answer them yet, you need to do more reporting.' ] },
+    { h:'The lede', b:[
+      'The first sentence of a news story is called the lede, pronounced “leed.” It tells the most important thing in one clear sentence.',
+      'Compare “There was a meeting on Tuesday” with “The town council voted Tuesday to keep the library open on Sundays.” The second lede tells you what happened and why it matters.' ] },
+    { h:'The inverted pyramid', b:[
+      'News stories put the most important facts first and the less important details later, like an upside-down pyramid. A reader who stops after one paragraph still gets the main point.',
+      'In the days of metal type, it also let editors on deadline cut a story from the bottom to make it fit the page.' ] },
+    { h:'Headlines', b:[
+      'A headline is short, clear and active. Use a strong verb and the present tense: “Mill Keeps Every Man on the Payroll,” not “Mill Owner Gives Talk.”',
+      'Leave out small words like “a” and “the” when you can, and never promise something the story doesn’t deliver.' ] },
+    { h:'Fair and accurate', b:[
+      'Reporters check facts, spell names correctly and get quotes exactly right. They talk to more than one side of a story and make clear what is fact and what is opinion.',
+      'A byline tells readers who wrote the story, so the reporter is accountable for every word.' ] }
+  ]}
+];
+const BOOK = {}; BOOKS.forEach((b) => BOOK[b.id] = b);
+function blockText(b){ if (typeof b === 'string') return b; if (b.li) return b.li.join(' '); if (b.q) return b.q; if (b.note) return b.note; if (b.code) return ''; return ''; }

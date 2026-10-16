@@ -1,12 +1,50 @@
-# xr-campus-assets
+# Walk the Archive · XR Campus
 
-Baked 3D rooms for the **XRLibraries Campus** concept (an unofficial concept by Ev Holt, *Walk the Archive*).
-These files are downloaded by the site's build and loaded by the campus page at runtime.
+A walkable 3D campus for libraries and museums: a baked, photoreal Reading Room, a wax-figure history hall,
+hands-on classrooms and a recess yard. Runs in the browser on desktop and phone, and in VR headsets through WebXR.
+
+*An unofficial concept by Ev Holt for XRLibraries. Not an official XRLibraries project.*
+
+![The Reading Room](docs/reading-room.jpg)
+
+## Layout
 
 | Path | What it is |
 |---|---|
-| `lib/lib.glb` | The Reading Room (library): geometry (Meshopt), KTX2 textures, baked lightmap in the occlusion slot (texCoord 1), baked vertex lighting on small objects |
-| `lib/probe.hdr` | Reflection probe rendered from the middle of the room (RGBE, 512×256) |
+| `parts/` | The app: three.js r170, one file per system. `assemble.py` joins them into one page. |
+| `lib/` | The baked Reading Room: `lib.glb` (Meshopt geometry, KTX2 textures, lightmaps) and `probe.hdr` (reflections). |
+| `bl/` | Blender (Cycles) scripts that model, texture, bake and export the Reading Room. |
+| `tools/` | glTF compression, the asset manifest, the minifier. |
+| `hk/` | Avatar build: converts Microsoft Rocketbox avatars (MIT, see `hk/ROCKETBOX-LICENSE.txt`). |
+| `test/` | Headless Playwright checks and screenshot scripts. |
+| `make_patch.mjs` · `build_deploy.py` · `deploy/` | Vercel preview deploys. |
+| `docs/` | Notes, including the realism plan and the bake procedure. |
 
-Everything here was modelled, textured and lit from scratch in Blender (Cycles) with procedurally generated textures;
-nothing was downloaded from asset libraries. The campus itself lives in a separate project.
+Everything in the Reading Room was modelled, textured and lit from scratch in Blender with procedurally
+generated textures; nothing was downloaded from asset libraries.
+
+## Run it locally
+
+From the repo root, with Python 3 and Node 22+:
+
+```sh
+python3 assemble.py                                  # builds deploy/index.html
+npm install --prefix hk
+node hk/build.mjs deploy/h --expect hk/names.json    # avatars (downloads Rocketbox)
+cp -r lib deploy/lib                                 # baked rooms
+python3 -m http.server 8000 --directory deploy       # open http://localhost:8000
+```
+
+## Rebake the Reading Room
+
+Needs Python 3.13 and KTX-Software 4.4+ (`ktx` on PATH):
+
+```sh
+python3.13 -m venv bl && bl/bin/pip install bpy==5.2.2
+bl/bin/python bl/textures.py
+bl/bin/python bl/library.py --nobake                 # scene + lightmap UVs -> assets/lib/library.blend
+bl/bin/python bl/bake.py --lm 128 --vc 96 --size 2048   # resumable, ~45 min on 2 CPU cores
+bl/bin/python bl/bake_rows.py
+bl/bin/python bl/post.py
+npm install --prefix tools && node tools/post.mjs assets/lib lib
+```

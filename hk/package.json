@@ -1,0 +1,1 @@
+{"name":"humankit","private":true,"type":"module","dependencies":{"meshoptimizer":"^0.21.0","sharp":"^0.33.5","three":"0.170.0"}}

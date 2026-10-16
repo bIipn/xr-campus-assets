@@ -1,0 +1,17 @@
+# Blender (bpy) venv lives in bl/; only the scripts are tracked
+bl/*
+!bl/*.py
+# Tools and caches
+node_modules/
+ktx/
+mh/
+__pycache__/
+*.log
+# Generated: bake intermediates, avatar builds, deploy outputs, test screenshots
+assets/
+hk/out/
+public/
+deploy/*
+!deploy/assets.json
+test/shots*/
+xrlibraries-campus.html
