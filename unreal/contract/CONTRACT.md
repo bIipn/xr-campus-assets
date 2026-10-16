@@ -137,7 +137,7 @@ One action vocabulary for tour stops, staff answers and buttons (`FName`, `None`
 ## 7. Tools (`unreal/Tools/`)
 Run with Unreal's bundled Python where Python is needed (`Engine/Binaries/ThirdParty/Python3/Win64/python.exe`,
 `Engine/Binaries/ThirdParty/Python3/Mac/bin/python3`), so the user installs nothing extra.
-`win/*.ps1` and `mac/*.sh`: `preflight`, `install_prereqs`, `find_engine`, `build_editor`, `setup_project`, `open_editor`, `package_game`.
+`win/*.ps1` and `mac/*.sh`: `preflight`, `install_prereqs`, `find_engine`, `build_editor`, `setup_project`, `open_editor`, `play`, `package_game`.
 `common/*.py`: `find_engine.py` (Launcher install dir from `LauncherInstalled.dat` / default paths), `configure_plugins.py`
 (enables optional plugins only if their `.uplugin` exists in the engine), `check_results.py` (parses `WTA_RESULT` lines).
 

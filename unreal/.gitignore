@@ -21,3 +21,8 @@ Tools/.cache/
 # unreal/Pipeline/blender/export_reading_room.py); Unreal imports unreal/Pipeline/out/ue/*.glb
 Pipeline/out/campus/*.glb
 Pipeline/out/reading_room/*.glb
+# Unreal content is generated on each machine by Scripts/setup_project.py and can grow to tens of GB
+# (imported meshes, textures, MetaHumans). Keep it out of GitHub; back it up separately (see COWORK.md).
+# Content/Python holds the setup scripts and stays tracked.
+WalkTheArchive/Content/*
+!WalkTheArchive/Content/Python/

@@ -218,4 +218,14 @@ Staff (people.js:4-21): Margaret (0.68,−4.0) facing (0,−0.7); Rosa (−17.2,
 9. `unreal/Pipeline/README.md` is referenced by `export_reading_room.py` but does not exist; `unreal/Pipeline/out/campus/*.glb` (three.js GLTFExporter greybox, 8 wings, tagged `item__/staff__/ride__/token__`) and `ReadingRoom.glb` already exist and are in the same three.js axes this spec uses.
 10. Minimap rectangle for `lib` (−32..−12) differs from the nav rect; the minimap one is the real room.
 
-Files: `layout.json`, `layout.md`, `gen_layout.py`, `plan.py`, `plan.txt` in `/tmp/claude-0/-home-user-xr-campus-assets/da09777c-a32b-5d9b-a56d-2ab08ed6c91c/scratchpad/ue/spec/`.
+Files: `layout.json`, `layout.md`, `gen_layout.py`, `plan.py`, `plan.txt` in `docs/reference/`.
+
+---
+
+## Critic notes (2026-10-16, completeness critic; see `../critic.md`)
+
+1. **Conversions recomputed and confirmed** from `layout.json`: sun → (pitch −51.1°, yaw −143.1°, roll 0); spawn (0, −70, 0) cm, yaw −90° (≡ 270°), pitch 1.146°; stage 1 view yaw 180°; Margaret facing yaw 101.64° from `faces_m`. The yaw formula is equivalent to `content.md`'s `atan2(−cos, −sin)` form. Handedness argument (det −1 Y/Z swap) is correct.
+2. The Blender→UE **FBX** derivation in §1 holds (Blender (x,−z,y) → FBX Y-up (x, y, z) → UE (x, z, y)). The Interchange **glTF** route is expected to produce the same map (UE's glTF conversion swaps Y/Z and negates quaternion W — critic's recollection, not re-verified: dev.epicgames.com is unreachable here). The test-cube / door / window rule stays the gate; add token `t-museum` → UE (−535, −4135, 36) cm as a third landmark.
+3. §10.1 decision taken: **one global sun** (SUN_DIR rotator above); the library's 19° west sun becomes a local RectLight/SpotLight outside the arched window. §10.4 wall thickness (0.3 m interior, 0.45 m exterior, interior faces fixed) is adopted.
+4. `layout.json` `staff` includes `keeper` (5 entries) and `stations` includes `easel` (6) — intentional; `tour_stops` holds only the 10 non-item stops (the 35-stop list is `content/tour.json`).
+5. No gaps found for the architecture pass: rooms (15), doors (14), windows (19), lights (33), emissive fixtures (15), wax stages (12 with views), library stacks, exterior features, staff, stations, tokens (11), exhibits (15), places, minimap are all present with UE cm values.

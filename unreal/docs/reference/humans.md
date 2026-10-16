@@ -124,7 +124,7 @@ Epic "Platform support and LOD specifications" and "Controlling MetaHuman LODs":
 ### 3.4 IK Retargeter (Rocketbox / Mixamo → MetaHuman)
 - Epic "Auto Retargeting": retarget directly from the Content Browser by selecting two Animation Sequences on different skeletons; **Auto Retarget Chains** (IK Rig editor) matches bone chains to templates by bone names (exact names not required); **Auto Align** (IK Retargeter editor) aligns retarget poses per skeleton or per bone; Python `IKRetargeterController` and `BatchRetargetSettings` exist. Batch auto-generation is "limited to common, predefined skeleton types."
 - MetaHuman: target IK Rig ships pre-built; Epic "Create a custom IK Retargeter" doc for assembled MetaHumans.
-- **Rocketbox** uses 3ds Max Biped naming (`Bip01_Pelvis`, `Bip01_Spine..Spine2`, `Bip01_L_UpperArm`, `Bip01_L_Finger0..42`, facial `Bip01_MJaw` etc. — see `/home/user/xr-campus-assets/hk/names.json`, 80 bones). Auto chains may partially match; expect to hand-map chains and set the retarget pose once. No published Rocketbox→UE guide found.
+- **Rocketbox** uses 3ds Max Biped naming (`Bip01_Pelvis`, `Bip01_Spine..Spine2`, `Bip01_L_UpperArm`, `Bip01_L_Finger0..42`, facial `Bip01_MJaw` etc. — see `hk/names.json`, 80 bones). Auto chains may partially match; expect to hand-map chains and set the retarget pose once. No published Rocketbox→UE guide found.
 - **Mixamo:** third-party "Mixamo Animation Retargeting 2" (Fab, v2.3.0 for UE 5.6; auto-builds IK Rig/Retargeter incl. a MetaHuman base skeleton) or do it manually with the above. Mixamo assets are under Adobe's terms (royalty-free in projects, no standalone redistribution) **[not re-verified this session]**.
 
 ### 3.5 ML Deformer
@@ -184,7 +184,7 @@ Epic "Platform support and LOD specifications" and "Controlling MetaHuman LODs":
 | **instant-ngp** | NVIDIA Source Code License (non-commercial per third-party summary; commercial "needs to be licensed") | **Not needed** (NeRF, not an animatable asset); **license problem** for commercial | None; for photoreal rooms you already bake PBR; UE can import Gaussian splats via third-party plugins if ever needed |
 | **Animatable NeRF / NeuralBody (zju3dv)** | GitHub shows license "other"; ZJU-MoCap data research-only; builds on SMPL (non-commercial) | **Not needed; license problem** (research code, depends on SMPL) | None |
 | **Filament** | Apache-2.0 | **Not needed** in UE (UE has its own PBR renderer); keep only as a PBR reference | Reference reading for material authoring |
-| **Microsoft Rocketbox** (current web build) | **MIT** (`/home/user/xr-campus-assets/hk/ROCKETBOX-LICENSE.txt`) | **Replace with MetaHumans**; keep as fallback/placeholder and for retargeting tests | Rocketbox animations can be retargeted to MetaHumans via IK Retargeter (hand-mapped Bip01 chains) |
+| **Microsoft Rocketbox** (current web build) | **MIT** (`hk/ROCKETBOX-LICENSE.txt`) | **Replace with MetaHumans**; keep as fallback/placeholder and for retargeting tests | Rocketbox animations can be retargeted to MetaHumans via IK Retargeter (hand-mapped Bip01 chains) |
 
 ---
 
@@ -262,4 +262,15 @@ Repo licenses
 - OpenPose license (quoted): https://hn.nuxtjs.org/item/23360997 ; https://community.vuo.org/t/have-you-seen-openpose/6070
 - NeuralBody / Animatable NeRF metadata: https://awesome.ecosyste.ms/projects/236127 ; https://awesome.ecosyste.ms/projects/github.com%2Fzju3dv%2Fanimatable_nerf
 - MediaPipe: https://en.wikipedia.org/wiki/MediaPipe ; https://awesome.ecosyste.ms/projects/github.com%2Fgoogle-ai-edge%2Fmediapipe ; Filament: https://summary.ecosyste.ms/projects/369864 ; https://www.phoronix.com/news/Google-Filament-PBR-Engine
-- Rocketbox: `/home/user/xr-campus-assets/hk/ROCKETBOX-LICENSE.txt` (MIT, Microsoft 2020); bone list `/home/user/xr-campus-assets/hk/names.json`
+- Rocketbox: `hk/ROCKETBOX-LICENSE.txt` (MIT, Microsoft 2020); bone list `hk/names.json`
+
+---
+
+## Critic notes (2026-10-16, completeness critic; see `../critic.md`)
+
+1. Engine target 5.8.x agrees with every other report. The MetaHuman Character Python API "requires 5.8+" claim, `unreal.MetaHumanCharacterEditorSubsystem`, `try_add_object_to_edit` / `remove_object_from_edit`, MetaHuman Crowds/Collections (Experimental) and all maturity labels remain **UNVERIFIED-HERE** (metahuman.com and dev.epicgames.com are blocked from this container; search budget exhausted). They stay in the probe-job list; nothing in the first-playable phase depends on them.
+2. **OpenRigLogic is MIT — verified** from `github.com/EpicGames/openriglogic` README (fetched 2026-10-16, saved in `dl2/`). Sample content on Fab is under the Fab Standard License.
+3. `UChaosOutfitAsset`, `FRigUnit_PBIK` (plugin `PBIK`), `FXRHandTrackingState`, `UOpenXRHandTrackingSettings`, `FMetaHumanLODProperties`: plausible, not re-verified; probe with `hasattr(unreal, …)` / a grep of `Engine/Plugins` on the machine.
+4. The user's machine is **unknown** (see `critic.md` §1.2); the hardware guidance in §2.1/§7 must be expressed as runbook branches, not assumptions. A Mac can author MetaHumans and realtime previews; offline Performance solves, body capture and ACE need Windows.
+5. ACE/Audio2Face support for UE 5.7/5.8 is unconfirmed → optional phase-3 item only on Windows+NVIDIA; v1 ships preset answers + pre-baked AnimSequence bank, which needs no runtime plugin.
+6. Naming contract adopted by the critic for the C++ port: `FXR*` structs, `FXRView`, DataTables `DT_Staff`, `DT_WaxScenes`, `DT_DialogueRules`, … (full list in `critic.md` §1.9).

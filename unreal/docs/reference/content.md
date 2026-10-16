@@ -1,6 +1,6 @@
 # XRLibraries Campus — content inventory and Unreal DataTable spec
 
-Source: `/home/user/xr-campus-assets/parts/*.js` (three.js r170 web build, assembled by `assemble.py`).
+Source: `parts/*.js` (three.js r170 web build, assembled by `assemble.py`).
 Extractor: `ue/tools/extract_content.mjs` (Node 22, `node:vm` sandbox, no rendering code executed).
 Output: `ue/content/*.json` + `ue/content/_manifest.json` (file → count → source lines → what it drives).
 All 33 files parse and match hand-verified record counts (`ALL DATASETS VALID`).
@@ -280,3 +280,13 @@ In UE these are navmesh/trigger-volume inputs, not gameplay text; keep them for 
 
 ## 3. Sanity numbers
 sources 22 · galleries 4 · kinds 9 · exhibits 16 (15 + Freedom) · facts 15 · subjects 8 · books 15 (82 pages) · blueprints 5 (60 parts) · wax scenes 12 (38 figures) · staff 4 · intents 43 · preset branches 45 · directions 42 · lessons 11 · places 42 · tour 35 · badges 15 · tokens 11 · rides 3 · dive facts 9 · stations 5 · world layers 9 · bench kits 2 (15 steps) · sieves 12 · rooms 15 · doors 14 · map rooms 17 · ui strings 83 · legacy books 14.
+
+---
+
+## Critic notes (2026-10-16, completeness critic; see `../critic.md`)
+
+1. All 33 JSON files parse and the counts in §3 match (`tour.json` = 35; the manifest's prose "36 ordered stops" is a typo). `layout.json` lists 5 `staff` (includes `keeper`) and 6 `stations` (includes `easel`) by design.
+2. **Naming contract (resolves this file vs `systems.md`):** C++ row structs are `FXR<Name>Row : FTableRowBase`, the camera view struct is `FXRView {FVector Location; float Yaw; float Pitch;}` (replaces `FCampusView`), and the DataTables are: `DT_Sources, DT_Galleries, DT_ExhibitKinds, DT_Items` (15 exhibits + Freedom + 12 wax cards; `Location` = gallery | library | wax), `DT_Facts, DT_Subjects, DT_Books, DT_Blueprints, DT_BlueprintParts, DT_WaxScenes, DT_Staff, DT_DialogueRules, DT_PresetReplies, DT_Directions, DT_Lessons, DT_Places, DT_TourStops, DT_Badges, DT_Tokens, DT_Rides, DT_DiveFacts, DT_Stations, DT_WorldLayers, DT_BenchKits, DT_Sieves, DT_Rooms, DT_Doors, DT_MapRooms`, `ST_UI` (StringTable), `DA_PaintStudio`, `DA_PhysicsProps`. The field inventories in §1 remain the source of truth; rename `FExhibitRow`→`FXRItemRow`, `FBookRow`→`FXRBookRow`, etc.
+3. §0.2 yaw formula is equivalent to `layout.md`'s `(−90 − deg(yaw)) mod 360` (verified at 0, ±π/2, π, −0.41). The axis permutation is the pipeline-wide assumption gated by the landmark import test (`critic.md` §1.7).
+4. §0.4: `unreal.DataTableFunctionLibrary.fill_data_table_from_json_string` and `unreal.DataTableFactory` (`struct`) are corroborated only by secondary sources; they are in the probe job. The **converter** (camelCase → UE row JSON with `Name`, PascalCase fields, `{X,Y,Z}` cm, `{R,G,B,A}`) does not exist yet — it is gap G4 in `critic.md`.
+5. Not extracted (and needed for phase 3): the wax scene keyframes/carries/ticks, blueprint hit polygons (`bpHit`), badge icon renders, wax backdrop paintings. §2 already lists them as runtime-generated; the extraction scripts are still to be written.

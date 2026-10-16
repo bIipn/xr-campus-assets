@@ -1,6 +1,6 @@
 # XRLibraries Campus — interactive systems inventory and their Unreal Engine 5 counterparts
 
-Written 2026-10-16 from the three.js source in `/home/user/xr-campus-assets/parts/*.js` (every claim about the web build cites `file:line`). Companion to `layout.md` / `layout.json` (geometry, rooms, coordinates) and to the research notes in `../research/` (`humans.md` = MetaHuman/animation stack, `render.md` = UE 5.8 rendering, `automation.md` = editor Python / headless builds, `delivery.md` = Pixel Streaming).
+Written 2026-10-16 from the three.js source in `parts/*.js` (every claim about the web build cites `file:line`). Companion to `layout.md` / `layout.json` (geometry, rooms, coordinates) and to the research notes in `../research/` (`humans.md` = MetaHuman/animation stack, `render.md` = UE 5.8 rendering, `automation.md` = editor Python / headless builds, `delivery.md` = Pixel Streaming).
 
 **Engine target:** UE **5.8.x** (sibling research; MetaHuman Python API and MetaHuman Crowds need 5.8). Keep `CharacterMovementComponent`; Mover is still Experimental in 5.8 (`humans.md` §3.2).
 
@@ -404,3 +404,14 @@ New script `unreal/Pipeline/web/export_data.mjs` (Node 22, no browser): wraps `p
 6. `UDataLayerManager` (5.4+) for toggling the Dive sub-level if World Partition data layers are used — fallback: classic `UGameplayStatics::LoadStreamLevel` [ok] sub-levels.
 7. The plugin/module names `GeometryScripting` / `GeometryScriptingCore` (the editor lists it as "Geometry Script").
 8. Everything tagged `[sibling]` inherits the sibling documents' own caveats (`humans.md` §8, `render.md` §12, `automation.md` §0).
+
+---
+
+## Critic notes (2026-10-16, completeness critic; see `../critic.md`)
+
+1. Engine 5.8.x, `CharacterMovementComponent`, MetaHuman-first humans and the phase order agree with the research reports. The user's machine is **unknown**; VR/MegaLights/HWRT features must degrade per the preflight profile (`critic.md` §4 G2).
+2. **Naming contract adopted:** this file's `FXR*` prefix and `FXRView` win over `content.md`'s `FCampusView`/`FExhibitRow`; the single DataTable list is in `critic.md` §1.9 (e.g. `DT_Items` not `DT_Exhibits`, `DT_PresetReplies` for the 45 preset branches, `DT_DialogueRules` for the 43 regex intents, `DT_Directions` for the 42 place directions). `content.md` §1 field inventories are the source of truth for struct members (e.g. `FXRStaffRow` needs the `Look` colours and `AiSystemPrompt`; `FXRWaxSceneRow` needs `Cast[]`, `Backdrop`, `Floor`, `PropsUsed`).
+3. Verified from saved engine sources: the trace-channel ini line is standard syntax (`[/Script/Engine.CollisionProfile]`, long-standing, not re-verified); `r.CustomDepth=3` = EnabledWithStencil (5.7 header) for the outline/highlight pass; scalability groups for §A `SetOverallScalabilityLevel` exist in 5.8 `BaseScalability.ini`.
+4. §7 unverified names stay unverified here (dev.epicgames.com unreachable). Fallbacks already named are adequate: yaw bias instead of `OffCenterProjectionOffset`; `UProceduralMeshComponent::CreateMeshSection_LinearColor` instead of Geometry Script sweeps; Blender-baked clips instead of `UControlRigComponent::SetControl*`; `UGameplayStatics::LoadStreamLevel` sub-levels instead of `UDataLayerManager`. Add to the probe: `EHMDTrackingOrigin` member names, `AWaterBodyOcean` properties, plugin identifiers (`GeometryScripting`, `CommonUI`, `Water`, `OpenXRHandTracking`, `PBIK`, `IKRig`, `ControlRig`, `AnimationBudgetAllocator`, `PoseSearch`, `MetaHuman*`, `PixelStreaming2`, `ModelContextProtocol`).
+5. §4 `export_data.mjs` is superseded by `ue/tools/extract_content.mjs` + `content/*.json` (already produced); what is still missing is the UE-shape converter (`critic.md` G4), the v2 canvas/figure export (G7) and the wax keyframe export (G9).
+6. §1.6 constants: camera Z 162 cm = capsule half-height 90 + relative offset 72 — consistent with `layout.json` `eye_height_m` 1.62 and the spawn camera (0, −70, 162).

@@ -464,3 +464,15 @@ turn on `alphaToCoverage` for leaves, and stop re-ranking lights per metre.
 4. Verify axes with the door/window landmarks (1.3) and one tagged token (`content.md` §0.2) before anything else.
 5. People: MetaHumans for staff/player/keeper first, Rocketbox FBX fallback imported in parallel, wax scenes last.
 6. Every **[verify]** above goes into the probe job before the corresponding script runs.
+
+---
+
+## Critic notes (2026-10-16, completeness critic; see `../critic.md`)
+
+1. **Target is UE 5.8.x only** (not "5.7/5.8"): every engine key cited from the 5.7 headers also exists in the 5.8 inis; `.uproject` `EngineAssociation` = "5.8".
+2. **Correction — the user's machine is unknown.** The sentence "the research preflight recorded the user's Mac as an M5 Max on macOS 26.5.1" is a misreading of `research/dl/ue58traps.md` §6 / `toolkit-map.md`, which are a downloaded third-party skill describing *its author's* Mac (preflight of 2026-09-24). The task brief says OS and GPU are unknown; the runbook must detect them (`critic.md` §4 G2). Nothing in this spec should assume a Mac.
+3. Coordinate map in §1.3 is consistent with `layout.md` §1 and `content.md` §0.2 (critic recomputed the sun rotator, spawn, stage and staff yaws from `layout.json`). The FBX route provably gives UE = (x, z, y)·100; the Interchange glTF route is expected to match (UE's glTF conversion swaps Y/Z and negates quaternion W — recollection, not re-verified). The door/window landmark test in §1.3 plus token `t-museum` at UE (−535, −4135, 36) cm is the pipeline gate; on a mirror, switch the Blender assets to FBX and apply the swap in `export_campus.py`, never edit `layout.json`.
+4. §1.5 Nanite: `FMeshNaniteSettings` fields (`bEnabled`, `KeepPercentTriangles`, `TargetMinimumResidencyInKB`, …) verified in 5.7 `EngineTypes.h`; the Python wrapper `unreal.MeshNaniteSettings` / `StaticMeshEditorSubsystem.set_nanite_settings` stays [verify]. §2.4 Interchange pipeline asset paths are verified from 5.8 `BaseEngine.ini` (`critic.md` §3.1); `InterchangeGenericAssetsPipeline` is the class behind `/Interchange/Pipelines/DefaultAssetsPipeline`.
+5. §1.6 light units: project default stays `r.DefaultFeature.LightUnits=1` (candela, `render.md`); per-light "lumens" is a per-light override — not a conflict. **Sun decision:** one global DirectionalLight at rotator (pitch −51.1°, yaw −143.1°, roll 0) from `SUN_DIR`; the Reading Room's 19° west sun becomes a local RectLight/SpotLight outside the arched window.
+6. Repo state the build agent must handle: `unreal/Pipeline/out/campus/*.glb`, `manifest.json`, `bl/library.py`, `unreal/Pipeline/blender/export_reading_room.py` are modified and **uncommitted**; `unreal/Pipeline/README.md` does not exist. The v2 export (§2.3), all-canvas dump (§3) and the Reading Room rebuild (§1.5) need the Playwright harness / Blender on the user's machine — until then the committed GLBs/PNGs are the inputs.
+7. Rocketbox FBX: downloading from GitHub at the pinned commit needs network on the machine (~2 GB of avatars/textures); list it as a runbook step with the 37 avatar ids from `content.md` §1.9.
