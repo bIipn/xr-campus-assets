@@ -1,0 +1,147 @@
+{
+ "units": "metres in glTF (Y up); Unreal import maps glTF (x, y, z) m -> UE (X=x, Y=z, Z=y) cm. Every mesh is baked in world space: spawn at UE (0,0,0), rotation 0, scale 1.",
+ "assets": {
+  "Museum": {
+   "file": "Museum.glb",
+   "source": "unreal/Pipeline/out/campus/museum.glb",
+   "meshes": 64,
+   "tagged": [
+    "item__ca_200",
+    "item__charleston",
+    "item__cil_talks",
+    "item__dialysis",
+    "item__headset",
+    "item__mission",
+    "item__nv_1100",
+    "item__nv_2017",
+    "item__playbooks",
+    "item__pollinators",
+    "item__sandi",
+    "item__seeking",
+    "item__showcase",
+    "item__ukraine",
+    "item__way_out",
+    "token__t_museum"
+   ],
+   "triangles": 3116,
+   "bytes": 12269964
+  },
+  "WaxIntro": {
+   "file": "WaxIntro.glb",
+   "source": "unreal/Pipeline/out/campus/waxIntro.glb",
+   "meshes": 4,
+   "tagged": [],
+   "triangles": 52,
+   "bytes": 530580
+  },
+  "WaxHall": {
+   "file": "WaxHall.glb",
+   "source": "unreal/Pipeline/out/campus/wax.glb",
+   "meshes": 167,
+   "tagged": [
+    "item__wax_2016",
+    "item__wax_2017a",
+    "item__wax_2017b",
+    "item__wax_2018a",
+    "item__wax_2019a",
+    "item__wax_2019b",
+    "item__wax_2019c",
+    "item__wax_2020",
+    "item__wax_2022a",
+    "item__wax_2022b",
+    "item__wax_2024",
+    "item__wax_2025"
+   ],
+   "triangles": 54466,
+   "bytes": 17734388
+  },
+  "LibraryShell": {
+   "file": "LibraryShell.glb",
+   "source": "unreal/Pipeline/out/campus/lib.glb",
+   "meshes": 31,
+   "tagged": [
+    "book__ai",
+    "book__ar_around_town",
+    "book__code",
+    "book__first_job",
+    "book__lost_stories",
+    "book__making_360",
+    "book__oceans_vr",
+    "book__oral_history",
+    "book__reading_past",
+    "book__vr_program",
+    "book__water_cycle",
+    "book__what_is_xr",
+    "book__world_builder",
+    "book__worlds_browser",
+    "book__xr_careers",
+    "item__freedom",
+    "token__t_library"
+   ],
+   "triangles": 908,
+   "bytes": 8401256
+  },
+  "School": {
+   "file": "School.glb",
+   "source": "unreal/Pipeline/out/campus/school.glb",
+   "meshes": 311,
+   "tagged": [
+    "book__world_builder",
+    "bp__bridge",
+    "bp__car",
+    "bp__computer",
+    "bp__excavator",
+    "bp__house",
+    "station__diorama",
+    "token__t_blueprint",
+    "token__t_lab",
+    "token__t_school",
+    "token__t_studio",
+    "token__t_world"
+   ],
+   "triangles": 42516,
+   "bytes": 13731704
+  },
+  "Outside": {
+   "file": "Outside.glb",
+   "source": "unreal/Pipeline/out/campus/outside.glb",
+   "meshes": 25,
+   "tagged": [],
+   "triangles": 90578,
+   "bytes": 9014372
+  },
+  "Yard": {
+   "file": "Yard.glb",
+   "source": "unreal/Pipeline/out/campus/play.glb",
+   "meshes": 104,
+   "tagged": [
+    "ride__coaster",
+    "ride__dive",
+    "ride__drop",
+    "token__t_coaster",
+    "token__t_drop",
+    "token__t_yard"
+   ],
+   "triangles": 73076,
+   "bytes": 10197348
+  },
+  "OceanDive": {
+   "file": "OceanDive.glb",
+   "source": "unreal/Pipeline/out/campus/dive.glb",
+   "meshes": 76,
+   "tagged": [
+    "token__t_dive"
+   ],
+   "triangles": 133815,
+   "bytes": 14374008
+  },
+  "ReadingRoom": {
+   "file": "ReadingRoom.glb",
+   "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
+   "meshes": 16,
+   "tagged": [],
+   "triangles": 186704,
+   "bytes": 58501556
+  }
+ }
+}

@@ -8,6 +8,8 @@ GLTFExporter, so Unreal starts from the exact same layout, sizes and artwork.
 
 What is left out on purpose (Unreal replaces it with its own, better version):
   sky dome and other custom-shader meshes, wind grass, particles/lines/sprites, skinned people (MetaHumans replace them),
+  invisible helper meshes (tap targets and walk blockers that only the web build needs) and anything
+  hidden when the campus first loads (state toggles, ride extras); wing roots are switched on first,
   the baked Reading Room (exported from Blender by unreal/Pipeline/blender/export_reading_room.py).
 Glows that the web build pushed past full brightness become emissive materials (Lumen lights the room with them).
 
@@ -69,6 +71,9 @@ async () => {
   const drop = (o, why) => { report.removed[why] = (report.removed[why] || 0) + 1; o.parent && o.parent.remove(o); };
   const grass = T.NATURE && T.NATURE.grass;
   const staffRoots = new Set(Object.values(T.STAFF || {}).map((s) => s.root).filter(Boolean));
+  let hidden = 0;
+  for (const k of Object.keys(W)) W[k].traverse((o) => { if (o !== W[k] && o.visible === false) hidden++; });
+  report.hidden_objects_kept = hidden;
   for (const k of Object.keys(W)){
     W[k].visible = true;
     const kill = [];
@@ -85,6 +90,8 @@ async () => {
         if (o.isInstancedMesh && o.count > 2000) { kill.push([o, 'big_instanced']); return; }
         /* Custom shaders (the sky dome) have no glTF equivalent; Unreal's Sky Atmosphere replaces the sky */
         if (ms.some((m) => m && (m.isShaderMaterial || m.isRawShaderMaterial))) { kill.push([o, 'shader_mesh']); return; }
+        /* Invisible helpers (tap targets, walk blockers, shelf proxies) are web-only; Unreal uses real collision */
+        if (ms.every((m) => !m || m.visible === false)) { kill.push([o, 'invisible_helper']); return; }
         const fix = (m) => {
           if (!m) return m;
           /* Glows were brightened past 1.0 for the web bloom; in glTF a colour over 1 is invalid, so it becomes emission */
@@ -139,8 +146,10 @@ async (k) => {
   const W = window.__test.WING, root = W[k];
   if (!root) return { size:0 };
   const ex = new window.__GLTFExporter();
-  const prevParent = root.parent; root.updateMatrixWorld(true);
-  const buf = await ex.parseAsync(root, { binary:true, onlyVisible:false, maxTextureSize:2048, includeCustomExtensions:false });
+  /* The page hides wings you can't see from the camera; switch this one on just for the export */
+  const was = root.visible; root.visible = true; root.updateMatrixWorld(true);
+  const buf = await ex.parseAsync(root, { binary:true, onlyVisible:true, maxTextureSize:2048, includeCustomExtensions:false });
+  root.visible = was;
   window.__glb = new Uint8Array(buf);
   return { size:window.__glb.length };
 }

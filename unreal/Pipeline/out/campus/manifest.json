@@ -3,21 +3,23 @@
  "units": "metres, three.js axes (y up)",
  "prep": {
   "removed": {
-   "glow_to_emissive": 110,
+   "glow_to_emissive": 99,
    "points/lines": 43,
    "staff": 4,
+   "invisible_helper": 97,
    "baked_room": 1,
    "baked": 28,
    "attr_stripped": 6,
    "shader_mesh": 1,
    "grass": 1
   },
-  "tagged": 226
+  "tagged": 152,
+  "hidden_objects_kept": 272
  },
  "wings": {
   "museum": {
    "file": "museum.glb",
-   "bytes": 13208676
+   "bytes": 13203432
   },
   "waxIntro": {
    "file": "waxIntro.glb",
@@ -25,15 +27,15 @@
   },
   "wax": {
    "file": "wax.glb",
-   "bytes": 16824700
+   "bytes": 15166204
   },
   "lib": {
    "file": "lib.glb",
-   "bytes": 8466824
+   "bytes": 8437624
   },
   "school": {
    "file": "school.glb",
-   "bytes": 14487640
+   "bytes": 14034424
   },
   "outside": {
    "file": "outside.glb",
@@ -41,11 +43,11 @@
   },
   "play": {
    "file": "play.glb",
-   "bytes": 5294692
+   "bytes": 5233216
   },
   "dive": {
    "file": "dive.glb",
-   "bytes": 1445412
+   "bytes": 1440164
   }
  },
  "art": [

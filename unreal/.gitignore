@@ -17,3 +17,7 @@ __pycache__/
 *.pyc
 # Local tool caches
 Tools/.cache/
+# Intermediate exports (regenerate with unreal/Pipeline/web/export_campus.py and
+# unreal/Pipeline/blender/export_reading_room.py); Unreal imports unreal/Pipeline/out/ue/*.glb
+Pipeline/out/campus/*.glb
+Pipeline/out/reading_room/*.glb

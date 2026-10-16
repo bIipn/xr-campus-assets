@@ -5,8 +5,10 @@ Campus axes: x right, y up, z toward the viewer.  Blender: X = x, Y = -z, Z = y.
 Room: x -32..-12, z -13..7, height 7.6. Door on the east wall (x=-12) at z -4.6..-1.4, 3.4 high.
 Arched window on the west wall (x=-32) at z -5.2..-0.8, y 1.0..4.6 plus a half circle.
 
-Usage: bl/bin/python bl/library.py [--quick] [--nobake] [--render]
+Usage: bl/bin/python bl/library.py [--quick] [--nobake] [--render] [--ue]
 Outputs assets/lib/: lib_raw.gltf (+bin, textures), lightmap.exr, probe.hdr, preview renders.
+--ue builds the Unreal Engine version instead (assets/lib_ue/library.blend, no bake): real books on every
+shelf tier (no textured strips) and 0.45 m thick walls, floor and ceiling so Lumen sees a closed room.
 """
 import bpy, bmesh, math, os, sys, time, json, random
 from mathutils import Vector, Matrix
@@ -14,10 +16,11 @@ import numpy as np
 
 SP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEX = os.path.join(SP, 'assets', 'tex')
-OUT = os.path.join(SP, 'assets', 'lib')
+UE = '--ue' in sys.argv
+OUT = os.path.join(SP, 'assets', 'lib_ue' if UE else 'lib')
 os.makedirs(OUT, exist_ok=True)
 QUICK = '--quick' in sys.argv
-NOBAKE = '--nobake' in sys.argv
+NOBAKE = '--nobake' in sys.argv or UE
 RENDER = '--render' in sys.argv
 LM_SIZE = 1024 if QUICK else 2048
 SAMPLES_LM = 32 if QUICK else 160
@@ -408,7 +411,7 @@ def build_bookcases():
     ]
     for run in runs:
         for (y0, rows, rowH) in run['tiers']:
-            bookcase(cases, books, imp, dict(x=run['x'], z=run['z'], dir=run['dir'], n=run['n'], len=run['len'], y0=y0, rows=rows, rowH=rowH, depth=0.42, impostor=(y0 > 1)))
+            bookcase(cases, books, imp, dict(x=run['x'], z=run['z'], dir=run['dir'], n=run['n'], len=run['len'], y0=y0, rows=rows, rowH=rowH, depth=0.42, impostor=(y0 > 1) and not UE))
     # the stacks: 4 double-sided cases north and south of the aisle
     ends = Builder('case_ends', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.5)
     for slot in range(4):
@@ -633,6 +636,11 @@ def main():
     build_furniture(lights)
     add_lights(lights)
     obs = [o for o in sc.objects if o.type == 'MESH']
+    if UE:
+        # Unreal: give the shell real thickness (outward), so Lumen and distance fields see a closed volume
+        for o in obs:
+            if o.name in ('walls', 'floor', 'ceiling'):
+                m = o.modifiers.new('ue_thickness', 'SOLIDIFY'); m.thickness = 0.45; m.offset = -1.0; m.use_even_offset = True
     lm = [o for o in obs if o.get('lm')]; vc = [o for o in obs if o.get('vc')]
     print('objects', len(obs), 'lightmapped', [o.name for o in lm], 'vertex-lit', len(vc), 'tris', sum(len(o.data.polygons) * 2 for o in obs), 'built in %.0f s' % (time.time() - t0), flush=True)
     lightmap_uvs(lm)

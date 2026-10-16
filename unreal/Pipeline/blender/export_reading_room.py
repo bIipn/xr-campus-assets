@@ -6,8 +6,10 @@ stripped: the lightmap UV channel ('lm') and the baked vertex colours ('light') 
 only the PBR materials and geometry go out. Lights are written to a JSON file instead, so the
 Unreal setup script can spawn proper Unreal lights in the same places.
 
+First build the Unreal version of the scene (no bake, a minute or two):
+    python bl/library.py --ue          (with Blender's Python / bpy 5.2.2)
 Run (Blender 5.2, from the repo root):
-    blender -b assets/lib/library.blend --python unreal/Pipeline/blender/export_reading_room.py
+    blender -b assets/lib_ue/library.blend --python unreal/Pipeline/blender/export_reading_room.py
 or with Blender as a Python module (bpy 5.2.2):
     python unreal/Pipeline/blender/export_reading_room.py
 
@@ -27,7 +29,10 @@ import bpy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
-SRC = os.path.join(REPO, 'assets', 'lib', 'library.blend')
+# The Unreal build of the room (bl/library.py --ue: real books on every tier, thick walls) when it exists,
+# else the web build's scene
+SRC_UE = os.path.join(REPO, 'assets', 'lib_ue', 'library.blend')
+SRC = SRC_UE if os.path.exists(SRC_UE) else os.path.join(REPO, 'assets', 'lib', 'library.blend')
 OUT = os.path.join(REPO, 'unreal', 'Pipeline', 'out', 'reading_room')
 
 
@@ -85,7 +90,7 @@ def main():
         use_selection=False,
     )
     with open(os.path.join(OUT, 'lights.json'), 'w') as f:
-        json.dump({'source': 'assets/lib/library.blend', 'units': 'metres, three.js campus axes (y up)', 'lights': lights}, f, indent=1)
+        json.dump({'source': os.path.relpath(SRC, REPO), 'units': 'metres, three.js campus axes (y up)', 'lights': lights}, f, indent=1)
     print('wrote', glb, os.path.getsize(glb), 'bytes;', len(lights), 'lights')
 
 

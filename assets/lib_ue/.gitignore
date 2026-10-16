@@ -1,0 +1,4 @@
+# Unreal build of the Reading Room scene: only the .blend is kept (textures live in assets/tex)
+*
+!.gitignore
+!library.blend
