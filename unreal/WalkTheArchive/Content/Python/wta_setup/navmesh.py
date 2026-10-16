@@ -2,8 +2,9 @@
 
 The volume spawned from the class comes with the default 200 cm cube brush, so the actor scale makes it
 the right size. The editor rebuilds navigation automatically when a bounds volume changes; the step also
-asks for a rebuild through the console when that command exists. The project ini sets runtime
-generation to Dynamic (project_settings step), so walking works even if the editor build was cut short.
+asks for a rebuild through the console when that command exists. DefaultEngine.ini sets runtime
+generation to Dynamic (project_settings adds it when missing), so walking works even if the editor build
+was cut short by the headless run exiting.
 """
 import unreal
 
@@ -77,8 +78,8 @@ def run():
     report["centre"] = centre
     report["scale"] = scale
     request_build(report)
-    report["note"] = ("the editor builds the navmesh on later ticks; with RuntimeGeneration=Static open "
-                      "L_Campus in the editor once, let Build Paths finish and save")
+    report["note"] = ("the editor builds the navmesh on later ticks; RuntimeGeneration=Dynamic builds missing "
+                      "tiles at game start, or open L_Campus in the editor, let Build Paths finish and save")
     report["saved"] = util.save_level()
     report["ok"] = bool(report["saved"])
     if not report["ok"]:

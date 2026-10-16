@@ -34,7 +34,7 @@ class WALKTHEARCHIVE_API UWTAChatWidget : public UUserWidget
 public:
 	/** Open for DT_Staff[StaffId]; switching staff keeps each staff's greeting state. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
-	void Open(FName StaffId);
+	void Open(FName InStaffId);
 
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void Close();

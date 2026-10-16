@@ -115,7 +115,7 @@ void AWTATokenActor::Tick(float DeltaSeconds)
 	{
 		return;
 	}
-	const float DistSq = FVector::DistSquared(Player->GetActorLocation(), GetActorLocation());
+	const float DistSq = static_cast<float>(FVector::DistSquared(Player->GetActorLocation(), GetActorLocation()));
 	if (DistSq > AnimateWithin * AnimateWithin)
 	{
 		return;
@@ -123,7 +123,7 @@ void AWTATokenActor::Tick(float DeltaSeconds)
 
 	BobPhase += DeltaSeconds;
 	const float Period = FMath::Max(BobSeconds, 0.1f);
-	const float Bob = BobAmplitude * FMath::Sin(BobPhase * 2.f * PI / Period);
+	const float Bob = BobAmplitude * FMath::Sin(BobPhase * 2.f * UE_PI / Period);
 	const float Yaw = FMath::Fmod(BobPhase * SpinDegreesPerSecond, 360.f);
 	Mesh->SetRelativeLocation(FVector(0.f, 0.f, Bob));
 	Mesh->SetRelativeRotation(FRotator(0.f, Yaw, 0.f));

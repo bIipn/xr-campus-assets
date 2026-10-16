@@ -17,7 +17,7 @@ BIN="$(module_binary)"
 ARGS=("$UPROJECT")
 [ "$SHOWLOG" = "1" ] && ARGS+=(-log)
 if [ "$WAIT" = "1" ]; then
-    ( cd "$PROJECT_DIR" && "$EDITOR_BIN" "${ARGS[@]}" ); CODE=$?
+    CODE=0; ( cd "$PROJECT_DIR" && "$EDITOR_BIN" "${ARGS[@]}" ) || CODE=$?
     note "editor exited with $CODE"
     OK=false; [ "$CODE" = "0" ] && OK=true
     result_line open_editor "$OK" "\"exit_code\": $CODE"

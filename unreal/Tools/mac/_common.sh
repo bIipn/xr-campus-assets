@@ -142,7 +142,8 @@ run_logged() {
 editor_open_on_project() {
     # The open editor holds a write lock on loaded assets; headless jobs must not run beside it.
     if [ "$(uname -s)" != "Darwin" ]; then return 1; fi
-    ps -axo command= 2>/dev/null | grep -v grep | grep -q "UnrealEditor.*$PROJECT_NAME\.uproject"
+    # No grep -q: with pipefail an early exit would SIGPIPE the upstream grep and hide the match.
+    ps -axo command= 2>/dev/null | grep -v grep | grep "UnrealEditor.*$PROJECT_NAME\.uproject" >/dev/null
 }
 
 module_binary() {

@@ -78,7 +78,8 @@ namespace
 		}
 		ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer ? LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>() : nullptr;
-		if (Subsystem != nullptr && !Subsystem->HasMappingContext(Context))
+		// AddMappingContext stores the context in a map, so calling it again (SetupInputComponent, then BeginPlay) is harmless.
+		if (Subsystem != nullptr)
 		{
 			Subsystem->AddMappingContext(Context, 0);
 		}
@@ -89,7 +90,7 @@ namespace
 	{
 		FVector Floor = EyeLocation;
 		Floor.Z -= EyeHeight;
-		if (UNavigationSystemV1* Nav = UNavigationSystemV1::GetCurrent(const_cast<UWorld*>(World)))
+		if (UNavigationSystemV1* Nav = FNavigationSystem::GetCurrent<UNavigationSystemV1>(const_cast<UWorld*>(World)))
 		{
 			FNavLocation Projected;
 			if (Nav->ProjectPointToNavigation(Floor, Projected, FVector(150.f, 150.f, 250.f)))
@@ -205,21 +206,21 @@ void AWTAPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	AWTACharacter* Character = GetWTACharacter();
-	if (Character == nullptr)
+	AWTACharacter* PlayerCharacter = GetWTACharacter();
+	if (PlayerCharacter == nullptr)
 	{
 		return;
 	}
 
-	if (Character->IsAutoWalking())
+	if (PlayerCharacter->IsAutoWalking())
 	{
 		FRotator Rotation = GetControlRotation().GetNormalized();
 		bool bChanged = false;
 		// Long trips: turn toward the direction of travel until the last 1.8 m (web travelFace, k = 3).
 		if (bFaceTravelDirection)
 		{
-			const FVector Velocity = Character->GetVelocity();
-			const float Remaining = bHasPendingView ? static_cast<float>(FVector::Dist2D(Character->GetActorLocation(), PendingView.Location)) : TNumericLimits<float>::Max();
+			const FVector Velocity = PlayerCharacter->GetVelocity();
+			const float Remaining = bHasPendingView ? static_cast<float>(FVector::Dist2D(PlayerCharacter->GetActorLocation(), PendingView.Location)) : TNumericLimits<float>::Max();
 			if (Velocity.Size2D() > 50.0 && Remaining > 180.f)
 			{
 				const float TargetYaw = static_cast<float>(Velocity.Rotation().Yaw);
@@ -270,10 +271,10 @@ void AWTAPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	// Start where the web started: the lobby spawn from the settings (the pawn itself spawns at the PlayerStart).
 	const UWTASettings* Settings = UWTASettings::Get();
-	AWTACharacter* Character = Cast<AWTACharacter>(InPawn);
-	if (Settings != nullptr && Character != nullptr && Settings->SpawnView.bValid)
+	AWTACharacter* PlayerCharacter = Cast<AWTACharacter>(InPawn);
+	if (Settings != nullptr && PlayerCharacter != nullptr && Settings->SpawnView.bValid)
 	{
-		Character->TeleportToView(Settings->SpawnView);
+		PlayerCharacter->TeleportToView(Settings->SpawnView);
 	}
 	bHasPendingView = false;
 	bFaceTravelDirection = false;
@@ -314,7 +315,12 @@ void AWTAPlayerController::CreateInputObjects()
 
 	// Look: the mouse as the Enhanced Input templates map it (Y negated); bInvertMouseY flips it back if needed.
 	AddNegate(this, MappingContext->MapKey(LookAction, EKeys::Mouse2D), false, true);
-	AddDeadZone(this, MappingContext->MapKey(LookStickAction, EKeys::Gamepad_Right2D));
+	{
+		// Same Y sign as the mouse (stick up = look up).
+		FEnhancedActionKeyMapping& Mapping = MappingContext->MapKey(LookStickAction, EKeys::Gamepad_Right2D);
+		AddDeadZone(this, Mapping);
+		AddNegate(this, Mapping, false, true);
+	}
 
 	MappingContext->MapKey(JumpAction, EKeys::SpaceBar);
 	MappingContext->MapKey(JumpAction, EKeys::Gamepad_FaceButton_Bottom);
@@ -720,25 +726,25 @@ void AWTAPlayerController::GoToView(const FWTAView& View, bool bWalk)
 	{
 		return;
 	}
-	AWTACharacter* Character = GetWTACharacter();
-	if (Character == nullptr)
+	AWTACharacter* PlayerCharacter = GetWTACharacter();
+	if (PlayerCharacter == nullptr)
 	{
 		return;
 	}
 	if (!bWalk)
 	{
-		Character->TeleportToView(View);
+		PlayerCharacter->TeleportToView(View);
 		bHasPendingView = false;
 		bFaceTravelDirection = false;
 		return;
 	}
 
-	const FVector Dest = FloorPointFor(GetWorld(), View.Location, Character->EyeHeight);
-	const float Distance = static_cast<float>(FVector::Dist2D(Character->GetActorLocation(), Dest));
-	Character->WalkTo(Dest);
+	const FVector Dest = FloorPointFor(GetWorld(), View.Location, PlayerCharacter->EyeHeight);
+	const float Distance = static_cast<float>(FVector::Dist2D(PlayerCharacter->GetActorLocation(), Dest));
+	PlayerCharacter->WalkTo(Dest);
 	PendingView = View;
 	bHasPendingView = true;
-	if (Character->IsAutoWalking())
+	if (PlayerCharacter->IsAutoWalking())
 	{
 		bFaceTravelDirection = Distance > 400.f;
 	}
@@ -748,7 +754,7 @@ void AWTAPlayerController::GoToView(const FWTAView& View, bool bWalk)
 		bFaceTravelDirection = false;
 		if (Distance > 150.f)
 		{
-			Character->TeleportToView(View);
+			PlayerCharacter->TeleportToView(View);
 			bHasPendingView = false;
 		}
 	}
@@ -772,9 +778,9 @@ void AWTAPlayerController::SetUIMode(bool bPanelOpen)
 	if (bUIMode)
 	{
 		// A panel takes the keys: stop sprinting so the player does not run off while reading.
-		if (AWTACharacter* Character = GetWTACharacter())
+		if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 		{
-			Character->SetSprinting(false);
+			PlayerCharacter->SetSprinting(false);
 		}
 	}
 	UpdateInputMode();
@@ -809,9 +815,9 @@ void AWTAPlayerController::OnMove(const FInputActionValue& Value)
 	{
 		return;
 	}
-	if (AWTACharacter* Character = GetWTACharacter())
+	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
-		Character->AddMoveInput(Value.Get<FVector2D>());
+		PlayerCharacter->AddMoveInput(Value.Get<FVector2D>());
 		bHasPendingView = false;
 		bFaceTravelDirection = false;
 	}
@@ -859,17 +865,17 @@ void AWTAPlayerController::OnJump(const FInputActionValue& Value)
 	{
 		return;
 	}
-	if (AWTACharacter* Character = GetWTACharacter())
+	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
-		Character->Jump();
+		PlayerCharacter->Jump();
 	}
 }
 
 void AWTAPlayerController::OnJumpEnd(const FInputActionValue& Value)
 {
-	if (AWTACharacter* Character = GetWTACharacter())
+	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
-		Character->StopJumping();
+		PlayerCharacter->StopJumping();
 	}
 }
 
@@ -879,17 +885,17 @@ void AWTAPlayerController::OnSprint(const FInputActionValue& Value)
 	{
 		return;
 	}
-	if (AWTACharacter* Character = GetWTACharacter())
+	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
-		Character->SetSprinting(true);
+		PlayerCharacter->SetSprinting(true);
 	}
 }
 
 void AWTAPlayerController::OnSprintEnd(const FInputActionValue& Value)
 {
-	if (AWTACharacter* Character = GetWTACharacter())
+	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
-		Character->SetSprinting(false);
+		PlayerCharacter->SetSprinting(false);
 	}
 }
 
@@ -908,15 +914,15 @@ void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 	{
 		FVector Location;
 		FVector Normal;
-		AWTACharacter* Character = GetWTACharacter();
-		if (Character != nullptr && Interaction->GetLastHitLocation(Location, Normal))
+		AWTACharacter* PlayerCharacter = GetWTACharacter();
+		if (PlayerCharacter != nullptr && Interaction->GetLastHitLocation(Location, Normal))
 		{
 			const FVector Target = Normal.Z > 0.5f ? Location : Location + Normal * 110.f;
-			const FVector Dest = FloorPointFor(GetWorld(), Target + FVector(0.f, 0.f, Character->EyeHeight), Character->EyeHeight);
-			const float Distance = static_cast<float>(FVector::Dist2D(Character->GetActorLocation(), Dest));
-			Character->WalkTo(Dest);
+			const FVector Dest = FloorPointFor(GetWorld(), Target + FVector(0.f, 0.f, PlayerCharacter->EyeHeight), PlayerCharacter->EyeHeight);
+			const float Distance = static_cast<float>(FVector::Dist2D(PlayerCharacter->GetActorLocation(), Dest));
+			PlayerCharacter->WalkTo(Dest);
 			bHasPendingView = false;
-			bFaceTravelDirection = Character->IsAutoWalking() && Distance > 400.f;
+			bFaceTravelDirection = PlayerCharacter->IsAutoWalking() && Distance > 400.f;
 		}
 	}
 }

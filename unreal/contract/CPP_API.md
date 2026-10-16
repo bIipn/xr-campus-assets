@@ -4,6 +4,8 @@ Generated from the headers in `WalkTheArchive/Source/WalkTheArchive/Public/`. Im
 `Private/<Area>/*.cpp`; the editor Python and reviewers rely on the names below. Every reflected type uses the
 `WTA` prefix and `WALKTHEARCHIVE_API`. Categories are `"WTA"` unless shown. `BP` = `UFUNCTION(BlueprintCallable)`,
 `BPpure` = `UFUNCTION(BlueprintPure)`, `UP` = `UPROPERTY`. Include as `#include "Area/File.h"`.
+Shadowing is a compile error (UE builds treat it as one): parameters and locals never reuse a member name of the class or its engine parents
+(`Slot` in widgets, `Controller` in pawns, `Character`/`Pawn` in controllers, `Owner` in actors); setters take `In<Name>`.
 
 ## Module files
 | File | Content |
@@ -107,7 +109,7 @@ Delegates `FWTAHoverChanged(const FText& Label)`, `FWTAInteracted(AActor* Actor)
 **`UP FName TokenId`**; `UP USceneComponent* Root; USphereComponent* PickSphere (r 40, Visibility only); UStaticMeshComponent* Mesh` (`/Engine/BasicShapes/Sphere`, scale 0.25); `UP float SpinDegreesPerSecond=103, BobAmplitude=5, BobSeconds=2.2, AnimateWithin=1000; FLinearColor GlowColor`; `UP(Transient) UMaterialInstanceDynamic* GlowMaterial`; `BP void SetCollected(bool)`, `BPpure bool IsCollected() const`; protected `UP(BlueprintReadOnly) FName RideGate`, `UFUNCTION() HandleProgressReset()` (bound to `UWTAProgressSubsystem::OnProgressReset`; the token shows again). Interact: ride-gated → toast, else `Progress->CollectToken` + hide. Label "Collect · XR token".
 
 ### `AWTAStaffNPC : ACharacter, IWTAInteractable` (`World/WTAStaffNPC.h`)
-**`UP FName StaffId`**; `UP UStaticMeshComponent* PlaceholderBody; UChildActorComponent* MetaHumanChild; UTextRenderComponent* NameLabel`; `UP float LookAtDistance=1200, TurnRate=4`; `UP(BlueprintReadOnly) FText DisplayName, StaffRole` (not `Role`: `AActor::Role` is already a reflected property), `FLinearColor Color; FWTAView TalkView`; `BP void ApplyStaffRow()`, `BP void Talk(const FText&)`, `BPpure bool IsTalking() const`. Interact: `PC->OpenStaffChat(StaffId)`; ViewSpot = TalkView; label "Ask DisplayName".
+**`UP FName StaffId`**; `UP UStaticMeshComponent* PlaceholderBody; UChildActorComponent* MetaHumanChild; UTextRenderComponent* NameLabel`; `UP float LookAtDistance=1200, TurnRate=4`; `UP(BlueprintReadOnly) FText DisplayName, StaffRole` (not `Role`: `AActor::Role` is already a reflected property), `FLinearColor Color; FWTAView TalkView`; `BP void ApplyStaffRow()`, `BP void Talk(const FText&)`, `BPpure bool IsTalking() const`. Interact: `PC->OpenStaffChat(StaffId)` (its `Interact_Implementation` parameter is `InController`: `APawn::Controller` exists); ViewSpot = TalkView; label "Ask DisplayName".
 
 ### `AWTARoomVolume : AActor` (`World/WTARoomVolume.h`)
 **`UP FName RoomId`**, **`UP FVector Extent`** (300,300,220); `UP UBoxComponent* Bounds` (root, overlaps Pawn only). `OnConstruction` applies Extent; `NotifyActorBeginOverlap` → `UWTARoomSubsystem::EnterRoom(RoomId)` for the player pawn.
@@ -154,7 +156,7 @@ Delegate `FWTARoomChanged(FName RoomId)`; `UP(BlueprintAssignable) OnRoomChanged
 
 ## UI (all `UUserWidget`, trees built in `NativeOnInitialized`, created with `CreateWidget<UClass>(PC, UClass::StaticClass())`)
 ### `UWTAActionButton : UButton` (`UI/WTAActionButton.h`)
-Delegate `FWTAActionButtonClicked(FName Action, FName Arg, int32 Index)`; `UP FName Action, Arg; int32 Index = -1; FString Payload`; `UP(BlueprintAssignable) OnAction`; `BP void Init(FName Action, FName Arg, int32 Index)` (binds OnClicked → `HandleClicked` once). Internal verbs used by the widgets: `Prev, Next, Close, Page, Link, Reset, Send, Chip, Enter, Tour, Graphics, Quit, TourBack, TourNext, TourEnd, TourOpen`; anything else is a shared action passed to `AWTAPlayerController::RunAction`.
+Delegate `FWTAActionButtonClicked(FName Action, FName Arg, int32 Index)`; `UP FName Action, Arg; int32 Index = -1; FString Payload`; `UP(BlueprintAssignable) OnAction`; `BP void Init(FName InAction, FName InArg, int32 InIndex)` (binds OnClicked → `HandleClicked` once). Internal verbs used by the widgets: `Prev, Next, Close, Page, Link, Reset, Send, Chip, Enter, Tour, Graphics, Quit, TourBack, TourNext, TourEnd, TourOpen`; anything else is a shared action passed to `AWTAPlayerController::RunAction`.
 
 ### `UWTAHudWidget` (`UI/WTAHudWidget.h`)
 `BP void SetRoom(const FText& Kicker, const FText& Name, const FText& Sub); SetHoverLabel(const FText&); ShowToast(const FText&, float Seconds); ShowCaption(const FText&); ShowHint(const FText&, float Seconds); HideHint(); ShowTour(int32 Index, int32 Total, const FText& Title, const FText& DateLabel, const FText& Body, const FText& OpenLabel); HideTour(); SetTourVisible(bool); SetBadgeCount(int32 Count, int32 Total); SetCrosshairVisible(bool)`; `BPpure bool IsTourShowing() const`. Toasts queue (`FWTAToastEntry`). Tour buttons → `UWTATourSubsystem::Back/Next/End/OpenCurrent`.
@@ -164,10 +166,10 @@ Delegate `FWTAActionButtonClicked(FName Action, FName Arg, int32 Index)`; `UP FN
 `BP void ShowExhibit(FName); ShowBook(FName, int32 Page); ShowStation(FName); ShowRide(FName); ShowBadges(); ShowPlaces(); Close()`; `BPpure bool IsOpen() const; EWTAPanelMode GetMode() const; FName GetCurrentId() const; int32 GetCurrentPage() const`. Arrow keys = Prev/Next (`NativeOnKeyDown`). Prev/Next on an exhibit → `PC->StepExhibit(±1)`; on a book → `PC->OpenBook(id, page±1)`; `Link` → `FPlatformProcess::LaunchURL`; `Reset` → `Progress->ResetProgress()`. Protected builders `BeginCard, EndCard, AddText, AddHeading, AddParagraph, AddQuote, AddNote, AddCode, AddList, AddBlock, AddSpacer, AddImage, AddButton, AddLink, SetOpen`.
 
 ### `UWTAChatWidget` (`UI/WTAChatWidget.h`)
-`BP void Open(FName StaffId); Close(); AddMessage(const FText&, bool bFromPlayer); SetChips(const TArray<FText>&); Send(const FString& Question); FocusInput()`; `BPpure bool IsOpen() const; FName GetStaffId() const`; `UP float ActionDelay = 0.55`. Greets once per staff; Send → `Dialogue->Ask`, `Progress->NoteQuestionAsked`, then `PC->RunAction` after ActionDelay (timer). `UFUNCTION() HandleTextCommitted(const FText&, ETextCommit::Type)`. Overrides `NativeOnKeyDown`: while the text box has focus every key but Escape is handled, so typed letters never reach the game's input actions.
+`BP void Open(FName InStaffId); Close(); AddMessage(const FText&, bool bFromPlayer); SetChips(const TArray<FText>&); Send(const FString& Question); FocusInput()`; `BPpure bool IsOpen() const; FName GetStaffId() const`; `UP float ActionDelay = 0.55`. Greets once per staff; Send → `Dialogue->Ask`, `Progress->NoteQuestionAsked`, then `PC->RunAction` after ActionDelay (timer). `UFUNCTION() HandleTextCommitted(const FText&, ETextCommit::Type)`. Overrides `NativeOnKeyDown`: while the text box has focus every key but Escape is handled, so typed letters never reach the game's input actions.
 
 ### `UWTAMenuWidget` (`UI/WTAMenuWidget.h`)
-`BP void Open(bool bIntro); Close(); RefreshGraphicsLabel()`; `BPpure bool IsOpen() const; bool IsIntro() const`. Buttons Enter/Resume, Take the tour, Graphics (Low…Cinematic, Auto), Quit.
+`BP void Open(bool bInIntro); Close(); RefreshGraphicsLabel()`; `BPpure bool IsOpen() const; bool IsIntro() const`. Buttons Enter/Resume, Take the tour, Graphics (Low…Cinematic, Auto), Quit.
 
 ### `UI/WTAUIStyle.h` (header only)
 `WTAStyle::Ink() Panel() Brass() Bone() Card() CardInk() BoneDim() CardInkDim() Scrim() Plate()`, `FromHex(uint32)`, `ToastSeconds = 3.4`, `Font(int32 Size, bool bBold=false)`, `Italic(Size)`, `Mono(Size)` (`FCoreStyle::GetDefaultFontStyle`), `SolidBrush(Color)`, `RoundedBrush(Color, Radius)`, `EdgedBrush(Color, Radius, Edge, EdgeWidth=1.5)` (rounded fill with an edge line), `BrassDark()`, `ButtonStyle(Fill, Hovered, Pressed)`, `PrimaryButton()`, `SecondaryButton()`, `CardButton()`.

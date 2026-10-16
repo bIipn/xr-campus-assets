@@ -22,9 +22,9 @@ class WALKTHEARCHIVE_API UWTAMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	/** Show the menu; bIntro = first screen (Enter + subtitle) rather than the pause menu (Resume). */
+	/** Show the menu; bInIntro = first screen (Enter + subtitle) rather than the pause menu (Resume). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
-	void Open(bool bIntro);
+	void Open(bool bInIntro);
 
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void Close();

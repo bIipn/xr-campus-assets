@@ -38,8 +38,9 @@ note "log: $LOG"
 if [ "$SKIP_PF" != "1" ]; then
     step "Generate project files"
     if [ -f "$RUNUBT_SH" ]; then
-        if ! run_logged "$LOG" "$RUNUBT_SH" -projectfiles "-project=$UPROJECT" -game -rocket -progress; then
-            code=$?
+        code=0
+        run_logged "$LOG" "$RUNUBT_SH" -projectfiles "-project=$UPROJECT" -game -rocket -progress || code=$?
+        if [ "$code" != "0" ]; then
             fail "project file generation failed (exit $code); see $LOG"
             result_line build_editor false "\"phase\": \"projectfiles\", \"exit_code\": $code, \"log\": \"$(json_escape "$LOG")\""
             exit "$code"

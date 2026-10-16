@@ -155,10 +155,16 @@ if os.path.exists(ini) and 'UWTASettings' in types:
         for m in re.finditer(r'^\s*(\w+)\s*=', sec.group(1), flags=re.M):
             if m.group(1) not in have:
                 bad('DefaultGame.ini WTASettings key %s is not a UWTASettings property' % m.group(1))
-for p in glob.glob(os.path.join(PROJ, 'Config', '*.ini')):
+# cvars the critic marked unverified/experimental for v1 (docs/reference/critic.md section 2 rows 5-7)
+UNVERIFIED_KEYS = ('r.Nanite.AllowTessellation', 'r.Nanite.Tessellation', 'r.MegaLights.Allowed', 'r.MegaLights.Allow',
+                   'r.Lumen.TraceMeshSDFs')
+for p in glob.glob(os.path.join(PROJ, 'Config', '**', '*.ini'), recursive=True):
     for i, line in enumerate(read(p).splitlines(), 1):
         if re.match(r'^\s*[^;#\[\s][^=]*=.*\s;\s', line):
             bad('%s:%d has a trailing inline comment (Unreal ini has none): %s' % (os.path.relpath(p, UNREAL), i, line.strip()[:80]))
+        m = re.match(r'^\s*[+\-.!]?(?:CVars=)?([\w.]+)\s*=', line)
+        if m and m.group(1) in UNVERIFIED_KEYS:
+            bad('%s:%d sets %s, which is unverified for UE 5.8 v1 (critic.md section 2)' % (os.path.relpath(p, UNREAL), i, m.group(1)))
 
 # ---------- 6. data ----------
 r = subprocess.run([sys.executable, os.path.join(UNREAL, 'Pipeline', 'data', 'build_data.py')], capture_output=True, text=True)

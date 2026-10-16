@@ -32,6 +32,8 @@ require_engine
 PY="$(best_python || true)"
 [ -n "$PY" ] || { fail "no Python found (the engine ships one under Engine/Binaries/ThirdParty/Python3/Mac/bin)"; exit 1; }
 
+case "$SETUP_SCRIPT" in *" "*) warn "the setup script path contains spaces ($SETUP_SCRIPT). -ExecutePythonScript treats the first space-separated token as the file, so the run may never start a step; move the repo to a path without spaces (COWORK.md step 0) if no WTA_RESULT line appears." ;; esac
+
 if editor_open_on_project && [ "$FORCE" != "1" ]; then
     fail "An Unreal Editor has this project open. It holds a write lock on loaded assets; close it and rerun (or pass --force)."
     exit 1
@@ -45,9 +47,9 @@ note "log: $LOG"
 
 if [ "$SKIP_PLUGINS" != "1" ]; then
     step "Optional plugins"
-    if ! run_logged "$LOG" "$PY" "$COMMON_DIR/configure_plugins.py" --uproject "$UPROJECT" --engine "$ENGINE_ROOT"; then
-        code=$?; fail "configure_plugins.py failed (exit $code)"; exit "$code"
-    fi
+    code=0
+    run_logged "$LOG" "$PY" "$COMMON_DIR/configure_plugins.py" --uproject "$UPROJECT" --engine "$ENGINE_ROOT" || code=$?
+    if [ "$code" != "0" ]; then fail "configure_plugins.py failed (exit $code)"; exit "$code"; fi
 fi
 
 BIN="$(module_binary)"

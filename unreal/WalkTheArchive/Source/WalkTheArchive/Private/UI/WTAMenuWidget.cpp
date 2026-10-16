@@ -112,9 +112,9 @@ void UWTAMenuWidget::NativeOnInitialized()
 			UWTAActionButton* Button = MakeMenuButton(Tree, FText::FromString(Labels[i]), NAME_MenuGraphics, Levels[i],
 				WTAStyle::SecondaryButton(), WTAStyle::Font(12), WTAStyle::Bone());
 			Button->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
-			UHorizontalBoxSlot* Slot = GraphicsRow->AddChildToHorizontalBox(Button);
-			Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-			Slot->SetPadding(FMargin(i == 0 ? 0.f : 3.f, 0.f, i == 5 ? 0.f : 3.f, 0.f));
+			UHorizontalBoxSlot* ButtonSlot = GraphicsRow->AddChildToHorizontalBox(Button);
+			ButtonSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+			ButtonSlot->SetPadding(FMargin(i == 0 ? 0.f : 3.f, 0.f, i == 5 ? 0.f : 3.f, 0.f));
 		}
 	}
 	Column->AddChildToVerticalBox(GraphicsRow)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));

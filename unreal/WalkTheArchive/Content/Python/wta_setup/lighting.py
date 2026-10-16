@@ -152,8 +152,10 @@ def build_sky(report):
     fog = util.spawn_class(unreal.ExponentialHeightFog, (0.0, 0.0, 0.0), None, step=STEP, label="HeightFog", folder="Lighting/Sky")
     fog_comp = util.get_prop(fog, "component")
     if fog_comp is not None:
+        # C++ bEnableVolumetricFog is enable_volumetric_fog in Python; older notes say volumetric_fog.
+        if util.set_props(fog_comp, {"enable_volumetric_fog": True}, label="HeightFog"):
+            util.set_props(fog_comp, {"volumetric_fog": True}, label="HeightFog")
         report["fog_failed_props"] = util.set_props(fog_comp, {
-            "volumetric_fog": True,
             "fog_density": 0.008,
             "fog_height_falloff": 0.1,
             "start_distance": 0.0,

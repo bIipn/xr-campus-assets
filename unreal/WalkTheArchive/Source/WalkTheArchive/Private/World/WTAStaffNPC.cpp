@@ -180,7 +180,7 @@ void AWTAStaffNPC::Talk(const FText& Text)
 		return;
 	}
 	const float Seconds = FMath::Clamp(static_cast<float>(Text.ToString().Len()) / 16.f, 1.2f, 7.f);
-	TalkUntil = World->GetTimeSeconds() + Seconds;
+	TalkUntil = static_cast<float>(World->GetTimeSeconds()) + Seconds;
 }
 
 bool AWTAStaffNPC::IsTalking() const
@@ -196,19 +196,19 @@ void AWTAStaffNPC::Tick(float DeltaSeconds)
 	const APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0);
 
 	// Face the player when near, otherwise drift back home. Exponential ease, yaw only.
-	float TargetYaw = HomeRotation.Yaw;
+	float TargetYaw = static_cast<float>(HomeRotation.Yaw);
 	if (Player != nullptr)
 	{
 		FVector ToPlayer = Player->GetActorLocation() - GetActorLocation();
 		ToPlayer.Z = 0.f;
-		const float DistSq = ToPlayer.SizeSquared();
+		const float DistSq = static_cast<float>(ToPlayer.SizeSquared());
 		if (DistSq > 1.f && DistSq < LookAtDistance * LookAtDistance)
 		{
-			TargetYaw = ToPlayer.Rotation().Yaw;
+			TargetYaw = static_cast<float>(ToPlayer.Rotation().Yaw);
 		}
 	}
-	const float CurrentYaw = GetActorRotation().Yaw;
-	const float Delta = FRotator::NormalizeAxis(TargetYaw - CurrentYaw);
+	const float CurrentYaw = static_cast<float>(GetActorRotation().Yaw);
+	const float Delta = static_cast<float>(FRotator::NormalizeAxis(TargetYaw - CurrentYaw));
 	const float Alpha = 1.f - FMath::Exp(-TurnRate * DeltaSeconds);
 	SetActorRotation(FRotator(0.f, CurrentYaw + Delta * Alpha, 0.f));
 
@@ -236,13 +236,14 @@ FText AWTAStaffNPC::GetInteractLabel_Implementation() const
 	return FText::Format(FText::FromString(TEXT("Ask {0}")), DisplayName);
 }
 
-void AWTAStaffNPC::Interact_Implementation(AWTAPlayerController* Controller)
+void AWTAStaffNPC::Interact_Implementation(AWTAPlayerController* InController)
 {
-	if (Controller == nullptr)
+	// "InController": APawn already has a member named Controller.
+	if (InController == nullptr)
 	{
 		return;
 	}
-	Controller->OpenStaffChat(StaffId);
+	InController->OpenStaffChat(StaffId);
 }
 
 bool AWTAStaffNPC::GetViewSpot_Implementation(FWTAView& OutView) const

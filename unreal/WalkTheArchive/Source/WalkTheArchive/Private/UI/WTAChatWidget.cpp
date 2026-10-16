@@ -83,9 +83,9 @@ void UWTAChatWidget::NativeOnInitialized()
 		ScrimButton->SetStyle(ClearStyle);
 		ScrimButton->Init(NAME_ChatClose, NAME_None, -1);
 		ScrimButton->OnAction.AddDynamic(this, &UWTAChatWidget::HandleAction);
-		UOverlaySlot* Slot = Layers->AddChildToOverlay(ScrimButton);
-		Slot->SetHorizontalAlignment(HAlign_Fill);
-		Slot->SetVerticalAlignment(VAlign_Fill);
+		UOverlaySlot* ScrimSlot = Layers->AddChildToOverlay(ScrimButton);
+		ScrimSlot->SetHorizontalAlignment(HAlign_Fill);
+		ScrimSlot->SetVerticalAlignment(VAlign_Fill);
 	}
 
 	// Dark green card with a brass edge.
@@ -93,9 +93,9 @@ void UWTAChatWidget::NativeOnInitialized()
 	Card->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Panel(), 12.f, WTAStyle::Brass()));
 	Card->SetPadding(FMargin(0.f));
 	{
-		UOverlaySlot* Slot = Layers->AddChildToOverlay(Card);
-		Slot->SetHorizontalAlignment(HAlign_Center);
-		Slot->SetVerticalAlignment(VAlign_Center);
+		UOverlaySlot* CardSlot = Layers->AddChildToOverlay(Card);
+		CardSlot->SetHorizontalAlignment(HAlign_Center);
+		CardSlot->SetVerticalAlignment(VAlign_Center);
 	}
 
 	USizeBox* CardWidth = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
@@ -271,9 +271,9 @@ void UWTAChatWidget::AddMessage(const FText& Text, bool bFromPlayer)
 	Clamp->SetContent(Line);
 	Bubble->SetContent(Clamp);
 
-	UVerticalBoxSlot* Slot = MessageList->AddChildToVerticalBox(Bubble);
-	Slot->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
-	Slot->SetHorizontalAlignment(bFromPlayer ? HAlign_Right : HAlign_Left);
+	UVerticalBoxSlot* BubbleSlot = MessageList->AddChildToVerticalBox(Bubble);
+	BubbleSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
+	BubbleSlot->SetHorizontalAlignment(bFromPlayer ? HAlign_Right : HAlign_Left);
 
 	if (MessageScroll != nullptr)
 	{

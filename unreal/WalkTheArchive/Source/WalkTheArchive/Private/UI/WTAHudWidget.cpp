@@ -15,7 +15,7 @@
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
-#include "Layout/Anchors.h"
+#include "Widgets/Layout/Anchors.h"
 #include "Layout/Margin.h"
 #include "Styling/SlateBrush.h"
 #include "Systems/WTATourSubsystem.h"
@@ -92,12 +92,12 @@ void UWTAHudWidget::NativeOnInitialized()
 	CrosshairDot->SetPadding(FMargin(0.f));
 	CrosshairDot->SetVisibility(ESlateVisibility::HitTestInvisible);
 	{
-		UCanvasPanelSlot* Slot = Canvas->AddChildToCanvas(CrosshairDot);
-		Slot->SetAnchors(FAnchors(0.5f, 0.5f));
-		Slot->SetAlignment(FVector2D(0.5f, 0.5f));
-		Slot->SetPosition(FVector2D(0.f, 0.f));
-		Slot->SetAutoSize(false);
-		Slot->SetSize(FVector2D(6.f, 6.f));
+		UCanvasPanelSlot* DotSlot = Canvas->AddChildToCanvas(CrosshairDot);
+		DotSlot->SetAnchors(FAnchors(0.5f, 0.5f));
+		DotSlot->SetAlignment(FVector2D(0.5f, 0.5f));
+		DotSlot->SetPosition(FVector2D(0.f, 0.f));
+		DotSlot->SetAutoSize(false);
+		DotSlot->SetSize(FVector2D(6.f, 6.f));
 	}
 
 	HoverLabelText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14, true), WTAStyle::Bone(), false);
@@ -208,20 +208,20 @@ void UWTAHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	// With the crosshair hidden (free cursor) the hover label follows the mouse instead.
 	if (HoverLabelText != nullptr && CrosshairDot != nullptr && HoverLabelText->GetVisibility() != ESlateVisibility::Collapsed)
 	{
-		if (UCanvasPanelSlot* Slot = Cast<UCanvasPanelSlot>(HoverLabelText->Slot))
+		if (UCanvasPanelSlot* LabelSlot = Cast<UCanvasPanelSlot>(HoverLabelText->Slot))
 		{
 			if (CrosshairDot->GetVisibility() == ESlateVisibility::Collapsed)
 			{
 				const FVector2D Mouse = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
-				Slot->SetAnchors(FAnchors(0.f, 0.f));
-				Slot->SetAlignment(FVector2D(0.f, 0.f));
-				Slot->SetPosition(Mouse + FVector2D(16.f, 18.f));
+				LabelSlot->SetAnchors(FAnchors(0.f, 0.f));
+				LabelSlot->SetAlignment(FVector2D(0.f, 0.f));
+				LabelSlot->SetPosition(Mouse + FVector2D(16.f, 18.f));
 			}
 			else
 			{
-				Slot->SetAnchors(FAnchors(0.5f, 0.5f));
-				Slot->SetAlignment(FVector2D(0.5f, 0.f));
-				Slot->SetPosition(FVector2D(0.f, 22.f));
+				LabelSlot->SetAnchors(FAnchors(0.5f, 0.5f));
+				LabelSlot->SetAlignment(FVector2D(0.5f, 0.f));
+				LabelSlot->SetPosition(FVector2D(0.f, 22.f));
 			}
 		}
 	}

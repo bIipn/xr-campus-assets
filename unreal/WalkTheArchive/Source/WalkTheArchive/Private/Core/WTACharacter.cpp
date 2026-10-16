@@ -175,8 +175,8 @@ FWTAView AWTACharacter::GetCurrentView() const
 	FWTAView View;
 	View.Location = GetEyeLocation();
 	const FRotator Rotation = GetControlRotation().GetNormalized();
-	View.Yaw = Rotation.Yaw;
-	View.Pitch = Rotation.Pitch;
+	View.Yaw = static_cast<float>(Rotation.Yaw);
+	View.Pitch = static_cast<float>(Rotation.Pitch);
 	View.bValid = true;
 	return View;
 }
@@ -229,7 +229,7 @@ void AWTACharacter::UpdateCameraOffset(float DeltaSeconds)
 	if (BobAmount > 0.002f)
 	{
 		BobPhase += DeltaSeconds * FMath::Max(Speed, 120.f) / BobStride;
-		Bob = FMath::Sin(BobPhase * 2.f * PI) * BobAmplitude * BobAmount;
+		Bob = FMath::Sin(BobPhase * 2.f * UE_PI) * BobAmplitude * BobAmount;
 	}
 	else
 	{

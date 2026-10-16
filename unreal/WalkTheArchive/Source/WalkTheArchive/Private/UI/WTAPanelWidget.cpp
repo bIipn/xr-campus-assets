@@ -99,9 +99,9 @@ void UWTAPanelWidget::NativeOnInitialized()
 		ScrimButton->SetStyle(ClearStyle);
 		ScrimButton->Init(NAME_PanelClose, NAME_None, -1);
 		ScrimButton->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
-		UOverlaySlot* Slot = Layers->AddChildToOverlay(ScrimButton);
-		Slot->SetHorizontalAlignment(HAlign_Fill);
-		Slot->SetVerticalAlignment(VAlign_Fill);
+		UOverlaySlot* ScrimSlot = Layers->AddChildToOverlay(ScrimButton);
+		ScrimSlot->SetHorizontalAlignment(HAlign_Fill);
+		ScrimSlot->SetVerticalAlignment(VAlign_Fill);
 	}
 
 	// The cream card.
@@ -109,10 +109,10 @@ void UWTAPanelWidget::NativeOnInitialized()
 	Card->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Card(), 12.f, WTAStyle::Brass()));
 	Card->SetPadding(FMargin(0.f));
 	{
-		UOverlaySlot* Slot = Layers->AddChildToOverlay(Card);
-		Slot->SetHorizontalAlignment(HAlign_Center);
-		Slot->SetVerticalAlignment(VAlign_Center);
-		Slot->SetPadding(FMargin(0.f, 24.f));
+		UOverlaySlot* CardSlot = Layers->AddChildToOverlay(Card);
+		CardSlot->SetHorizontalAlignment(HAlign_Center);
+		CardSlot->SetVerticalAlignment(VAlign_Center);
+		CardSlot->SetPadding(FMargin(0.f, 24.f));
 	}
 
 	USizeBox* CardWidth = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
@@ -918,7 +918,7 @@ void UWTAPanelWidget::SetOpen(bool bNewOpen)
 			const float Scale = UWidgetLayoutLibrary::GetViewportScale(this);
 			if (Viewport.Y > 0.f && Scale > 0.f)
 			{
-				ScrollHeight->SetMaxDesiredHeight(FMath::Max(200.f, Viewport.Y / Scale - 300.f));
+				ScrollHeight->SetMaxDesiredHeight(FMath::Max(200.f, static_cast<float>(Viewport.Y) / Scale - 300.f));
 			}
 		}
 	}

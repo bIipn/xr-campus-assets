@@ -32,7 +32,7 @@ if [ "$FULLSCREEN" = "1" ]; then ARGS+=(-fullscreen); else ARGS+=(-windowed); fi
 [ "$SHOWLOG" = "1" ] && ARGS+=(-log)
 note "Controls: WASD move, mouse look, Shift sprint, Space jump, E/LMB interact, Tab cursor, T tour, M map, Esc menu."
 if [ "$WAIT" = "1" ]; then
-    ( cd "$PROJECT_DIR" && "$EDITOR_BIN" "${ARGS[@]}" ); CODE=$?
+    CODE=0; ( cd "$PROJECT_DIR" && "$EDITOR_BIN" "${ARGS[@]}" ) || CODE=$?
     OK=false; [ "$CODE" = "0" ] && OK=true
     result_line play "$OK" "\"exit_code\": $CODE"
     exit "$CODE"

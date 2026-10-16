@@ -79,7 +79,7 @@ public:
 
 	// IWTAInteractable
 	virtual FText GetInteractLabel_Implementation() const override;
-	virtual void Interact_Implementation(AWTAPlayerController* Controller) override;
+	virtual void Interact_Implementation(AWTAPlayerController* InController) override;
 	virtual bool GetViewSpot_Implementation(FWTAView& OutView) const override;
 
 protected:
