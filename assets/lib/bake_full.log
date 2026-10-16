@@ -1,0 +1,8 @@
+00:00.555  cycles           | WARNING CUEW initialization failed: Error opening the library
+/tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/library.py:63: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m = bpy.data.materials.new(name); m.use_nodes = True
+/tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/library.py:514: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  w = bpy.data.worlds.new('World'); bpy.context.scene.world = w; w.use_nodes = True
+objects 28 lightmapped ['floor', 'ceiling', 'walls', 'mezz', 'rugs', 'tabletops'] vertex-lit 16 tris 152612 built in 1 s
+Info: Saved as "library.blend"
+baking lightmap 2048 x 160 samples for ['floor', 'ceiling', 'walls', 'mezz', 'rugs', 'tabletops']

@@ -1,0 +1,67 @@
+00:00.404  blend            | Read blend: "/tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/assets/lib/bake_work.blend"
+lightmap bake shelfrows 1024 64
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 3 s
+Info: Saved as "bake_work.blend"
+ERROR Draco is not available because library could not be found at /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/lib/python3.13/site-packages/bpy/lib/libbf_intern_draco_bridge.so
+ERROR MeshOptimizer is not available because library could not be found at /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/lib/python3.13/site-packages/bpy/lib/libbf_intern_meshopt_bridge.so
+18:02:46 | INFO: Starting glTF 2.0 export
+18:02:46 | INFO: Extracting primitive: books
+18:02:47 | INFO: Primitives created: 1
+18:02:47 | INFO: Extracting primitive: case_ends
+18:02:47 | INFO: Primitives created: 1
+18:02:47 | INFO: Extracting primitive: cases
+18:02:47 | INFO: Primitives created: 1
+18:02:47 | INFO: Extracting primitive: ceiling
+18:02:47 | INFO: Primitives created: 1
+18:02:47 | INFO: Extracting primitive: coffers
+18:02:47 | INFO: Primitives created: 1
+18:02:47 | INFO: Extracting primitive: floor
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: furniture
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: Sphere
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: ladder
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: lamp_brass
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: lamp_bulbs
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: lamp_shades
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: laylight
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: laylight_frame
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: mezz
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: mezz_trim
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: pendant_bulbs
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: pendants
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: rails
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: reveals
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: rugs
+18:02:48 | INFO: Primitives created: 1
+18:02:48 | INFO: Extracting primitive: seats
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: shelfrows
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: tabletops
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: walls
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: window_frame
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: window_glass
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Extracting primitive: window_view
+18:02:49 | INFO: Primitives created: 1
+18:02:49 | INFO: Finished glTF 2.0 export in 3.333329200744629 s
+
+exported /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/assets/lib/lib_raw.gltf rows complete

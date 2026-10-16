@@ -1,0 +1,134 @@
+00:07.099  blend            | Read blend: "/tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/assets/lib/library.blend"
+loaded lightmapped ['floor', 'ceiling', 'walls', 'mezz', 'rugs', 'tabletops'] vertex-lit 16 progress {'lm': [], 'vc': [], 'probe': False, 'export': False, 'size': 2048}
+lightmap bake floor 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 414 s
+lightmap bake ceiling 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 442 s
+lightmap bake walls 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 294 s
+lightmap bake mezz 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 140 s
+lightmap bake rugs 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 27 s
+lightmap bake tabletops 2048 128
+Info: Baking map saved to internal image, save it externally or pack it
+  done in 26 s
+Info: Saved as "bake_work.blend"
+vertex bake laylight_frame 920 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake reveals 148 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake mezz_trim 876 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake coffers 3592 corners
+Info: Saved as "bake_work.blend"
+  done in 3 s
+vertex bake window_frame 1432 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake cases 115088 corners
+Info: Saved as "bake_work.blend"
+  done in 29 s
+vertex bake books 152608 corners
+Info: Saved as "bake_work.blend"
+  done in 44 s
+vertex bake shelfrows 120 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake case_ends 2496 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake rails 13640 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake ladder 744 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake furniture 5128 corners
+Info: Saved as "bake_work.blend"
+  done in 3 s
+vertex bake seats 1536 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake lamp_brass 568 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+vertex bake globe 2496 corners
+Info: Saved as "bake_work.blend"
+  done in 3 s
+vertex bake pendants 1376 corners
+Info: Saved as "bake_work.blend"
+  done in 2 s
+27:54.471  render           | Saved: '/tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/assets/lib/probe.exr'
+probe rendered in 223 s
+ERROR Draco is not available because library could not be found at /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/lib/python3.13/site-packages/bpy/lib/libbf_intern_draco_bridge.so
+ERROR MeshOptimizer is not available because library could not be found at /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/bl/lib/python3.13/site-packages/bpy/lib/libbf_intern_meshopt_bridge.so
+17:53:33 | INFO: Starting glTF 2.0 export
+17:53:33 | INFO: Extracting primitive: books
+17:53:34 | INFO: Primitives created: 1
+17:53:34 | INFO: Extracting primitive: case_ends
+17:53:34 | INFO: Primitives created: 1
+17:53:34 | INFO: Extracting primitive: cases
+17:53:34 | INFO: Primitives created: 1
+17:53:34 | INFO: Extracting primitive: ceiling
+17:53:34 | INFO: Primitives created: 1
+17:53:34 | INFO: Extracting primitive: coffers
+17:53:34 | INFO: Primitives created: 1
+17:53:34 | INFO: Extracting primitive: floor
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: furniture
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: Sphere
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: ladder
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: lamp_brass
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: lamp_bulbs
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: lamp_shades
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: laylight
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: laylight_frame
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: mezz
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: mezz_trim
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: pendant_bulbs
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: pendants
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: rails
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: reveals
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: rugs
+17:53:35 | INFO: Primitives created: 1
+17:53:35 | INFO: Extracting primitive: seats
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: shelfrows
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: tabletops
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: walls
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: window_frame
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: window_glass
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Extracting primitive: window_view
+17:53:36 | INFO: Primitives created: 1
+17:53:36 | INFO: Finished glTF 2.0 export in 2.5662004947662354 s
+
+exported /tmp/claude-0/-home-claude/1eddcbe7-2535-5413-870f-040fe3bf472f/scratchpad/assets/lib/lib_raw.gltf
+bake complete

@@ -1,0 +1,1 @@
+{"VC_SCALE": 4.0, "LM_SIZE": 2048, "lm": ["floor", "ceiling", "walls", "mezz", "rugs", "tabletops"], "vc": ["laylight_frame", "reveals", "mezz_trim", "coffers", "window_frame", "cases", "books", "shelfrows", "case_ends", "rails", "ladder", "furniture", "seats", "lamp_brass", "globe", "pendants"]}

@@ -1,0 +1,1 @@
+{"VC_SCALE": 4.0, "LM_SIZE": 2048, "lm": ["ceiling", "floor", "mezz", "rugs", "shelfrows", "tabletops", "walls"], "vc": ["laylight_frame", "reveals", "mezz_trim", "coffers", "window_frame", "cases", "books", "case_ends", "rails", "ladder", "furniture", "seats", "lamp_brass", "globe", "pendants"], "lmaps": {"shelfrow_v": "lightmap_rows.png"}}

@@ -1,0 +1,1 @@
+{"lm": ["floor", "ceiling", "walls", "mezz", "rugs", "tabletops"], "vc": ["laylight_frame", "reveals", "mezz_trim", "coffers", "window_frame", "cases", "books", "shelfrows", "case_ends", "rails", "ladder", "furniture", "seats", "lamp_brass", "globe", "pendants"], "probe": true, "export": true, "size": 2048}
