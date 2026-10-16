@@ -1,0 +1,77 @@
+[
+ {
+  "Name": "first-steps",
+  "DisplayName": "First Steps",
+  "How": "Walk around the campus"
+ },
+ {
+  "Name": "explorer",
+  "DisplayName": "Museum Explorer",
+  "How": "Open 5 exhibits in the museum"
+ },
+ {
+  "Name": "bookworm",
+  "DisplayName": "Bookworm",
+  "How": "Read 5 pages of library books"
+ },
+ {
+  "Name": "curious",
+  "DisplayName": "Ask Away",
+  "How": "Ask any staff member a question"
+ },
+ {
+  "Name": "artist",
+  "DisplayName": "3D Artist",
+  "How": "Make art in the air in Room 101"
+ },
+ {
+  "Name": "scientist",
+  "DisplayName": "Lab Scientist",
+  "How": "Finish a lab test in Room 102"
+ },
+ {
+  "Name": "engineer",
+  "DisplayName": "Engineer",
+  "How": "Explore 3 blueprints in Room 103"
+ },
+ {
+  "Name": "maker",
+  "DisplayName": "Model Maker",
+  "How": "Build and test a model in Room 103"
+ },
+ {
+  "Name": "worldbuilder",
+  "DisplayName": "World Builder",
+  "How": "Build a world on the layer table in Room 104"
+ },
+ {
+  "Name": "coaster",
+  "DisplayName": "Coaster Rider",
+  "How": "Ride the Comet Coaster"
+ },
+ {
+  "Name": "drop",
+  "DisplayName": "Sky Dropper",
+  "How": "Ride the Sky Drop"
+ },
+ {
+  "Name": "diver",
+  "DisplayName": "Deep Diver",
+  "How": "Finish the Ocean Dive"
+ },
+ {
+  "Name": "striker",
+  "DisplayName": "Striker",
+  "How": "Kick a ball into the yard’s soccer goal"
+ },
+ {
+  "Name": "hunter",
+  "DisplayName": "Token Hunter",
+  "How": "Find every hidden XR token"
+ },
+ {
+  "Name": "historian",
+  "DisplayName": "Living Historian",
+  "How": "Watch 6 scenes come to life in the Wax Hall"
+ }
+]

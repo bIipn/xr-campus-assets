@@ -1,0 +1,350 @@
+[
+ {
+  "Name": "wax-2016",
+  "Number": 1,
+  "Year": "2016",
+  "Title": "The First Headsets",
+  "LoopSeconds": 14.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Marin County’s libraries open their first VR stations."
+   },
+   {
+    "Time": 4.4,
+    "Text": "A teen volunteer helps a first-time visitor into a headset."
+   },
+   {
+    "Time": 9.2,
+    "Text": "XRLibraries launches as the pilot’s coordinator."
+   }
+  ],
+  "StageLocation": {
+   "X": -460.0,
+   "Y": -4810.0,
+   "Z": 20.0
+  },
+  "StageYaw": 0.0,
+  "ItemId": "wax-2016",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2017a",
+  "Number": 2,
+  "Year": "2017",
+  "Title": "VR Goes Statewide",
+  "LoopSeconds": 15.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "VR stations ship to libraries across California."
+   },
+   {
+    "Time": 5.0,
+    "Text": "More than 90 libraries join, from the north coast to the border."
+   },
+   {
+    "Time": 10.5,
+    "Text": "The Marin pilot becomes a statewide project."
+   }
+  ],
+  "StageLocation": {
+   "X": 460.0,
+   "Y": -4810.0,
+   "Z": 20.0
+  },
+  "StageYaw": 180.0,
+  "ItemId": "wax-2017a",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2017b",
+  "Number": 3,
+  "Year": "2017",
+  "Title": "Story Time in 3D",
+  "LoopSeconds": 14.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Story time moves into virtual reality."
+   },
+   {
+    "Time": 3.0,
+    "Text": "The youngest visitors hear stories inside 3D worlds."
+   },
+   {
+    "Time": 10.6,
+    "Text": "Teens, meanwhile, head straight for the VR games."
+   }
+  ],
+  "StageLocation": {
+   "X": -460.0,
+   "Y": -5400.0,
+   "Z": 20.0
+  },
+  "StageYaw": 0.0,
+  "ItemId": "wax-2017b",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2018a",
+  "Number": 4,
+  "Year": "2018",
+  "Title": "Nevada Opens Its Stations",
+  "LoopSeconds": 14.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Carson City Library reopens with VR and AR stations."
+   },
+   {
+    "Time": 2.6,
+    "Text": "Nevada’s pilot puts 22 headsets in 11 libraries."
+   },
+   {
+    "Time": 6.6,
+    "Text": "A visitor floats among planets and stars."
+   }
+  ],
+  "StageLocation": {
+   "X": 460.0,
+   "Y": -5400.0,
+   "Z": 20.0
+  },
+  "StageYaw": 180.0,
+  "ItemId": "wax-2018a",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2019a",
+  "Number": 5,
+  "Year": "By 2019",
+  "Title": "VR on the Road",
+  "LoopSeconds": 15.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Marin’s VR program goes out into the community."
+   },
+   {
+    "Time": 3.4,
+    "Text": "People displaced by deadly wildfires get a break."
+   },
+   {
+    "Time": 9.4,
+    "Text": "Schools, senior centers and the county fair get visits too."
+   }
+  ],
+  "StageLocation": {
+   "X": -460.0,
+   "Y": -5990.0,
+   "Z": 20.0
+  },
+  "StageYaw": 0.0,
+  "ItemId": "wax-2019a",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2019b",
+  "Number": 6,
+  "Year": "2019",
+  "Title": "VR in the World’s Catalog",
+  "LoopSeconds": 14.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Librarians catalog VR so any library can find it."
+   },
+   {
+    "Time": 4.0,
+    "Text": "Record by record, VR titles go into WorldCat."
+   },
+   {
+    "Time": 9.8,
+    "Text": "More than 1,000 interactive 3D objects get cataloged."
+   }
+  ],
+  "StageLocation": {
+   "X": 460.0,
+   "Y": -5990.0,
+   "Z": 20.0
+  },
+  "StageYaw": 180.0,
+  "ItemId": "wax-2019b",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2019c",
+  "Number": 7,
+  "Year": "2019",
+  "Title": "XR Marin and the XR Stars",
+  "LoopSeconds": 15.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "XR Marin teams libraries with schools."
+   },
+   {
+    "Time": 4.0,
+    "Text": "Teen “XR Stars” help patrons with the gear."
+   },
+   {
+    "Time": 9.0,
+    "Text": "A camper borrows the cameras to film her family’s farm."
+   }
+  ],
+  "StageLocation": {
+   "X": -460.0,
+   "Y": -6580.0,
+   "Z": 20.0
+  },
+  "StageYaw": 0.0,
+  "ItemId": "wax-2019c",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2020",
+  "Number": 8,
+  "Year": "2020",
+  "Title": "Project SANDI",
+  "LoopSeconds": 15.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Project SANDI brings VR job training to Nevada."
+   },
+   {
+    "Time": 4.0,
+    "Text": "Trainees practice real tasks, like a dialysis technician’s."
+   },
+   {
+    "Time": 9.6,
+    "Text": "It grows to more than 1,000 headsets at over 80 locations."
+   }
+  ],
+  "StageLocation": {
+   "X": 460.0,
+   "Y": -6580.0,
+   "Z": 20.0
+  },
+  "StageYaw": 180.0,
+  "ItemId": "wax-2020",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2022a",
+  "Number": 9,
+  "Year": "2022",
+  "Title": "360° Stories in Washington",
+  "LoopSeconds": 15.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "XRLibraries trains Washington librarians in 360° video."
+   },
+   {
+    "Time": 4.6,
+    "Text": "Six libraries film 360° stories about their communities."
+   },
+   {
+    "Time": 9.6,
+    "Text": "Put on a headset and you are standing in the story."
+   }
+  ],
+  "StageLocation": {
+   "X": -460.0,
+   "Y": -7170.0,
+   "Z": 20.0
+  },
+  "StageYaw": 0.0,
+  "ItemId": "wax-2022a",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2022b",
+  "Number": 10,
+  "Year": "2022",
+  "Title": "Lost Stories",
+  "LoopSeconds": 16.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "Lost Stories: young people rebuild overlooked history in XR."
+   },
+   {
+    "Time": 4.4,
+    "Text": "Marin City students model the World War II shipyards."
+   },
+   {
+    "Time": 9.6,
+    "Text": "Their music honors the African-American workers who built the ships."
+   }
+  ],
+  "StageLocation": {
+   "X": 460.0,
+   "Y": -7170.0,
+   "Z": 20.0
+  },
+  "StageYaw": 180.0,
+  "ItemId": "wax-2022b",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2024",
+  "Number": 11,
+  "Year": "2024",
+  "Title": "Children Draw War, Not Flowers",
+  "LoopSeconds": 16.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "A VR gallery of art by Ukrainian children opens online."
+   },
+   {
+    "Time": 5.0,
+    "Text": "Anyone can walk through it free, in a web browser."
+   },
+   {
+    "Time": 10.4,
+    "Text": "XRLibraries helped design the exhibition."
+   }
+  ],
+  "StageLocation": {
+   "X": -415.0,
+   "Y": -7710.0,
+   "Z": 20.0
+  },
+  "StageYaw": 90.0,
+  "ItemId": "wax-2024",
+  "Sequence": ""
+ },
+ {
+  "Name": "wax-2025",
+  "Number": 12,
+  "Year": "2025",
+  "Title": "Pollinators at the Fair",
+  "LoopSeconds": 16.0,
+  "Lines": [
+   {
+    "Time": 0.0,
+    "Text": "At the Marin County Fair, kids plant flowers in AR."
+   },
+   {
+    "Time": 4.6,
+    "Text": "Monarch butterflies hatch and fly from flower to flower."
+   },
+   {
+    "Time": 10.4,
+    "Text": "XRLibraries’ booth turns the fair into a pollinator garden."
+   }
+  ],
+  "StageLocation": {
+   "X": 415.0,
+   "Y": -7710.0,
+   "Z": 20.0
+  },
+  "StageYaw": 90.0,
+  "ItemId": "wax-2025",
+  "Sequence": ""
+ }
+]

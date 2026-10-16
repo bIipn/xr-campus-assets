@@ -1,0 +1,189 @@
+[
+ {
+  "Name": "margaret",
+  "DisplayName": "Margaret",
+  "Role": "Museum guide",
+  "Monogram": "M",
+  "Color": {
+   "R": 0.6105,
+   "G": 0.39676,
+   "B": 0.11954,
+   "A": 1.0
+  },
+  "Rooms": [
+   "lobby",
+   "g1",
+   "g2",
+   "g3",
+   "wax"
+  ],
+  "Location": {
+   "X": 68.0,
+   "Y": -400.0,
+   "Z": 0.0
+  },
+  "Yaw": 101.643,
+  "TalkView": {
+   "Location": {
+    "X": -20.0,
+    "Y": -200.0,
+    "Z": 162.0
+   },
+   "Yaw": -66.509,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Greeting": "Welcome to the XRLibraries Campus! I’m Margaret, the museum guide. Ask me about XRLibraries’ story, any exhibit, or where to find the library and the paint studio.",
+  "GreetingShort": "Hello! What would you like to see?",
+  "Help": "Ask me about XRLibraries, any exhibit, or a year, and I’ll show you where to find it. I can walk you to the Wax Hall, where wax figures act out XRLibraries’ story, or to the library, the Workshop School and the Recess Yard.",
+  "Fallback": "I don’t see that in this museum yet. Try asking about Nevada’s headsets, Project SANDI, XR Playbooks or the Lost Stories projects.",
+  "Chips": [
+   "What is XRLibraries?",
+   "When did XRLibraries start?",
+   "Take me to the Wax Hall",
+   "What is Project SANDI?"
+  ],
+  "RocketboxId": "bf02",
+  "LookNotes": "Rocketbox bf02; body skirt; top #274a52; bottom #2a292d; skin #c99c7a; hair #bdb6ab bun; glasses",
+  "MetaHuman": ""
+ },
+ {
+  "Name": "rosa",
+  "DisplayName": "Rosa",
+  "Role": "Reference librarian",
+  "Monogram": "R",
+  "Color": {
+   "R": 0.10224,
+   "G": 0.35153,
+   "B": 0.26225,
+   "A": 1.0
+  },
+  "Rooms": [
+   "hallL",
+   "lib",
+   "libAisle"
+  ],
+  "Location": {
+   "X": -1720.0,
+   "Y": -775.0,
+   "Z": 0.0
+  },
+  "Yaw": 48.517,
+  "TalkView": {
+   "Location": {
+    "X": -1720.0,
+    "Y": -500.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Greeting": "Hi, I’m Rosa, the reference librarian. Ask me a question and I’ll find the answer in our books, or name a topic and I’ll find you something to read.",
+  "GreetingShort": "Hi there! What would you like to know?",
+  "Help": "Ask me a question and I’ll find the answer in our books, or name a topic and I’ll recommend something. I can also walk you to any section.",
+  "Fallback": "That one isn’t on my shelves yet. Try asking about VR, AR, 360 video, careers, oceans or how computers work.",
+  "Chips": [
+   "What is the difference between VR and AR?",
+   "How do I make a 360 video?",
+   "Recommend a book",
+   "What is Freedom to Read?"
+  ],
+  "RocketboxId": "fa14",
+  "LookNotes": "Rocketbox fa14; body pants; top #b07d2a; bottom #26304a; skin #a8775a; hair #2a1d16 topbun",
+  "MetaHuman": ""
+ },
+ {
+  "Name": "hale",
+  "DisplayName": "Mr. Hale",
+  "Role": "Workshop teacher",
+  "Monogram": "H",
+  "Color": {
+   "R": 0.7454,
+   "G": 0.19807,
+   "B": 0.02315,
+   "A": 1.0
+  },
+  "Rooms": [
+   "hallR",
+   "school",
+   "studio",
+   "lab",
+   "blueprint",
+   "world"
+  ],
+  "Location": {
+   "X": 1740.0,
+   "Y": -1060.0,
+   "Z": 0.0
+  },
+  "Yaw": 74.703,
+  "TalkView": {
+   "Location": {
+    "X": 1870.0,
+    "Y": -760.0,
+    "Z": 162.0
+   },
+   "Yaw": -114.064,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Greeting": "Welcome to the Workshop School! I’m Mr. Hale. Room 101 is the 3D Art Studio, 102 is the Science Lab, 103 is the Blueprint Lab and 104 is the World Builder Studio. Ask me about any of them, or say “start painting.”",
+  "GreetingShort": "Hey! What do you want to make today?",
+  "Help": "I teach in all four workshop rooms. Say “start painting” or “give me a blank canvas,” “start the sieve test,” “open the car blueprint” or “build a model car,” or ask me how anything in the school works.",
+  "Fallback": "I’m not sure about that one. Ask me about 3D art, the science labs, the blueprints or how to build a world.",
+  "Chips": [
+   "Start painting",
+   "Give me a blank canvas",
+   "What workshops are there?",
+   "How do blueprints work?"
+  ],
+  "RocketboxId": "ma05",
+  "LookNotes": "Rocketbox ma05; body pants; top #a8c0d8; bottom #3a3f46; skin #b98a68; hair #4a3b2e short",
+  "MetaHuman": ""
+ },
+ {
+  "Name": "rae",
+  "DisplayName": "Coach Rae",
+  "Role": "Recess coach",
+  "Monogram": "C",
+  "Color": {
+   "R": 0.04231,
+   "G": 0.27468,
+   "B": 0.68669,
+   "A": 1.0
+  },
+  "Rooms": [
+   "yard"
+  ],
+  "Location": {
+   "X": 4640.0,
+   "Y": 40.0,
+   "Z": 0.0
+  },
+  "Yaw": -157.964,
+  "TalkView": {
+   "Location": {
+    "X": 4430.0,
+    "Y": -45.0,
+    "Z": 162.0
+   },
+   "Yaw": 22.036,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Greeting": "Hey, welcome to recess! I’m Coach Rae. Ride the Comet Coaster, take the Sky Drop, or go on an Ocean Dive. Ask me anything about the rides, or about the XR tokens hidden around the campus.",
+  "GreetingShort": "Hey! Ready for recess?",
+  "Help": "I run the Recess Yard. Say “ride the coaster,” “ride the Sky Drop” or “start the dive,” or ask me about the hidden XR tokens and badges.",
+  "Fallback": "I’m not sure about that one. Ask me about the rides, the hidden XR tokens or the badges.",
+  "Chips": [
+   "Ride the coaster",
+   "What’s on the Ocean Dive?",
+   "Where are the hidden tokens?",
+   "Is it scary?"
+  ],
+  "RocketboxId": "sf02",
+  "LookNotes": "Rocketbox sf02; body pants; top #d2462f; bottom #26303f; skin #8d5a3b; hair #1b1410 short",
+  "MetaHuman": ""
+ }
+]

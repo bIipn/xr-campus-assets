@@ -1,0 +1,38 @@
+[
+  {
+    "id": "milestone",
+    "label": "Milestone"
+  },
+  {
+    "id": "mission",
+    "label": "Mission"
+  },
+  {
+    "id": "object",
+    "label": "Object"
+  },
+  {
+    "id": "event",
+    "label": "Event"
+  },
+  {
+    "id": "program",
+    "label": "Program"
+  },
+  {
+    "id": "story",
+    "label": "Story"
+  },
+  {
+    "id": "resource",
+    "label": "Resource"
+  },
+  {
+    "id": "project",
+    "label": "Project"
+  },
+  {
+    "id": "reenactment",
+    "label": "Living History"
+  }
+]

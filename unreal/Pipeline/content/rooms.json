@@ -1,0 +1,173 @@
+[
+  {
+    "id": "lobby",
+    "x0": -6,
+    "x1": 6,
+    "z0": -6,
+    "z1": 0,
+    "info": {
+      "k": "Lobby",
+      "n": "XRLibraries Campus",
+      "y": "Museum ahead · Library left · School right"
+    }
+  },
+  {
+    "id": "g1",
+    "x0": -6,
+    "x1": 6,
+    "z0": -18,
+    "z1": -6,
+    "gal": 1,
+    "info": null
+  },
+  {
+    "id": "g2",
+    "x0": -6,
+    "x1": 6,
+    "z0": -30,
+    "z1": -18,
+    "gal": 2,
+    "info": null
+  },
+  {
+    "id": "g3",
+    "x0": -6,
+    "x1": 6,
+    "z0": -42,
+    "z1": -30,
+    "gal": 3,
+    "info": null
+  },
+  {
+    "id": "wax",
+    "x0": -8.5,
+    "x1": 8.5,
+    "z0": -81,
+    "z1": -42.3,
+    "info": {
+      "k": "Museum · Living History",
+      "n": "The Wax Hall",
+      "y": "Walk up to a scene and it comes to life"
+    }
+  },
+  {
+    "id": "hallL",
+    "x0": -12,
+    "x1": -6,
+    "z0": -4.6,
+    "z1": -1.4,
+    "info": {
+      "k": "Hall",
+      "n": "To the Library",
+      "y": "Reading room ahead"
+    }
+  },
+  {
+    "id": "lib",
+    "x0": -23,
+    "x1": -12.45,
+    "z0": -12.55,
+    "z1": 6.55,
+    "info": {
+      "k": "Library",
+      "n": "The Reading Room",
+      "y": "Tap a book on display to read it"
+    }
+  },
+  {
+    "id": "libAisle",
+    "x0": -32,
+    "x1": -23,
+    "z0": -5.2,
+    "z1": -0.8,
+    "info": {
+      "k": "Library",
+      "n": "The Stacks",
+      "y": "Eight sections · Books on every end"
+    }
+  },
+  {
+    "id": "hallR",
+    "x0": 6,
+    "x1": 12,
+    "z0": -4.6,
+    "z1": -1.4,
+    "info": {
+      "k": "Hall",
+      "n": "To the Workshop School",
+      "y": "Every class is a workshop"
+    }
+  },
+  {
+    "id": "school",
+    "x0": 12,
+    "x1": 34,
+    "z0": -4.33,
+    "z1": -1.67,
+    "info": {
+      "k": "Workshop School",
+      "n": "Main Hall",
+      "y": "Rooms 101–104 are open · Recess Yard out back"
+    }
+  },
+  {
+    "id": "studio",
+    "x0": 14,
+    "x1": 24,
+    "z0": -13,
+    "z1": -4.75,
+    "info": {
+      "k": "Room 101",
+      "n": "3D Art Studio",
+      "y": "Brushes, shapes and a blank canvas"
+    }
+  },
+  {
+    "id": "lab",
+    "x0": 25.6,
+    "x1": 34,
+    "z0": -13,
+    "z1": -4.75,
+    "info": {
+      "k": "Room 102",
+      "n": "Science Lab",
+      "y": "Sieve test · Titration · Pendulum"
+    }
+  },
+  {
+    "id": "blueprint",
+    "x0": 12.2,
+    "x1": 24,
+    "z0": -1.25,
+    "z1": 7,
+    "info": {
+      "k": "Room 103",
+      "n": "Blueprint Lab",
+      "y": "Five blueprints · Model bench"
+    }
+  },
+  {
+    "id": "world",
+    "x0": 24,
+    "x1": 34,
+    "z0": -1.25,
+    "z1": 7,
+    "info": {
+      "k": "Room 104",
+      "n": "World Builder Studio",
+      "y": "How a world like this gets built"
+    }
+  },
+  {
+    "id": "yard",
+    "x0": 34,
+    "x1": 92,
+    "z0": -34,
+    "z1": 26,
+    "info": {
+      "k": "Recess Yard",
+      "n": "The Playground",
+      "y": "Coaster · Sky Drop · Ocean Dive"
+    }
+  }
+]

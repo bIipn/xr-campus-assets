@@ -1,0 +1,111 @@
+[
+  {
+    "id": "what",
+    "src": [
+      "about",
+      "sjsu",
+      "cb"
+    ],
+    "text": "XRLibraries brings virtual, augmented and mixed reality into libraries and schools. Its stated goal is equitable access to immersive technology for all communities. It began in 2016 and is based in Novato, in Marin County, California."
+  },
+  {
+    "id": "who",
+    "src": [
+      "sjsu",
+      "cil"
+    ],
+    "text": "John MacLeod is the executive director of XRLibraries. He works with state and local libraries on plans for virtual reality, augmented reality and 360 video, and he is building a national clearinghouse where libraries can share XR best practices."
+  },
+  {
+    "id": "team",
+    "src": [
+      "about"
+    ],
+    "text": "The XRLibraries About page lists John MacLeod as executive director, Dane Lancaster of PacificXR, who led the setup of XRMarin as an immersive learning lab, and George Lightfoot and Camila Oates, the XR Showcase team."
+  },
+  {
+    "id": "wsl",
+    "src": [
+      "wsl"
+    ],
+    "text": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program, which in 2022 helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was funded by IMLS through the Library Services and Technology Act and was open to public, tribal and academic libraries."
+  },
+  {
+    "id": "freedom",
+    "src": [
+      "metaverse"
+    ],
+    "text": "Freedom to Read is a VR environment built with the SJSU School of Information, Unite Against Book Bans, Little Free Library and Books Unbanned. It helps people fight book bans and helps young people find challenged books that reflect their lives."
+  },
+  {
+    "id": "environment",
+    "src": [
+      "environment"
+    ],
+    "text": "XRLibraries’ environment projects include the Stanford Ocean Experience, a VR experience about ocean acidification; a Climate Change Playbook of VR apps for viewing and discussion; and Hydrous, which takes visitors to the coral reefs of Palau."
+  },
+  {
+    "id": "partners",
+    "src": [
+      "home"
+    ],
+    "text": "Partners listed on xrlibraries.com include Meta Quest, Pico, Hydrous, the Washington, Nevada and California state libraries, ALA, Internet Librarian, the Marin County Office of Education, XRMarin, New Media Learning, FastForward and the SJSU School of Information."
+  },
+  {
+    "id": "sjsu",
+    "src": [
+      "sjsu"
+    ],
+    "text": "XRLibraries is a strategic partner of the Library Technology Integration Lab at the San José State University School of Information."
+  },
+  {
+    "id": "xrmarin",
+    "src": [
+      "cil",
+      "about"
+    ],
+    "text": "XRMarin is an immersive learning lab and academy for creating XR content in Marin County. XRLibraries’ director is a partner in the Marinovation Learning Center and the XRMarin academy."
+  },
+  {
+    "id": "concept",
+    "src": [],
+    "text": "This campus is an unofficial concept made by Ev Holt with Walk the Archive for XRLibraries. Its facts come from public sources such as xrlibraries.com, the SJSU School of Information, WorkingNation and ArborXR."
+  },
+  {
+    "id": "yard",
+    "src": [],
+    "text": "The campus’s Recess Yard has three made-up rides for fun in XR: the Comet Coaster roller coaster, the Sky Drop tower and the Ocean Dive, a guided swim with sea creatures. Visitors can also hunt for hidden XR tokens and unlock badges."
+  },
+  {
+    "id": "school",
+    "src": [],
+    "text": "The campus’s Workshop School has four hands-on rooms. Room 101 is the 3D Art Studio, where you paint and stamp shapes in the air. Room 102 is the Science Lab, with a sieve analysis of sand, an acid–base titration and a pendulum. Room 103 is the Blueprint Lab, with blueprints of a car, an excavator, a house, a truss bridge and a computer, and a bench for building models. Room 104 is the World Builder Studio, which shows how a 3D world like this campus gets made."
+  },
+  {
+    "id": "wax",
+    "src": [
+      "cenic",
+      "lj2019",
+      "lj2017"
+    ],
+    "text": "The museum’s Wax Hall, through the doorway at the end of Gallery 3, is a living-history wing. Twelve scenes of wax figures act out XRLibraries’ story in date order, from the first VR stations in Marin County’s libraries in 2016 to the Pollinators booth at the 2025 Marin County Fair. Each scene comes to life when you walk up to it. The figures are reenactors made for this concept, not likenesses of real people."
+  },
+  {
+    "id": "history",
+    "src": [
+      "cenic",
+      "lj2017",
+      "lj2019",
+      "vive2018",
+      "goed2023",
+      "wsl",
+      "fair"
+    ],
+    "text": "XRLibraries began in 2016 as the coordinator of the California Virtual Reality Experience, which piloted VR stations in Marin County’s libraries. In 2017 the project spread to more than 90 California libraries, and a pilot in Nevada followed. Later milestones include Nevada’s first VR records in WorldCat in 2019, Project SANDI in 2020, 360-degree storytelling training in Washington in 2022 and the Pollinators AR booth at the 2025 Marin County Fair."
+  },
+  {
+    "id": "wta",
+    "src": [],
+    "text": "Walk the Archive is Ev Holt’s tool for turning a library’s, museum’s or tribe’s collection into a place you can walk through in a web browser, on a phone, a laptop or a library computer."
+  }
+]

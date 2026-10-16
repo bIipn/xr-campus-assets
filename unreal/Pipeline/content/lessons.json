@@ -1,0 +1,68 @@
+[
+  {
+    "id": "lesson-1",
+    "station": "sieve",
+    "title": "How a sieve test works: sieve analysis, particle size distribution, PSD",
+    "text": "A sieve analysis measures particle size distribution, or PSD: how much of a sample falls in each size range. You split out a representative sample, dry it and weigh it, then shake it through a stack of sieves, coarsest on top and finest at the bottom, and weigh what each sieve holds. Sand and gravel producers use sieve tests to check that their product meets its size specification."
+  },
+  {
+    "id": "lesson-2",
+    "station": "sieve",
+    "title": "Sieve mesh numbers and openings",
+    "text": "A sieve’s mesh number counts the openings per inch, so a bigger number means a finer sieve. A US number 20 sieve has 850 micrometer openings, a number 40 has 425 and a number 100 has 150. One micrometer is a thousandth of a millimeter."
+  },
+  {
+    "id": "lesson-3",
+    "station": "sieve",
+    "title": "Cumulative percent passing and D50",
+    "text": "For each sieve you work out the percent retained, add them up from the top to get the cumulative percent retained, and subtract from 100 to get the percent passing. D50 is the grain size that half the sample is finer than. D10 and D60 give the uniformity coefficient, Cu = D60 ÷ D10; a Cu near 1 means the grains are nearly all the same size."
+  },
+  {
+    "id": "lesson-4",
+    "station": "sieve",
+    "title": "AFS grain fineness number GFN",
+    "text": "The AFS grain fineness number, or GFN, multiplies the percent retained on each sieve by a factor for that sieve, adds them up and divides by the total percent retained. A higher number means finer sand. Foundries use it to describe molding sand."
+  },
+  {
+    "id": "lesson-5",
+    "station": "sieve",
+    "title": "Checking a finished sieve run for lost mass",
+    "text": "After a sieve test, the sieve weights should add back up to the starting weight. ASTM C136, a standard sieve test for aggregates, says that if the difference is more than 0.3 percent of the starting dry mass, the results should not be used for acceptance testing."
+  },
+  {
+    "id": "lesson-6",
+    "station": "titration",
+    "title": "Acid base titration",
+    "text": "In a titration you add a solution of known concentration from a burette, a little at a time, until it exactly reacts with your sample. An indicator such as phenolphthalein turns pink when the solution turns basic, which marks the endpoint. For an acid like HCl reacting with NaOH, moles of base equal moles of acid, so the acid’s molarity = base molarity × base volume ÷ acid volume."
+  },
+  {
+    "id": "lesson-7",
+    "station": "titration",
+    "title": "pH and the equivalence point",
+    "text": "pH measures how acidic a solution is: 7 is neutral, lower is acidic and higher is basic, and each step of 1 is a tenfold change. When a strong acid is titrated with a strong base, the pH jumps sharply near the equivalence point, where the moles of base added equal the moles of acid."
+  },
+  {
+    "id": "lesson-8",
+    "station": "pendulum",
+    "title": "Pendulum period and gravity",
+    "text": "A simple pendulum’s period, the time for one full swing out and back, is about T = 2π√(L/g) for small swings. It depends on the length, not the mass. Time 10 swings and divide by 10 for a better measurement. Plot T² against L for a few lengths, and the slope equals 4π²/g, so g = 4π² ÷ slope, about 9.8 meters per second squared on Earth."
+  },
+  {
+    "id": "lesson-9",
+    "station": "bench",
+    "title": "Rubber band car model",
+    "text": "A rubber-band car stores energy in a stretched rubber band. As the band unwinds, it turns the rear axle and drives the car forward. Drinking straws make good bearings, so the axles spin with little friction. Test it, change one thing at a time and test again."
+  },
+  {
+    "id": "lesson-10",
+    "station": "bench",
+    "title": "Cross bracing and shake tables",
+    "text": "Cross-bracing turns a frame’s rectangles into triangles, and a triangle can’t change shape unless a side changes length, so a braced frame resists racking in earthquakes and wind. Engineers test buildings and models on shake tables that move back and forth like an earthquake."
+  },
+  {
+    "id": "lesson-11",
+    "station": "diorama",
+    "title": "How to build a 3D world",
+    "text": "A 3D world gets built in layers: plan it, block it out with plain boxes, model the shapes, add materials, light it, add effects like glow and fog, add physics, add life like people and rides, then publish it and improve it. This campus runs in a web browser using three.js for 3D and the Rapier physics engine for the playground."
+  }
+]

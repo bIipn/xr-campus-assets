@@ -1,0 +1,914 @@
+[
+ {
+  "Name": "lobby",
+  "Label": "Lobby",
+  "Aliases": [
+   "lobby",
+   "entrance",
+   "front door",
+   "start",
+   "directory",
+   "beginning"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -220.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Lobby."
+ },
+ {
+  "Name": "g1",
+  "Label": "Gallery 1: Headsets in Libraries",
+  "Aliases": [
+   "gallery 1",
+   "gallery one",
+   "first gallery",
+   "headsets in libraries",
+   "museum",
+   "galleries",
+   "exhibits"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -840.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Gallery 1: Headsets in Libraries, straight ahead from the lobby."
+ },
+ {
+  "Name": "g2",
+  "Label": "Gallery 2: Learning That Works",
+  "Aliases": [
+   "gallery 2",
+   "gallery two",
+   "second gallery",
+   "learning that works"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -2040.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Gallery 2: Learning That Works, straight ahead from the lobby."
+ },
+ {
+  "Name": "g3",
+  "Label": "Gallery 3: Stories Worth Saving",
+  "Aliases": [
+   "gallery 3",
+   "gallery three",
+   "third gallery",
+   "stories worth saving"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -3240.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Gallery 3: Stories Worth Saving, straight ahead from the lobby."
+ },
+ {
+  "Name": "library",
+  "Label": "The Reading Room",
+  "Aliases": [
+   "library",
+   "reading room",
+   "bookshelves",
+   "shelves",
+   "stacks",
+   "books"
+  ],
+  "View": {
+   "Location": {
+    "X": -1340.0,
+    "Y": -300.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": 4.584,
+   "bValid": true
+  },
+  "Directions": "The Reading Room, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "desk",
+  "Label": "Reference desk",
+  "Aliases": [
+   "reference desk",
+   "librarian",
+   "rosa",
+   "help desk",
+   "front desk"
+  ],
+  "View": {
+   "Location": {
+    "X": -1720.0,
+    "Y": -500.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Directions": "Reference desk, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "featured",
+  "Label": "Featured books table",
+  "Aliases": [
+   "featured books",
+   "featured table",
+   "display table",
+   "featured"
+  ],
+  "View": {
+   "Location": {
+    "X": -1500.0,
+    "Y": -90.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -18.335,
+   "bValid": true
+  },
+  "Directions": "Featured books table, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "freedomBoard",
+  "Label": "Freedom to Read display",
+  "Aliases": [
+   "freedom to read",
+   "book bans",
+   "banned books"
+  ],
+  "View": {
+   "Location": {
+    "X": -1890.0,
+    "Y": 100.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -1.146,
+   "bValid": true
+  },
+  "Directions": "Freedom to Read display, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "window",
+  "Label": "Library window",
+  "Aliases": [
+   "window",
+   "big window"
+  ],
+  "View": {
+   "Location": {
+    "X": -2950.0,
+    "Y": -300.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": 8.021,
+   "bValid": true
+  },
+  "Directions": "Library window, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "school",
+  "Label": "Workshop School hall",
+  "Aliases": [
+   "school",
+   "workshop school",
+   "hallway",
+   "classes",
+   "classrooms",
+   "lockers"
+  ],
+  "View": {
+   "Location": {
+    "X": 1290.0,
+    "Y": -300.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Workshop School hall, through the doorway on the right side of the lobby and down the hall."
+ },
+ {
+  "Name": "studio",
+  "Label": "Room 101: 3D Art Studio",
+  "Aliases": [
+   "studio",
+   "art studio",
+   "paint studio",
+   "room 101",
+   "workshop",
+   "painting",
+   "art room",
+   "3d art",
+   "blank canvas",
+   "mr hale",
+   "hale",
+   "teacher",
+   "easel"
+  ],
+  "View": {
+   "Location": {
+    "X": 1900.0,
+    "Y": -570.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+ },
+ {
+  "Name": "lab",
+  "Label": "Room 102: Science Lab",
+  "Aliases": [
+   "science lab",
+   "the lab",
+   "lab",
+   "room 102",
+   "laboratory",
+   "chemistry lab",
+   "physics lab",
+   "science room"
+  ],
+  "View": {
+   "Location": {
+    "X": 2900.0,
+    "Y": -590.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -3.438,
+   "bValid": true
+  },
+  "Directions": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+ },
+ {
+  "Name": "sieve",
+  "Label": "Sieve shaker",
+  "Aliases": [
+   "sieve",
+   "sieves",
+   "sieve shaker",
+   "sieve test",
+   "sieve analysis",
+   "psd",
+   "particle size",
+   "grain size",
+   "sand test"
+  ],
+  "View": {
+   "Location": {
+    "X": 3210.0,
+    "Y": -900.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -16.043,
+   "bValid": true
+  },
+  "Directions": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+ },
+ {
+  "Name": "titration",
+  "Label": "Titration station",
+  "Aliases": [
+   "titration",
+   "burette",
+   "acid base",
+   "chemistry"
+  ],
+  "View": {
+   "Location": {
+    "X": 3095.0,
+    "Y": -1130.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -8.021,
+   "bValid": true
+  },
+  "Directions": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+ },
+ {
+  "Name": "pendulum",
+  "Label": "Pendulum",
+  "Aliases": [
+   "pendulum",
+   "gravity experiment",
+   "physics experiment"
+  ],
+  "View": {
+   "Location": {
+    "X": 2825.0,
+    "Y": -920.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": 5.73,
+   "bValid": true
+  },
+  "Directions": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+ },
+ {
+  "Name": "blueprints",
+  "Label": "Room 103: Blueprint Lab",
+  "Aliases": [
+   "blueprint lab",
+   "blueprints",
+   "blueprint",
+   "room 103",
+   "engineering room",
+   "engineering"
+  ],
+  "View": {
+   "Location": {
+    "X": 1810.0,
+    "Y": 360.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": 1.719,
+   "bValid": true
+  },
+  "Directions": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "bp-car",
+  "Label": "Automobile blueprint",
+  "Aliases": [
+   "car blueprint",
+   "automobile blueprint",
+   "automobile"
+  ],
+  "View": {
+   "Location": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+   },
+   "Yaw": 0.0,
+   "Pitch": 0.0,
+   "bValid": false
+  },
+  "Directions": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "bp-excavator",
+  "Label": "Excavator blueprint",
+  "Aliases": [
+   "excavator blueprint",
+   "excavator",
+   "heavy equipment",
+   "digger"
+  ],
+  "View": {
+   "Location": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+   },
+   "Yaw": 0.0,
+   "Pitch": 0.0,
+   "bValid": false
+  },
+  "Directions": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "bp-house",
+  "Label": "House blueprint",
+  "Aliases": [
+   "house blueprint",
+   "building blueprint",
+   "house framing"
+  ],
+  "View": {
+   "Location": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+   },
+   "Yaw": 0.0,
+   "Pitch": 0.0,
+   "bValid": false
+  },
+  "Directions": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "bp-bridge",
+  "Label": "Truss bridge blueprint",
+  "Aliases": [
+   "bridge blueprint",
+   "truss bridge",
+   "bridge"
+  ],
+  "View": {
+   "Location": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+   },
+   "Yaw": 0.0,
+   "Pitch": 0.0,
+   "bValid": false
+  },
+  "Directions": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "bp-computer",
+  "Label": "Computer blueprint",
+  "Aliases": [
+   "computer blueprint",
+   "pc blueprint",
+   "computer parts",
+   "motherboard"
+  ],
+  "View": {
+   "Location": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+   },
+   "Yaw": 0.0,
+   "Pitch": 0.0,
+   "bValid": false
+  },
+  "Directions": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "modelbench",
+  "Label": "Model bench",
+  "Aliases": [
+   "model bench",
+   "model car",
+   "shake table",
+   "bench"
+  ],
+  "View": {
+   "Location": {
+    "X": 1810.0,
+    "Y": 110.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -18.335,
+   "bValid": true
+  },
+  "Directions": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+ },
+ {
+  "Name": "worldroom",
+  "Label": "Room 104: World Builder Studio",
+  "Aliases": [
+   "world builder studio",
+   "world builder",
+   "room 104",
+   "world building",
+   "game design",
+   "game room"
+  ],
+  "View": {
+   "Location": {
+    "X": 2900.0,
+    "Y": 60.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -10.313,
+   "bValid": true
+  },
+  "Directions": "Room 104: World Builder Studio, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+ },
+ {
+  "Name": "diorama",
+  "Label": "Layer table",
+  "Aliases": [
+   "layer table",
+   "diorama",
+   "mini world"
+  ],
+  "View": {
+   "Location": {
+    "X": 2900.0,
+    "Y": 105.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -17.189,
+   "bValid": true
+  },
+  "Directions": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+ },
+ {
+  "Name": "sculpture",
+  "Label": "Sample sculpture",
+  "Aliases": [
+   "sculpture",
+   "sample sculpture",
+   "butterfly"
+  ],
+  "View": {
+   "Location": {
+    "X": 2160.0,
+    "Y": -760.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 6.875,
+   "bValid": true
+  },
+  "Directions": "Sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+ },
+ {
+  "Name": "margaret",
+  "Label": "Margaret",
+  "Aliases": [
+   "margaret",
+   "museum guide",
+   "greeter"
+  ],
+  "View": {
+   "Location": {
+    "X": -20.0,
+    "Y": -200.0,
+    "Z": 162.0
+   },
+   "Yaw": -66.509,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Directions": "Margaret."
+ },
+ {
+  "Name": "wax",
+  "Label": "The Wax Hall",
+  "Aliases": [
+   "wax hall",
+   "wax museum",
+   "wax figures",
+   "wax figure",
+   "living history",
+   "reenactments",
+   "reenactment",
+   "history hall",
+   "the wax"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -4640.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 1.146,
+   "bValid": true
+  },
+  "Directions": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3."
+ },
+ {
+  "Name": "yard",
+  "Label": "The Recess Yard",
+  "Aliases": [
+   "recess yard",
+   "recess",
+   "playground",
+   "the yard",
+   "yard",
+   "outside",
+   "rides",
+   "play outside"
+  ],
+  "View": {
+   "Location": {
+    "X": 3860.0,
+    "Y": -300.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": 3.438,
+   "bValid": true
+  },
+  "Directions": "The Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "coaster",
+  "Label": "Comet Coaster",
+  "Aliases": [
+   "comet coaster",
+   "roller coaster",
+   "rollercoaster",
+   "coaster"
+  ],
+  "View": {
+   "Location": {
+    "X": 5020.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": -53.653,
+   "Pitch": 11.459,
+   "bValid": true
+  },
+  "Directions": "Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "drop",
+  "Label": "Sky Drop",
+  "Aliases": [
+   "sky drop",
+   "skydrop",
+   "drop tower",
+   "the tower"
+  ],
+  "View": {
+   "Location": {
+    "X": 6450.0,
+    "Y": 450.0,
+    "Z": 162.0
+   },
+   "Yaw": 32.196,
+   "Pitch": 18.335,
+   "bValid": true
+  },
+  "Directions": "Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "dive",
+  "Label": "Ocean Dive",
+  "Aliases": [
+   "ocean dive",
+   "the dive",
+   "dive dome",
+   "underwater",
+   "scuba",
+   "dive"
+  ],
+  "View": {
+   "Location": {
+    "X": 5400.0,
+    "Y": 420.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": 5.73,
+   "bValid": true
+  },
+  "Directions": "Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "rae",
+  "Label": "Coach Rae",
+  "Aliases": [
+   "coach rae",
+   "rae",
+   "coach",
+   "recess coach"
+  ],
+  "View": {
+   "Location": {
+    "X": 4430.0,
+    "Y": -45.0,
+    "Z": 162.0
+   },
+   "Yaw": 22.036,
+   "Pitch": 0.0,
+   "bValid": true
+  },
+  "Directions": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "field",
+  "Label": "Soccer goal",
+  "Aliases": [
+   "soccer goal",
+   "soccer field",
+   "ball field",
+   "the goal",
+   "goal",
+   "soccer",
+   "penalty",
+   "goalkeeper",
+   "keeper"
+  ],
+  "View": {
+   "Location": {
+    "X": 7775.0,
+    "Y": -200.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -5.73,
+   "bValid": true
+  },
+  "Directions": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "blocks",
+  "Label": "Block tower",
+  "Aliases": [
+   "block tower",
+   "foam blocks",
+   "tower of blocks",
+   "blocks"
+  ],
+  "View": {
+   "Location": {
+    "X": 6120.0,
+    "Y": 150.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -4.584,
+   "bValid": true
+  },
+  "Directions": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+ },
+ {
+  "Name": "sec-basics",
+  "Label": "XR Basics section",
+  "Aliases": [
+   "xr basics section",
+   "xr basics shelf",
+   "xr basics books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2400.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "XR Basics section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-programs",
+  "Label": "Library Programs section",
+  "Aliases": [
+   "library programs section",
+   "library programs shelf",
+   "library programs books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2620.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Library Programs section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-careers",
+  "Label": "Careers section",
+  "Aliases": [
+   "careers section",
+   "careers shelf",
+   "careers books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2840.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Careers section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-story",
+  "Label": "Storytelling section",
+  "Aliases": [
+   "storytelling section",
+   "storytelling shelf",
+   "storytelling books"
+  ],
+  "View": {
+   "Location": {
+    "X": -3060.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Storytelling section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-equity",
+  "Label": "Lost Stories section",
+  "Aliases": [
+   "lost stories section",
+   "lost stories shelf",
+   "lost stories books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2400.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Lost Stories section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-environment",
+  "Label": "Environment section",
+  "Aliases": [
+   "environment section",
+   "environment shelf",
+   "environment books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2620.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Environment section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-worlds",
+  "Label": "Shared Worlds section",
+  "Aliases": [
+   "shared worlds section",
+   "shared worlds shelf",
+   "shared worlds books"
+  ],
+  "View": {
+   "Location": {
+    "X": -2840.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Shared Worlds section, through the doorway on the left side of the lobby and down the hall."
+ },
+ {
+  "Name": "sec-tech",
+  "Label": "Technology section",
+  "Aliases": [
+   "technology section",
+   "technology shelf",
+   "technology books"
+  ],
+  "View": {
+   "Location": {
+    "X": -3060.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "Technology section, through the doorway on the left side of the lobby and down the hall."
+ }
+]

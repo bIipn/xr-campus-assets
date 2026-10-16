@@ -1,0 +1,44 @@
+[
+  {
+    "id": "high",
+    "label": "High",
+    "dpr": 1.5,
+    "shadow": 2048,
+    "ext": 34,
+    "ao": true,
+    "bloom": true,
+    "msaa": 4,
+    "fxaa": false,
+    "grass": 46000,
+    "patch": 46,
+    "leaves": 30
+  },
+  {
+    "id": "medium",
+    "label": "Medium",
+    "dpr": 1.35,
+    "shadow": 1024,
+    "ext": 26,
+    "ao": false,
+    "bloom": true,
+    "msaa": 0,
+    "fxaa": true,
+    "grass": 17000,
+    "patch": 36,
+    "leaves": 22
+  },
+  {
+    "id": "low",
+    "label": "Low",
+    "dpr": 1,
+    "shadow": 0,
+    "ext": 0,
+    "ao": false,
+    "bloom": false,
+    "msaa": 0,
+    "fxaa": false,
+    "grass": 5000,
+    "patch": 26,
+    "leaves": 14
+  }
+]

@@ -1,0 +1,1201 @@
+[
+ {
+  "Name": "ca-200",
+  "KindId": "milestone",
+  "Kind": "Milestone",
+  "Gallery": 1,
+  "Title": "Over 200 VR Systems in California Libraries",
+  "Date": "2016",
+  "Year": 2016,
+  "Description": "XRLibraries began in 2016 by installing more than 200 virtual reality systems in California public libraries. Its website calls this the largest VR installation in public libraries.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "California public libraries",
+  "Partners": "",
+  "Sources": [
+   "about"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_ca_200.T_Art_ca_200",
+  "Location": {
+   "X": -599.5,
+   "Y": -900.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -900.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "mission",
+  "KindId": "mission",
+  "Kind": "Mission",
+  "Gallery": 1,
+  "Title": "XR Made Easy for Everyone",
+  "Date": "Since 2016",
+  "Year": 0,
+  "Description": "XRLibraries works with schools and libraries to bring virtual, augmented and mixed reality into their programs and classes. Its stated goal is equitable access to immersive technology for all communities.",
+  "More": "",
+  "Quote": "We make XR easy to use for everyone.",
+  "QuoteBy": "XRLibraries, on its About page",
+  "Where": "Libraries and schools",
+  "Partners": "",
+  "Sources": [
+   "about",
+   "sjsu"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_mission.T_Art_mission",
+  "Location": {
+   "X": 599.5,
+   "Y": -900.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -900.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "headset",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 1,
+  "Title": "A Library VR Headset",
+  "Date": "Today",
+  "Year": 0,
+  "Description": "Standalone headsets let a library visitor stand on the moon, swim a coral reef or practice a job, with no computer attached. Meta Quest and Pico both appear on XRLibraries’ partner list, and its Nevada headsets run on Pico.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Library program rooms",
+  "Partners": "Meta Quest and Pico are listed partners",
+  "Sources": [
+   "home",
+   "arbor"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_headset.T_Art_headset",
+  "Location": {
+   "X": -260.0,
+   "Y": -1200.0,
+   "Z": 128.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 62.0,
+   "Y": 100.0
+  },
+  "View": {
+   "Location": {
+    "X": -10.0,
+    "Y": -1200.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -17.189,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "nv-2017",
+  "KindId": "milestone",
+  "Kind": "Milestone",
+  "Gallery": 1,
+  "Title": "Nevada Follows Marin County",
+  "Date": "2017",
+  "Year": 2017,
+  "Description": "In 2017 Nevada’s state library put its first VR headsets in public libraries: 22 headsets in 11 libraries, with STEM content. WorkingNation reports that the model followed a program at the Marin County Free Library in California.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Nevada public libraries",
+  "Partners": "Nevada State Library",
+  "Sources": [
+   "working"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_nv_2017.T_Art_nv_2017",
+  "Location": {
+   "X": -599.5,
+   "Y": -1500.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -1500.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cil-talks",
+  "KindId": "event",
+  "Kind": "Event",
+  "Gallery": 1,
+  "Title": "XR at Computers in Libraries",
+  "Date": "2020 and 2022",
+  "Year": 2020,
+  "Description": "XRLibraries’ executive director, John MacLeod, presented “Integrating XR Tech & Programming in Libraries” at Computers in Libraries Connect in 2020 and “Using XR to Discover ‘Lost Stories’ & Pop-Up Books” in 2022.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Computers in Libraries conference",
+  "Partners": "Information Today",
+  "Sources": [
+   "cil"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_cil_talks.T_Art_cil_talks",
+  "Location": {
+   "X": 599.5,
+   "Y": -1500.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 100.0,
+   "Y": 132.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -1500.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "sandi",
+  "KindId": "program",
+  "Kind": "Program",
+  "Gallery": 2,
+  "Title": "Project SANDI",
+  "Date": "Began in 2020",
+  "Year": 2020,
+  "Description": "Supporting and Advancing Nevada’s Dislocated Individuals began during the 2020 downturn with a $13.8 million federal grant. It uses VR to explore careers in five fields: skilled trades, healthcare, IT, advanced manufacturing and logistics.",
+  "More": "The program grew to more than 1,000 headsets at over 80 locations, with 35 VR field trips and five training simulations, including dialysis technician and certified nursing assistant. XRLibraries’ executive director is a partner in the project.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Nevada",
+  "Partners": "Nevada Governor’s Office of Economic Development, XRLibraries",
+  "Sources": [
+   "working",
+   "arborPod",
+   "about"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_sandi.T_Art_sandi",
+  "Location": {
+   "X": -599.5,
+   "Y": -2100.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -2100.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "nv-1100",
+  "KindId": "milestone",
+  "Kind": "Milestone",
+  "Gallery": 2,
+  "Title": "1,100 Headsets in Nevada",
+  "Date": "2020s",
+  "Year": 0,
+  "Description": "XRLibraries and Lifeliqe installed VR headsets in Nevada’s community college and public libraries. XRLibraries’ homepage counts more than 1,100.",
+  "More": "XRLibraries uses ArborXR to set up headsets and send updates remotely. Its director told ArborXR the switch cut the time and resources spent by about 60 percent.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Nevada community college and public libraries",
+  "Partners": "Lifeliqe, ArborXR",
+  "Sources": [
+   "home",
+   "arbor"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_nv_1100.T_Art_nv_1100",
+  "Location": {
+   "X": 599.5,
+   "Y": -2100.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -2100.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "dialysis",
+  "KindId": "story",
+  "Kind": "Story",
+  "Gallery": 2,
+  "Title": "Training From a Town of 300",
+  "Date": "2020s",
+  "Year": 0,
+  "Description": "A remote 12-week dialysis technician certification lets people train without traveling to a training center. In a community of about 300 people, a single mother finished the program, passed her certification and plans to become a registered nurse.",
+  "More": "",
+  "Quote": "It brought the dialysis concepts to life.",
+  "QuoteBy": "Natasha York, former library assistant, in WorkingNation",
+  "Where": "Rural Nevada",
+  "Partners": "College of Southern Nevada",
+  "Sources": [
+   "arbor",
+   "working"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_dialysis.T_Art_dialysis",
+  "Location": {
+   "X": -599.5,
+   "Y": -2700.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 115.0,
+   "Y": 115.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -2700.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "playbooks",
+  "KindId": "resource",
+  "Kind": "Resource",
+  "Gallery": 2,
+  "Title": "XR Playbooks",
+  "Date": "Ongoing",
+  "Year": 0,
+  "Description": "XRLibraries catalogs more than 300 XR apps in categories from astronomy and history to mindfulness and music, then bundles them into themed playbooks that come pre-installed on library headsets.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Pre-installed on library headsets",
+  "Partners": "",
+  "Sources": [
+   "sjsu",
+   "playbooks"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_playbooks.T_Art_playbooks",
+  "Location": {
+   "X": -260.0,
+   "Y": -2400.0,
+   "Z": 128.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 62.0,
+   "Y": 100.0
+  },
+  "View": {
+   "Location": {
+    "X": -10.0,
+    "Y": -2400.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -17.189,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "showcase",
+  "KindId": "resource",
+  "Kind": "Resource",
+  "Gallery": 2,
+  "Title": "XR Showcase",
+  "Date": "Video series",
+  "Year": 0,
+  "Description": "In this video series, hosts George and Camila try VR and AR apps for libraries, from Tilt Brush and Wander to Apollo 11 VR, and share practical tips like cleaning headsets and setting a guardian boundary.",
+  "More": "Episodes also cover running big VR events with rotating stations, recording video inside a headset and playing media through the Meta Quest TV app.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Online",
+  "Partners": "Hosts George and Camila",
+  "Sources": [
+   "showcase"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_showcase.T_Art_showcase",
+  "Location": {
+   "X": 599.5,
+   "Y": -2700.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 115.0,
+   "Y": 115.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -2700.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "way-out",
+  "KindId": "project",
+  "Kind": "Project",
+  "Gallery": 3,
+  "Title": "A Way Out of No Way",
+  "Date": "Lost Stories project",
+  "Year": 0,
+  "Description": "Marin City students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told.",
+  "More": "The project ran in three tracks: immersive storytelling, music and VR modeling. It is part of XRLibraries’ Lost Stories work, which plans to look for Latino, Asian-Pacific and Native American stories next.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin City, California",
+  "Partners": "The Marinovators, Marin City youth",
+  "Sources": [
+   "equity",
+   "home"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_way_out.T_Art_way_out",
+  "Location": {
+   "X": -599.5,
+   "Y": -3300.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -3300.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "charleston",
+  "KindId": "project",
+  "Kind": "Project",
+  "Gallery": 3,
+  "Title": "The Black Wall Street of Charleston",
+  "Date": "AR scavenger hunt",
+  "Year": 0,
+  "Description": "Career and technical education students at Burke High School built an augmented-reality scavenger hunt that leads players to Charleston’s Black-owned businesses.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Charleston, South Carolina",
+  "Partners": "Burke High School CTE students, Preservation Society of Charleston, Burke High School Foundation",
+  "Sources": [
+   "equity",
+   "home"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_charleston.T_Art_charleston",
+  "Location": {
+   "X": 599.5,
+   "Y": -3300.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 100.0,
+   "Y": 132.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -3300.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "seeking",
+  "KindId": "project",
+  "Kind": "Project",
+  "Gallery": 3,
+  "Title": "Seeking Immortality",
+  "Date": "Browser-based world",
+  "Year": 0,
+  "Description": "A browser-based VR world, funded by an IMLS Native American Enhancement Grant, that preserves endangered Cheyenne language and cultural knowledge. Tribal members and students learned 3D scanning so the tribe keeps control of its own data.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Northern Cheyenne Tribe",
+  "Partners": "Northern Cheyenne Tribe, SJSU School of Information",
+  "Sources": [
+   "metaverse"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_seeking.T_Art_seeking",
+  "Location": {
+   "X": -599.5,
+   "Y": -3900.0,
+   "Z": 174.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 150.0,
+   "Y": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": -200.0,
+    "Y": -3900.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "ukraine",
+  "KindId": "project",
+  "Kind": "Project",
+  "Gallery": 3,
+  "Title": "Children Draw War, Not Flowers",
+  "Date": "3D art exhibition",
+  "Year": 0,
+  "Description": "An immersive 3D exhibition of art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children. It helps children work through war-related trauma, preserves their artwork, and was honored at the Anthem Awards.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Cherkasy region, Ukraine",
+  "Partners": "SJSU School of Information, Ukrainian librarians, children and veterans, 40 regional libraries",
+  "Sources": [
+   "metaverse"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_ukraine.T_Art_ukraine",
+  "Location": {
+   "X": 599.5,
+   "Y": -3900.0,
+   "Z": 174.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 115.0,
+   "Y": 115.0
+  },
+  "View": {
+   "Location": {
+    "X": 200.0,
+    "Y": -3900.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "pollinators",
+  "KindId": "event",
+  "Kind": "Event",
+  "Gallery": 3,
+  "Title": "Pollinators at the Marin County Fair",
+  "Date": "2025",
+  "Year": 2025,
+  "Description": "At XRLibraries’ bug-themed booth, fairgoers used an AR app called Pollinators to plant flowers and release monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin County Fair, California",
+  "Partners": "Artist Cynthia Jensen",
+  "Sources": [
+   "fair"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_pollinators.T_Art_pollinators",
+  "Location": {
+   "X": -360.0,
+   "Y": -4199.5,
+   "Z": 190.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 170.0,
+   "Y": 170.0
+  },
+  "View": {
+   "Location": {
+    "X": -360.0,
+    "Y": -3700.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -4.584,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "freedom",
+  "KindId": "project",
+  "Kind": "Project",
+  "Gallery": 0,
+  "Title": "Freedom to Read",
+  "Date": "A shared world on FrameVR",
+  "Year": 0,
+  "Description": "A VR environment that helps citizens, librarians and students fight book bans, and helps young people in affected areas find challenged books that reflect their lives. It is one of the shared worlds listed on XRLibraries’ metaverse page.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Online, in the browser",
+  "Partners": "SJSU School of Information, Unite Against Book Bans, Little Free Library, Books Unbanned",
+  "Sources": [
+   "metaverse"
+  ],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "/Game/WTA/Art/T_Art_freedom.T_Art_freedom",
+  "Location": {
+   "X": -2137.0,
+   "Y": 100.0,
+   "Z": 135.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 130.0,
+   "Y": 97.5
+  },
+  "View": {
+   "Location": {
+    "X": -1910.0,
+    "Y": 100.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.865,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2016",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "The First Headsets",
+  "Date": "2016",
+  "Year": 2016,
+  "Description": "In 2016, libraries in Marin County, California, began offering virtual reality stations as the pilot for the California Virtual Reality Experience. XRLibraries launched that year as the project’s coordinator. Teen volunteers helped first-time visitors into headsets and guided them through their first worlds.",
+  "More": "Library Journal reported that four Marin County libraries had offered VR stations since 2016, with teens from the Marin WebStars volunteer program helping manage the stations and guide new users.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin County Free Library, California",
+  "Partners": "Califa, Marin County Free Library, XRLibraries",
+  "Sources": [
+   "cenic",
+   "lj2019",
+   "lj2017"
+  ],
+  "Hall": "The Wax Hall · Scene 1 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2016",
+  "Art": "",
+  "Location": {
+   "X": -460.0,
+   "Y": -4810.0,
+   "Z": 100.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -4810.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2017a",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "VR Goes Statewide",
+  "Date": "2017",
+  "Year": 2017,
+  "Description": "In June 2017 the California State Library, Oculus and the library consortium Califa partnered to bring VR-ready PCs with Rift headsets to more than 90 libraries across California, building on the Marin County pilot. XRLibraries, launched in 2016 as the project’s coordinator, also became a clearinghouse where libraries share what works with VR and AR.",
+  "More": "XRLibraries’ website counts more than 200 VR systems installed in California public libraries, and calls it the largest VR installation in public libraries.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "More than 90 California libraries",
+  "Partners": "California State Library, Oculus, Califa",
+  "Sources": [
+   "lj2017",
+   "lj2019",
+   "vive2018",
+   "about"
+  ],
+  "Hall": "The Wax Hall · Scene 2 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2017a",
+  "Art": "",
+  "Location": {
+   "X": 460.0,
+   "Y": -4810.0,
+   "Z": 100.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -4810.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2017b",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Story Time in 3D",
+  "Date": "2017",
+  "Year": 2017,
+  "Description": "Library Journal reported in 2017 that young children loved virtual reality story times, while teens gravitated to VR games. In Marin, children listened to stories inside three-dimensional worlds.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "California libraries",
+  "Partners": "Libraries in the California Virtual Reality Experience",
+  "Sources": [
+   "lj2017",
+   "cenic"
+  ],
+  "Hall": "The Wax Hall · Scene 3 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2017b",
+  "Art": "",
+  "Location": {
+   "X": -460.0,
+   "Y": -5400.0,
+   "Z": 100.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -5400.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2018a",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Nevada Opens Its Stations",
+  "Date": "2018",
+  "Year": 2018,
+  "Description": "Nevada’s state library set aside $22,000 of a 2017 budget increase for a VR pilot: 22 headsets loaded with STEM content in 11 libraries, modeled on Marin County’s program. In February 2018 the Carson City Library’s grand re-opening featured VR and AR stations, and XRLibraries’ founder presented in a webinar for librarians across the state.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Carson City Library and other Nevada libraries",
+  "Partners": "Nevada State Library, XRLibraries",
+  "Sources": [
+   "working",
+   "carson2018"
+  ],
+  "Hall": "The Wax Hall · Scene 4 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2018a",
+  "Art": "",
+  "Location": {
+   "X": 460.0,
+   "Y": -5400.0,
+   "Z": 100.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -5400.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2019a",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "VR on the Road",
+  "Date": "By 2019",
+  "Year": 2019,
+  "Description": "Marin’s VR program went out into the community: to schools, senior centers, the county fair, and people displaced by deadly wildfires.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin County, California",
+  "Partners": "Marin County Free Library",
+  "Sources": [
+   "cenic"
+  ],
+  "Hall": "The Wax Hall · Scene 5 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2019a",
+  "Art": "",
+  "Location": {
+   "X": -460.0,
+   "Y": -5990.0,
+   "Z": 100.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -5990.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2019b",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "VR in the World’s Catalog",
+  "Date": "2019",
+  "Year": 2019,
+  "Description": "Nevada’s state library and its partner XRLibraries set out to catalog VR content so any library could find it. In 2019 Nevada librarians led a first-of-its-kind effort to catalog virtual reality in WorldCat, the world’s largest library catalog, and planned a cataloging hack-a-thon in Marin, California and Carson City, Nevada.",
+  "More": "Nevada’s Governor’s Office of Economic Development says a Carson City librarian cataloged the first VR course companion in WorldCat, and that the work produced a collection of more than 1,000 3D interactive VR objects.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Carson City, Nevada",
+  "Partners": "Nevada State Library, XRLibraries, Lifeliqe",
+  "Sources": [
+   "lj2019",
+   "goed2023",
+   "vive2018"
+  ],
+  "Hall": "The Wax Hall · Scene 6 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2019b",
+  "Art": "",
+  "Location": {
+   "X": 460.0,
+   "Y": -5990.0,
+   "Z": 100.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -5990.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2019c",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "XR Marin and the XR Stars",
+  "Date": "2019",
+  "Year": 2019,
+  "Description": "XR Marin brought together the Marin County Free Library, XRLibraries, Novato Unified School District and the Marin County Office of Education. Teens served as “XR Stars,” helping patrons use the equipment. Its programs let people make 3D models, design 3D games and produce 360-degree video tours, and one teen at a VR summer camp borrowed the cameras and filmed her family’s farm.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin County, California",
+  "Partners": "Marin County Free Library, XRLibraries, Novato Unified School District, Marin County Office of Education",
+  "Sources": [
+   "cenic"
+  ],
+  "Hall": "The Wax Hall · Scene 7 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2019c",
+  "Art": "",
+  "Location": {
+   "X": -460.0,
+   "Y": -6580.0,
+   "Z": 100.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -6580.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2020",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Project SANDI",
+  "Date": "2020",
+  "Year": 2020,
+  "Description": "In October 2020 Nevada won a $13.8 million federal grant for Project SANDI (Supporting and Advancing Nevada’s Dislocated Individuals), which uses VR to explore careers in skilled trades, healthcare, IT, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations. XRLibraries’ executive director is a partner in the project.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Nevada",
+  "Partners": "Nevada Governor’s Office of Workforce Innovation, Governor’s Office of Economic Development, Nevada libraries and colleges",
+  "Sources": [
+   "goed2023",
+   "working",
+   "arborPod",
+   "about"
+  ],
+  "Hall": "The Wax Hall · Scene 8 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2020",
+  "Art": "",
+  "Location": {
+   "X": 460.0,
+   "Y": -6580.0,
+   "Z": 100.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -6580.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2022a",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "360° Stories in Washington",
+  "Date": "2022",
+  "Year": 2022,
+  "Description": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program. In 2022 it helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was open to public, tribal and academic libraries and funded by IMLS through the Library Services and Technology Act.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Washington State",
+  "Partners": "Washington State Library, IMLS",
+  "Sources": [
+   "wsl"
+  ],
+  "Hall": "The Wax Hall · Scene 9 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2022a",
+  "Art": "",
+  "Location": {
+   "X": -460.0,
+   "Y": -7170.0,
+   "Z": 100.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -7170.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2022b",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Lost Stories",
+  "Date": "2022",
+  "Year": 2022,
+  "Description": "In Marin City, students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told. XRLibraries’ director presented its Lost Stories work at Computers in Libraries in 2022.",
+  "More": "The project ran in three tracks: immersive storytelling, music and VR modeling.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin City, California",
+  "Partners": "The Marinovators, Marin City youth",
+  "Sources": [
+   "equity",
+   "cil"
+  ],
+  "Hall": "The Wax Hall · Scene 10 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2022b",
+  "Art": "",
+  "Location": {
+   "X": 460.0,
+   "Y": -7170.0,
+   "Z": 100.0
+  },
+  "Yaw": 180.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": -7170.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2024",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Children Draw War, Not Flowers",
+  "Date": "2024",
+  "Year": 2024,
+  "Description": "XRLibraries helped design “Children Draw War, Not Flowers,” a browser-based VR art exhibition from the San José State University School of Information. It shows art by Ukrainian children aged 4 to 16 and virtual galleries showing the destruction of Ukrainian libraries, and anyone can visit it free in a web browser.",
+  "More": "XRLibraries lists the exhibition, which was honored at the Anthem Awards, among its shared worlds.",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Online, in the browser",
+  "Partners": "SJSU School of Information, Ukrainian librarians and children",
+  "Sources": [
+   "sjsu2024",
+   "metaverse"
+  ],
+  "Hall": "The Wax Hall · Scene 11 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2024",
+  "Art": "",
+  "Location": {
+   "X": -415.0,
+   "Y": -7710.0,
+   "Z": 100.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": -257.3,
+    "Y": -7370.0,
+    "Z": 162.0
+   },
+   "Yaw": -107.505,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "wax-2025",
+  "KindId": "reenactment",
+  "Kind": "Living History",
+  "Gallery": 4,
+  "Title": "Pollinators at the Fair",
+  "Date": "2025",
+  "Year": 2025,
+  "Description": "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an augmented-reality app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "Marin County Fair, California",
+  "Partners": "Artist Cynthia Jensen",
+  "Sources": [
+   "fair"
+  ],
+  "Hall": "The Wax Hall · Scene 12 of 12",
+  "bWax": true,
+  "WaxSceneId": "wax-2025",
+  "Art": "",
+  "Location": {
+   "X": 415.0,
+   "Y": -7710.0,
+   "Z": 100.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 60.0,
+   "Y": 40.0
+  },
+  "View": {
+   "Location": {
+    "X": 257.3,
+    "Y": -7370.0,
+    "Z": 162.0
+   },
+   "Yaw": -72.495,
+   "Pitch": -2.292,
+   "bValid": true
+  }
+ }
+]

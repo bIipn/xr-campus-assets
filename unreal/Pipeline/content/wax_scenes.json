@@ -1,0 +1,1406 @@
+[
+  {
+    "id": "wax-2016",
+    "n": 1,
+    "year": "2016",
+    "yearNum": 2016,
+    "title": "The First Headsets",
+    "backdrop": "library",
+    "floor": "carpet",
+    "loopSeconds": 14,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Marin County’s libraries open their first VR stations."
+      },
+      {
+        "t": 4.4,
+        "text": "A teen volunteer helps a first-time visitor into a headset."
+      },
+      {
+        "t": 9.2,
+        "text": "XRLibraries launches as the pilot’s coordinator."
+      }
+    ],
+    "item": {
+      "id": "wax-2016",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 1 of 12",
+      "sceneId": "wax-2016",
+      "year": 2016,
+      "title": "The First Headsets",
+      "date": "2016",
+      "where": "Marin County Free Library, California",
+      "partners": "Califa, Marin County Free Library, XRLibraries",
+      "src": [
+        "cenic",
+        "lj2019",
+        "lj2017"
+      ],
+      "desc": "In 2016, libraries in Marin County, California, began offering virtual reality stations as the pilot for the California Virtual Reality Experience. XRLibraries launched that year as the project’s coordinator. Teen volunteers helped first-time visitors into headsets and guided them through their first worlds.",
+      "more": "Library Journal reported that four Marin County libraries had offered VR stations since 2016, with teens from the Marin WebStars volunteer program helping manage the stations and guide new users."
+    },
+    "cast": [
+      {
+        "var": "teen",
+        "avatar": "fa12",
+        "look": {
+          "av": "fa12",
+          "scale": 0.93,
+          "body": "girl",
+          "skin": "#c08660",
+          "hair": "#2a1a12",
+          "hairStyle": "ponytail",
+          "top": "#1f7a72",
+          "bottom": "#2b3445",
+          "lanyard": "#f2c14e",
+          "shoes": "#e9e5dc",
+          "eyes": "#3a2416"
+        },
+        "at": [
+          1.3,
+          -1.75
+        ],
+        "ry": -55
+      },
+      {
+        "var": "man",
+        "avatar": "ma02",
+        "look": {
+          "av": "ma02",
+          "body": "man",
+          "skin": "#e4b08c",
+          "hair": "#6b4a2e",
+          "hairStyle": "short",
+          "top": "#6b7a4a",
+          "bottom": "#3a3f46",
+          "collar": "#e8e2d6",
+          "eyes": "#4a6a8a"
+        },
+        "at": [
+          0.22,
+          -2
+        ],
+        "ry": 15
+      },
+      {
+        "var": "kid",
+        "avatar": "mc02",
+        "look": {
+          "av": "mc02",
+          "scale": 0.88,
+          "body": "kid",
+          "skin": "#a66f4a",
+          "hair": "#1d1410",
+          "hairStyle": "puffs",
+          "top": "#d8573f",
+          "sleeves": "short",
+          "bottom": "#2f4a7a",
+          "legs": "shorts",
+          "socks": "#f4f0e6",
+          "shoes": "#3b6ea8"
+        },
+        "at": [
+          -1,
+          -1.35
+        ],
+        "ry": 38
+      }
+    ],
+    "propsUsed": [
+      "bookcase",
+      "desk",
+      "screen",
+      "pc",
+      "mat",
+      "fish",
+      "swim"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 35
+  },
+  {
+    "id": "wax-2017a",
+    "n": 2,
+    "year": "2017",
+    "yearNum": 2017,
+    "title": "VR Goes Statewide",
+    "backdrop": "calmap",
+    "floor": "boards",
+    "loopSeconds": 15,
+    "lines": [
+      {
+        "t": 0,
+        "text": "VR stations ship to libraries across California."
+      },
+      {
+        "t": 5,
+        "text": "More than 90 libraries join, from the north coast to the border."
+      },
+      {
+        "t": 10.5,
+        "text": "The Marin pilot becomes a statewide project."
+      }
+    ],
+    "item": {
+      "id": "wax-2017a",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 2 of 12",
+      "sceneId": "wax-2017a",
+      "year": 2017,
+      "title": "VR Goes Statewide",
+      "date": "2017",
+      "where": "More than 90 California libraries",
+      "partners": "California State Library, Oculus, Califa",
+      "src": [
+        "lj2017",
+        "lj2019",
+        "vive2018",
+        "about"
+      ],
+      "desc": "In June 2017 the California State Library, Oculus and the library consortium Califa partnered to bring VR-ready PCs with Rift headsets to more than 90 libraries across California, building on the Marin County pilot. XRLibraries, launched in 2016 as the project’s coordinator, also became a clearinghouse where libraries share what works with VR and AR.",
+      "more": "XRLibraries’ website counts more than 200 VR systems installed in California public libraries, and calls it the largest VR installation in public libraries."
+    },
+    "cast": [
+      {
+        "var": "tech",
+        "avatar": "ma12",
+        "look": {
+          "av": "ma12",
+          "body": "man",
+          "skin": "#80522f",
+          "hair": "#16100c",
+          "hairStyle": "crop",
+          "top": "#31506e",
+          "bottom": "#3a3530",
+          "cap": "#1d3b52",
+          "beard": "stubble",
+          "shoes": "#4a3a2a"
+        },
+        "at": [
+          -0.82,
+          -1.58
+        ],
+        "ry": 180
+      },
+      {
+        "var": "lib",
+        "avatar": "bf03",
+        "look": {
+          "av": "bf03",
+          "body": "woman",
+          "skin": "#f0c9ab",
+          "hair": "#b07a3e",
+          "hairStyle": "bob",
+          "top": "#c04a3a",
+          "jacket": "#2f3a48",
+          "bottom": "#2a2d36",
+          "glasses": true
+        },
+        "at": [
+          1.1,
+          -1.6
+        ],
+        "ry": -35
+      },
+      {
+        "var": "mover",
+        "avatar": "ma06",
+        "look": {
+          "av": "ma06",
+          "body": "man",
+          "skin": "#cf9e74",
+          "hair": "#2a1d14",
+          "hairStyle": "short",
+          "top": "#d9a441",
+          "bottom": "#2b3445"
+        },
+        "at": [
+          2,
+          -1.2
+        ],
+        "ry": -90
+      }
+    ],
+    "propsUsed": [
+      "crate"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 58
+  },
+  {
+    "id": "wax-2017b",
+    "n": 3,
+    "year": "2017",
+    "yearNum": 2017,
+    "title": "Story Time in 3D",
+    "backdrop": "storyroom",
+    "floor": "rug",
+    "loopSeconds": 14,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Story time moves into virtual reality."
+      },
+      {
+        "t": 3,
+        "text": "The youngest visitors hear stories inside 3D worlds."
+      },
+      {
+        "t": 10.6,
+        "text": "Teens, meanwhile, head straight for the VR games."
+      }
+    ],
+    "item": {
+      "id": "wax-2017b",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 3 of 12",
+      "sceneId": "wax-2017b",
+      "year": 2017,
+      "title": "Story Time in 3D",
+      "date": "2017",
+      "where": "California libraries",
+      "partners": "Libraries in the California Virtual Reality Experience",
+      "src": [
+        "lj2017",
+        "cenic"
+      ],
+      "desc": "Library Journal reported in 2017 that young children loved virtual reality story times, while teens gravitated to VR games. In Marin, children listened to stories inside three-dimensional worlds."
+    },
+    "cast": [
+      {
+        "var": "reader",
+        "avatar": "fp02",
+        "look": {
+          "av": "fp02",
+          "body": "woman",
+          "skin": "#5a3622",
+          "hair": "#120c0a",
+          "hairStyle": "puffs",
+          "top": "#f2c14e",
+          "bottom": "#3a2a5a",
+          "legs": "skirt",
+          "hem": "#0.ccccccccccccd",
+          "eyes": "#2a1a10"
+        },
+        "at": [
+          0,
+          -2.62
+        ],
+        "ry": 0
+      },
+      {
+        "var": "k1",
+        "avatar": "mc01",
+        "look": {
+          "av": "mc01",
+          "scale": 0.88,
+          "body": "kid",
+          "skin": "#f0c9ab",
+          "hair": "#c98a4a",
+          "hairStyle": "short",
+          "top": "#3b6ea8",
+          "sleeves": "short",
+          "bottom": "#4a3a2a",
+          "legs": "shorts",
+          "socks": "#ffffff"
+        },
+        "at": [
+          -0.85,
+          -1.25
+        ],
+        "ry": 25
+      },
+      {
+        "var": "k2",
+        "avatar": "fc02",
+        "look": {
+          "av": "fc02",
+          "scale": 0.88,
+          "body": "kid",
+          "skin": "#c08660",
+          "hair": "#1a120c",
+          "hairStyle": "braids",
+          "top": "#e76f51",
+          "bottom": "#2a9d8f",
+          "legs": "skirt",
+          "hem": "#0.8cccccccccccd"
+        },
+        "at": [
+          0.55,
+          -1.15
+        ],
+        "ry": -20
+      },
+      {
+        "var": "teen",
+        "avatar": "ma16",
+        "look": {
+          "av": "ma16",
+          "scale": 0.92,
+          "body": "boy",
+          "skin": "#e4b08c",
+          "hair": "#2a1d14",
+          "hairStyle": "short",
+          "top": "#2b2f38",
+          "bottom": "#3a4a6a",
+          "eyes": "#4a6a3a"
+        },
+        "at": [
+          2.1,
+          -2.4
+        ],
+        "ry": -40
+      }
+    ],
+    "propsUsed": [
+      "chair"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 41
+  },
+  {
+    "id": "wax-2018a",
+    "n": 4,
+    "year": "2018",
+    "yearNum": 2018,
+    "title": "Nevada Opens Its Stations",
+    "backdrop": "reopening",
+    "floor": "tile",
+    "loopSeconds": 14,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Carson City Library reopens with VR and AR stations."
+      },
+      {
+        "t": 2.6,
+        "text": "Nevada’s pilot puts 22 headsets in 11 libraries."
+      },
+      {
+        "t": 6.6,
+        "text": "A visitor floats among planets and stars."
+      }
+    ],
+    "item": {
+      "id": "wax-2018a",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 4 of 12",
+      "sceneId": "wax-2018a",
+      "year": 2018,
+      "title": "Nevada Opens Its Stations",
+      "date": "2018",
+      "where": "Carson City Library and other Nevada libraries",
+      "partners": "Nevada State Library, XRLibraries",
+      "src": [
+        "working",
+        "carson2018"
+      ],
+      "desc": "Nevada’s state library set aside $22,000 of a 2017 budget increase for a VR pilot: 22 headsets loaded with STEM content in 11 libraries, modeled on Marin County’s program. In February 2018 the Carson City Library’s grand re-opening featured VR and AR stations, and XRLibraries’ founder presented in a webinar for librarians across the state."
+    },
+    "cast": [
+      {
+        "var": "dir",
+        "avatar": "fa15",
+        "look": {
+          "av": "fa15",
+          "body": "woman",
+          "skin": "#e4b08c",
+          "hair": "#8a6a4a",
+          "hairStyle": "long",
+          "top": "#9a2f33",
+          "jacket": "#2b2f38",
+          "bottom": "#2b2f38",
+          "legs": "skirt",
+          "hem": "#0000.8",
+          "tights": "#2a2228"
+        },
+        "at": [
+          -0.95,
+          -1.8
+        ],
+        "ry": 0
+      },
+      {
+        "var": "staff",
+        "avatar": "bm05",
+        "look": {
+          "av": "bm05",
+          "body": "man",
+          "skin": "#c08660",
+          "hair": "#1a120c",
+          "hairStyle": "short",
+          "top": "#e9e2d0",
+          "jacket": "#31506e",
+          "bottom": "#2a2d36",
+          "glasses": true
+        },
+        "at": [
+          -2.1,
+          -2
+        ],
+        "ry": 30
+      },
+      {
+        "var": "visitor",
+        "avatar": "fa09",
+        "look": {
+          "av": "fa09",
+          "body": "woman",
+          "skin": "#f0c9ab",
+          "hair": "#d8d2c8",
+          "hairStyle": "bob",
+          "top": "#8a5a9a",
+          "bottom": "#3a3a42",
+          "legs": "skirt",
+          "hem": "#0000.c",
+          "glasses": true
+        },
+        "at": [
+          1.5,
+          -2.2
+        ],
+        "ry": -20
+      }
+    ],
+    "propsUsed": [],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 39
+  },
+  {
+    "id": "wax-2019a",
+    "n": 5,
+    "year": "By 2019",
+    "yearNum": 2019,
+    "title": "VR on the Road",
+    "backdrop": "shelter",
+    "floor": "gym",
+    "loopSeconds": 15,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Marin’s VR program goes out into the community."
+      },
+      {
+        "t": 3.4,
+        "text": "People displaced by deadly wildfires get a break."
+      },
+      {
+        "t": 9.4,
+        "text": "Schools, senior centers and the county fair get visits too."
+      }
+    ],
+    "item": {
+      "id": "wax-2019a",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 5 of 12",
+      "sceneId": "wax-2019a",
+      "year": 2019,
+      "title": "VR on the Road",
+      "date": "By 2019",
+      "where": "Marin County, California",
+      "partners": "Marin County Free Library",
+      "src": [
+        "cenic"
+      ],
+      "desc": "Marin’s VR program went out into the community: to schools, senior centers, the county fair, and people displaced by deadly wildfires.",
+      "quote": "It gave wildfire evacuees a few moments of being able to forget their own reality and have a good time.",
+      "quoteBy": "Sara Jones, director of the Marin County Free Library, speaking to CENIC in 2019"
+    },
+    "cast": [
+      {
+        "var": "grandpa",
+        "avatar": "ma14",
+        "look": {
+          "av": "ma14",
+          "body": "elder",
+          "skin": "#c08660",
+          "hair": "#d8d2c8",
+          "hairStyle": "balding",
+          "top": "#5a6a7a",
+          "bottom": "#3a3530",
+          "glasses": true,
+          "beard": "stubble",
+          "shoes": "#3a2a1a"
+        },
+        "at": [
+          -0.4,
+          -2.2
+        ],
+        "ry": 0
+      },
+      {
+        "var": "kid",
+        "avatar": "mc01",
+        "look": {
+          "av": "mc01",
+          "scale": 0.88,
+          "dye": [
+            215,
+            48,
+            28,
+            1,
+            1.35
+          ],
+          "body": "kid",
+          "skin": "#c08660",
+          "hair": "#1a120c",
+          "hairStyle": "short",
+          "top": "#f2c14e",
+          "sleeves": "short",
+          "bottom": "#2f4a7a",
+          "legs": "shorts",
+          "socks": "#ffffff"
+        },
+        "at": [
+          0.3,
+          -2.25
+        ],
+        "ry": -10
+      },
+      {
+        "var": "lib",
+        "avatar": "ma18",
+        "look": {
+          "av": "ma18",
+          "body": "man",
+          "skin": "#5a3622",
+          "hair": "#0e0b09",
+          "hairStyle": "crop",
+          "top": "#2a9d8f",
+          "jacket": "#3a3f46",
+          "bottom": "#2b2f38",
+          "lanyard": "#cda961",
+          "beard": "full"
+        },
+        "at": [
+          -1.95,
+          -1.15
+        ],
+        "ry": 156
+      }
+    ],
+    "propsUsed": [
+      "desk"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 42
+  },
+  {
+    "id": "wax-2019b",
+    "n": 6,
+    "year": "2019",
+    "yearNum": 2019,
+    "title": "VR in the World’s Catalog",
+    "backdrop": "catalog",
+    "floor": "office",
+    "loopSeconds": 14,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Librarians catalog VR so any library can find it."
+      },
+      {
+        "t": 4,
+        "text": "Record by record, VR titles go into WorldCat."
+      },
+      {
+        "t": 9.8,
+        "text": "More than 1,000 interactive 3D objects get cataloged."
+      }
+    ],
+    "item": {
+      "id": "wax-2019b",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 6 of 12",
+      "sceneId": "wax-2019b",
+      "year": 2019,
+      "title": "VR in the World’s Catalog",
+      "date": "2019",
+      "where": "Carson City, Nevada",
+      "partners": "Nevada State Library, XRLibraries, Lifeliqe",
+      "src": [
+        "lj2019",
+        "goed2023",
+        "vive2018"
+      ],
+      "desc": "Nevada’s state library and its partner XRLibraries set out to catalog VR content so any library could find it. In 2019 Nevada librarians led a first-of-its-kind effort to catalog virtual reality in WorldCat, the world’s largest library catalog, and planned a cataloging hack-a-thon in Marin, California and Carson City, Nevada.",
+      "more": "Nevada’s Governor’s Office of Economic Development says a Carson City librarian cataloged the first VR course companion in WorldCat, and that the work produced a collection of more than 1,000 3D interactive VR objects."
+    },
+    "cast": [
+      {
+        "var": "cat1",
+        "avatar": "fa07",
+        "look": {
+          "av": "fa07",
+          "body": "woman",
+          "skin": "#f0c9ab",
+          "hair": "#6a4a2e",
+          "hairStyle": "bun",
+          "top": "#e2d6bf",
+          "jacket": "#6b3a4a",
+          "bottom": "#2b2f38",
+          "glasses": 7031338
+        },
+        "at": [
+          -1.1,
+          -2.4
+        ],
+        "ry": 0
+      },
+      {
+        "var": "cat2",
+        "avatar": "ma04",
+        "look": {
+          "av": "ma04",
+          "body": "man",
+          "skin": "#a66f4a",
+          "hair": "#1a120c",
+          "hairStyle": "curly",
+          "top": "#3b6ea8",
+          "bottom": "#3a3530",
+          "beard": "stubble"
+        },
+        "at": [
+          -0.1,
+          -2.4
+        ],
+        "ry": 0
+      },
+      {
+        "var": "cat3",
+        "avatar": "fa06",
+        "look": {
+          "av": "fa06",
+          "body": "woman",
+          "skin": "#80522f",
+          "hair": "#120c0a",
+          "scarf": 3107674,
+          "top": "#5a4a7a",
+          "bottom": "#2a2a30",
+          "legs": "skirt",
+          "hem": "#0.f333333333333",
+          "dress": true
+        },
+        "at": [
+          1.05,
+          -1.55
+        ],
+        "ry": -30
+      }
+    ],
+    "propsUsed": [
+      "desk",
+      "chair",
+      "wire"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 45
+  },
+  {
+    "id": "wax-2019c",
+    "n": 7,
+    "year": "2019",
+    "yearNum": 2019,
+    "title": "XR Marin and the XR Stars",
+    "backdrop": "farm",
+    "floor": "grass",
+    "loopSeconds": 15,
+    "lines": [
+      {
+        "t": 0,
+        "text": "XR Marin teams libraries with schools."
+      },
+      {
+        "t": 4,
+        "text": "Teen “XR Stars” help patrons with the gear."
+      },
+      {
+        "t": 9,
+        "text": "A camper borrows the cameras to film her family’s farm."
+      }
+    ],
+    "item": {
+      "id": "wax-2019c",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 7 of 12",
+      "sceneId": "wax-2019c",
+      "year": 2019,
+      "title": "XR Marin and the XR Stars",
+      "date": "2019",
+      "where": "Marin County, California",
+      "partners": "Marin County Free Library, XRLibraries, Novato Unified School District, Marin County Office of Education",
+      "src": [
+        "cenic"
+      ],
+      "desc": "XR Marin brought together the Marin County Free Library, XRLibraries, Novato Unified School District and the Marin County Office of Education. Teens served as “XR Stars,” helping patrons use the equipment. Its programs let people make 3D models, design 3D games and produce 360-degree video tours, and one teen at a VR summer camp borrowed the cameras and filmed her family’s farm."
+    },
+    "cast": [
+      {
+        "var": "star",
+        "avatar": "fa03",
+        "look": {
+          "av": "fa03",
+          "scale": 0.93,
+          "body": "girl",
+          "skin": "#cf9e74",
+          "hair": "#2a1d14",
+          "hairStyle": "long",
+          "top": "#f2c14e",
+          "sleeves": "short",
+          "bottom": "#3a4a6a",
+          "lanyard": "#1d3b52",
+          "shoes": "#e9e5dc"
+        },
+        "at": [
+          -0.1,
+          -1.55
+        ],
+        "ry": -60
+      },
+      {
+        "var": "boy",
+        "avatar": "ma17",
+        "look": {
+          "av": "ma17",
+          "scale": 0.92,
+          "body": "boy",
+          "skin": "#80522f",
+          "hair": "#0e0b09",
+          "hairStyle": "crop",
+          "top": "#2a9d8f",
+          "bottom": "#2b3445"
+        },
+        "at": [
+          1.45,
+          -2.4
+        ],
+        "ry": -150
+      },
+      {
+        "var": "kid",
+        "avatar": "fc01",
+        "look": {
+          "av": "fc01",
+          "scale": 0.88,
+          "body": "kid",
+          "skin": "#f0c9ab",
+          "hair": "#d8a85a",
+          "hairStyle": "ponytail",
+          "top": "#c77dff",
+          "sleeves": "short",
+          "bottom": "#3a4a6a",
+          "legs": "shorts",
+          "socks": "#ffffff"
+        },
+        "at": [
+          -1.6,
+          -2.3
+        ],
+        "ry": 30
+      }
+    ],
+    "propsUsed": [],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 40
+  },
+  {
+    "id": "wax-2020",
+    "n": 8,
+    "year": "2020",
+    "yearNum": 2020,
+    "title": "Project SANDI",
+    "backdrop": "careers",
+    "floor": "concrete",
+    "loopSeconds": 15,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Project SANDI brings VR job training to Nevada."
+      },
+      {
+        "t": 4,
+        "text": "Trainees practice real tasks, like a dialysis technician’s."
+      },
+      {
+        "t": 9.6,
+        "text": "It grows to more than 1,000 headsets at over 80 locations."
+      }
+    ],
+    "item": {
+      "id": "wax-2020",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 8 of 12",
+      "sceneId": "wax-2020",
+      "year": 2020,
+      "title": "Project SANDI",
+      "date": "2020",
+      "where": "Nevada",
+      "partners": "Nevada Governor’s Office of Workforce Innovation, Governor’s Office of Economic Development, Nevada libraries and colleges",
+      "src": [
+        "goed2023",
+        "working",
+        "arborPod",
+        "about"
+      ],
+      "desc": "In October 2020 Nevada won a $13.8 million federal grant for Project SANDI (Supporting and Advancing Nevada’s Dislocated Individuals), which uses VR to explore careers in skilled trades, healthcare, IT, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations. XRLibraries’ executive director is a partner in the project."
+    },
+    "cast": [
+      {
+        "var": "nurse",
+        "avatar": "mf01",
+        "look": {
+          "av": "mf01",
+          "body": "woman",
+          "skin": "#a66f4a",
+          "hair": "#1a120c",
+          "hairStyle": "bun",
+          "top": "#3a8a9a",
+          "bottom": "#3a8a9a",
+          "eyes": "#2a1a10"
+        },
+        "at": [
+          -1,
+          -2
+        ],
+        "ry": 0
+      },
+      {
+        "var": "coach",
+        "avatar": "mm03",
+        "look": {
+          "av": "mm03",
+          "body": "man",
+          "skin": "#e4b08c",
+          "hair": "#9a9088",
+          "hairStyle": "short",
+          "top": "#1d3b52",
+          "bottom": "#6b6252",
+          "glasses": true,
+          "beard": "full"
+        },
+        "at": [
+          0.2,
+          -1.2
+        ],
+        "ry": -30
+      },
+      {
+        "var": "tech",
+        "avatar": "mm04",
+        "look": {
+          "av": "mm04",
+          "body": "man",
+          "skin": "#5a3622",
+          "hair": "#0e0b09",
+          "hairStyle": "crop",
+          "top": "#d8792c",
+          "jacket": "#3a3f46",
+          "bottom": "#2b3445",
+          "shoes": "#4a3a2a"
+        },
+        "at": [
+          1.3,
+          -2.1
+        ],
+        "ry": 0
+      }
+    ],
+    "propsUsed": [
+      "mat",
+      "wire"
+    ],
+    "headsetProps": 2,
+    "hasTick": true,
+    "buildSrcLines": 37
+  },
+  {
+    "id": "wax-2022a",
+    "n": 9,
+    "year": "2022",
+    "yearNum": 2022,
+    "title": "360° Stories in Washington",
+    "backdrop": "forest360",
+    "floor": "meeting",
+    "loopSeconds": 15,
+    "lines": [
+      {
+        "t": 0,
+        "text": "XRLibraries trains Washington librarians in 360° video."
+      },
+      {
+        "t": 4.6,
+        "text": "Six libraries film 360° stories about their communities."
+      },
+      {
+        "t": 9.6,
+        "text": "Put on a headset and you are standing in the story."
+      }
+    ],
+    "item": {
+      "id": "wax-2022a",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 9 of 12",
+      "sceneId": "wax-2022a",
+      "year": 2022,
+      "title": "360° Stories in Washington",
+      "date": "2022",
+      "where": "Washington State",
+      "partners": "Washington State Library, IMLS",
+      "src": [
+        "wsl"
+      ],
+      "desc": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program. In 2022 it helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was open to public, tribal and academic libraries and funded by IMLS through the Library Services and Technology Act."
+    },
+    "cast": [
+      {
+        "var": "trainer",
+        "avatar": "ma07",
+        "look": {
+          "av": "ma07",
+          "body": "man",
+          "skin": "#c08660",
+          "hair": "#2a1d14",
+          "hairStyle": "short",
+          "top": "#e9e2d0",
+          "jacket": "#5a3a2a",
+          "bottom": "#2b2f38",
+          "glasses": true
+        },
+        "at": [
+          0.75,
+          -2
+        ],
+        "ry": -50
+      },
+      {
+        "var": "lib1",
+        "avatar": "fa05",
+        "look": {
+          "av": "fa05",
+          "body": "woman",
+          "skin": "#e4b08c",
+          "hair": "#c98a4a",
+          "hairStyle": "long",
+          "top": "#2f6b5a",
+          "bottom": "#3a3f46"
+        },
+        "at": [
+          -1.3,
+          -1.6
+        ],
+        "ry": 40
+      },
+      {
+        "var": "lib2",
+        "avatar": "gm01",
+        "look": {
+          "av": "gm01",
+          "body": "elder",
+          "skin": "#80522f",
+          "hair": "#c9c4bc",
+          "hairStyle": "crop",
+          "top": "#6a4a8a",
+          "bottom": "#3a3530",
+          "beard": "full"
+        },
+        "at": [
+          -2.1,
+          -2.6
+        ],
+        "ry": 30
+      }
+    ],
+    "propsUsed": [],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 22
+  },
+  {
+    "id": "wax-2022b",
+    "n": 10,
+    "year": "2022",
+    "yearNum": 2022,
+    "title": "Lost Stories",
+    "backdrop": "shipyard",
+    "floor": "dock",
+    "loopSeconds": 16,
+    "lines": [
+      {
+        "t": 0,
+        "text": "Lost Stories: young people rebuild overlooked history in XR."
+      },
+      {
+        "t": 4.4,
+        "text": "Marin City students model the World War II shipyards."
+      },
+      {
+        "t": 9.6,
+        "text": "Their music honors the African-American workers who built the ships."
+      }
+    ],
+    "item": {
+      "id": "wax-2022b",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 10 of 12",
+      "sceneId": "wax-2022b",
+      "year": 2022,
+      "title": "Lost Stories",
+      "date": "2022",
+      "where": "Marin City, California",
+      "partners": "The Marinovators, Marin City youth",
+      "src": [
+        "equity",
+        "cil"
+      ],
+      "desc": "In Marin City, students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told. XRLibraries’ director presented its Lost Stories work at Computers in Libraries in 2022.",
+      "more": "The project ran in three tracks: immersive storytelling, music and VR modeling."
+    },
+    "cast": [
+      {
+        "var": "player",
+        "avatar": "ma12",
+        "look": {
+          "av": "ma12",
+          "scale": 0.92,
+          "body": "boy",
+          "skin": "#5a3622",
+          "hair": "#0e0b09",
+          "hairStyle": "curly",
+          "top": "#d9a441",
+          "bottom": "#2b2f38",
+          "eyes": "#2a1a10"
+        },
+        "at": [
+          -1.84,
+          -1.94
+        ],
+        "ry": 20
+      },
+      {
+        "var": "builder",
+        "avatar": "fa11",
+        "look": {
+          "av": "fa11",
+          "scale": 0.93,
+          "body": "girl",
+          "skin": "#80522f",
+          "hair": "#120c0a",
+          "hairStyle": "braids",
+          "top": "#e9e2d0",
+          "jacket": "#6b2f3a",
+          "bottom": "#2b3445",
+          "eyes": "#2a1a10"
+        },
+        "at": [
+          0,
+          -1.6
+        ],
+        "ry": 0
+      },
+      {
+        "var": "modeler",
+        "avatar": "ma09",
+        "look": {
+          "av": "ma09",
+          "scale": 0.92,
+          "body": "boy",
+          "skin": "#c08660",
+          "hair": "#1a120c",
+          "hairStyle": "crop",
+          "top": "#2f5d7c",
+          "bottom": "#3a3530"
+        },
+        "at": [
+          1.767,
+          -1.57
+        ],
+        "ry": 162.8
+      }
+    ],
+    "propsUsed": [
+      "wire",
+      "desk",
+      "screen",
+      "chair"
+    ],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 47
+  },
+  {
+    "id": "wax-2024",
+    "n": 11,
+    "year": "2024",
+    "yearNum": 2024,
+    "title": "Children Draw War, Not Flowers",
+    "backdrop": "vrgallery",
+    "floor": "grid",
+    "loopSeconds": 16,
+    "lines": [
+      {
+        "t": 0,
+        "text": "A VR gallery of art by Ukrainian children opens online."
+      },
+      {
+        "t": 5,
+        "text": "Anyone can walk through it free, in a web browser."
+      },
+      {
+        "t": 10.4,
+        "text": "XRLibraries helped design the exhibition."
+      }
+    ],
+    "item": {
+      "id": "wax-2024",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 11 of 12",
+      "sceneId": "wax-2024",
+      "year": 2024,
+      "title": "Children Draw War, Not Flowers",
+      "date": "2024",
+      "where": "Online, in the browser",
+      "partners": "SJSU School of Information, Ukrainian librarians and children",
+      "src": [
+        "sjsu2024",
+        "metaverse"
+      ],
+      "desc": "XRLibraries helped design “Children Draw War, Not Flowers,” a browser-based VR art exhibition from the San José State University School of Information. It shows art by Ukrainian children aged 4 to 16 and virtual galleries showing the destruction of Ukrainian libraries, and anyone can visit it free in a web browser.",
+      "more": "XRLibraries lists the exhibition, which was honored at the Anthem Awards, among its shared worlds."
+    },
+    "cast": [
+      {
+        "var": "visitor",
+        "avatar": "fa08",
+        "look": {
+          "av": "fa08",
+          "body": "woman",
+          "skin": "#f0c9ab",
+          "hair": "#3a2a1e",
+          "hairStyle": "ponytail",
+          "top": "#3b6ea8",
+          "bottom": "#2b2f38",
+          "eyes": "#4a6a8a"
+        },
+        "at": [
+          -1.6,
+          -2
+        ],
+        "ry": 30
+      },
+      {
+        "var": "lib",
+        "avatar": "fa01",
+        "look": {
+          "av": "fa01",
+          "body": "woman",
+          "skin": "#cf9e74",
+          "hair": "#2a1d14",
+          "hairStyle": "bob",
+          "top": "#f2c14e",
+          "jacket": "#2b2f38",
+          "bottom": "#2b2f38",
+          "legs": "skirt",
+          "hem": "#0.b333333333333",
+          "tights": "#2a2228",
+          "glasses": true
+        },
+        "at": [
+          1.3,
+          -1.6
+        ],
+        "ry": -30
+      },
+      {
+        "var": "kid",
+        "avatar": "fc01",
+        "look": {
+          "av": "fc01",
+          "scale": 0.88,
+          "dye": [
+            305,
+            22,
+            32,
+            1,
+            1
+          ],
+          "body": "kid",
+          "skin": "#e4b08c",
+          "hair": "#d8a85a",
+          "hairStyle": "bob",
+          "top": "#e76f51",
+          "sleeves": "long",
+          "bottom": "#3a4a6a"
+        },
+        "at": [
+          1.9,
+          -1.9
+        ],
+        "ry": -60
+      }
+    ],
+    "propsUsed": [],
+    "headsetProps": 1,
+    "hasTick": true,
+    "buildSrcLines": 35
+  },
+  {
+    "id": "wax-2025",
+    "n": 12,
+    "year": "2025",
+    "yearNum": 2025,
+    "title": "Pollinators at the Fair",
+    "backdrop": "fair",
+    "floor": "fair",
+    "loopSeconds": 16,
+    "lines": [
+      {
+        "t": 0,
+        "text": "At the Marin County Fair, kids plant flowers in AR."
+      },
+      {
+        "t": 4.6,
+        "text": "Monarch butterflies hatch and fly from flower to flower."
+      },
+      {
+        "t": 10.4,
+        "text": "XRLibraries’ booth turns the fair into a pollinator garden."
+      }
+    ],
+    "item": {
+      "id": "wax-2025",
+      "kind": "reenactment",
+      "hall": "The Wax Hall · Scene 12 of 12",
+      "sceneId": "wax-2025",
+      "year": 2025,
+      "title": "Pollinators at the Fair",
+      "date": "2025",
+      "where": "Marin County Fair, California",
+      "partners": "Artist Cynthia Jensen",
+      "src": [
+        "fair"
+      ],
+      "desc": "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an augmented-reality app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth."
+    },
+    "cast": [
+      {
+        "var": "k1",
+        "avatar": "mc02",
+        "look": {
+          "av": "mc02",
+          "scale": 0.86,
+          "dye": [
+            20,
+            50,
+            18,
+            1,
+            1.25,
+            [
+              0.28,
+              0,
+              0.72,
+              0.8
+            ]
+          ],
+          "body": "kid",
+          "skin": "#80522f",
+          "hair": "#120c0a",
+          "hairStyle": "puffs",
+          "top": "#f2c14e",
+          "sleeves": "short",
+          "bottom": "#2a9d8f",
+          "legs": "skirt",
+          "hem": "#0000.8"
+        },
+        "at": [
+          -0.7,
+          -1.25
+        ],
+        "ry": 14
+      },
+      {
+        "var": "k2",
+        "avatar": "mc01",
+        "look": {
+          "av": "mc01",
+          "scale": 0.88,
+          "dye": [
+            215,
+            2,
+            28,
+            1,
+            1
+          ],
+          "body": "kid",
+          "skin": "#e4b08c",
+          "hair": "#6a4a2e",
+          "hairStyle": "short",
+          "top": "#3b6ea8",
+          "sleeves": "short",
+          "bottom": "#4a3a2a",
+          "legs": "shorts",
+          "socks": "#ffffff",
+          "cap": "#c0392b"
+        },
+        "at": [
+          0.7,
+          -1.2
+        ],
+        "ry": -14
+      },
+      {
+        "var": "dad",
+        "avatar": "ma20",
+        "look": {
+          "av": "ma20",
+          "body": "man",
+          "skin": "#a66f4a",
+          "hair": "#2a1d14",
+          "hairStyle": "short",
+          "top": "#6b7a4a",
+          "bottom": "#3a3f46",
+          "beard": "full",
+          "glasses": 2761244
+        },
+        "at": [
+          1.9,
+          -1.9
+        ],
+        "ry": -40
+      },
+      {
+        "var": "vol",
+        "avatar": "fa17",
+        "look": {
+          "av": "fa17",
+          "body": "woman",
+          "skin": "#c08660",
+          "hair": "#2a1d14",
+          "hairStyle": "long",
+          "top": "#2a9d8f",
+          "bottom": "#2b2f38",
+          "lanyard": "#f2c14e"
+        },
+        "at": [
+          -2.2,
+          -2.1
+        ],
+        "ry": 45
+      }
+    ],
+    "propsUsed": [
+      "flower",
+      "butterfly"
+    ],
+    "headsetProps": 0,
+    "hasTick": true,
+    "buildSrcLines": 51
+  }
+]

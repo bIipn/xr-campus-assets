@@ -1,0 +1,1067 @@
+{
+  "rules": [
+    {
+      "id": "hi",
+      "pattern": "^\\s*(hi|hello|hey|howdy|yo|good (morning|afternoon|evening))\\b",
+      "flags": ""
+    },
+    {
+      "id": "thanks",
+      "pattern": "\\b(thanks|thank you|thx|appreciate it)\\b",
+      "flags": ""
+    },
+    {
+      "id": "bye",
+      "pattern": "\\b(bye|goodbye|see you|see ya|later)\\b",
+      "flags": ""
+    },
+    {
+      "id": "who",
+      "pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+      "flags": ""
+    },
+    {
+      "id": "help",
+      "pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+      "flags": ""
+    },
+    {
+      "id": "where",
+      "pattern": "\\bwhere am i\\b|what is this place|whats this place|what is this\\b|what am i looking at",
+      "flags": ""
+    },
+    {
+      "id": "made",
+      "pattern": "\\bwho (made|built|created) (this|it|the campus)\\b|is this (official|real|xrlibraries)|\\bofficial\\b",
+      "flags": ""
+    },
+    {
+      "id": "wta",
+      "pattern": "walk the archive",
+      "flags": ""
+    },
+    {
+      "id": "go",
+      "pattern": "\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets go\\b",
+      "flags": ""
+    },
+    {
+      "id": "wh",
+      "pattern": "\\bwhere('?s| is| are| can i find| do i find)\\b",
+      "flags": ""
+    },
+    {
+      "id": "joke",
+      "pattern": "\\bjoke\\b|make me laugh|something funny",
+      "flags": ""
+    },
+    {
+      "id": "hours",
+      "pattern": "\\b(hours|open|close|closing)\\b.*\\b(when|what time|hours)\\b|\\bwhat time\\b.*\\b(open|close)\\b",
+      "flags": ""
+    },
+    {
+      "id": "bath",
+      "pattern": "\\b(bathroom|restroom|toilet)\\b",
+      "flags": ""
+    },
+    {
+      "id": "move",
+      "pattern": "how do i (move|walk|look|turn|get around)|controls",
+      "flags": ""
+    },
+    {
+      "id": "paint",
+      "pattern": "\\b(paint|draw|tilt brush|brush|sculpt)\\b",
+      "flags": ""
+    },
+    {
+      "id": "startPaint",
+      "pattern": "^\\s*(start|let'?s|begin) (painting|to paint|the workshop|workshop)|^\\s*start painting\\s*$|\\bstart (the )?paint",
+      "flags": ""
+    },
+    {
+      "id": "oldest",
+      "pattern": "\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b",
+      "flags": ""
+    },
+    {
+      "id": "count",
+      "pattern": "how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)",
+      "flags": ""
+    },
+    {
+      "id": "recommend",
+      "pattern": "recommend|suggest a book|what should i read|good book|something to read",
+      "flags": ""
+    },
+    {
+      "id": "booksAbout",
+      "pattern": "\\bbooks? (about|on)\\b|do you have (a |any )?books?",
+      "flags": ""
+    },
+    {
+      "id": "sections",
+      "pattern": "\\b(sections|subjects|categories)\\b",
+      "flags": ""
+    },
+    {
+      "id": "what",
+      "pattern": "what (is|are|does) xr ?libraries|tell me about xr ?libraries|^\\s*xr ?libraries\\??\\s*$|what do they do",
+      "flags": ""
+    },
+    {
+      "id": "director",
+      "pattern": "\\b(director|who runs|who leads|in charge|founder|ceo)\\b",
+      "flags": ""
+    },
+    {
+      "id": "workshops",
+      "pattern": "other (workshops|classes|rooms)|what (workshops|classes|rooms)|which (workshops|classes|rooms)|workshops are there|what can i (do|make|learn) (here|in the school)",
+      "flags": ""
+    },
+    {
+      "id": "blank",
+      "pattern": "\\bblank (canvas|page|room)\\b|\\bempty (canvas|room)\\b|\\bclean canvas\\b|\\bnew canvas\\b",
+      "flags": ""
+    },
+    {
+      "id": "startLab",
+      "pattern": "^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)",
+      "flags": ""
+    },
+    {
+      "id": "openBp",
+      "pattern": "^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint",
+      "flags": ""
+    },
+    {
+      "id": "buildModel",
+      "pattern": "\\b(build|make)\\s+(a |an |my own )?(model|mini) (car|house|building)\\b",
+      "flags": ""
+    },
+    {
+      "id": "labq",
+      "pattern": "\\b(science lab|room 102|lab work|experiments?|labs)\\b",
+      "flags": ""
+    },
+    {
+      "id": "bpq",
+      "pattern": "\\bblueprints?\\b|\\broom 103\\b",
+      "flags": ""
+    },
+    {
+      "id": "worldq",
+      "pattern": "\\b(world builder|room 104|build (a|my own|your own|a whole) (world|game)|make (a|my own|your own) (world|game|3d world)|game design|how (was|is|did) (this|the campus|you) (made|built|make|build)|how (do|can) (i|you) (make|build) (a world|a game|something like this|this))\\b",
+      "flags": ""
+    },
+    {
+      "id": "rideNow",
+      "pattern": "^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b",
+      "flags": ""
+    },
+    {
+      "id": "coaster",
+      "pattern": "\\b(coaster|roller ?coaster|rollercoaster|comet)\\b",
+      "flags": ""
+    },
+    {
+      "id": "dropq",
+      "pattern": "\\b(sky ?drop|drop tower|free ?fall)\\b",
+      "flags": ""
+    },
+    {
+      "id": "diveq",
+      "pattern": "\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b",
+      "flags": ""
+    },
+    {
+      "id": "tokens",
+      "pattern": "\\b(tokens?|easter eggs?|secrets?|collectibles?)\\b|\\bhidden (things|stuff|items|gems)\\b",
+      "flags": ""
+    },
+    {
+      "id": "badges",
+      "pattern": "\\b(badges?|achievements?|rewards?|prizes?|trophies|trophy)\\b",
+      "flags": ""
+    },
+    {
+      "id": "safety",
+      "pattern": "\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b",
+      "flags": ""
+    },
+    {
+      "id": "recess",
+      "pattern": "\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b",
+      "flags": ""
+    },
+    {
+      "id": "play",
+      "pattern": "\\b(balls?|kick\\w*|soccer|football|foam blocks?|block tower|blocks|physics|swings?|swinging|merry[- ]?go[- ]?round|spinner)\\b",
+      "flags": ""
+    },
+    {
+      "id": "stats",
+      "pattern": "\\bhow (fast|tall|high|long|big|deep)\\b",
+      "flags": ""
+    },
+    {
+      "id": "wax",
+      "pattern": "\\bwax\\b|living history|re-?enact\\w*",
+      "flags": ""
+    },
+    {
+      "id": "history",
+      "pattern": "\\b(history|timeline)\\b|\\bwhen did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bhow did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bfrom the (very )?beginning\\b",
+      "flags": ""
+    }
+  ],
+  "presetBranches": [
+    {
+      "order": 1,
+      "line": 194,
+      "conditionSrc": "RX.hi.test(s) && words <= 2",
+      "rulesUsed": [
+        "hi"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "greetingShort(staffId)",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 2,
+      "line": 195,
+      "conditionSrc": "RX.thanks.test(s) && words <= 4",
+      "rulesUsed": [
+        "thanks"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "You’re welcome! Ask me anything else about the campus.",
+      "replySrc": "'You’re welcome! Ask me anything else about the campus.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 3,
+      "line": 196,
+      "conditionSrc": "RX.bye.test(s) && words <= 3",
+      "rulesUsed": [
+        "bye"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Come back anytime. The campus never closes.",
+      "replySrc": "'Come back anytime. The campus never closes.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 4,
+      "line": 197,
+      "conditionSrc": "RX.who.test(s)",
+      "rulesUsed": [
+        "who"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'I’m ' + st.name + ', the ' + st.role.toLowerCase() + ' here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows' + (aiOn() ? ', and I can use AI for harder ones.' : '.')",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 5,
+      "line": 198,
+      "conditionSrc": "RX.help.test(s)",
+      "rulesUsed": [
+        "help"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "helpText(staffId)",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 6,
+      "line": 199,
+      "conditionSrc": "RX.made.test(s)",
+      "rulesUsed": [
+        "made"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "This campus is an unofficial concept that Ev Holt made with Walk the Archive for XRLibraries. It is not an official XRLibraries site. The facts come from public sources like xrlibraries.com.",
+      "replySrc": "'This campus is an unofficial concept that Ev Holt made with Walk the Archive for XRLibraries. It is not an official XRLibraries site. The facts come from public sources like xrlibraries.com.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 7,
+      "line": 200,
+      "conditionSrc": "RX.wta.test(s)",
+      "rulesUsed": [
+        "wta"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "FACTS.find((f) => f.id === 'wta').text",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 8,
+      "line": 201,
+      "conditionSrc": "RX.where.test(s)",
+      "rulesUsed": [
+        "where"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four hands-on rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard.",
+      "replySrc": "'You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four hands-on rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard.'",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'library')), placeCard(PLACES.find((p) => p.id === 'school')), placeCard(PLACES.find((p) => p.id === 'yard'))] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'library')), placeCard(PLACES.find((p) => p.id === 'school')), placeCard(PLACES.find((p) => p.id === 'yard'))]"
+    },
+    {
+      "order": 9,
+      "line": 202,
+      "conditionSrc": "RX.joke.test(s)",
+      "rulesUsed": [
+        "joke"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "JOKES[staffId]",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 10,
+      "line": 203,
+      "conditionSrc": "RX.bath.test(s)",
+      "rulesUsed": [
+        "bath"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Good news: nobody needs a restroom in a virtual campus. Anything else I can help with?",
+      "replySrc": "'Good news: nobody needs a restroom in a virtual campus. Anything else I can help with?'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 11,
+      "line": 204,
+      "conditionSrc": "RX.hours.test(s)",
+      "rulesUsed": [
+        "hours"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "The campus never closes. It’s open whenever you are, on a phone, a laptop or a library computer.",
+      "replySrc": "'The campus never closes. It’s open whenever you are, on a phone, a laptop or a library computer.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 12,
+      "line": 205,
+      "conditionSrc": "RX.move.test(s)",
+      "rulesUsed": [
+        "move"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "COARSE ? 'Tap the floor to walk or use the stick in the corner, drag to look around, and tap anything that looks interesting. The jump button hops. The campus map in the corner takes you to any room.' : 'Click the floor to walk, drag to look around, or use W A S D. Hold Shift to run and press Space to jump. The campus map in the corner takes you to any room.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 13,
+      "line": 206,
+      "conditionSrc": "RX.startPaint.test(s)",
+      "rulesUsed": [
+        "startPaint"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Let’s paint! I’ll take you to the easel. Drag to paint in the air, then walk around your work.",
+      "replySrc": "'Let’s paint! I’ll take you to the easel. Drag to paint in the air, then walk around your work.'",
+      "extraSrc": "{ action:'paint' }",
+      "action": "paint",
+      "cardsSrc": null
+    },
+    {
+      "order": 14,
+      "line": 207,
+      "conditionSrc": "RX.blank.test(s)",
+      "rulesUsed": [
+        "blank"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Here’s a blank canvas: the room disappears and it’s just you and your art. Switch to Night for a starry sky, or back to Room any time.",
+      "replySrc": "'Here’s a blank canvas: the room disappears and it’s just you and your art. Switch to Night for a starry sky, or back to Room any time.'",
+      "extraSrc": "{ action:'paintBlank' }",
+      "action": "paintBlank",
+      "cardsSrc": null
+    },
+    {
+      "order": 15,
+      "line": 208,
+      "conditionSrc": "RX.startLab.test(s)",
+      "rulesUsed": [
+        "startLab"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "k === 'sieve' ? 'Goggles on! Let’s run a sieve analysis on a sand sample.' : k === 'titration' ? 'Goggles on! Let’s find out how concentrated the mystery acid is.' : 'Let’s measure gravity with a pendulum.'",
+      "extraSrc": "{ action:'station:' + k }",
+      "action": "station:",
+      "cardsSrc": null
+    },
+    {
+      "order": 16,
+      "line": 209,
+      "conditionSrc": "RX.openBp.test(s)",
+      "rulesUsed": [
+        "openBp"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'Here’s the ' + BP_INFO[id].title.toLowerCase() + ' blueprint. Tap any numbered part to learn what it does.'",
+      "extraSrc": "{ action:'bp:' + id }",
+      "action": "bp:",
+      "cardsSrc": null
+    },
+    {
+      "order": 17,
+      "line": 210,
+      "conditionSrc": "RX.buildModel.test(s)",
+      "rulesUsed": [
+        "buildModel"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Head to the model bench in Room 103. You can build a rubber-band car or a two-story building with cross-bracing, one step at a time, then test it.",
+      "replySrc": "'Head to the model bench in Room 103. You can build a rubber-band car or a two-story building with cross-bracing, one step at a time, then test it.'",
+      "extraSrc": "{ action:'station:bench' }",
+      "action": "station:bench",
+      "cardsSrc": null
+    },
+    {
+      "order": 18,
+      "line": 211,
+      "conditionSrc": "RX.workshops.test(s)",
+      "rulesUsed": [
+        "workshops"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "All four workshop rooms are open. Room 101 is the 3D Art Studio, Room 102 is the Science Lab, Room 103 is the Blueprint Lab and Room 104 is the World Builder Studio.",
+      "replySrc": "'All four workshop rooms are open. Room 101 is the 3D Art Studio, Room 102 is the Science Lab, Room 103 is the Blueprint Lab and Room 104 is the World Builder Studio.'",
+      "extraSrc": "{ action:'workshops' }",
+      "action": "workshops",
+      "cardsSrc": null
+    },
+    {
+      "order": 19,
+      "line": 213,
+      "conditionSrc": "RX.worldq.test(s) && !travel",
+      "rulesUsed": [
+        "worldq"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "Room 104, the World Builder Studio, shows how a world like this campus gets made. Build a mini world on the layer table one layer at a time, from a sketch to a live website, then read the World Builder’s Handbook to start your own.",
+      "replySrc": "'Room 104, the World Builder Studio, shows how a world like this campus gets made. Build a mini world on the layer table one layer at a time, from a sketch to a live website, then read the World Builder’s Handbook to start your own.'",
+      "extraSrc": "{ cards:[stationCard('diorama'), bookCard(BOOK['world-builder'])] }",
+      "action": null,
+      "cardsSrc": "[stationCard('diorama'), bookCard(BOOK['world-builder']"
+    },
+    {
+      "order": 20,
+      "line": 214,
+      "conditionSrc": "RX.labq.test(s) && !travel && !/\\b(sieve|psd|titrat|pendulum)/.test(s)",
+      "rulesUsed": [
+        "labq"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "The Science Lab in Room 102 has three hands-on labs: a sieve analysis that measures the grain sizes in sand, an acid–base titration that finds the concentration of a mystery acid, and a pendulum that measures gravity.",
+      "replySrc": "'The Science Lab in Room 102 has three hands-on labs: a sieve analysis that measures the grain sizes in sand, an acid–base titration that finds the concentration of a mystery acid, and a pendulum that measures gravity.'",
+      "extraSrc": "{ cards:[stationCard('sieve'), stationCard('titration'), stationCard('pendulum')] }",
+      "action": null,
+      "cardsSrc": "[stationCard('sieve'), stationCard('titration'), stationCard('pendulum')]"
+    },
+    {
+      "order": 21,
+      "line": 215,
+      "conditionSrc": "RX.bpq.test(s) && !travel && toks(q).length <= 4",
+      "rulesUsed": [
+        "bpq"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "A blueprint is a technical drawing of a design, with every part labeled. In the Blueprint Lab, Room 103, tap any numbered part on a car, excavator, house, bridge or computer blueprint to learn its name, what it does and how you could build one.",
+      "replySrc": "'A blueprint is a technical drawing of a design, with every part labeled. In the Blueprint Lab, Room 103, tap any numbered part on a car, excavator, house, bridge or computer blueprint to learn its name, what it does and how you could build one.'",
+      "extraSrc": "{ cards:[bpCard('car'), bpCard('bridge'), stationCard('bench')] }",
+      "action": null,
+      "cardsSrc": "[bpCard('car'), bpCard('bridge'), stationCard('bench')]"
+    },
+    {
+      "order": 22,
+      "line": 216,
+      "conditionSrc": "RX.paint.test(s) && (staffId === 'hale' || /\\b(3d|air|studio|tilt)\\b/.test(s))",
+      "rulesUsed": [
+        "paint"
+      ],
+      "staffOnly": [
+        "hale"
+      ],
+      "staffNot": [],
+      "staticText": "In the 3D Art Studio, you draw in the air with brushes like Neon, Ribbon, Chrome and Rainbow, or stamp 3D shapes like stars, hearts and cubes. Turn on Mirror or ×6 to make symmetric art, spin it on the turntable, and switch to a blank canvas to work with nothing else around. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured.",
+      "replySrc": "'In the 3D Art Studio, you draw in the air with brushes like Neon, Ribbon, Chrome and Rainbow, or stamp 3D shapes like stars, hearts and cubes. Turn on Mirror or ×6 to make symmetric art, spin it on the turntable, and switch to a blank canvas to work with nothing else around. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured.'",
+      "extraSrc": "{ action:'paintOffer' }",
+      "action": "paintOffer",
+      "cardsSrc": null
+    },
+    {
+      "order": 23,
+      "line": 217,
+      "conditionSrc": "RX.what.test(s)",
+      "rulesUsed": [
+        "what"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "f.text + ' Its website is xrlibraries.com.'",
+      "extraSrc": "{ cards:[itemCard(ITEM['ca-200']), itemCard(ITEM.mission)] }",
+      "action": null,
+      "cardsSrc": "[itemCard(ITEM['ca-200']"
+    },
+    {
+      "order": 24,
+      "line": 218,
+      "conditionSrc": "RX.director.test(s) && /xr|librar|run|lead|charge|director/.test(s)",
+      "rulesUsed": [
+        "director"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "FACTS.find((x) => x.id === 'who').text + srcLine(['sjsu'])",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 25,
+      "line": 219,
+      "conditionSrc": "RX.rideNow.test(s)",
+      "rulesUsed": [
+        "rideNow"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "rd === 'dive' ? 'Let’s dive! I’ll get you suited up.' : 'Let’s ride! Hold on tight.'",
+      "extraSrc": "{ action:'ride:' + rd }",
+      "action": "ride:",
+      "cardsSrc": null
+    },
+    {
+      "order": 26,
+      "line": 220,
+      "conditionSrc": "RX.tokens.test(s)",
+      "rulesUsed": [
+        "tokens"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "tokenText()",
+      "extraSrc": "{ cards:[badgesCard()] }",
+      "action": null,
+      "cardsSrc": "[badgesCard()]"
+    },
+    {
+      "order": 27,
+      "line": 221,
+      "conditionSrc": "RX.badges.test(s)",
+      "rulesUsed": [
+        "badges"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "badgeText()",
+      "extraSrc": "{ cards:[badgesCard()] }",
+      "action": null,
+      "cardsSrc": "[badgesCard()]"
+    },
+    {
+      "order": 28,
+      "line": 222,
+      "conditionSrc": "RX.wax.test(s) && !RX.go.test(s) && !RX.wh.test(s)",
+      "rulesUsed": [
+        "wax",
+        "go",
+        "wh"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "FACTS.find((x) => x.id === 'wax').text",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'wax')), itemCard(WAX_ITEMS[0])] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'wax')), itemCard(WAX_ITEMS[0]"
+    },
+    {
+      "order": 29,
+      "line": 230,
+      "conditionSrc": null,
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'From ' + y + ', the campus shows ' + joined + (wax.length ? (n > 1 ? ' each acted out in the Wax Hall.' : ' acted out in the Wax Hall.') : ' in the museum.')",
+      "extraSrc": "{ cards:list.slice(0, 3).map((it) => itemCard(it)) }",
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 30,
+      "line": 233,
+      "conditionSrc": "RX.history.test(s) && !RX.go.test(s) && !RX.wh.test(s) && !RX.wax.test(s)",
+      "rulesUsed": [
+        "history",
+        "go",
+        "wh",
+        "wax"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "FACTS.find((x) => x.id === 'history').text + ' The Wax Hall acts it all out, scene by scene.'",
+      "extraSrc": "{ cards:[itemCard(WAX_ITEMS[0]), placeCard(PLACES.find((p) => p.id === 'wax'))] }",
+      "action": null,
+      "cardsSrc": "[itemCard(WAX_ITEMS[0]"
+    },
+    {
+      "order": 31,
+      "line": 237,
+      "conditionSrc": null,
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "(goNow ? 'Follow me to ' : 'That’s ') + (goNow ? (place.say || place.label) + '.' : directions(place))",
+      "extraSrc": "{ cards:goNow ? [] : [placeCard(place)], go:goNow ? { type:'place', p:place } : null }",
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 32,
+      "line": 243,
+      "conditionSrc": null,
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "(goNow ? 'Follow me. ' : '') + 'The ' + (old ? 'earliest' : 'most recent') + ' dated exhibit is “' + it.title + ',” from ' + it.year + '.'",
+      "extraSrc": "{ cards:[itemCard(it)], go:goNow ? { type:'item', it } : null }",
+      "action": null,
+      "cardsSrc": "[itemCard(it)]"
+    },
+    {
+      "order": 33,
+      "line": 246,
+      "conditionSrc": "/book/.test(s)",
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'Thousands of books line the shelves, and ' + BOOKS.length + ' of them are open to read right now, on the featured table and on the ends of the stacks.'",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'featured'))] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'featured'))]"
+    },
+    {
+      "order": 34,
+      "line": 247,
+      "conditionSrc": "/section|categor/.test(s)",
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'The library has eight sections: ' + SUBJECTS.map((x) => x.name).join(', ') + '.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 35,
+      "line": 248,
+      "conditionSrc": "/ride/.test(s)",
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "The Recess Yard has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive.",
+      "replySrc": "'The Recess Yard has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive.'",
+      "extraSrc": "{ cards:[rideCard('coaster'), rideCard('drop'), rideCard('dive')] }",
+      "action": null,
+      "cardsSrc": "[rideCard('coaster'), rideCard('drop'), rideCard('dive')]"
+    },
+    {
+      "order": 36,
+      "line": 249,
+      "conditionSrc": "/scene|wax|figure/.test(s)",
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": "The Wax Hall has 12 living-history scenes, from 2016 to 2025, with wax figures that act each one out.",
+      "replySrc": "'The Wax Hall has 12 living-history scenes, from 2016 to 2025, with wax figures that act each one out.'",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'wax'))] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'wax'))]"
+    },
+    {
+      "order": 37,
+      "line": 250,
+      "conditionSrc": null,
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'The museum has ' + ITEMS.length + ' exhibits in three galleries: Headsets in Libraries, Learning That Works, and Stories Worth Saving.'",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'g1'))] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'g1'))]"
+    },
+    {
+      "order": 38,
+      "line": 252,
+      "conditionSrc": "RX.sections.test(s) && staffId === 'rosa'",
+      "rulesUsed": [
+        "sections"
+      ],
+      "staffOnly": [
+        "rosa"
+      ],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "'Our eight sections are ' + SUBJECTS.map((x) => x.name).join(', ') + '. Each stack has its featured books on the end facing the aisle.'",
+      "extraSrc": null,
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 39,
+      "line": 255,
+      "conditionSrc": null,
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "list.length === 1 ? 'Try this one:' : 'Here are a few good ones:'",
+      "extraSrc": "{ cards:list.map((b) => bookCard(b)) }",
+      "action": null,
+      "cardsSrc": null
+    },
+    {
+      "order": 40,
+      "line": 257,
+      "conditionSrc": "RX.play.test(s) && !whichRide(s) && staffId !== 'hale' && !/\\b(bearing|pendulum|swing time)\\b/.test(s)",
+      "rulesUsed": [
+        "play"
+      ],
+      "staffOnly": [],
+      "staffNot": [
+        "hale"
+      ],
+      "staticText": "Out in the Recess Yard, the balls, the foam-block tower and the soccer goal all run on real physics. At the soccer goal by the east fence, walk up to the ball and hold to power up (hold F, press and hold on the ball, or use the Kick button), look where you want it to go and let go. A keeper dives for it, and a goal earns the Striker badge. Walk into a ball to dribble it. You can push the swings and spin the merry-go-round too.",
+      "replySrc": "'Out in the Recess Yard, the balls, the foam-block tower and the soccer goal all run on real physics. At the soccer goal by the east fence, walk up to the ball and hold to power up (hold F, press and hold on the ball, or use the Kick button), look where you want it to go and let go. A keeper dives for it, and a goal earns the Striker badge. Walk into a ball to dribble it. You can push the swings and spin the merry-go-round too.'",
+      "extraSrc": "{ cards:[placeCard(PLACES.find((p) => p.id === 'field')), placeCard(PLACES.find((p) => p.id === 'blocks'))] }",
+      "action": null,
+      "cardsSrc": "[placeCard(PLACES.find((p) => p.id === 'field')), placeCard(PLACES.find((p) => p.id === 'blocks'))]"
+    },
+    {
+      "order": 41,
+      "line": 259,
+      "conditionSrc": "rd && RX.safety.test(s)",
+      "rulesUsed": [
+        "safety"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "rideSafety(rd)",
+      "extraSrc": "{ cards:[rideCard(rd)], conf:cf }",
+      "action": null,
+      "cardsSrc": "[rideCard(rd)]"
+    },
+    {
+      "order": 42,
+      "line": 260,
+      "conditionSrc": "rd && RX.stats.test(s)",
+      "rulesUsed": [
+        "stats"
+      ],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "rideStats(rd)",
+      "extraSrc": "{ cards:[rideCard(rd)] }",
+      "action": null,
+      "cardsSrc": "[rideCard(rd)]"
+    },
+    {
+      "order": 43,
+      "line": 261,
+      "conditionSrc": "RX.safety.test(s) && (staffId === 'rae' || RX.recess.test(s))",
+      "rulesUsed": [
+        "safety",
+        "recess"
+      ],
+      "staffOnly": [
+        "rae"
+      ],
+      "staffNot": [],
+      "staticText": "Every ride has a Gentle mode that moves slower, and you can tap Exit any time. The Ocean Dive is the calmest ride.",
+      "replySrc": "'Every ride has a Gentle mode that moves slower, and you can tap Exit any time. The Ocean Dive is the calmest ride.'",
+      "extraSrc": "{ cards:[rideCard('dive')], conf:cf }",
+      "action": null,
+      "cardsSrc": "[rideCard('dive')]"
+    },
+    {
+      "order": 44,
+      "line": 262,
+      "conditionSrc": "rd",
+      "rulesUsed": [],
+      "staffOnly": [],
+      "staffNot": [],
+      "staticText": null,
+      "replySrc": "rideAbout(rd)",
+      "extraSrc": "{ cards:[rideCard(rd)], conf:cf }",
+      "action": null,
+      "cardsSrc": "[rideCard(rd)]"
+    },
+    {
+      "order": 45,
+      "line": 263,
+      "conditionSrc": "RX.recess.test(s) && (staffId === 'rae' || /recess|playground|rides?\\b/.test(s))",
+      "rulesUsed": [
+        "recess"
+      ],
+      "staffOnly": [
+        "rae"
+      ],
+      "staffNot": [],
+      "staticText": "Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive. There are swings, a slide, a merry-go-round, a soccer goal and a block tower to knock down, plus hidden XR tokens to find.",
+      "replySrc": "'Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive. There are swings, a slide, a merry-go-round, a soccer goal and a block tower to knock down, plus hidden XR tokens to find.'",
+      "extraSrc": "{ cards:[rideCard('coaster'), rideCard('drop'), rideCard('dive')], conf:cf }",
+      "action": null,
+      "cardsSrc": "[rideCard('coaster'), rideCard('drop'), rideCard('dive')]"
+    }
+  ],
+  "directions": [
+    {
+      "placeId": "lobby",
+      "text": "Lobby."
+    },
+    {
+      "placeId": "g1",
+      "text": "Gallery 1: Headsets in Libraries, straight ahead from the lobby."
+    },
+    {
+      "placeId": "g2",
+      "text": "Gallery 2: Learning That Works, straight ahead from the lobby."
+    },
+    {
+      "placeId": "g3",
+      "text": "Gallery 3: Stories Worth Saving, straight ahead from the lobby."
+    },
+    {
+      "placeId": "library",
+      "text": "The Reading Room, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "desk",
+      "text": "Reference desk, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "featured",
+      "text": "Featured books table, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "freedomBoard",
+      "text": "Freedom to Read display, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "window",
+      "text": "Library window, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "school",
+      "text": "Workshop School hall, through the doorway on the right side of the lobby and down the hall."
+    },
+    {
+      "placeId": "studio",
+      "text": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+    },
+    {
+      "placeId": "lab",
+      "text": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+    },
+    {
+      "placeId": "sieve",
+      "text": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+    },
+    {
+      "placeId": "titration",
+      "text": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+    },
+    {
+      "placeId": "pendulum",
+      "text": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+    },
+    {
+      "placeId": "blueprints",
+      "text": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "bp-car",
+      "text": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "bp-excavator",
+      "text": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "bp-house",
+      "text": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "bp-bridge",
+      "text": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "bp-computer",
+      "text": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "modelbench",
+      "text": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+    },
+    {
+      "placeId": "worldroom",
+      "text": "Room 104: World Builder Studio, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+    },
+    {
+      "placeId": "diorama",
+      "text": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+    },
+    {
+      "placeId": "sculpture",
+      "text": "Sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+    },
+    {
+      "placeId": "margaret",
+      "text": "Margaret."
+    },
+    {
+      "placeId": "wax",
+      "text": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3."
+    },
+    {
+      "placeId": "yard",
+      "text": "The Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "coaster",
+      "text": "Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "drop",
+      "text": "Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "dive",
+      "text": "Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "rae",
+      "text": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "field",
+      "text": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "blocks",
+      "text": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+    },
+    {
+      "placeId": "sec-basics",
+      "text": "XR Basics section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-programs",
+      "text": "Library Programs section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-careers",
+      "text": "Careers section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-story",
+      "text": "Storytelling section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-equity",
+      "text": "Lost Stories section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-environment",
+      "text": "Environment section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-worlds",
+      "text": "Shared Worlds section, through the doorway on the left side of the lobby and down the hall."
+    },
+    {
+      "placeId": "sec-tech",
+      "text": "Technology section, through the doorway on the left side of the lobby and down the hall."
+    }
+  ],
+  "kbSearch": {
+    "stopWordsSrc": "new Set(('a an the and or but if of to in on at by for with from into onto over under about as is are was were be been b…",
+    "keep2": {},
+    "note": "searchKB(): TF-IDF over sentence-split KB (items, facts, pages, parts, lessons); staff-specific kind bias in searchAnswer() engine.js:281-307; qtype() when/num/who boosts in bestSentence()"
+  }
+}

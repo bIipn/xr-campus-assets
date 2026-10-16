@@ -1,0 +1,75 @@
+{
+  "rides": [
+    {
+      "id": "coaster",
+      "name": "Comet Coaster",
+      "kick": "Recess Yard · Ride",
+      "exitView": {
+        "x": 52,
+        "z": -6.4,
+        "yaw": 0,
+        "pitch": 0.14
+      },
+      "badge": "coaster",
+      "cardText": "Climb a 19-meter lift hill, drop at up to 62 km/h (39 mph), then loop upside down.",
+      "cardNote": "Fast and loopy. Gentle ride goes at half speed. Drag to look around.",
+      "staffAbout": "The Comet Coaster climbs a 19-meter lift hill, drops toward the grass at up to 62 km/h, then flips you through a loop. Want to ride?",
+      "staffStats": "The lift hill is about 19 meters tall, the loop is about 10 meters tall, and the top speed is about 62 km/h (39 mph). The track is about 170 meters long.",
+      "staffSafety": "It’s a virtual ride, so you’re safe, but it can feel fast. Pick Gentle ride for a slower version, and tap Exit ride any time."
+    },
+    {
+      "id": "drop",
+      "name": "Sky Drop",
+      "kick": "Recess Yard · Ride",
+      "exitView": {
+        "x": 68.6,
+        "z": 6.6,
+        "yaw": -2.1685547183879783,
+        "pitch": 0.34
+      },
+      "badge": "drop",
+      "cardText": "Rise about 30 meters for a view of the whole campus, then drop back down.",
+      "cardNote": "A big drop. Gentle ride lowers you slowly. Drag to look around.",
+      "staffAbout": "The Sky Drop lifts you about 30 meters up, high enough to see the whole campus, then drops you back down.",
+      "staffStats": "The Sky Drop tower is about 34 meters tall. The seats ride up to about 30 meters, then free-fall at up to about 68 km/h before the brakes kick in.",
+      "staffSafety": "It’s a virtual ride, so you’re safe, but it can feel fast. Pick Gentle ride for a slower version, and tap Exit ride any time."
+    },
+    {
+      "id": "dive",
+      "name": "Ocean Dive",
+      "kick": "Recess Yard · Dive",
+      "exitView": {
+        "x": 54,
+        "z": 8.4,
+        "yaw": 0,
+        "pitch": 0.02
+      },
+      "badge": "diver",
+      "cardText": "Swim past a coral reef and through a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish.",
+      "cardNote": "A calm, guided swim that takes about a minute. Drag to look around, and tap sea creatures to learn about them.",
+      "staffAbout": "The Ocean Dive is a guided swim past a coral reef and a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish. It’s inspired by ocean VR like Hydrous, a partner listed by XRLibraries.",
+      "staffStats": "The dive goes down to about 12 meters deep and takes about a minute. It’s a calm, slow swim.",
+      "staffSafety": "The Ocean Dive is calm and slow, and nothing down there will hurt you. You can pause or surface any time."
+    }
+  ],
+  "coasterStats": {
+    "height": 19,
+    "kmh": 62,
+    "mph": 39,
+    "loop": 10,
+    "length": 170
+  },
+  "dropTower": {
+    "x": 78,
+    "z": 13,
+    "base": 1,
+    "top": 31,
+    "h": 34
+  },
+  "diveDome": {
+    "x": 54,
+    "z": 16,
+    "r": 4.2
+  },
+  "dropFreefallKmh": 68
+}

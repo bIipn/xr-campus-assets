@@ -1,0 +1,133 @@
+{
+  "balls": [
+    {
+      "id": "soccer",
+      "name": "Soccer ball",
+      "r": 0.11,
+      "mass": 0.43,
+      "bounce": 0.74,
+      "cd": [
+        0.47,
+        0.22,
+        9,
+        15
+      ],
+      "cl": 1,
+      "roll": 1,
+      "at": [
+        79.1,
+        -2
+      ],
+      "skin": "soccer"
+    },
+    {
+      "id": "kick-red",
+      "name": "Kickball",
+      "r": 0.125,
+      "mass": 0.32,
+      "bounce": 0.8,
+      "cd": [
+        0.5
+      ],
+      "cl": 0.7,
+      "roll": 0.9,
+      "at": [
+        61.6,
+        2.6
+      ],
+      "skin": "stripe",
+      "c": [
+        "#d9412b",
+        "#f6e6cc"
+      ]
+    },
+    {
+      "id": "kick-blue",
+      "name": "Kickball",
+      "r": 0.125,
+      "mass": 0.32,
+      "bounce": 0.8,
+      "cd": [
+        0.5
+      ],
+      "cl": 0.7,
+      "roll": 0.9,
+      "at": [
+        72.4,
+        -6.5
+      ],
+      "skin": "stripe",
+      "c": [
+        "#2a6fd6",
+        "#e6eef9"
+      ]
+    },
+    {
+      "id": "beach",
+      "name": "Beach ball",
+      "r": 0.3,
+      "mass": 0.11,
+      "bounce": 0.66,
+      "cd": [
+        0.5
+      ],
+      "cl": 0.4,
+      "roll": 0.7,
+      "at": [
+        58.6,
+        8
+      ],
+      "skin": "beach"
+    }
+  ],
+  "blockTower": {
+    "x": 64.5,
+    "z": 1.5,
+    "s": 0.45,
+    "rows": [
+      "PLAY",
+      "LAB",
+      "XR",
+      "★"
+    ]
+  },
+  "blockColors": [
+    "#e2462f",
+    "#f29a2e",
+    "#f2c14e",
+    "#3fae5a",
+    "#2f7de2",
+    "#8a5cf0",
+    "#e2559a",
+    "#1fb5b0",
+    "#f29a2e",
+    "#e2462f"
+  ],
+  "goal": {
+    "x": 86.6,
+    "z": -2,
+    "w": 5,
+    "h": 2,
+    "d": 1.6,
+    "dt": 0.62,
+    "pr": 0.05
+  },
+  "swing": {
+    "th": [
+      0.2,
+      -0.14,
+      0.09
+    ],
+    "om": [
+      0,
+      0,
+      0
+    ],
+    "L": 2.1,
+    "pz": null,
+    "px": null
+  },
+  "spinner": {
+    "w": 0.45
+  }
+}

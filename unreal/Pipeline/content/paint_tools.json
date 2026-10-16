@@ -1,0 +1,110 @@
+{
+  "brushes": [
+    {
+      "id": "neon",
+      "name": "Neon"
+    },
+    {
+      "id": "paint",
+      "name": "Paint"
+    },
+    {
+      "id": "ribbon",
+      "name": "Ribbon"
+    },
+    {
+      "id": "chrome",
+      "name": "Chrome"
+    },
+    {
+      "id": "rainbow",
+      "name": "Rainbow"
+    },
+    {
+      "id": "beads",
+      "name": "Beads"
+    },
+    {
+      "id": "sparkle",
+      "name": "Sparkle"
+    }
+  ],
+  "shapes": [
+    {
+      "id": "cube",
+      "name": "Cube"
+    },
+    {
+      "id": "sphere",
+      "name": "Sphere"
+    },
+    {
+      "id": "cone",
+      "name": "Cone"
+    },
+    {
+      "id": "cylinder",
+      "name": "Cylinder"
+    },
+    {
+      "id": "torus",
+      "name": "Ring"
+    },
+    {
+      "id": "star",
+      "name": "Star"
+    },
+    {
+      "id": "heart",
+      "name": "Heart"
+    },
+    {
+      "id": "pyramid",
+      "name": "Pyramid"
+    }
+  ],
+  "colors": [
+    "#ff5a8a",
+    "#ff8f3d",
+    "#ffd166",
+    "#b8f35a",
+    "#5ee6c8",
+    "#7aa8ff",
+    "#c38bff",
+    "#ff7ad9",
+    "#ffffff",
+    "#9aa1a6",
+    "#24262b",
+    "#8a5a3a"
+  ],
+  "brushSizes": [
+    0.012,
+    0.024,
+    0.05,
+    0.09
+  ],
+  "stampSizes": [
+    0.08,
+    0.16,
+    0.3,
+    0.5
+  ],
+  "paintSpot": {
+    "x": 19,
+    "z": -6.4,
+    "yaw": 0,
+    "pitch": 0.06
+  },
+  "studioBox": {
+    "x0": 14.15,
+    "x1": 23.85,
+    "y0": 0.04,
+    "y1": 3.5,
+    "z0": -12.85,
+    "z1": -4.9
+  },
+  "centre": {
+    "x": 19,
+    "z": -8.9
+  }
+}

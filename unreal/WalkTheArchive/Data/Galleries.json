@@ -1,0 +1,54 @@
+[
+ {
+  "Name": "G0",
+  "Index": 0,
+  "Label": "Lobby",
+  "DisplayName": "XRLibraries Campus",
+  "Years": "Start here",
+  "WallColor": {
+   "R": 0.67244,
+   "G": 0.5972,
+   "B": 0.46778,
+   "A": 1.0
+  }
+ },
+ {
+  "Name": "G1",
+  "Index": 1,
+  "Label": "Gallery 1 of 3",
+  "DisplayName": "Headsets in Libraries",
+  "Years": "2016 to 2022",
+  "WallColor": {
+   "R": 0.0137,
+   "G": 0.04667,
+   "B": 0.04231,
+   "A": 1.0
+  }
+ },
+ {
+  "Name": "G2",
+  "Index": 2,
+  "Label": "Gallery 2 of 3",
+  "DisplayName": "Learning That Works",
+  "Years": "Careers and resources",
+  "WallColor": {
+   "R": 0.016,
+   "G": 0.02956,
+   "B": 0.07819,
+   "A": 1.0
+  }
+ },
+ {
+  "Name": "G3",
+  "Index": 3,
+  "Label": "Gallery 3 of 3",
+  "DisplayName": "Stories Worth Saving",
+  "Years": "Equity, worlds, nature",
+  "WallColor": {
+   "R": 0.04817,
+   "G": 0.0137,
+   "B": 0.02519,
+   "A": 1.0
+  }
+ }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "index": 1,
+    "t": "Plan",
+    "d": "Every world starts as an idea and a sketch. Who is it for, and what will they do there? This campus started as a list (a museum, a library, a school and a recess yard) and a rough map of how to walk between them.",
+    "page": 1
+  },
+  {
+    "index": 2,
+    "t": "Block out",
+    "d": "Build the layout from plain boxes, then walk around it. Is the hall wide enough? Does the coaster fit? Fixing things now is cheap. Game studios call this a blockout, or graybox.",
+    "page": 3
+  },
+  {
+    "index": 3,
+    "t": "Models",
+    "d": "Swap the boxes for real models. Artists build them in tools like Blender; this campus builds almost everything from code: boxes, cylinders, spheres and extruded shapes. Every model is a mesh of triangles. Turn on X-ray to see them.",
+    "page": 4
+  },
+  {
+    "index": 4,
+    "t": "Materials",
+    "d": "Materials say what a surface is made of: its color, how rough or shiny it is, and whether it’s metal. Physically based materials (PBR) react to light the way real surfaces do. Many of the textures here are drawn by code as the campus loads.",
+    "page": 5
+  },
+  {
+    "index": 5,
+    "t": "Light",
+    "d": "Light sells the scene. Outdoors, a sun casts shadows and the sky tints everything; indoors, lamps take over. Lights are expensive to draw, so this campus keeps just 8 lamps switched on and moves them to wherever you are.",
+    "page": 6
+  },
+  {
+    "index": 6,
+    "t": "Effects",
+    "d": "Post effects are the finishing pass over the whole picture: glow (bloom) around bright lights, soft shading in corners (ambient occlusion) and color grading.",
+    "page": 7
+  },
+  {
+    "index": 7,
+    "t": "Physics",
+    "d": "A physics engine moves things with gravity, mass and collisions. The Recess Yard runs a physics engine called Rapier, stepping the world 60 times a second. Drop some balls and watch them bounce.",
+    "page": 8
+  },
+  {
+    "index": 8,
+    "t": "Life",
+    "d": "Life makes a world feel real: people who move, rides that run and things you can tap. Tapping works by casting a ray from your finger into the scene; walking uses A* (A-star) pathfinding on a grid.",
+    "page": 9
+  },
+  {
+    "index": 9,
+    "t": "Publish",
+    "d": "Ship it! This whole campus is one web page, with no app store and no download, so it runs on phones, Chromebooks and laptops. Then watch real people use it, listen, and make it better.",
+    "page": 12
+  }
+]

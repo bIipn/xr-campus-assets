@@ -1,0 +1,155 @@
+[
+  {
+    "id": "car",
+    "name": "Model car",
+    "steps": [
+      {
+        "index": 1,
+        "t": "Gather materials",
+        "d": "Stiff cardboard or foam board, 2 drinking straws, 2 wooden skewers, 4 bottle caps, a rubber band, a paper clip, tape and glue. It’s all in the kit box.",
+        "w": "Good engineers start with a plan and a parts list.",
+        "show": []
+      },
+      {
+        "index": 2,
+        "t": "Chassis",
+        "d": "Take the cardboard rectangle, about 20 by 8 centimeters, and rest it on the little stand so you can work underneath. This is the chassis, the frame everything else attaches to.",
+        "w": "A stiff, light chassis wastes less energy bending.",
+        "show": [
+          "chassis"
+        ],
+        "act": "Set the chassis on the stand"
+      },
+      {
+        "index": 3,
+        "t": "Bearings",
+        "d": "Tape the two straws across the bottom, one near each end. Keep them parallel or the car will curve.",
+        "w": "The straws are bearings: the axles spin inside them with very little friction.",
+        "show": [
+          "straws"
+        ],
+        "act": "Tape on the straws"
+      },
+      {
+        "index": 4,
+        "t": "Axles",
+        "d": "Slide a skewer through each straw, leaving a little sticking out on both sides.",
+        "w": "Axles carry the wheels and let each pair turn together.",
+        "show": [
+          "axles"
+        ],
+        "act": "Slide in the axles"
+      },
+      {
+        "index": 5,
+        "t": "Wheels",
+        "d": "Poke a hole in the center of each bottle cap and push one onto each axle end. A dab of glue keeps them on.",
+        "w": "Wheels that are centered and straight roll farther and wobble less.",
+        "show": [
+          "wheels"
+        ],
+        "act": "Push on the wheels"
+      },
+      {
+        "index": 6,
+        "t": "Rubber-band motor",
+        "d": "Hook the rubber band on a paper clip taped to the front, and loop the other end around the rear axle.",
+        "w": "The stretched rubber band stores energy. As it unwinds it spins the rear axle: your engine and drivetrain in one.",
+        "show": [
+          "band"
+        ],
+        "act": "Hook up the rubber band"
+      },
+      {
+        "index": 7,
+        "t": "Body",
+        "d": "Fold a body from card stock and set it over the chassis. Keep it light.",
+        "w": "Less weight lets the same stored energy push the car farther.",
+        "show": [
+          "body"
+        ],
+        "act": "Set on the body"
+      },
+      {
+        "index": 8,
+        "t": "Test drive",
+        "d": "Roll the car backward to wind the band around the axle, set it down and let go!",
+        "w": "Real engineers test, measure, change one thing and test again.",
+        "show": [],
+        "test": true
+      }
+    ]
+  },
+  {
+    "id": "house",
+    "name": "Model building",
+    "steps": [
+      {
+        "index": 1,
+        "t": "Gather materials",
+        "d": "Craft sticks or wooden skewers, cardboard, glue (a hot glue gun works fast, with an adult’s help), and a tray to use as a shake table. The cards are in the rack and the sticks in the tray.",
+        "w": "Every structure starts with a plan.",
+        "show": []
+      },
+      {
+        "index": 2,
+        "t": "Foundation",
+        "d": "Take the cardboard base, with its strip of card glued around the edge, and set it on the shake table.",
+        "w": "The foundation carries the whole building’s weight down to the ground.",
+        "show": [
+          "base"
+        ],
+        "act": "Set down the base"
+      },
+      {
+        "index": 3,
+        "t": "First-floor columns",
+        "d": "Glue a stick upright at each corner.",
+        "w": "Columns carry weight straight down, like the studs in a wall.",
+        "show": [
+          "col1"
+        ],
+        "act": "Glue in the columns"
+      },
+      {
+        "index": 4,
+        "t": "Beams and floor",
+        "d": "Glue sticks across the tops of the columns, then set a piece of card on top as the second floor.",
+        "w": "Beams tie the columns together and hold up the floor.",
+        "show": [
+          "beam1"
+        ],
+        "act": "Add the beams and floor"
+      },
+      {
+        "index": 5,
+        "t": "Second story and roof",
+        "d": "Repeat: four more columns, four beams and a card roof.",
+        "w": "Every story adds weight that the floors below have to carry.",
+        "show": [
+          "col2",
+          "beam2"
+        ],
+        "act": "Build the second story"
+      },
+      {
+        "index": 6,
+        "t": "Cross-bracing",
+        "d": "Glue sticks in an X across the long sides of each story.",
+        "w": "Triangles can’t change shape, so cross-bracing stops the frame from leaning over, or racking, in an earthquake.",
+        "show": [
+          "brace"
+        ],
+        "act": "Glue on the bracing"
+      },
+      {
+        "index": 7,
+        "t": "Shake test",
+        "d": "Hold the tray and slide it quickly back and forth, like an earthquake.",
+        "w": "Engineers test real buildings this way on giant shake tables. Compare your frame with and without its bracing.",
+        "show": [],
+        "test": true
+      }
+    ]
+  }
+]

@@ -1,0 +1,317 @@
+[
+ {
+  "Name": "lobby",
+  "Kicker": "Lobby",
+  "DisplayName": "XRLibraries Campus",
+  "Sub": "Museum ahead · Library left · School right",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": -600.0,
+   "Y": -600.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 600.0,
+   "Y": 0.0,
+   "Z": 440.0
+  },
+  "bOutdoor": false,
+  "StaffId": "margaret",
+  "MapLabel": "L",
+  "GoPlace": "lobby"
+ },
+ {
+  "Name": "g1",
+  "Kicker": "",
+  "DisplayName": "",
+  "Sub": "",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": -600.0,
+   "Y": -1800.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 600.0,
+   "Y": -600.0,
+   "Z": 440.0
+  },
+  "bOutdoor": false,
+  "StaffId": "margaret",
+  "MapLabel": "1",
+  "GoPlace": "g1"
+ },
+ {
+  "Name": "g2",
+  "Kicker": "",
+  "DisplayName": "",
+  "Sub": "",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": -600.0,
+   "Y": -3000.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 600.0,
+   "Y": -1800.0,
+   "Z": 440.0
+  },
+  "bOutdoor": false,
+  "StaffId": "margaret",
+  "MapLabel": "2",
+  "GoPlace": "g2"
+ },
+ {
+  "Name": "g3",
+  "Kicker": "",
+  "DisplayName": "",
+  "Sub": "",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": -600.0,
+   "Y": -4200.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 600.0,
+   "Y": -3000.0,
+   "Z": 440.0
+  },
+  "bOutdoor": false,
+  "StaffId": "margaret",
+  "MapLabel": "3",
+  "GoPlace": "g3"
+ },
+ {
+  "Name": "wax",
+  "Kicker": "Museum · Living History",
+  "DisplayName": "The Wax Hall",
+  "Sub": "Walk up to a scene and it comes to life",
+  "Wing": "wax",
+  "BoundsMin": {
+   "X": -850.0,
+   "Y": -8100.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 850.0,
+   "Y": -4230.0,
+   "Z": 520.0
+  },
+  "bOutdoor": false,
+  "StaffId": "margaret",
+  "MapLabel": "WAX HALL",
+  "GoPlace": "wax"
+ },
+ {
+  "Name": "hallL",
+  "Kicker": "Hall",
+  "DisplayName": "To the Library",
+  "Sub": "Reading room ahead",
+  "Wing": "lib",
+  "BoundsMin": {
+   "X": -1200.0,
+   "Y": -460.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": -600.0,
+   "Y": -140.0,
+   "Z": 340.0
+  },
+  "bOutdoor": false,
+  "StaffId": "rosa",
+  "MapLabel": "",
+  "GoPlace": "library"
+ },
+ {
+  "Name": "lib",
+  "Kicker": "Library",
+  "DisplayName": "The Reading Room",
+  "Sub": "Tap a book on display to read it",
+  "Wing": "lib",
+  "BoundsMin": {
+   "X": -3200.0,
+   "Y": -1300.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": -1200.0,
+   "Y": 700.0,
+   "Z": 760.0
+  },
+  "bOutdoor": false,
+  "StaffId": "rosa",
+  "MapLabel": "LIBRARY",
+  "GoPlace": "library"
+ },
+ {
+  "Name": "libAisle",
+  "Kicker": "Library",
+  "DisplayName": "The Stacks",
+  "Sub": "Eight sections · Books on every end",
+  "Wing": "lib",
+  "BoundsMin": {
+   "X": -3200.0,
+   "Y": -520.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": -2300.0,
+   "Y": -80.0,
+   "Z": 760.0
+  },
+  "bOutdoor": false,
+  "StaffId": "rosa",
+  "MapLabel": "",
+  "GoPlace": "None"
+ },
+ {
+  "Name": "hallR",
+  "Kicker": "Hall",
+  "DisplayName": "To the Workshop School",
+  "Sub": "Every class is a workshop",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 600.0,
+   "Y": -460.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 1200.0,
+   "Y": -140.0,
+   "Z": 340.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "",
+  "GoPlace": "school"
+ },
+ {
+  "Name": "school",
+  "Kicker": "Workshop School",
+  "DisplayName": "Main Hall",
+  "Sub": "Rooms 101–104 are open · Recess Yard out back",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 1200.0,
+   "Y": -475.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 3400.0,
+   "Y": -125.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "",
+  "GoPlace": "school"
+ },
+ {
+  "Name": "studio",
+  "Kicker": "Room 101",
+  "DisplayName": "3D Art Studio",
+  "Sub": "Brushes, shapes and a blank canvas",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 1400.0,
+   "Y": -1300.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 2400.0,
+   "Y": -475.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "101",
+  "GoPlace": "studio"
+ },
+ {
+  "Name": "lab",
+  "Kicker": "Room 102",
+  "DisplayName": "Science Lab",
+  "Sub": "Sieve test · Titration · Pendulum",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 2560.0,
+   "Y": -1300.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 3400.0,
+   "Y": -475.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "102",
+  "GoPlace": "lab"
+ },
+ {
+  "Name": "blueprint",
+  "Kicker": "Room 103",
+  "DisplayName": "Blueprint Lab",
+  "Sub": "Five blueprints · Model bench",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 1220.0,
+   "Y": -125.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 2400.0,
+   "Y": 700.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "103",
+  "GoPlace": "blueprints"
+ },
+ {
+  "Name": "world",
+  "Kicker": "Room 104",
+  "DisplayName": "World Builder Studio",
+  "Sub": "How a world like this gets built",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 2400.0,
+   "Y": -125.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 3400.0,
+   "Y": 700.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "hale",
+  "MapLabel": "104",
+  "GoPlace": "worldroom"
+ },
+ {
+  "Name": "yard",
+  "Kicker": "Recess Yard",
+  "DisplayName": "The Playground",
+  "Sub": "Coaster · Sky Drop · Ocean Dive",
+  "Wing": "play",
+  "BoundsMin": {
+   "X": 3400.0,
+   "Y": -3400.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 9200.0,
+   "Y": 2600.0,
+   "Z": 3000.0
+  },
+  "bOutdoor": true,
+  "StaffId": "rae",
+  "MapLabel": "RECESS YARD",
+  "GoPlace": "yard"
+ }
+]

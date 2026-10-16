@@ -1,0 +1,179 @@
+{
+  "facts": [
+    {
+      "index": 0,
+      "at": null,
+      "u": 0,
+      "text": "Welcome to the reef. Coral reefs cover less than 1% of the ocean floor, but about a quarter of all ocean species live on them."
+    },
+    {
+      "index": 1,
+      "at": [
+        -14,
+        -12,
+        1
+      ],
+      "look": "anemone",
+      "text": "Clownfish live among sea anemones. A slimy coating keeps the anemone’s sting from hurting them."
+    },
+    {
+      "index": 2,
+      "at": [
+        -5,
+        -10,
+        8.5
+      ],
+      "look": "turtle",
+      "text": "A sea turtle! Sea turtles have swum in the oceans for more than 100 million years."
+    },
+    {
+      "index": 3,
+      "at": [
+        6,
+        -10.5,
+        -1.5
+      ],
+      "text": "You’re in a kelp forest. Giant kelp can grow about 60 cm (2 feet) in a single day."
+    },
+    {
+      "index": 4,
+      "at": [
+        21,
+        -10,
+        2.4
+      ],
+      "look": "school",
+      "text": "Fish swim in schools to stay safe. In a big group, it’s hard for a hunter to catch any one fish."
+    },
+    {
+      "index": 5,
+      "at": [
+        25.8,
+        -9,
+        9.6
+      ],
+      "look": "shark",
+      "text": "Look down! Whale sharks are the biggest fish in the sea, and they eat tiny plankton."
+    },
+    {
+      "index": 6,
+      "at": [
+        28,
+        -7,
+        17.5
+      ],
+      "look": "manta",
+      "text": "Manta rays glide by flapping their wide fins like wings."
+    },
+    {
+      "index": 7,
+      "at": [
+        21,
+        -5,
+        25.6
+      ],
+      "look": "jelly",
+      "text": "Jellyfish have no brain, no heart and no bones."
+    },
+    {
+      "index": 8,
+      "at": null,
+      "u": 0.93,
+      "text": "This reef is made up for the campus, inspired by ocean VR like Hydrous, a partner listed by XRLibraries. Read “Oceans in VR” in the library."
+    }
+  ],
+  "creatures": [
+    {
+      "factIndex": 2,
+      "name": "Green sea turtle"
+    },
+    {
+      "factIndex": 5,
+      "name": "Whale shark"
+    },
+    {
+      "factIndex": 6,
+      "name": "Manta ray"
+    },
+    {
+      "factIndex": 7,
+      "name": "Jellyfish"
+    }
+  ],
+  "pathPoints": [
+    [
+      -36,
+      -4.5,
+      6
+    ],
+    [
+      -28,
+      -8,
+      2.5
+    ],
+    [
+      -20,
+      -10.8,
+      -0.5
+    ],
+    [
+      -12,
+      -11.8,
+      1.5
+    ],
+    [
+      -5,
+      -12.2,
+      2
+    ],
+    [
+      3,
+      -11,
+      0
+    ],
+    [
+      10,
+      -10.6,
+      -2.8
+    ],
+    [
+      17.5,
+      -10.5,
+      0.8
+    ],
+    [
+      23.5,
+      -9.6,
+      6.5
+    ],
+    [
+      27,
+      -8.2,
+      12.5
+    ],
+    [
+      28,
+      -7,
+      18.5
+    ],
+    [
+      23.5,
+      -5.6,
+      24.5
+    ],
+    [
+      15.5,
+      -3.9,
+      27.5
+    ],
+    [
+      8,
+      -2.6,
+      28
+    ]
+  ],
+  "origin": {
+    "x": 420,
+    "z": 0
+  }
+}

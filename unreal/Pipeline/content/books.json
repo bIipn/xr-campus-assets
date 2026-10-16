@@ -1,0 +1,810 @@
+[
+  {
+    "id": "what-is-xr",
+    "subject": "basics",
+    "icon": "headset",
+    "title": "What Is XR?",
+    "sub": "Virtual, augmented and mixed reality",
+    "pages": [
+      {
+        "h": "Four kinds of reality",
+        "b": [
+          "Extended reality, or XR, is the umbrella word for technology that blends computer-made worlds with the one around you. It covers virtual reality, augmented reality and mixed reality.",
+          "Each one changes how much of the real world you still see. Picture a dial that runs from the room you are standing in all the way to a completely made-up place."
+        ]
+      },
+      {
+        "h": "Virtual reality",
+        "b": [
+          "Virtual reality, or VR, replaces everything you see with a computer-made world. A headset shows a slightly different picture to each eye, which tricks your brain into seeing depth.",
+          "Modern standalone headsets track your head and hands, so you can lean, crouch and reach inside a small play space. One of the first head-mounted displays, built by Ivan Sutherland in 1968, was so heavy it hung from the ceiling."
+        ]
+      },
+      {
+        "h": "Augmented and mixed reality",
+        "b": [
+          "Augmented reality, or AR, adds digital things to your view of the real world, usually through a phone camera. Seeing a dinosaur in your living room through your phone is AR.",
+          "Mixed reality goes a step further: digital objects understand the room, so a virtual ball can bounce off your real table. Many headsets now use passthrough cameras to show your room with digital objects added."
+        ]
+      },
+      {
+        "h": "360 video",
+        "b": [
+          "A 360 video is filmed in every direction at once by a camera with two or more lenses. Viewers can look anywhere, but they cannot walk around inside the scene, because the camera recorded from one spot.",
+          "That makes 360 video a great way to visit a historic site, a cultural event or a workplace from a library chair, and it is much easier to make than a full 3D world."
+        ]
+      },
+      {
+        "h": "Why libraries?",
+        "b": [
+          "A good headset costs hundreds of dollars, and many people have never tried one. Libraries can give everyone a turn, with help from staff who know the equipment.",
+          "XR in libraries is not just games. People use it to explore careers, travel to places they cannot reach, save local stories and learn to make immersive media of their own."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "ar-around-town",
+    "subject": "basics",
+    "icon": "phone",
+    "title": "AR Around Town",
+    "sub": "Scavenger hunts, fairs and pop-up books",
+    "pages": [
+      {
+        "h": "Digital layers on the real world",
+        "b": [
+          "Augmented reality adds pictures, sounds and information to the real world, usually through a phone camera. Unlike VR, you stay connected to the place around you.",
+          "That makes AR great for walking tours, scavenger hunts, outdoor events and books that pop off the page. XRLibraries’ XR Showcase features LP Bookspace, AR books with friendly characters that explain the story and quiz readers."
+        ]
+      },
+      {
+        "h": "The Black Wall Street of Charleston",
+        "b": [
+          "Career and technical education students at Burke High School in Charleston, South Carolina, built an AR scavenger hunt featuring Charleston’s Black-owned businesses.",
+          "Partners included the Preservation Society of Charleston and the Burke High School Foundation. The hunt works as a history lesson and as a way to support local businesses."
+        ]
+      },
+      {
+        "h": "Pollinators at the fair",
+        "b": [
+          "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an AR app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them.",
+          "Videos about butterfly migration and pollination, and bug sculptures by Marin artist Cynthia Jensen, rounded out the booth."
+        ]
+      },
+      {
+        "h": "Design an AR hunt",
+        "b": [
+          "Choose five to eight stops that tell one story. Research each stop, then write a short clue and a fun fact for each one.",
+          "Ask business owners and property managers for permission, and pick a route with safe sidewalks and crossings."
+        ]
+      },
+      {
+        "h": "Test it outside",
+        "b": [
+          "Walk the route at different times of day. GPS can drift near tall buildings, and screens can be hard to read in bright sun.",
+          "Remind players to look up from their phones while they walk. The best AR adds to the real world without making people forget it is there."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "vr-program",
+    "subject": "programs",
+    "icon": "checklist",
+    "title": "Running a VR Program",
+    "sub": "A starter guide for libraries",
+    "pages": [
+      {
+        "h": "Start with a goal",
+        "b": [
+          "A VR program works best when it has a purpose: exploring careers, visiting the ocean floor, learning history or making art. Pick a theme, then choose a few apps that fit it.",
+          "XRLibraries groups apps into themed playbooks so a librarian can run a program on day one. Its catalog covers categories like astronomy, history, life science, travel, mindfulness and music."
+        ]
+      },
+      {
+        "h": "Before the first visitor",
+        "b": [
+          "Charge every headset and test each app. Clear a play area of tables, cords and walls, and set the guardian boundary, the virtual fence that warns players before they bump into something.",
+          "Plan how others will watch. Casting the headset view to a TV lets a group follow along, and it keeps the person in the headset from feeling alone."
+        ]
+      },
+      {
+        "h": "Keep it clean",
+        "b": [
+          "Headsets touch faces, so clean them between users. XRLibraries’ XR Showcase episodes show how to sanitize headsets and use UV cleaning devices, which matters in any public setting.",
+          "Face covers and wipes at every station make cleaning part of the routine instead of an afterthought."
+        ]
+      },
+      {
+        "h": "Welcoming new users",
+        "b": [
+          "Many visitors have never worn a headset. Start them with something calm and seated, show them how to adjust the fit, and stay close as a spotter.",
+          "Keep first sessions short. If someone feels dizzy or uncomfortable, they should take the headset off and rest. Check the headset maker’s age guidance for younger visitors."
+        ]
+      },
+      {
+        "h": "Big events",
+        "b": [
+          "At a busy event, set up several stations and rotate headsets between visitors, a tip from the XR Showcase. A sign-up sheet and a timer keep the line moving fairly.",
+          "Afterward, ask people what they tried and what they want next. Their answers help you pick the next playbook."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "xr-careers",
+    "subject": "careers",
+    "icon": "case",
+    "title": "XR for Careers",
+    "sub": "Try a job before you train for it",
+    "pages": [
+      {
+        "h": "Step inside a job",
+        "b": [
+          "Virtual reality lets people try a job before they commit to training: stand on a factory floor, look inside a dialysis machine or practice a nursing skill.",
+          "In Nevada, a program called Project SANDI put that experience in libraries and community colleges across the state."
+        ]
+      },
+      {
+        "h": "Project SANDI",
+        "b": [
+          "SANDI stands for Supporting and Advancing Nevada’s Dislocated Individuals. It began in 2020, during the economic downturn, with a $13.8 million federal grant.",
+          "The program focuses on five fields: skilled trades, healthcare, information technology, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations."
+        ]
+      },
+      {
+        "h": "What people do in the headset",
+        "b": [
+          "Visitors take VR field trips to job sites and practice in training simulations for jobs such as dialysis technician, certified nursing assistant and HVAC technician.",
+          "A nursing program coordinator at Great Basin College said the headsets allow “personal viewing and repetition of anatomy and pathophysiology.” That kind of repetition is hard to get with real equipment."
+        ]
+      },
+      {
+        "h": "Why libraries",
+        "b": [
+          "Libraries are free, open to everyone and close to home, even in small towns. That makes them a natural place for career exploration.",
+          "XRLibraries and its partner Lifeliqe installed VR headsets in Nevada community college and public libraries. XRLibraries’ homepage counts more than 1,100."
+        ]
+      },
+      {
+        "h": "A story from a small town",
+        "b": [
+          "A remote 12-week dialysis technician certification let people train without traveling to a training center. In a community of about 300 people, a single mother finished the program and passed her certification.",
+          "She plans to become a registered nurse. For many rural learners, the library is the closest classroom."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "first-job",
+    "subject": "careers",
+    "icon": "case",
+    "title": "Your First Job",
+    "sub": "Finding it, getting it, keeping it",
+    "pages": [
+      {
+        "h": "Where to start",
+        "b": [
+          "First jobs are often in restaurants, stores, summer camps and farms, or helping neighbors with yard work and babysitting. Think about what you like to do and what you are good at.",
+          "Ask family, teachers, coaches and neighbors. Many jobs are found through people you know. In many states, workers under 18 need a work permit, often issued through their school."
+        ]
+      },
+      {
+        "h": "Your résumé",
+        "b": [
+          "A résumé is a one-page summary of you as a worker. Include your contact information, your school, any jobs or volunteer work, skills like languages, computers or tools, and activities that show responsibility.",
+          "Keep it neat, short and honest, and ask someone to proofread it."
+        ]
+      },
+      {
+        "h": "The interview",
+        "b": [
+          "Before an interview, learn about the business. Dress a little nicer than the job requires and arrive five to ten minutes early.",
+          "Give specific examples. “I walked my neighbor’s dogs every day for a summer” shows reliability better than “I’m responsible.” At the end, ask a question about the job and thank the interviewer."
+        ]
+      },
+      {
+        "h": "On the job",
+        "b": [
+          "Show up on time, put your phone away and ask questions when you are not sure. Mistakes happen to everyone. Own them and fix them.",
+          "Reliability is the quality employers value most in a new worker, and it is how you earn a good reference for your next job."
+        ]
+      },
+      {
+        "h": "Your rights",
+        "b": [
+          "You must be paid at least the minimum wage, which in many places is higher than the federal minimum. Teens have limits on how many hours they can work on school days.",
+          "You have the right to a safe workplace and to speak up about unsafe conditions. If something feels wrong, talk to a trusted adult or your state’s labor office."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "making-360",
+    "subject": "story",
+    "icon": "camera",
+    "title": "Making 360 Stories",
+    "sub": "Film a place so others can stand in it",
+    "pages": [
+      {
+        "h": "What is a 360 story?",
+        "b": [
+          "A 360 story is a short video or photo tour filmed in every direction, so viewers can look around as if they were there. It can show a historic site, a cultural event or how something is made from start to finish.",
+          "In 2022 the Washington State Library ran a grant program that gave six libraries the equipment and training to make 360 stories about topics important to their communities. XRLibraries was the trainer."
+        ]
+      },
+      {
+        "h": "Plan with your community",
+        "b": [
+          "Pick a story that matters locally, and partner with the people who know it best, such as a historical society, a cultural group, a tribe or a local business.",
+          "Write a simple shot list: the places to film, who will speak, and what you want viewers to notice in each scene."
+        ]
+      },
+      {
+        "h": "Filming tips",
+        "b": [
+          "Put the camera on a tripod at about eye level, around five feet high, and keep it still. A moving 360 camera can make viewers feel sick.",
+          "The camera sees everything, so either step out of the scene or become part of it. Keep important things away from the seam between the lenses, and film in even light."
+        ]
+      },
+      {
+        "h": "Sound and story",
+        "b": [
+          "Sound tells viewers where to look. Record clear narration or interviews, and capture the natural sounds of the place.",
+          "Keep each scene short, often 30 to 90 seconds, and give viewers time to look around before the next scene starts."
+        ]
+      },
+      {
+        "h": "Sharing it",
+        "b": [
+          "Stitch the footage in the camera’s app, then share it on headsets, as a 360 video online or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours.",
+          "Save the original files, notes and permissions with your library’s collection so the story lasts."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "oral-history",
+    "subject": "story",
+    "icon": "mic",
+    "title": "Recording an Oral History",
+    "sub": "How to save the stories of your elders",
+    "pages": [
+      {
+        "h": "What is oral history?",
+        "b": [
+          "An oral history is a recorded interview with someone about their own memories and experiences. It captures things no newspaper wrote down: how a place smelled, what people joked about, how it felt to live through a flood or a war.",
+          "Many of the voices in Lost Stories projects, and in any library’s local history collection, start with interviews like these."
+        ]
+      },
+      {
+        "h": "Before the interview",
+        "b": [
+          "Choose someone whose story you want to save, like a grandparent, a neighbor or an elder. Ask permission, explain why you are recording, and tell them where the recording will be kept.",
+          "In many communities, including many Native nations, some stories belong to a family or to the community, so ask who has the right to share them."
+        ]
+      },
+      {
+        "h": "Good questions",
+        "b": [
+          "Start easy: “Where did you grow up?” Ask open questions that cannot be answered with yes or no, like “What was a normal school day like?” or “Tell me about your first job.”",
+          "Ask for details: “What did it look like? Who was there?” Then listen. Silence is fine. People often remember more if you wait."
+        ]
+      },
+      {
+        "h": "Recording tips",
+        "b": [
+          "A phone works well. Find a quiet room away from fans, TVs and kitchens. Set the phone close to the speaker on something soft, and test a short clip first.",
+          "At the start, say the date, the place and both of your names. Keep interviews to about an hour so no one gets too tired."
+        ]
+      },
+      {
+        "h": "After the interview",
+        "b": [
+          "Thank the person and give them a copy. Label the file with names, the date and the place, write a short summary, and keep a backup.",
+          "Ask your local library, historical society or tribal archive whether they collect oral histories. Your recording could help someone a hundred years from now."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "lost-stories",
+    "subject": "equity",
+    "icon": "ship",
+    "title": "Lost Stories",
+    "sub": "Using XR to bring hidden history back",
+    "pages": [
+      {
+        "h": "Who gets remembered?",
+        "b": [
+          "History books leave people out. The stories of workers, immigrants, women and communities of color often survive only in family memories, letters and photographs.",
+          "XRLibraries calls its work to recover these histories Lost Stories, using XR to bring marginalized history back into view."
+        ]
+      },
+      {
+        "h": "A Way Out of No Way",
+        "b": [
+          "During World War II, thousands of people came to Marin County to build ships, and many African-American workers and their families lived in Marin City.",
+          "Marin City students who call themselves the Marinovators built a VR experience of the shipyard and life in Marin City, with a musical tribute to the Black workers whose stories were rarely told."
+        ]
+      },
+      {
+        "h": "From a school bus to the Supreme Court",
+        "b": [
+          "Another Lost Stories piece is an animated VR telling of Briggs v. Elliott in South Carolina, a case that grew out of Black families’ fight for a school bus for their children.",
+          "Briggs v. Elliott became one of the cases decided together in Brown v. Board of Education in 1954, when the Supreme Court ruled that segregated public schools were unconstitutional."
+        ]
+      },
+      {
+        "h": "What comes next",
+        "b": [
+          "XRLibraries plans to search for Latino, Asian-Pacific and Native American lost stories.",
+          "Any community can start. Collect oral histories, scan family photos and documents, and ask elders what the official history left out."
+        ]
+      },
+      {
+        "h": "Doing it right",
+        "b": [
+          "Lost stories belong to the people who lived them. Ask permission, credit storytellers if they want credit, and let the community decide how its story is told.",
+          "For tribal communities, that can mean keeping some knowledge private. Good projects plan for what should not be shared as carefully as for what should."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "reading-past",
+    "subject": "equity",
+    "icon": "lens",
+    "title": "Reading the Past",
+    "sub": "How to use primary sources",
+    "pages": [
+      {
+        "h": "What is a primary source?",
+        "b": [
+          "A primary source is something made at the time you are studying, by people who were there: a newspaper, a photograph, a letter, a map, a diary or a recorded interview.",
+          "A secondary source is made later by someone looking back, like a textbook or a documentary. Primary sources let you meet the past up close. Secondary sources help you see the bigger story around them."
+        ]
+      },
+      {
+        "h": "Five questions to ask",
+        "b": [
+          {
+            "li": [
+              "Who made this?",
+              "When and where was it made?",
+              "Why was it made, and who was it for?",
+              "What does it show or say?",
+              "What does it leave out?"
+            ]
+          },
+          "These questions are not about deciding a source is good or bad. They help you understand what each source can and cannot tell you."
+        ]
+      },
+      {
+        "h": "Look closely",
+        "b": [
+          "Slow down and describe before you decide. In a photograph, look at clothing, signs, tools and the weather. In a newspaper, read the ads as well as the headlines.",
+          "Notice the words people used. Some words from the past are now known to be hurtful. Historians study them carefully without repeating them casually."
+        ]
+      },
+      {
+        "h": "Compare sources",
+        "b": [
+          "One source is a clue. Several sources together start to make a case. If a newspaper says a crowd met the first train, does a photograph or a diary agree?",
+          "When sources disagree, ask why. Each person saw the event from a different place, with different reasons for remembering it."
+        ]
+      },
+      {
+        "h": "Find your own",
+        "b": [
+          "Many libraries keep local newspapers, photographs and maps. The Library of Congress runs a free website called Chronicling America with millions of digitized newspaper pages.",
+          "Your family is an archive too. Old photos, letters, recipes and the stories your elders tell are primary sources for the history of your town."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "oceans-vr",
+    "subject": "environment",
+    "icon": "wave",
+    "title": "Oceans in VR",
+    "sub": "Reefs, bleaching and acid seas",
+    "pages": [
+      {
+        "h": "Visit the reef",
+        "b": [
+          "Most people will never dive a coral reef, but a headset can take them there. Hydrous, a partner listed by XRLibraries, makes VR experiences of the coral reefs of Palau, with turtles, manta rays and sharks.",
+          "Its experiences come with lesson plans and activities, so a visit can turn into a science class."
+        ]
+      },
+      {
+        "h": "Coral bleaching",
+        "b": [
+          "Corals get much of their food and their color from tiny algae living in their tissues. When the water stays too warm for too long, corals push the algae out and turn white. This is coral bleaching.",
+          "Bleached corals are not dead yet, but they are starving. If the water cools in time, the algae can return."
+        ]
+      },
+      {
+        "h": "Ocean acidification",
+        "b": [
+          "The ocean absorbs a large share of the carbon dioxide people release into the air, roughly a quarter of it. That carbon dioxide makes seawater more acidic.",
+          "More acidic water makes it harder for corals, clams, oysters and some plankton to build shells and skeletons. The Stanford Ocean Experience, one of XRLibraries’ environment projects, is a VR experience about this problem."
+        ]
+      },
+      {
+        "h": "Talk about it",
+        "b": [
+          "XRLibraries’ Climate Change Playbook gathers VR apps about climate change for viewing and discussion. The discussion is the important part.",
+          "After a VR visit, ask: What surprised you? What would you want to see again? What could our town do?"
+        ]
+      },
+      {
+        "h": "From the ocean to your sink",
+        "b": [
+          "The water in the ocean is connected to the water in your sink through the water cycle. What happens to rivers and rain eventually reaches the sea.",
+          "The Water Cycle, on the same shelf, follows a drop of water around the planet."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "water-cycle",
+    "subject": "environment",
+    "icon": "drop",
+    "title": "The Water Cycle",
+    "sub": "Where every drop has been",
+    "pages": [
+      {
+        "h": "Water on the move",
+        "b": [
+          "The water you drink today may once have been part of an ocean, a cloud or a glacier. Earth’s water moves in a loop called the water cycle, powered by energy from the sun.",
+          "About 97 percent of Earth’s water is salty ocean water. Less than 3 percent is fresh, and most of that is frozen in ice sheets and glaciers."
+        ]
+      },
+      {
+        "h": "Evaporation and transpiration",
+        "b": [
+          "Heat from the sun turns liquid water into an invisible gas called water vapor. This is evaporation.",
+          "Plants add water vapor too. They pull water up from the soil and release it through tiny pores in their leaves, a process called transpiration."
+        ]
+      },
+      {
+        "h": "Condensation",
+        "b": [
+          "As moist air rises, it cools. Cooler air cannot hold as much water vapor, so the vapor condenses into tiny droplets that form clouds.",
+          "You can see condensation when a cold glass “sweats” on a hot day."
+        ]
+      },
+      {
+        "h": "Precipitation and collection",
+        "b": [
+          "When cloud droplets join into drops heavy enough to fall, we get precipitation: rain, snow, sleet or hail.",
+          "Water collects in oceans, lakes and rivers, soaks into the ground to become groundwater, or is stored as snow and ice. Then the cycle starts again."
+        ]
+      },
+      {
+        "h": "California’s water",
+        "b": [
+          "In California, much of the year’s water falls as winter snow in the Sierra Nevada. The snowpack works like a frozen reservoir, melting slowly through spring and summer.",
+          "In dry years there is less snowpack, and in very wet years rivers can flood. Droughts and floods are part of the same cycle."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "worlds-browser",
+    "subject": "worlds",
+    "icon": "globe",
+    "title": "Worlds in the Browser",
+    "sub": "Shared 3D spaces anyone can open",
+    "pages": [
+      {
+        "h": "A world anyone can open",
+        "b": [
+          "Some virtual worlds need a headset or a gaming computer. Others run in a web browser, so anyone with a phone, laptop or library computer can visit.",
+          "XRLibraries builds several shared worlds on FrameVR, a browser-based platform it describes as accessible across all devices."
+        ]
+      },
+      {
+        "h": "Freedom to Read",
+        "b": [
+          "Freedom to Read is a VR environment built with the SJSU School of Information, Unite Against Book Bans, Little Free Library and Books Unbanned.",
+          "It helps citizens, librarians and students fight book bans, and helps young people in affected areas find challenged books that reflect their lives."
+        ]
+      },
+      {
+        "h": "Children Draw War, Not Flowers",
+        "b": [
+          "This immersive 3D exhibition shares art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children after the Russian invasion.",
+          "Librarians from 40 regional libraries, veterans and SJSU iSchool faculty and students took part. Funds bought a scanner so libraries could digitize the children’s artwork, and the project was honored at the Anthem Awards."
+        ]
+      },
+      {
+        "h": "Seeking Immortality",
+        "b": [
+          "Built with the Northern Cheyenne Tribe and funded by an IMLS Native American Enhancement Grant, this browser-based world preserves endangered Cheyenne language and cultural knowledge.",
+          "Tribal members and students were trained in 3D scanning and other tools to build and manage the space, so the tribe keeps control of its own data."
+        ]
+      },
+      {
+        "h": "Plan your own world",
+        "b": [
+          "Start with who it is for and what it should do. Decide what belongs in public, what should stay private, and who gets to make that call.",
+          "Make it simple to enter, label everything clearly and test it on a phone. A world only works if people can find their way around."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "code",
+    "subject": "tech",
+    "icon": "code",
+    "title": "How Computers Follow Instructions",
+    "sub": "A first look at code",
+    "pages": [
+      {
+        "h": "Instructions all the way down",
+        "b": [
+          "A computer does not think the way you do. It follows instructions very fast and exactly as written.",
+          "A list of step-by-step instructions that solves a problem is called an algorithm. A recipe is an algorithm for cooking. A program is an algorithm written in a language a computer can run."
+        ]
+      },
+      {
+        "h": "Bits and bytes",
+        "b": [
+          "Inside, computers store everything as bits, which are 1s and 0s. Eight bits make a byte, which can stand for a number from 0 to 255, a letter, or part of a color or a sound.",
+          "The letter A, for example, is stored as the number 65, which in binary is 01000001."
+        ]
+      },
+      {
+        "h": "Building blocks",
+        "b": [
+          {
+            "li": [
+              "Variables are named boxes that hold values, like score = 0.",
+              "Conditionals make choices: if the score is more than 10, show “You win!”",
+              "Loops repeat steps: for each student in the class, print their name.",
+              "Functions bundle steps into a named action you can reuse."
+            ]
+          },
+          "Almost every program, from a calculator to a VR game, is built from these few ideas."
+        ]
+      },
+      {
+        "h": "A tiny program",
+        "b": [
+          {
+            "code": "total = 0\nfor each number from 1 to 5:\n    total = total + number\nshow total"
+          },
+          "This program adds 1 + 2 + 3 + 4 + 5 and shows 15. Change the 5 to 100 and the computer adds the numbers from 1 to 100 just as easily. The answer is 5,050."
+        ]
+      },
+      {
+        "h": "Bugs",
+        "b": [
+          "A mistake in a program is called a bug. In 1947, engineers working on the Harvard Mark II computer found a real moth stuck in a relay and taped it into their logbook as the “first actual case of bug being found.”",
+          "Every programmer writes bugs. Good programmers test their code, read error messages carefully and fix one thing at a time."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "ai",
+    "subject": "tech",
+    "icon": "network",
+    "title": "How AI Works",
+    "sub": "And when to double-check it",
+    "pages": [
+      {
+        "h": "What is AI?",
+        "b": [
+          "Artificial intelligence, or AI, is software that learns patterns from examples instead of following only hand-written rules.",
+          "A spam filter learns from millions of emails which ones are junk. A photo app learns what faces look like. A chat assistant learns patterns of language from huge amounts of text."
+        ]
+      },
+      {
+        "h": "How a language model writes",
+        "b": [
+          "A language model writes a little bit of text at a time, choosing what is likely to come next based on the patterns it learned. That is why it can write smooth sentences on almost any topic.",
+          "It is also why it can state something false in a confident voice. People call these mistakes hallucinations."
+        ]
+      },
+      {
+        "h": "Using AI well",
+        "b": [
+          "Treat AI like a helpful but imperfect study partner. Ask it to explain ideas in different ways, quiz you or give feedback on your writing.",
+          "Check important facts against trusted sources. If you use AI for schoolwork, follow your teacher’s rules and be honest about how you used it."
+        ]
+      },
+      {
+        "h": "Privacy and safety",
+        "b": [
+          "Do not share private information like your address, passwords or photos of other people with AI tools or websites you do not trust.",
+          "Images, videos and voices can be made by AI, so a shocking clip online may not be real. Look for the original source before you believe it or share it."
+        ]
+      },
+      {
+        "h": "The staff on this campus",
+        "b": [
+          "Margaret, Rosa, Mr. Hale and Coach Rae are virtual staff. They answer common questions from what they know about this campus, and when AI is available they can answer more.",
+          "They are not real people. A real library would decide what its own guides know and how they speak."
+        ]
+      }
+    ],
+    "pageCount": 5
+  },
+  {
+    "id": "world-builder",
+    "subject": "worlds",
+    "icon": "code",
+    "table": false,
+    "title": "World Builder’s Handbook",
+    "sub": "How to make 3D worlds and games like this campus",
+    "pages": [
+      {
+        "h": "Start with why",
+        "b": [
+          "Before any 3D work, decide who your world is for and what they will do there. Write one sentence: “In this world, you can …”",
+          "This campus began as a list: a museum that tells a story, a library you can read in, a school where every class is hands-on and a recess yard for fun. Then came a rough map on paper showing how to walk from one to the next.",
+          {
+            "note": "Start small. A single room that works beats a giant world that doesn’t."
+          }
+        ]
+      },
+      {
+        "h": "Free tools to start",
+        "b": [
+          "You can build real 3D worlds with free tools:",
+          {
+            "li": [
+              "three.js: draws 3D in a web page. This campus runs on it.",
+              "Blender: free, professional software for modeling, sculpting and animation.",
+              "Godot: a free, open-source game engine.",
+              "Unity and Unreal Engine: the engines behind many games and XR apps; both are free to start learning.",
+              "Krita or GIMP: paint textures and images.",
+              "Audacity: record and edit sound.",
+              "VS Code: a free code editor.",
+              "Git and GitHub: save every version of your project and share it.",
+              "Hosting like Vercel, Netlify or itch.io: put your world online."
+            ]
+          },
+          {
+            "note": "Pick one tool and finish one small project before adding the next."
+          }
+        ]
+      },
+      {
+        "h": "Block it out",
+        "b": [
+          "Build the layout from plain boxes first, then walk through it. Studios call this a blockout or graybox.",
+          "Use real sizes. In this campus your eyes are 1.62 meters off the floor, doorways are 1.8 to 3.2 meters wide and ceilings are 3.4 to 7.6 meters high. You walk at 3 meters per second, about twice as fast as a real walk, because walking feels slow on a screen.",
+          "Move walls and rooms around until walking through feels good. Changing a box is quick; changing a finished building is not."
+        ]
+      },
+      {
+        "h": "Models and meshes",
+        "b": [
+          "Every 3D model is a mesh: points in space (vertices) joined into triangles. A cube needs 12 triangles; a smooth sphere might use hundreds.",
+          "Artists usually model in Blender and export a file like glTF. This campus builds nearly everything from code instead: boxes, cylinders, spheres, lathed shapes like the lab flask and extruded shapes like roofs.",
+          {
+            "code": "const box = new THREE.Mesh(\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.MeshStandardMaterial({ color: '#f2c14e' })\n);\nscene.add(box);"
+          },
+          {
+            "note": "When a scene needs thousands of copies of one thing, like grass blades or books, instancing draws them all at once."
+          }
+        ]
+      },
+      {
+        "h": "Materials",
+        "b": [
+          "A material describes a surface. Physically based rendering (PBR) uses a few simple dials:",
+          {
+            "li": [
+              "Color (albedo): the surface’s own color.",
+              "Roughness: 0 is perfectly smooth and glossy (a mirror if it’s also metal), 1 is chalk.",
+              "Metalness: metal or not.",
+              "Normal map: fakes small bumps, like brick edges or wood grain, without extra triangles."
+            ]
+          },
+          "Textures are images wrapped onto meshes. Most textures here, from the bricks to the blueprints, are drawn by code onto a canvas as the campus loads."
+        ]
+      },
+      {
+        "h": "Light and shadow",
+        "b": [
+          "Light makes a scene believable. Common kinds:",
+          {
+            "li": [
+              "Directional light: the sun. Parallel rays and crisp shadows.",
+              "Point lights: lamps that shine in every direction.",
+              "Image-based light: a picture of the sky or room that adds soft light and reflections."
+            ]
+          },
+          "Shadows are drawn from the light’s point of view into a shadow map. Lights cost speed: every lamp adds work to every lit pixel. This campus keeps 8 lamps switched on at once and moves them to the rooms near you."
+        ]
+      },
+      {
+        "h": "Effects",
+        "b": [
+          "Post effects run on the finished picture, like filters:",
+          {
+            "li": [
+              "Bloom: bright lights glow and bleed softly.",
+              "Ambient occlusion: darkens corners and creases where light can’t reach.",
+              "Tone mapping: squeezes very bright and very dark light into what a screen can show.",
+              "Color grading: sets the mood, like a filter on a photo."
+            ]
+          },
+          "Fog is different: it fades faraway things as each object is drawn, which hints at distance and hides the edge of the world.",
+          {
+            "note": "Effects are seasoning. Set Graphics to Low in About to see the campus without bloom, ambient occlusion and grading."
+          }
+        ]
+      },
+      {
+        "h": "Physics",
+        "b": [
+          "A physics engine moves objects with gravity, mass, friction and collisions. Each object has a simple collider shape (a ball, a box or a capsule) that’s much cheaper to test than its full mesh.",
+          "The Recess Yard uses the Rapier physics engine and steps the world at a fixed 60 times per second, then smooths the motion between steps so it looks right at any frame rate.",
+          {
+            "code": "import RAPIER from '@dimforge/rapier3d-compat';\nawait RAPIER.init();\nconst world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });\nconst ball = world.createRigidBody(\n  RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 3, 0)\n);\nworld.createCollider(RAPIER.ColliderDesc.ball(0.11), ball);\nworld.step();"
+          }
+        ]
+      },
+      {
+        "h": "Interaction",
+        "b": [
+          "To know what you tapped, the campus casts a ray, an invisible line, from the camera through your finger into the scene and finds the first thing it hits.",
+          "To walk you somewhere, it lays a grid over the floors and uses A* (A-star) pathfinding to find the shortest route around walls and furniture.",
+          "The virtual staff answer common questions from what the campus knows, and can use AI for harder ones when it’s allowed."
+        ]
+      },
+      {
+        "h": "Make it fast",
+        "b": [
+          "A smooth world draws a new frame about 60 times per second, which gives the computer about 16 milliseconds for each one.",
+          {
+            "li": [
+              "Fewer draw calls: merge objects that share a material, and use instancing for repeats.",
+              "Hide what you can’t see: this campus only draws rooms that are in view.",
+              "Quality levels: lower settings for older phones.",
+              "Dynamic resolution: draw fewer pixels when frames run slow, like many console games do."
+            ]
+          }
+        ]
+      },
+      {
+        "h": "Your first world in 20 lines",
+        "b": [
+          "Paste this into a file named index.html and open it in a browser. You’ll see a spinning box on grass.",
+          {
+            "code": "<script type=\"importmap\">{\"imports\":{\"three\":\"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js\"}}</script>\n<script type=\"module\">\nimport * as THREE from 'three';\nconst scene = new THREE.Scene();\nscene.background = new THREE.Color('#9cc3e4');\nconst camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);\ncamera.position.set(0, 1.6, 5);\nconst renderer = new THREE.WebGLRenderer({ antialias: true });\nrenderer.setSize(innerWidth, innerHeight);\ndocument.body.appendChild(renderer.domElement);\nscene.add(new THREE.HemisphereLight('#ffffff', '#445533', 2));\nconst ground = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: '#5d8f43' }));\nground.rotation.x = -Math.PI / 2;\nscene.add(ground);\nconst box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: '#f2c14e' }));\nbox.position.y = 0.5;\nscene.add(box);\nrenderer.setAnimationLoop(() => { box.rotation.y += 0.01; renderer.render(scene, camera); });\n</script>"
+          },
+          "Now change the color, add a second box, or move the camera. That’s world building."
+        ]
+      },
+      {
+        "h": "Ship it and keep going",
+        "b": [
+          "Put your world online so people can try it, then watch them use it. Where do they get stuck? What do they love? Fix one thing at a time.",
+          "A learning path that works: HTML, CSS and JavaScript, then three.js, then Blender basics, then a weekend game jam with friends.",
+          "Jobs in this world include game developer, technical artist, 3D artist, level designer, XR developer and graphics engineer."
+        ]
+      }
+    ],
+    "pageCount": 12
+  }
+]

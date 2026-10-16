@@ -1,0 +1,145 @@
+[
+ {
+  "Name": "R002",
+  "Order": 2,
+  "Pattern": "\\b(thanks|thank you|thx|appreciate it)\\b",
+  "MaxWords": 4,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "You’re welcome! Ask me anything else about the campus.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R003",
+  "Order": 3,
+  "Pattern": "\\b(bye|goodbye|see you|see ya|later)\\b",
+  "MaxWords": 3,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Come back anytime. The campus never closes.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R006",
+  "Order": 6,
+  "Pattern": "\\bwho (made|built|created) (this|it|the campus)\\b|is this (official|real|xrlibraries)|\\bofficial\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "This campus is an unofficial concept that Ev Holt made with Walk the Archive for XRLibraries. It is not an official XRLibraries site. The facts come from public sources like xrlibraries.com.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R008",
+  "Order": 8,
+  "Pattern": "\\bwhere am i\\b|what is this place|whats this place|what is this\\b|what am i looking at",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four hands-on rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R010",
+  "Order": 10,
+  "Pattern": "\\b(bathroom|restroom|toilet)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Good news: nobody needs a restroom in a virtual campus. Anything else I can help with?",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R011",
+  "Order": 11,
+  "Pattern": "\\b(hours|open|close|closing)\\b.*\\b(when|what time|hours)\\b|\\bwhat time\\b.*\\b(open|close)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The campus never closes. It’s open whenever you are, on a phone, a laptop or a library computer.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R013",
+  "Order": 13,
+  "Pattern": "^\\s*(start|let'?s|begin) (painting|to paint|the workshop|workshop)|^\\s*start painting\\s*$|\\bstart (the )?paint",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Let’s paint! I’ll take you to the easel. Drag to paint in the air, then walk around your work.",
+  "Action": "GoPlace",
+  "ActionArg": "studio"
+ },
+ {
+  "Name": "R014",
+  "Order": 14,
+  "Pattern": "\\bblank (canvas|page|room)\\b|\\bempty (canvas|room)\\b|\\bclean canvas\\b|\\bnew canvas\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Here’s a blank canvas: the room disappears and it’s just you and your art. Switch to Night for a starry sky, or back to Room any time.",
+  "Action": "GoPlace",
+  "ActionArg": "studio"
+ },
+ {
+  "Name": "R017",
+  "Order": 17,
+  "Pattern": "\\b(build|make)\\s+(a |an |my own )?(model|mini) (car|house|building)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Head to the model bench in Room 103. You can build a rubber-band car or a two-story building with cross-bracing, one step at a time, then test it.",
+  "Action": "OpenStation",
+  "ActionArg": "bench"
+ },
+ {
+  "Name": "R018",
+  "Order": 18,
+  "Pattern": "other (workshops|classes|rooms)|what (workshops|classes|rooms)|which (workshops|classes|rooms)|workshops are there|what can i (do|make|learn) (here|in the school)",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "All four workshop rooms are open. Room 101 is the 3D Art Studio, Room 102 is the Science Lab, Room 103 is the Blueprint Lab and Room 104 is the World Builder Studio.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R019",
+  "Order": 19,
+  "Pattern": "\\b(world builder|room 104|build (a|my own|your own|a whole) (world|game)|make (a|my own|your own) (world|game|3d world)|game design|how (was|is|did) (this|the campus|you) (made|built|make|build)|how (do|can) (i|you) (make|build) (a world|a game|something like this|this))\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Room 104, the World Builder Studio, shows how a world like this campus gets made. Build a mini world on the layer table one layer at a time, from a sketch to a live website, then read the World Builder’s Handbook to start your own.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R135",
+  "Order": 135,
+  "Pattern": "ride",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Recess Yard has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive.",
+  "Action": "None",
+  "ActionArg": "None"
+ },
+ {
+  "Name": "R136",
+  "Order": 136,
+  "Pattern": "scene|wax|figure",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Wax Hall has 12 living-history scenes, from 2016 to 2025, with wax figures that act each one out.",
+  "Action": "None",
+  "ActionArg": "None"
+ }
+]

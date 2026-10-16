@@ -1,0 +1,112 @@
+[
+  {
+    "id": "about",
+    "label": "xrlibraries.com/about",
+    "url": "https://www.xrlibraries.com/about"
+  },
+  {
+    "id": "home",
+    "label": "xrlibraries.com",
+    "url": "https://www.xrlibraries.com/"
+  },
+  {
+    "id": "equity",
+    "label": "xrlibraries.com/equity-diversity",
+    "url": "https://www.xrlibraries.com/equity-diversity"
+  },
+  {
+    "id": "metaverse",
+    "label": "xrlibraries.com/metaverse",
+    "url": "https://www.xrlibraries.com/metaverse"
+  },
+  {
+    "id": "environment",
+    "label": "xrlibraries.com/environment",
+    "url": "https://www.xrlibraries.com/environment"
+  },
+  {
+    "id": "fair",
+    "label": "xrlibraries.com/mcf2025",
+    "url": "https://www.xrlibraries.com/mcf2025"
+  },
+  {
+    "id": "showcase",
+    "label": "xrlibraries.com/xr-showcase",
+    "url": "https://www.xrlibraries.com/xr-showcase"
+  },
+  {
+    "id": "playbooks",
+    "label": "xrlibraries.com/xr-playbooks",
+    "url": "https://www.xrlibraries.com/xr-playbooks"
+  },
+  {
+    "id": "sjsu",
+    "label": "SJSU School of Information",
+    "url": "https://ischool.sjsu.edu/xrlibraries"
+  },
+  {
+    "id": "arbor",
+    "label": "ArborXR customer story",
+    "url": "https://arborxr.com/blog/how-arborxr-helped-xr-libraries-scale-save-time-on-content-management-for-virtual-reality/"
+  },
+  {
+    "id": "arborPod",
+    "label": "ArborXR podcast, 2025",
+    "url": "https://arborxr.com/podcast/michelle-rebaleati-powering-nevadas-statewide-vr-career-training-with-1000-devices-across-80-locations"
+  },
+  {
+    "id": "working",
+    "label": "WorkingNation, 2023",
+    "url": "https://workingnation.com/?p=84615"
+  },
+  {
+    "id": "cil",
+    "label": "Computers in Libraries speaker page",
+    "url": "https://computersinlibraries.infotoday.com/2023/27335-John-MacLeod.aspx"
+  },
+  {
+    "id": "wsl",
+    "label": "Washington State Library, VR 360",
+    "url": "https://washstatelib.libguides.com/vr360/overview"
+  },
+  {
+    "id": "cb",
+    "label": "CB Insights company profile",
+    "url": "https://www.cbinsights.com/company/xr-libraries/"
+  },
+  {
+    "id": "cenic",
+    "label": "CENIC, 2019",
+    "url": "https://cenic.org/blog/cenic-helps-to-power-virtual-reality"
+  },
+  {
+    "id": "lj2017",
+    "label": "Library Journal, 2017",
+    "url": "https://libraryjournal.com/story/oculus-virtual-reality-tech-rolls-california-libraries"
+  },
+  {
+    "id": "lj2019",
+    "label": "Library Journal, 2019",
+    "url": "https://www.libraryjournal.com/story/nevada-state-library-enters-new-phase-of-virtual-reality-project"
+  },
+  {
+    "id": "vive2018",
+    "label": "HTC VIVE news release, 2018",
+    "url": "https://www.vive.com/us/newsroom/2018-09-06-3/"
+  },
+  {
+    "id": "carson2018",
+    "label": "Carson Now, 2018",
+    "url": "https://carsonnow.org/story/02/17/2018/virtual-reality-stations-featured-carson-city-library-re-opening-celebration"
+  },
+  {
+    "id": "goed2023",
+    "label": "Nevada GOED, 2023",
+    "url": "https://goed.nv.gov/virtual-reality-course-part-of-worlds-largest-library-catalog"
+  },
+  {
+    "id": "sjsu2024",
+    "label": "SJSU School of Information news, 2024",
+    "url": "https://ischool.sjsu.edu/news/virtual-reality-exhibit-gives-voice-ukrainian-children-and-librarians"
+  }
+]

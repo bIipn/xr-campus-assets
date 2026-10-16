@@ -1,0 +1,444 @@
+[
+  {
+    "location": "gallery",
+    "id": "ca-200",
+    "g": 1,
+    "kind": "milestone",
+    "title": "Over 200 VR Systems in California Libraries",
+    "date": "2016",
+    "year": 2016,
+    "where": "California public libraries",
+    "partners": "",
+    "src": [
+      "about"
+    ],
+    "desc": "XRLibraries began in 2016 by installing more than 200 virtual reality systems in California public libraries. Its website calls this the largest VR installation in public libraries.",
+    "place": {
+      "wall": "L",
+      "z": -9
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "bignum",
+      "num": "200+",
+      "l1": "VR systems",
+      "l2": "in California public libraries",
+      "kick": "2016 · WHERE IT STARTED",
+      "motif": "grid",
+      "bg": "#173230"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "mission",
+    "g": 1,
+    "kind": "mission",
+    "title": "XR Made Easy for Everyone",
+    "date": "Since 2016",
+    "year": null,
+    "where": "Libraries and schools",
+    "partners": "",
+    "src": [
+      "about",
+      "sjsu"
+    ],
+    "desc": "XRLibraries works with schools and libraries to bring virtual, augmented and mixed reality into their programs and classes. Its stated goal is equitable access to immersive technology for all communities.",
+    "quote": "We make XR easy to use for everyone.",
+    "quoteBy": "XRLibraries, on its About page",
+    "place": {
+      "wall": "R",
+      "z": -9
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "quote",
+      "bg": "#1f3d3a"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "headset",
+    "g": 1,
+    "kind": "object",
+    "title": "A Library VR Headset",
+    "date": "Today",
+    "year": null,
+    "where": "Library program rooms",
+    "partners": "Meta Quest and Pico are listed partners",
+    "src": [
+      "home",
+      "arbor"
+    ],
+    "desc": "Standalone headsets let a library visitor stand on the moon, swim a coral reef or practice a job, with no computer attached. Meta Quest and Pico both appear on XRLibraries’ partner list, and its Nevada headsets run on Pico.",
+    "place": {
+      "wall": "P",
+      "x": -2.6,
+      "z": -12
+    },
+    "object": "headset",
+    "art": {
+      "type": "headset"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "nv-2017",
+    "g": 1,
+    "kind": "milestone",
+    "title": "Nevada Follows Marin County",
+    "date": "2017",
+    "year": 2017,
+    "where": "Nevada public libraries",
+    "partners": "Nevada State Library",
+    "src": [
+      "working"
+    ],
+    "desc": "In 2017 Nevada’s state library put its first VR headsets in public libraries: 22 headsets in 11 libraries, with STEM content. WorkingNation reports that the model followed a program at the Marin County Free Library in California.",
+    "place": {
+      "wall": "L",
+      "z": -15
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "bignum",
+      "num": "22",
+      "l1": "headsets in 11 libraries",
+      "l2": "Nevada’s first phase",
+      "kick": "2017 · NEVADA",
+      "motif": "nevada",
+      "dots": 11,
+      "bg": "#1d2f3a"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "cil-talks",
+    "g": 1,
+    "kind": "event",
+    "title": "XR at Computers in Libraries",
+    "date": "2020 and 2022",
+    "year": 2020,
+    "where": "Computers in Libraries conference",
+    "partners": "Information Today",
+    "src": [
+      "cil"
+    ],
+    "desc": "XRLibraries’ executive director, John MacLeod, presented “Integrating XR Tech & Programming in Libraries” at Computers in Libraries Connect in 2020 and “Using XR to Discover ‘Lost Stories’ & Pop-Up Books” in 2022.",
+    "place": {
+      "wall": "R",
+      "z": -15
+    },
+    "size": [
+      1,
+      1.32
+    ],
+    "art": {
+      "type": "badge"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "sandi",
+    "g": 2,
+    "kind": "program",
+    "title": "Project SANDI",
+    "date": "Began in 2020",
+    "year": 2020,
+    "where": "Nevada",
+    "partners": "Nevada Governor’s Office of Economic Development, XRLibraries",
+    "src": [
+      "working",
+      "arborPod",
+      "about"
+    ],
+    "desc": "Supporting and Advancing Nevada’s Dislocated Individuals began during the 2020 downturn with a $13.8 million federal grant. It uses VR to explore careers in five fields: skilled trades, healthcare, IT, advanced manufacturing and logistics.",
+    "more": "The program grew to more than 1,000 headsets at over 80 locations, with 35 VR field trips and five training simulations, including dialysis technician and certified nursing assistant. XRLibraries’ executive director is a partner in the project.",
+    "place": {
+      "wall": "L",
+      "z": -21
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "sectors"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "nv-1100",
+    "g": 2,
+    "kind": "milestone",
+    "title": "1,100 Headsets in Nevada",
+    "date": "2020s",
+    "year": null,
+    "where": "Nevada community college and public libraries",
+    "partners": "Lifeliqe, ArborXR",
+    "src": [
+      "home",
+      "arbor"
+    ],
+    "desc": "XRLibraries and Lifeliqe installed VR headsets in Nevada’s community college and public libraries. XRLibraries’ homepage counts more than 1,100.",
+    "more": "XRLibraries uses ArborXR to set up headsets and send updates remotely. Its director told ArborXR the switch cut the time and resources spent by about 60 percent.",
+    "place": {
+      "wall": "R",
+      "z": -21
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "bignum",
+      "num": "1,100+",
+      "l1": "VR headsets",
+      "l2": "in Nevada college and public libraries",
+      "kick": "NEVADA · STATEWIDE",
+      "motif": "nevada",
+      "dots": 70,
+      "bg": "#1f2a44"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "dialysis",
+    "g": 2,
+    "kind": "story",
+    "title": "Training From a Town of 300",
+    "date": "2020s",
+    "year": null,
+    "where": "Rural Nevada",
+    "partners": "College of Southern Nevada",
+    "src": [
+      "arbor",
+      "working"
+    ],
+    "desc": "A remote 12-week dialysis technician certification lets people train without traveling to a training center. In a community of about 300 people, a single mother finished the program, passed her certification and plans to become a registered nurse.",
+    "quote": "It brought the dialysis concepts to life.",
+    "quoteBy": "Natasha York, former library assistant, in WorkingNation",
+    "place": {
+      "wall": "L",
+      "z": -27
+    },
+    "size": [
+      1.15,
+      1.15
+    ],
+    "art": {
+      "type": "story"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "playbooks",
+    "g": 2,
+    "kind": "resource",
+    "title": "XR Playbooks",
+    "date": "Ongoing",
+    "year": null,
+    "where": "Pre-installed on library headsets",
+    "partners": "",
+    "src": [
+      "sjsu",
+      "playbooks"
+    ],
+    "desc": "XRLibraries catalogs more than 300 XR apps in categories from astronomy and history to mindfulness and music, then bundles them into themed playbooks that come pre-installed on library headsets.",
+    "place": {
+      "wall": "P",
+      "x": -2.6,
+      "z": -24
+    },
+    "object": "book",
+    "art": {
+      "type": "playbook"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "showcase",
+    "g": 2,
+    "kind": "resource",
+    "title": "XR Showcase",
+    "date": "Video series",
+    "year": null,
+    "where": "Online",
+    "partners": "Hosts George and Camila",
+    "src": [
+      "showcase"
+    ],
+    "desc": "In this video series, hosts George and Camila try VR and AR apps for libraries, from Tilt Brush and Wander to Apollo 11 VR, and share practical tips like cleaning headsets and setting a guardian boundary.",
+    "more": "Episodes also cover running big VR events with rotating stations, recording video inside a headset and playing media through the Meta Quest TV app.",
+    "place": {
+      "wall": "R",
+      "z": -27
+    },
+    "size": [
+      1.15,
+      1.15
+    ],
+    "art": {
+      "type": "episodes"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "way-out",
+    "g": 3,
+    "kind": "project",
+    "title": "A Way Out of No Way",
+    "date": "Lost Stories project",
+    "year": null,
+    "where": "Marin City, California",
+    "partners": "The Marinovators, Marin City youth",
+    "src": [
+      "equity",
+      "home"
+    ],
+    "desc": "Marin City students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told.",
+    "more": "The project ran in three tracks: immersive storytelling, music and VR modeling. It is part of XRLibraries’ Lost Stories work, which plans to look for Latino, Asian-Pacific and Native American stories next.",
+    "place": {
+      "wall": "L",
+      "z": -33
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "shipyard"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "charleston",
+    "g": 3,
+    "kind": "project",
+    "title": "The Black Wall Street of Charleston",
+    "date": "AR scavenger hunt",
+    "year": null,
+    "where": "Charleston, South Carolina",
+    "partners": "Burke High School CTE students, Preservation Society of Charleston, Burke High School Foundation",
+    "src": [
+      "equity",
+      "home"
+    ],
+    "desc": "Career and technical education students at Burke High School built an augmented-reality scavenger hunt that leads players to Charleston’s Black-owned businesses.",
+    "place": {
+      "wall": "R",
+      "z": -33
+    },
+    "size": [
+      1,
+      1.32
+    ],
+    "art": {
+      "type": "armap"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "seeking",
+    "g": 3,
+    "kind": "project",
+    "title": "Seeking Immortality",
+    "date": "Browser-based world",
+    "year": null,
+    "where": "Northern Cheyenne Tribe",
+    "partners": "Northern Cheyenne Tribe, SJSU School of Information",
+    "src": [
+      "metaverse"
+    ],
+    "desc": "A browser-based VR world, funded by an IMLS Native American Enhancement Grant, that preserves endangered Cheyenne language and cultural knowledge. Tribal members and students learned 3D scanning so the tribe keeps control of its own data.",
+    "place": {
+      "wall": "L",
+      "z": -39
+    },
+    "size": [
+      1.5,
+      1.05
+    ],
+    "art": {
+      "type": "scan"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "ukraine",
+    "g": 3,
+    "kind": "project",
+    "title": "Children Draw War, Not Flowers",
+    "date": "3D art exhibition",
+    "year": null,
+    "where": "Cherkasy region, Ukraine",
+    "partners": "SJSU School of Information, Ukrainian librarians, children and veterans, 40 regional libraries",
+    "src": [
+      "metaverse"
+    ],
+    "desc": "An immersive 3D exhibition of art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children. It helps children work through war-related trauma, preserves their artwork, and was honored at the Anthem Awards.",
+    "place": {
+      "wall": "R",
+      "z": -39
+    },
+    "size": [
+      1.15,
+      1.15
+    ],
+    "art": {
+      "type": "drawings"
+    }
+  },
+  {
+    "location": "gallery",
+    "id": "pollinators",
+    "g": 3,
+    "kind": "event",
+    "title": "Pollinators at the Marin County Fair",
+    "date": "2025",
+    "year": 2025,
+    "where": "Marin County Fair, California",
+    "partners": "Artist Cynthia Jensen",
+    "src": [
+      "fair"
+    ],
+    "desc": "At XRLibraries’ bug-themed booth, fairgoers used an AR app called Pollinators to plant flowers and release monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+    "place": {
+      "wall": "E",
+      "x": -3.6
+    },
+    "size": [
+      1.7,
+      1.7
+    ],
+    "art": {
+      "type": "pollinators"
+    }
+  },
+  {
+    "location": "library",
+    "g": null,
+    "id": "freedom",
+    "kind": "project",
+    "title": "Freedom to Read",
+    "date": "A shared world on FrameVR",
+    "year": null,
+    "where": "Online, in the browser",
+    "partners": "SJSU School of Information, Unite Against Book Bans, Little Free Library, Books Unbanned",
+    "src": [
+      "metaverse"
+    ],
+    "desc": "A VR environment that helps citizens, librarians and students fight book bans, and helps young people in affected areas find challenged books that reflect their lives. It is one of the shared worlds listed on XRLibraries’ metaverse page.",
+    "art": {
+      "type": "freedom"
+    }
+  }
+]

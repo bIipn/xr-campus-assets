@@ -1,0 +1,500 @@
+[
+  {
+    "tag": "span",
+    "id": "roomK",
+    "line": 5,
+    "text": "Lobby"
+  },
+  {
+    "tag": "span",
+    "id": "roomN",
+    "line": 6,
+    "text": "XRLibraries Campus"
+  },
+  {
+    "tag": "span",
+    "id": "roomY",
+    "line": 7,
+    "text": "Start here"
+  },
+  {
+    "tag": "button",
+    "id": "bVR",
+    "line": 10,
+    "text": "Enter VR"
+  },
+  {
+    "tag": "button",
+    "id": "bTour",
+    "line": 11,
+    "text": "Tour"
+  },
+  {
+    "tag": "button",
+    "id": "bSearch",
+    "line": 12,
+    "text": "Search"
+  },
+  {
+    "tag": "button",
+    "id": "bBadges",
+    "line": 13,
+    "text": "Badges★0/10"
+  },
+  {
+    "tag": "button",
+    "id": "bAbout",
+    "line": 14,
+    "text": "About?"
+  },
+  {
+    "tag": "button",
+    "id": "plan",
+    "line": 18,
+    "text": "Campus map · tap a place"
+  },
+  {
+    "tag": "button",
+    "id": "bJump",
+    "line": 26,
+    "text": "Jump"
+  },
+  {
+    "tag": "button",
+    "id": "bKick",
+    "line": 27,
+    "text": "Kick"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 28,
+    "text": "Power"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 35,
+    "text": "A concept by Ev Holt · Walk the Archive"
+  },
+  {
+    "tag": "h1",
+    "id": "introTitle",
+    "line": 36,
+    "text": "XRLibraries Campus"
+  },
+  {
+    "tag": "p",
+    "id": null,
+    "line": 37,
+    "text": "A museum with a living-history Wax Hall, a library, a hands-on workshop school and a recess yard about XR in libraries, built to walk through in a web browser."
+  },
+  {
+    "tag": "p",
+    "id": null,
+    "line": 38,
+    "text": "An unofficial concept made for XRLibraries. The museum and library use facts from public sources, mainly xrlibraries.com and the news reports cited on each card. Wax Hall figures are generic reenactors, not likenesses of real people. The staff are virtual and answer common questions on their own. The rides in the Recess Yard are made up for fun. The people are Microsoft Rocketbox avatars (MIT License, © 2020 Microsoft)."
+  },
+  {
+    "tag": "span",
+    "id": "introMeta",
+    "line": 39,
+    "text": "Setting up the campus…"
+  },
+  {
+    "tag": "button",
+    "id": "bEnter",
+    "line": 41,
+    "text": "Enter the campus"
+  },
+  {
+    "tag": "button",
+    "id": "bTourStart",
+    "line": 42,
+    "text": "Take the guided tour"
+  },
+  {
+    "tag": "p",
+    "id": "controlsText",
+    "line": 44,
+    "text": "Tap the floor to walk and drag to look around."
+  },
+  {
+    "tag": "span",
+    "id": "gfxLabel",
+    "line": 45,
+    "text": "Graphics"
+  },
+  {
+    "tag": "summary",
+    "id": null,
+    "line": 46,
+    "text": "Sources"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 47,
+    "text": "Built by Ev Holt"
+  },
+  {
+    "tag": "button",
+    "id": "vClose",
+    "line": 53,
+    "text": "Close"
+  },
+  {
+    "tag": "span",
+    "id": "vKind",
+    "line": 56,
+    "text": "Milestone"
+  },
+  {
+    "tag": "h2",
+    "id": "vTitle",
+    "line": 57,
+    "text": "Title"
+  },
+  {
+    "tag": "button",
+    "id": "vPrev",
+    "line": 70,
+    "text": "Previous"
+  },
+  {
+    "tag": "button",
+    "id": "vNext",
+    "line": 71,
+    "text": "Next"
+  },
+  {
+    "tag": "span",
+    "id": "tStep",
+    "line": 78,
+    "text": "Stop 1"
+  },
+  {
+    "tag": "h3",
+    "id": "tTitle",
+    "line": 79,
+    "text": "Welcome"
+  },
+  {
+    "tag": "button",
+    "id": "tBack",
+    "line": 83,
+    "text": "Back"
+  },
+  {
+    "tag": "button",
+    "id": "tNext",
+    "line": 84,
+    "text": "Next stop"
+  },
+  {
+    "tag": "button",
+    "id": "tOpen",
+    "line": 85,
+    "text": "Open exhibit"
+  },
+  {
+    "tag": "button",
+    "id": "tEnd",
+    "line": 87,
+    "text": "End tour"
+  },
+  {
+    "tag": "label",
+    "id": null,
+    "line": 93,
+    "text": "Search the campus"
+  },
+  {
+    "tag": "button",
+    "id": "sClose",
+    "line": 98,
+    "text": "Close"
+  },
+  {
+    "tag": "button",
+    "id": "askBtn",
+    "line": 101,
+    "text": "MAsk Margaret"
+  },
+  {
+    "tag": "button",
+    "id": "gClose",
+    "line": 107,
+    "text": "Close"
+  },
+  {
+    "tag": "label",
+    "id": "gLabel",
+    "line": 112,
+    "text": "Ask Margaret"
+  },
+  {
+    "tag": "button",
+    "id": "gSend",
+    "line": 114,
+    "text": "Ask"
+  },
+  {
+    "tag": "button",
+    "id": "rdClose",
+    "line": 121,
+    "text": "Close"
+  },
+  {
+    "tag": "button",
+    "id": "rdPrev",
+    "line": 129,
+    "text": "Previous"
+  },
+  {
+    "tag": "button",
+    "id": "rdNext",
+    "line": 131,
+    "text": "Next page"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 143,
+    "text": "Size"
+  },
+  {
+    "tag": "span",
+    "id": "pbSize",
+    "line": 143,
+    "text": "SMLXL"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 144,
+    "text": "Mirror"
+  },
+  {
+    "tag": "span",
+    "id": "pbSym",
+    "line": 144,
+    "text": "OffMirror×6"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 145,
+    "text": "Canvas"
+  },
+  {
+    "tag": "span",
+    "id": "pbCanvas",
+    "line": 145,
+    "text": "RoomBlankNight"
+  },
+  {
+    "tag": "button",
+    "id": "pbSpin",
+    "line": 146,
+    "text": "Spin"
+  },
+  {
+    "tag": "label",
+    "id": null,
+    "line": 147,
+    "text": "NearFar"
+  },
+  {
+    "tag": "button",
+    "id": "pbMode",
+    "line": 150,
+    "text": "Look around"
+  },
+  {
+    "tag": "button",
+    "id": "pbUndo",
+    "line": 151,
+    "text": "Undo"
+  },
+  {
+    "tag": "button",
+    "id": "pbClear",
+    "line": 152,
+    "text": "Clear"
+  },
+  {
+    "tag": "button",
+    "id": "pbSave",
+    "line": 153,
+    "text": "Save picture"
+  },
+  {
+    "tag": "button",
+    "id": "pbDone",
+    "line": 155,
+    "text": "Done"
+  },
+  {
+    "tag": "button",
+    "id": "stClose",
+    "line": 162,
+    "text": "Close"
+  },
+  {
+    "tag": "button",
+    "id": "bpClose",
+    "line": 170,
+    "text": "Close"
+  },
+  {
+    "tag": "span",
+    "id": "bpKind",
+    "line": 176,
+    "text": "Blueprint"
+  },
+  {
+    "tag": "button",
+    "id": "bpPrev",
+    "line": 182,
+    "text": "Previous"
+  },
+  {
+    "tag": "button",
+    "id": "bpNext",
+    "line": 183,
+    "text": "Next part"
+  },
+  {
+    "tag": "button",
+    "id": "bpOver",
+    "line": 184,
+    "text": "Overview"
+  },
+  {
+    "tag": "button",
+    "id": "bpModel",
+    "line": 185,
+    "text": "Build a model"
+  },
+  {
+    "tag": "span",
+    "id": "rcKick",
+    "line": 192,
+    "text": "Recess Yard · Ride"
+  },
+  {
+    "tag": "h3",
+    "id": "rcTitle",
+    "line": 193,
+    "text": "Comet Coaster"
+  },
+  {
+    "tag": "button",
+    "id": "rcGo",
+    "line": 197,
+    "text": "Ride now"
+  },
+  {
+    "tag": "button",
+    "id": "rcGentle",
+    "line": 198,
+    "text": "Gentle ride"
+  },
+  {
+    "tag": "button",
+    "id": "rcCancel",
+    "line": 200,
+    "text": "Not now"
+  },
+  {
+    "tag": "span",
+    "id": "rhKick",
+    "line": 206,
+    "text": "Comet Coaster"
+  },
+  {
+    "tag": "button",
+    "id": "rhPause",
+    "line": 210,
+    "text": "Pause"
+  },
+  {
+    "tag": "button",
+    "id": "rhExit",
+    "line": 211,
+    "text": "Exit ride"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 219,
+    "text": "Badge unlocked"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 224,
+    "text": "Recess rewards"
+  },
+  {
+    "tag": "h2",
+    "id": "bgTitle",
+    "line": 224,
+    "text": "Badges"
+  },
+  {
+    "tag": "button",
+    "id": "bgClose",
+    "line": 225,
+    "text": "Close"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 229,
+    "text": "XR tokens"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 232,
+    "text": "Saved on this device"
+  },
+  {
+    "tag": "button",
+    "id": "bgReset",
+    "line": 232,
+    "text": "Start over"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 237,
+    "text": "A concept by Ev Holt · Walk the Archive"
+  },
+  {
+    "tag": "h1",
+    "id": null,
+    "line": 238,
+    "text": "XRLibraries Campus"
+  },
+  {
+    "tag": "p",
+    "id": null,
+    "line": 239,
+    "text": "This browser can’t show the 3D campus, but you can still read every exhibit and book."
+  },
+  {
+    "tag": "button",
+    "id": "bBrowse",
+    "line": 240,
+    "text": "Browse exhibits and books"
+  },
+  {
+    "tag": "span",
+    "id": null,
+    "line": 241,
+    "text": "Built by Ev Holt"
+  }
+]

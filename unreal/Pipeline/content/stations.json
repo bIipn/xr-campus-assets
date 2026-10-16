@@ -1,0 +1,245 @@
+[
+  {
+    "id": "sieve",
+    "card": {
+      "k": "Science Lab · Room 102",
+      "t": "Sieve analysis (PSD)",
+      "m": "Measure the grain sizes in sand",
+      "go": "Start the test"
+    },
+    "file": "parts/lab.js",
+    "lines": "329-433",
+    "room": "lab",
+    "kick": "Room 102 · Science Lab",
+    "usesHands": true,
+    "stepTitles": [
+      "Sieve analysis (PSD)",
+      "Split the sample",
+      "Dry and weigh",
+      "Stack the sieves",
+      "Shake",
+      "Weigh each sieve",
+      "Results"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials."
+      },
+      {
+        "kind": "stp",
+        "text": "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams."
+      },
+      {
+        "kind": "stresult",
+        "text": "Done. Two splits took the pile down to one representative portion of about 100 grams."
+      },
+      {
+        "kind": "stp",
+        "text": "Dry the sample in the oven at about 110 °C until its mass stops changing, and let it cool. Then press TARE with the empty dish on the balance, so the reading only counts the sand, and pour the sample in."
+      },
+      {
+        "kind": "stp",
+        "text": "Nest the sieves with the biggest openings on top and the finest at the bottom, with a pan underneath to catch the dust. Sieves are named by their US mesh number, roughly the number of openings per inch."
+      },
+      {
+        "kind": "stp",
+        "text": "Pour the sample onto the top sieve, put the cover on, clamp the stack and press START. The shaker swirls and taps the stack so every grain gets its chance to fall through. Labs often shake for 10 to 15 minutes; this run is sped up."
+      },
+      {
+        "kind": "stresult",
+        "text": "Shaking finished. The grains have settled onto the sieves that were too fine for them to pass."
+      },
+      {
+        "kind": "stp",
+        "text": "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass."
+      },
+      {
+        "kind": "stnote",
+        "text": "Teal line: % passing each sieve. Gold bars: % retained on each sieve."
+      },
+      {
+        "kind": "stp",
+        "text": "The AFS grain fineness number sums each sieve’s % retained times a multiplier, then divides by the total. A bigger number means finer sand. Plants compare it, and the whole curve, against each customer’s spec."
+      }
+    ],
+    "buttonLabels": [
+      "Skip ahead",
+      "Run a new sample",
+      "Done"
+    ],
+    "toasts": []
+  },
+  {
+    "id": "titration",
+    "card": {
+      "k": "Science Lab · Room 102",
+      "t": "Acid–base titration",
+      "m": "Find the concentration of a mystery acid",
+      "go": "Start titrating"
+    },
+    "file": "parts/lab.js",
+    "lines": "572-628",
+    "room": "lab",
+    "kick": "Room 102 · Science Lab",
+    "usesHands": true,
+    "stepTitles": [
+      "Acid–base titration",
+      "Set up",
+      "Titrate",
+      "Results"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid."
+      },
+      {
+        "kind": "stp",
+        "text": "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2."
+      },
+      {
+        "kind": "stwarn",
+        "text": "In a real lab: goggles on. Both chemicals can burn skin and eyes."
+      },
+      {
+        "kind": "stp",
+        "text": "Pour exactly 25.00 mL of the mystery acid into the flask and add 2 drops of phenolphthalein. Fill the burette with 0.1000 M sodium hydroxide, then read the starting volume at the bottom of the curved liquid surface, the meniscus, with your eye level with it."
+      },
+      {
+        "kind": "stp",
+        "text": "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
+      },
+      {
+        "kind": "stnote",
+        "text": "The pH jumps from about 4 to 10 within a drop or two of the equivalence point. That steep jump is why one indicator color change can pin down the answer so precisely."
+      }
+    ],
+    "buttonLabels": [
+      "Start",
+      "Set it up",
+      "Skip ahead",
+      "Next: titrate",
+      "Record endpoint",
+      "Try a new acid",
+      "Done"
+    ],
+    "toasts": [
+      "Turn the stopcock to add base: a milliliter, a tenth, or one drop.",
+      "Press Start to begin.",
+      "No lasting pink yet. Keep adding base."
+    ]
+  },
+  {
+    "id": "pendulum",
+    "card": {
+      "k": "Science Lab · Room 102",
+      "t": "Pendulum",
+      "m": "Measure gravity with a string and a weight",
+      "go": "Start swinging"
+    },
+    "file": "parts/lab.js",
+    "lines": "694-753",
+    "room": "lab",
+    "kick": "Room 102 · Science Lab",
+    "usesHands": true,
+    "stepTitles": null,
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g."
+      },
+      {
+        "kind": "stp",
+        "text": "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T²."
+      },
+      {
+        "kind": "stp",
+        "text": "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back)."
+      },
+      {
+        "kind": "stp",
+        "text": "Swinging… The photogate times each pass. Let it finish 10 full swings."
+      },
+      {
+        "kind": "sth3",
+        "text": "Your data"
+      },
+      {
+        "kind": "sthint",
+        "text": "Try two more lengths, like 0.50 m and 1.50 m. Plotting T² against L gives a straight line, and its slope gives g."
+      }
+    ],
+    "buttonLabels": [
+      "Start",
+      "Pull back and release",
+      "Skip ahead",
+      "Stop",
+      "Clear data",
+      "Done"
+    ],
+    "toasts": [
+      "Press Start to begin.",
+      "Let it finish its 10 swings."
+    ]
+  },
+  {
+    "id": "bench",
+    "card": {
+      "k": "Blueprint Lab · Room 103",
+      "t": "Model bench",
+      "m": "Build a model car or building",
+      "go": "Start building"
+    },
+    "file": "parts/blueprints.js",
+    "lines": "361-426",
+    "room": "blueprint",
+    "kick": "Room 103 · Model bench",
+    "usesHands": true,
+    "stepTitles": null,
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "Pick a kit. You’ll build it with your own hands, one part at a time, the way you would with real materials, then test it."
+      },
+      {
+        "kind": "stnote",
+        "text": "The Automobile and Building blueprints on the walls show the real versions of these parts."
+      }
+    ],
+    "buttonLabels": [
+      "Back",
+      "Skip ahead",
+      "Switch kit"
+    ],
+    "toasts": []
+  },
+  {
+    "id": "diorama",
+    "card": {
+      "k": "World Builder Studio · Room 104",
+      "t": "Layer table",
+      "m": "Build a mini world, one layer at a time",
+      "go": "Build a world"
+    },
+    "file": "parts/worldroom.js",
+    "lines": "131-180",
+    "room": "world",
+    "kick": "Room 104 · Layer table",
+    "usesHands": false,
+    "stepTitles": null,
+    "panelTexts": [
+      {
+        "kind": "stresult",
+        "text": "You built a world, layer by layer. Every 3D game, film and XR app is made with these same layers."
+      }
+    ],
+    "buttonLabels": [
+      "Back",
+      "Add the next layer",
+      "Drop balls",
+      "Read about it"
+    ],
+    "toasts": []
+  }
+]

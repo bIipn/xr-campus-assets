@@ -1,0 +1,612 @@
+[
+  {
+    "id": "car",
+    "order": 0,
+    "title": "Automobile",
+    "dwg": "BP-01",
+    "sub": "Compact car · side cutaway",
+    "spec": "L 4,250 · W 1,780 · H 1,450 MM",
+    "overview": "A compact car seen from the side with its skin cut away, so you can see the parts that make it go, stop, turn and keep people safe.",
+    "build": [
+      "Cut a chassis about 20 × 8 cm from stiff cardboard or foam board.",
+      "Tape two drinking straws across it as bearings, and slide wooden skewers through them as axles.",
+      "Push bottle caps or old CDs onto the axle ends for wheels.",
+      "Hook a rubber band to the front and loop it around the rear axle. Roll the car backward to wind it up, then let go.",
+      "Measure how far it goes, change one thing (wheels, weight, rubber band) and test again. That’s engineering."
+    ],
+    "jobs": "Automotive engineer · mechanic or service technician · EV battery technician · industrial designer · crash-test engineer",
+    "parts": [
+      {
+        "index": 1,
+        "name": "Engine",
+        "short": "Turns fuel into motion",
+        "what": "Inside each cylinder a spark lights a squeezed mix of fuel and air. The blast pushes a piston down, and the crankshaft turns that up-and-down push into spinning. Most car engines repeat four strokes: intake, compression, power and exhaust.",
+        "fact": "A gasoline engine turns only about 25 to 35 percent of its fuel’s energy into motion; most of the rest leaves as heat. Electric motors turn about 90 percent of their battery energy into motion.",
+        "model": "In a model car, a wound-up rubber band or a small hobby motor with a battery pack does the engine’s job."
+      },
+      {
+        "index": 2,
+        "name": "Transmission",
+        "short": "Picks the right gear",
+        "what": "Gears trade speed for turning force (torque). Low gears give lots of push to get moving; high gears let the engine turn slowly while the car cruises fast. An automatic transmission shifts on its own.",
+        "fact": "Bicycle gears work the same way: pedaling a small front gear and a big back gear makes hills easier.",
+        "model": "Wrap the rubber band around a thicker spot on the axle for more pull, or a thinner spot for more speed. That’s a gear ratio."
+      },
+      {
+        "index": 3,
+        "name": "Drive axles",
+        "short": "Carry power to the wheels",
+        "what": "Shafts with flexible CV joints carry the spin from the transmission out to the front wheels, even while the wheels steer and bounce.",
+        "fact": "CV stands for constant velocity: the joint keeps the wheel turning smoothly even when it is bent at an angle.",
+        "model": "A wooden skewer through a drinking straw makes an axle that spins freely. The straw is the bearing."
+      },
+      {
+        "index": 4,
+        "name": "Radiator",
+        "short": "Keeps the engine cool",
+        "what": "A pump pushes coolant through the hot engine and then through the radiator’s thin tubes, where metal fins pass the heat to air rushing through the grille. A fan pulls air through when the car is stopped.",
+        "fact": "Coolant is usually water mixed with antifreeze, which keeps it from freezing in winter and from boiling over in summer.",
+        "model": "A model doesn’t need one, but a scrap of window screen behind the grille makes it look right."
+      },
+      {
+        "index": 5,
+        "name": "Battery",
+        "short": "Starts the car and runs the electronics",
+        "what": "A 12-volt battery spins the starter motor to get the engine going and powers the lights and computers. Once the engine runs, the alternator recharges it.",
+        "fact": "Electric cars still carry a small 12-volt battery for their computers and lights, alongside the big drive battery.",
+        "model": "Two or three AA batteries in a holder can power a small hobby motor on a model car."
+      },
+      {
+        "index": 6,
+        "name": "Fuel tank",
+        "short": "Stores the fuel",
+        "what": "The tank sits low, usually under the rear seat, where it is protected in a crash. An electric pump inside sends fuel forward to the engine.",
+        "fact": "A compact car’s tank usually holds about 45 to 55 liters, or 12 to 15 gallons.",
+        "model": "A rubber-band car stores its energy in stretched rubber instead of fuel. More twists store more energy."
+      },
+      {
+        "index": 7,
+        "name": "Exhaust",
+        "short": "Cleans and quiets the burned gases",
+        "what": "Hot gases leave the engine through pipes to the catalytic converter, where metals like platinum turn the most harmful gases into less harmful ones, then through the muffler, which quiets the noise.",
+        "fact": "A catalytic converter only works well once it is hot, at several hundred degrees Celsius.",
+        "model": "A balloon car uses its “exhaust” to move: air rushing out the back pushes the car forward. That’s Newton’s third law."
+      },
+      {
+        "index": 8,
+        "name": "Suspension",
+        "short": "Smooths out the bumps",
+        "what": "Springs let each wheel move up and down over bumps, and shock absorbers (dampers) stop the car from bouncing afterward. Together they keep the tires pressed on the road for grip.",
+        "fact": "Without dampers, a car would keep bouncing like a pogo stick after every bump.",
+        "model": "Mount the axles in slots instead of holes and add small rubber bands as springs to see suspension at work."
+      },
+      {
+        "index": 9,
+        "name": "Brakes",
+        "short": "Turn motion into heat",
+        "what": "Pressing the pedal pushes brake fluid to the calipers, which squeeze pads against a spinning disc called a rotor. Friction turns the car’s motion into heat and slows it down.",
+        "fact": "Hybrid and electric cars also slow down with their motors, turning motion back into electricity. That’s called regenerative braking.",
+        "model": "A strip of rubber pressed against a wheel works as a simple brake. Test it on a ramp."
+      },
+      {
+        "index": 10,
+        "name": "Wheels and tires",
+        "short": "The only parts touching the road",
+        "what": "Air-filled rubber tires grip the road and soak up small bumps. The grooves in the tread push water out of the way so the tire keeps gripping in the rain.",
+        "fact": "Each tire touches the road with a patch about the size of your hand.",
+        "model": "Bottle caps, old CDs or cardboard circles make good wheels. Bigger wheels travel farther with each turn."
+      },
+      {
+        "index": 11,
+        "name": "Steering",
+        "short": "Turns the front wheels",
+        "what": "Turning the steering wheel spins a small gear, the pinion, which slides a toothed bar, the rack, left or right and turns the front wheels. Power steering adds an electric motor or hydraulics to make it easy.",
+        "fact": "In a turn, the inside front wheel turns a little more than the outside one, because it follows a smaller circle.",
+        "model": "Let the front axle pivot on one pin in the middle, and you can steer your model with a string."
+      },
+      {
+        "index": 12,
+        "name": "Body and safety cell",
+        "short": "Protects the people inside",
+        "what": "The front and back are crumple zones, built to crush in a crash and soak up energy. The middle is a strong safety cell that keeps its shape around the passengers.",
+        "fact": "Crumpling makes a car safer: stopping over a longer distance means smaller forces on the people inside.",
+        "model": "Design a body from card stock, then roll your car into a wall with an egg “passenger.” The best design keeps the egg in one piece."
+      }
+    ],
+    "place": {
+      "x": 14.45,
+      "y": 1.75,
+      "z": 6.97,
+      "ry": 3.141592653589793,
+      "wall": "n"
+    }
+  },
+  {
+    "id": "excavator",
+    "order": 1,
+    "title": "Excavator",
+    "dwg": "BP-02",
+    "sub": "20-ton crawler excavator · side view",
+    "spec": "OPERATING WEIGHT ≈ 20 T",
+    "overview": "A crawler excavator from the side. Almost every motion it makes is hydraulic: oil under pressure moves the boom, stick, bucket, tracks and swing.",
+    "build": [
+      "Cut a boom and a stick from craft sticks or stiff cardboard and pin them together with brass fasteners.",
+      "Glue the boom to a base that can spin, like a bottle cap on a nail or an old CD.",
+      "Fill two plastic syringes and a length of tubing with water. Tape one syringe along the boom and keep the other as your control.",
+      "Push your control plunger and watch the boom rise. Add a second pair for the stick and a third for the bucket.",
+      "Add coins to the back as a counterweight until the arm can reach out without tipping."
+    ],
+    "jobs": "Heavy equipment operator · diesel and hydraulics technician · civil engineer · construction manager · equipment designer",
+    "parts": [
+      {
+        "index": 1,
+        "name": "Tracks",
+        "short": "Spread the weight and grip the ground",
+        "what": "Wide steel tracks spread the machine’s weight so it doesn’t sink in mud, and grip rough ground. Each track has its own hydraulic motor, so running them in opposite directions spins the machine in place.",
+        "fact": "A 20-ton excavator presses on the ground less hard than a person walking, because the tracks spread its weight over a big area.",
+        "model": "Mount your model on a box base, or wrap rubber bands around bottle-cap wheels for tank treads."
+      },
+      {
+        "index": 2,
+        "name": "Swing bearing",
+        "short": "Lets the top spin all the way around",
+        "what": "A giant ring bearing, called a slewing ring, lets the whole upper machine turn 360 degrees on top of the tracks. A hydraulic swing motor drives a small gear around the ring’s teeth.",
+        "fact": "Because the top can spin all the way around, an excavator can dig, turn and dump a load without moving its tracks.",
+        "model": "A lazy Susan, an old CD or a bottle cap on a nail lets your model’s top spin."
+      },
+      {
+        "index": 3,
+        "name": "Upper structure",
+        "short": "The “house” that holds almost everything",
+        "what": "The rotating body carries the cab, engine, hydraulic pumps, oil tank and fuel tank.",
+        "fact": "Operators call it the house because it holds almost everything except the tracks.",
+        "model": "A small box or a block of foam glued on top of your spinning base."
+      },
+      {
+        "index": 4,
+        "name": "Cab and controls",
+        "short": "Where the operator works",
+        "what": "The operator sits here with two joysticks. Each joystick moves two ways, so together they control four motions: boom, stick, bucket and swing.",
+        "fact": "Skilled operators move both joysticks at once, blending several motions into one smooth scoop.",
+        "model": "In a syringe model, your hands on the control syringes are the joysticks."
+      },
+      {
+        "index": 5,
+        "name": "Counterweight",
+        "short": "Keeps it from tipping forward",
+        "what": "A heavy iron block at the back balances the weight of the arm and the load out front, so the machine doesn’t tip forward.",
+        "fact": "It works like a seesaw: weight times distance on one side has to balance weight times distance on the other.",
+        "model": "Tape coins or washers to the back of your model until it stops tipping when the arm reaches out."
+      },
+      {
+        "index": 6,
+        "name": "Boom",
+        "short": "The big first arm",
+        "what": "The boom is lifted and lowered by the boom cylinders. Its curved shape lets it reach up, over and down into a hole.",
+        "fact": "Booms are welded from steel plates into a hollow box, which makes them strong but much lighter than solid steel.",
+        "model": "Two craft sticks glued side by side, with a hole for the pin at each end."
+      },
+      {
+        "index": 7,
+        "name": "Stick",
+        "short": "The second arm, also called the dipper",
+        "what": "Pulling the stick in drags the bucket through the dirt; pushing it out reaches farther.",
+        "fact": "Long sticks reach deeper, while short sticks dig with more force. Contractors pick the stick to suit the job.",
+        "model": "One craft stick, pinned to the end of the boom with a brass fastener or a small bolt."
+      },
+      {
+        "index": 8,
+        "name": "Bucket",
+        "short": "Scoops and carries",
+        "what": "The bucket digs, scoops and carries. Replaceable steel teeth bite into hard ground and are swapped out when they wear down.",
+        "fact": "Buckets come in many shapes: wide ones for loose dirt, narrow ones for trenches and heavy rock buckets with extra-thick teeth.",
+        "model": "Cut and fold a bucket from a plastic bottle or card stock."
+      },
+      {
+        "index": 9,
+        "name": "Boom cylinders",
+        "short": "The muscles that lift the boom",
+        "what": "Hydraulic cylinders are the machine’s muscles. Oil pumped into one end pushes a piston and rod out with huge force; pumping oil into the other end pulls it back in.",
+        "fact": "Pascal’s law says pressure spreads evenly through a fluid. Oil at about 350 bar (5,000 psi) pushing on a piston about 12 centimeters across, the size of a CD, makes about 40 tons of force, and the boom has two of them.",
+        "model": "Join two plastic syringes with a tube full of water. Push one plunger and the other moves. That’s hydraulics."
+      },
+      {
+        "index": 10,
+        "name": "Stick cylinder",
+        "short": "Swings the stick in and out",
+        "what": "Mounted on top of the boom, this cylinder swings the stick in toward the machine and back out.",
+        "fact": "Pulling the stick in, called crowding, is the main digging stroke.",
+        "model": "Add a second syringe pair to move your model’s stick."
+      },
+      {
+        "index": 11,
+        "name": "Bucket cylinder and links",
+        "short": "Curls the bucket",
+        "what": "This cylinder curls the bucket through a set of links that turn its straight push into a wide rotation.",
+        "fact": "The links act like a lever, so a short push of the cylinder can tip the bucket through a big angle.",
+        "model": "A third syringe pair and a small cardboard link make the bucket curl."
+      },
+      {
+        "index": 12,
+        "name": "Engine and pumps",
+        "short": "Power for everything hydraulic",
+        "what": "The diesel engine doesn’t drive the tracks directly. It spins hydraulic pumps, which send oil to whichever cylinder or motor the operator asks for.",
+        "fact": "Some newer excavators are fully electric, and some hybrids save energy when the upper body slows its swing.",
+        "model": "In a syringe model, you are the pump: the push from your hand does the work."
+      }
+    ],
+    "place": {
+      "x": 18.1,
+      "y": 1.75,
+      "z": 6.97,
+      "ry": 3.141592653589793,
+      "wall": "n"
+    }
+  },
+  {
+    "id": "house",
+    "order": 2,
+    "title": "Building",
+    "dwg": "BP-03",
+    "sub": "Two-story wood-frame house · section",
+    "spec": "WALLS: STUDS 16 IN (406 MM) ON CENTER",
+    "overview": "A two-story wood-frame house cut open from the concrete footings to the roof trusses. The far wall shows its framing, and the cut walls show what is inside them.",
+    "build": [
+      "Use a piece of cardboard or a thin board as the base and footing.",
+      "Glue craft-stick walls together: a bottom strip, studs standing between, and a top strip. Leave an opening for a door with a doubled stick above it as a header.",
+      "Stand the walls on the base, glue the corners, and lay sticks on edge across the top as floor joists.",
+      "Glue card triangles or stick triangles across the top as roof trusses.",
+      "Push the top of the model sideways, then glue card sheathing to one wall and push again. Feel how much stiffer it gets."
+    ],
+    "jobs": "Architect · structural or civil engineer · carpenter · electrician · plumber · building inspector · construction manager",
+    "parts": [
+      {
+        "index": 1,
+        "name": "Footings",
+        "short": "Spread the weight into the soil",
+        "what": "Wide pads of concrete under the foundation walls. They spread the house’s weight over more soil, the way snowshoes keep you from sinking into snow.",
+        "fact": "In cold places, footings go below the frost line, the depth where the ground freezes in winter, so frost can’t heave the house up.",
+        "model": "A sturdy piece of cardboard or a thin board makes your model’s footing."
+      },
+      {
+        "index": 2,
+        "name": "Foundation walls",
+        "short": "Hold the house up off the ground",
+        "what": "Concrete or block walls that lift the house off the damp ground and carry its weight down to the footings.",
+        "fact": "Concrete is great at being squeezed but cracks when it is stretched, so steel rebar is set inside to handle the stretching.",
+        "model": "Glue strips of foam board around the edge of your base."
+      },
+      {
+        "index": 3,
+        "name": "Sill plates",
+        "short": "Where wood meets concrete",
+        "what": "The first boards of the house, bolted to the top of the foundation with anchor bolts. Every floor and wall above is attached to them.",
+        "fact": "Sill plates are pressure-treated lumber so they resist rot and termites where wood touches concrete.",
+        "model": "Glue a craft stick flat along the top of each foundation wall."
+      },
+      {
+        "index": 4,
+        "name": "Floor systems",
+        "short": "Joists and subfloor",
+        "what": "Floor joists span from wall to wall like planks standing on edge, and plywood subfloor is glued and nailed on top.",
+        "fact": "Joists stand on edge because a board is far stiffer that way. Try bending a ruler flat, then on its edge.",
+        "model": "Lay craft sticks on edge across the walls, then glue a piece of card on top as the floor."
+      },
+      {
+        "index": 5,
+        "name": "Wall studs",
+        "short": "The skeleton of every wall",
+        "what": "Vertical boards, usually 2-by-4s or 2-by-6s, spaced 16 inches (about 40 centimeters) apart from center to center. They carry the weight from above and hold the wall coverings.",
+        "fact": "Plywood and drywall come in 4-by-8-foot sheets, which line up perfectly with studs every 16 inches.",
+        "model": "Glue craft sticks or coffee stirrers between a bottom strip and a top strip."
+      },
+      {
+        "index": 6,
+        "name": "Headers",
+        "short": "Beams over windows and doors",
+        "what": "A header is a beam over each window and door. It carries the weight from above around the opening, where there is no stud to hold it up.",
+        "fact": "Wider openings need deeper headers, because a beam gets much stiffer as it gets deeper.",
+        "model": "Glue two sticks together over the opening in your model wall."
+      },
+      {
+        "index": 7,
+        "name": "Top plates",
+        "short": "Tie the top of the walls together",
+        "what": "A doubled board along the top of every wall ties the studs together and carries the floor or roof above.",
+        "fact": "Builders overlap the two layers at the corners to lock the walls together.",
+        "model": "Glue two sticks along the top of your studs."
+      },
+      {
+        "index": 8,
+        "name": "Roof trusses",
+        "short": "Triangles that hold up the roof",
+        "what": "Pre-built frames of lumber, made of triangles, that hold up the roof. A triangle can’t change shape unless a side breaks or stretches, which makes trusses strong and light.",
+        "fact": "Trusses are often spaced 24 inches (61 centimeters) apart, and a crane can set a whole roof of them in a day.",
+        "model": "Cut triangles from card or glue sticks into triangles, and space them evenly on top of the walls."
+      },
+      {
+        "index": 9,
+        "name": "Sheathing and wrap",
+        "short": "Stiffens the walls and keeps rain out",
+        "what": "Sheets of plywood or OSB nailed to the outside of the framing stiffen the walls against wind and earthquakes. A house wrap over them keeps rain out while letting moisture escape.",
+        "fact": "Without sheathing, a wall can rack, leaning over into a parallelogram when something pushes it sideways.",
+        "model": "Glue card over one model wall and push the top sideways. Compare it to a wall without card."
+      },
+      {
+        "index": 10,
+        "name": "Insulation",
+        "short": "Slows heat moving in or out",
+        "what": "Fiberglass, mineral wool, cellulose or foam fills the wall cavities and the attic floor and slows heat moving in or out.",
+        "fact": "Insulation works mostly by trapping still air. Its R-value tells you how well it resists heat flow.",
+        "model": "Line one model box with cotton balls, put a warm cup inside each box and see which one cools slower."
+      },
+      {
+        "index": 11,
+        "name": "Roofing",
+        "short": "Sheds the rain",
+        "what": "Underlayment and shingles, or metal panels, shed the rain. Shingles overlap like fish scales so water always runs over a joint and never into it.",
+        "fact": "The steeper the roof, the faster water and snow slide off.",
+        "model": "Overlap strips of paper on your model roof, starting at the bottom and working up."
+      },
+      {
+        "index": 12,
+        "name": "Load path",
+        "short": "How the weight reaches the ground",
+        "what": "Every load needs a path to the ground: roof to trusses, trusses to walls, walls to floors, floors to the foundation and footings, and footings to the soil.",
+        "fact": "Engineers trace load paths for gravity, wind and earthquake forces, checking every connection along the way.",
+        "model": "Stack books on your model’s roof and watch what bends first. That’s the weak link in your load path."
+      }
+    ],
+    "place": {
+      "x": 12.229999999999999,
+      "y": 1.75,
+      "z": 2.875,
+      "ry": 1.5707963267948966,
+      "wall": "w"
+    }
+  },
+  {
+    "id": "bridge",
+    "order": 3,
+    "title": "Bridge",
+    "dwg": "BP-04",
+    "sub": "Steel Pratt truss · elevation",
+    "spec": "SPAN 52 M · 8 PANELS · DEPTH 9 M",
+    "overview": "A steel Pratt truss bridge from the side. Triangles turn the weight of the traffic into simple pushes and pulls in each member. C marks members that get squeezed (compression); T marks members that get stretched (tension).",
+    "build": [
+      "Glue craft sticks into two identical flat trusses: top chord, bottom chord, verticals and diagonals.",
+      "Make the top chords double thick, because they get squeezed.",
+      "Stand the trusses up and connect them with sticks across the bottom at every joint, then add a card deck.",
+      "Brace the top with crossed sticks so the trusses can’t lean.",
+      "Rest it between two stacks of books, hang a bucket from the middle and add weight until it breaks. Find the member that failed first."
+    ],
+    "jobs": "Bridge or structural engineer · civil engineer · ironworker · welder · bridge inspector · surveyor",
+    "parts": [
+      {
+        "index": 1,
+        "name": "Top chord",
+        "short": "Gets squeezed (C)",
+        "what": "The top beam of each truss. Under traffic it gets squeezed, so it is built thick to keep it from buckling.",
+        "fact": "Long thin parts buckle when they’re squeezed, the way a drinking straw folds when you push its ends together.",
+        "model": "Use doubled craft sticks for the top chord: it carries the squeeze."
+      },
+      {
+        "index": 2,
+        "name": "Bottom chord",
+        "short": "Gets stretched (T)",
+        "what": "The bottom beam gets stretched as the bridge sags under load. Steel is excellent at handling tension.",
+        "fact": "In a simple truss span, the top chord pushes and the bottom chord pulls. Together they act like one very deep beam.",
+        "model": "A single stick can carry tension, as long as the glue joints at its ends are strong."
+      },
+      {
+        "index": 3,
+        "name": "Diagonals",
+        "short": "Get stretched (T)",
+        "what": "In a Pratt truss, the diagonals slope down toward the middle of the span, and the load stretches them.",
+        "fact": "Thomas and Caleb Pratt patented this design in 1844, and it became one of the most common railroad bridge designs.",
+        "model": "Glue a diagonal across each panel so every panel becomes two triangles."
+      },
+      {
+        "index": 4,
+        "name": "Verticals",
+        "short": "Most get squeezed (C)",
+        "what": "Vertical posts between the chords. In a Pratt truss most of them get squeezed, working with the stretched diagonals to pass the load panel by panel out to the ends.",
+        "fact": "Flip the diagonals the other way and you get a Howe truss, where the forces swap: diagonals push and verticals pull.",
+        "model": "Glue sticks straight up at every joint of the bottom chord."
+      },
+      {
+        "index": 5,
+        "name": "End posts",
+        "short": "Carry everything down to the bearings",
+        "what": "The slanted members at each end gather the load from the whole truss and carry it down to the bearings.",
+        "fact": "End posts are some of the most heavily loaded members in a truss bridge.",
+        "model": "Use your straightest, strongest sticks here."
+      },
+      {
+        "index": 6,
+        "name": "Deck",
+        "short": "The road surface",
+        "what": "Usually a reinforced concrete slab that cars and trucks drive on.",
+        "fact": "Deck surfaces are often grooved so tires grip and rain drains away.",
+        "model": "Glue a strip of card across the floor beams."
+      },
+      {
+        "index": 7,
+        "name": "Floor beams and stringers",
+        "short": "Hold up the deck",
+        "what": "Floor beams run across the bridge at each joint of the bottom chord, and stringers run lengthwise between them to hold up the deck.",
+        "fact": "A truck’s weight travels from the deck to the stringers, to the floor beams, and into the trusses at their joints.",
+        "model": "Glue sticks across the bottom of the two trusses at every joint."
+      },
+      {
+        "index": 8,
+        "name": "Fixed bearing",
+        "short": "Pins one end in place",
+        "what": "One end of the span sits on a pinned bearing, so the bridge can tilt very slightly but can’t slide.",
+        "fact": "Pinning only one end keeps the bridge in place while still letting it grow and shrink.",
+        "model": "Glue one end of your model bridge to its support."
+      },
+      {
+        "index": 9,
+        "name": "Expansion bearing",
+        "short": "Lets the bridge grow and shrink",
+        "what": "The other end sits on rollers or a sliding pad, with an expansion joint in the deck, so the bridge can grow and shrink with temperature without cracking.",
+        "fact": "Steel grows about 12 millimeters per 10 meters for every 100 °C. A 52-meter span can change length by a few centimeters between winter and summer.",
+        "model": "Rest the other end of your model on a round pencil so it can roll."
+      },
+      {
+        "index": 10,
+        "name": "Abutments",
+        "short": "Support the ends and hold back the bank",
+        "what": "Concrete supports at each end that hold up the bridge and hold back the soil of the riverbank.",
+        "fact": "An abutment has to resist the bridge pushing down and the earth behind it pushing sideways.",
+        "model": "Two stacks of books make good abutments for a load test."
+      },
+      {
+        "index": 11,
+        "name": "Gusset plates",
+        "short": "Join the members together",
+        "what": "Steel plates that connect the members at each joint with bolts or rivets.",
+        "fact": "Investigators found that the 2007 collapse of the I-35W bridge in Minneapolis began at gusset plates that were too thin for their loads.",
+        "model": "Glue a small square of card over each joint to make it stronger."
+      },
+      {
+        "index": 12,
+        "name": "Guard rails",
+        "short": "Keep traffic on the bridge",
+        "what": "Rails along the deck keep vehicles and people from going over the edge.",
+        "fact": "Bridge rails are crash-tested with real cars and trucks.",
+        "model": "Glue thin sticks or thread along the edges of the deck."
+      }
+    ],
+    "place": {
+      "x": 21.75,
+      "y": 1.75,
+      "z": 6.97,
+      "ry": 3.141592653589793,
+      "wall": "n"
+    }
+  },
+  {
+    "id": "computer",
+    "order": 4,
+    "title": "Computer",
+    "dwg": "BP-05",
+    "sub": "Desktop PC · ATX motherboard from above",
+    "spec": "ATX BOARD 305 × 244 MM",
+    "overview": "A desktop computer from above with its side panel off. Data moves between these parts billions of times every second.",
+    "build": [
+      "Start small: build a circuit on a breadboard with a battery, a resistor, an LED and a button.",
+      "Program a microcontroller like an Arduino to blink that LED. You’re writing instructions for a tiny CPU.",
+      "Try a Raspberry Pi, a whole computer on one small board, and install an operating system on it.",
+      "To build a full PC, pick a CPU and a motherboard with the same socket, then add RAM, an SSD, a power supply, a case and, for 3D, a graphics card.",
+      "Touch something metal before handling parts, so static electricity doesn’t damage them."
+    ],
+    "jobs": "Computer engineer · hardware technician · electrical engineer · IT support specialist · chip designer · game developer",
+    "parts": [
+      {
+        "index": 1,
+        "name": "CPU",
+        "short": "Runs the programs",
+        "what": "The central processing unit runs your programs step by step, billions of instructions per second, using billions of tiny transistor switches.",
+        "fact": "A 4 GHz processor ticks 4 billion times every second, and each of its cores can finish several instructions per tick.",
+        "model": "A microcontroller like an Arduino is a tiny CPU you can program to blink an LED."
+      },
+      {
+        "index": 2,
+        "name": "CPU cooler",
+        "short": "Carries the heat away",
+        "what": "A metal heat sink pulls heat out of the CPU through a thin layer of thermal paste, and a fan blows it away.",
+        "fact": "A powerful desktop CPU can turn more than 100 watts into heat, about as much as an old-fashioned light bulb.",
+        "model": "Feel a phone or laptop warm up when it works hard. That’s the same heat."
+      },
+      {
+        "index": 3,
+        "name": "RAM",
+        "short": "Fast short-term memory",
+        "what": "Random-access memory holds the programs and data you’re using right now, so the CPU can reach them in billionths of a second. It forgets everything when the power goes off.",
+        "fact": "RAM answers hundreds of times faster than even a fast SSD.",
+        "model": "A notepad on your desk is like RAM; a filing cabinet across the room is like storage."
+      },
+      {
+        "index": 4,
+        "name": "Motherboard",
+        "short": "Connects everything",
+        "what": "The main circuit board everything plugs into. Thin copper traces carry data and power between the parts.",
+        "fact": "A modern motherboard has many layers of wiring stacked inside the board itself.",
+        "model": "A breadboard is a mini motherboard: rows of connected holes let you link parts without soldering."
+      },
+      {
+        "index": 5,
+        "name": "GPU",
+        "short": "Draws 3D worlds",
+        "what": "The graphics card has thousands of small cores that work at the same time, which makes it great at drawing 3D worlds like this one and at training AI.",
+        "fact": "Every frame of this campus is drawn by a GPU, which works on huge numbers of pixels at once.",
+        "model": "Try it here: open About and switch the graphics from Low to High to watch the GPU do more work."
+      },
+      {
+        "index": 6,
+        "name": "SSD",
+        "short": "Long-term storage",
+        "what": "A solid-state drive keeps your files on flash memory chips, even when the power is off. M.2 drives plug straight into the motherboard.",
+        "fact": "SSDs have no spinning parts, which makes them much faster and tougher than old hard drives.",
+        "model": "A USB flash drive uses the same kind of memory."
+      },
+      {
+        "index": 7,
+        "name": "Power supply",
+        "short": "Turns wall power into steady DC",
+        "what": "The power supply turns wall power (alternating current at about 120 or 230 volts) into the low, steady direct-current voltages the parts need: 12, 5 and 3.3 volts.",
+        "fact": "An 80 Plus label means at least 80 percent of the power from the wall reaches the parts; the rest becomes heat.",
+        "model": "Batteries give steady DC power directly, which is why small electronics projects use them."
+      },
+      {
+        "index": 8,
+        "name": "VRM",
+        "short": "Feeds the CPU exactly the right voltage",
+        "what": "Voltage regulator modules step the 12 volts from the power supply down to around 1 volt for the CPU, switching hundreds of thousands of times per second to keep it steady.",
+        "fact": "For a powerful CPU, these small parts around the socket handle well over 100 amps.",
+        "model": "A small buck converter module from an electronics kit does the same job for a project."
+      },
+      {
+        "index": 9,
+        "name": "Chipset",
+        "short": "Connects the extras",
+        "what": "A helper chip that links the CPU to extra USB ports, storage and networking.",
+        "fact": "Many jobs the chipset used to do have moved inside the CPU itself.",
+        "model": "A USB hub works on the same idea: one connection shared by several devices."
+      },
+      {
+        "index": 10,
+        "name": "Case fans and airflow",
+        "short": "Move hot air out",
+        "what": "Fans pull cool air in the front and push warm air out the back, so heat doesn’t build up inside the case.",
+        "fact": "Warm air rises, so many cases also vent heat out the top.",
+        "model": "Build a cardboard case with a small fan and a thermometer, and test which fan direction keeps it coolest."
+      },
+      {
+        "index": 11,
+        "name": "BIOS chip and battery",
+        "short": "Wakes the computer up",
+        "what": "A firmware chip holds the startup program (BIOS or UEFI) that wakes the computer and finds the operating system. A coin battery keeps the clock running when it is unplugged.",
+        "fact": "That coin battery is usually a CR2032, the same kind used in many car key fobs.",
+        "model": "Arduino boards also run a tiny startup program, called a bootloader, when they power on."
+      },
+      {
+        "index": 12,
+        "name": "Rear I/O ports",
+        "short": "Connect to the outside world",
+        "what": "Ports for USB, video, network and audio, so the computer can talk to everything around it.",
+        "fact": "USB came out in 1996 and now connects everything from mice to phones.",
+        "model": "On an Arduino, the USB port both powers the board and uploads your code."
+      }
+    ],
+    "place": {
+      "x": 23.96,
+      "y": 1.75,
+      "z": 2.875,
+      "ry": -1.5707963267948966,
+      "wall": "e"
+    }
+  }
+]

@@ -1,0 +1,740 @@
+[
+  {
+    "id": "lobby",
+    "label": "Lobby",
+    "say": null,
+    "names": [
+      "lobby",
+      "entrance",
+      "front door",
+      "start",
+      "directory",
+      "beginning"
+    ],
+    "view": {
+      "x": 0,
+      "z": -2.2,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:0, z:-2.2, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "g1",
+    "label": "Gallery 1: Headsets in Libraries",
+    "say": null,
+    "names": [
+      "gallery 1",
+      "gallery one",
+      "first gallery",
+      "headsets in libraries",
+      "museum",
+      "galleries",
+      "exhibits"
+    ],
+    "view": {
+      "x": 0,
+      "z": -8.4,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:0, z:-8.4, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "g2",
+    "label": "Gallery 2: Learning That Works",
+    "say": null,
+    "names": [
+      "gallery 2",
+      "gallery two",
+      "second gallery",
+      "learning that works"
+    ],
+    "view": {
+      "x": 0,
+      "z": -20.4,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:0, z:-20.4, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "g3",
+    "label": "Gallery 3: Stories Worth Saving",
+    "say": null,
+    "names": [
+      "gallery 3",
+      "gallery three",
+      "third gallery",
+      "stories worth saving"
+    ],
+    "view": {
+      "x": 0,
+      "z": -32.4,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:0, z:-32.4, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "library",
+    "label": "The Reading Room",
+    "say": null,
+    "names": [
+      "library",
+      "reading room",
+      "bookshelves",
+      "shelves",
+      "stacks",
+      "books"
+    ],
+    "view": {
+      "x": -13.4,
+      "z": -3,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.08
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:-13.4, z:-3, yaw:Math.PI / 2, pitch:0.08 })"
+  },
+  {
+    "id": "desk",
+    "label": "Reference desk",
+    "say": null,
+    "names": [
+      "reference desk",
+      "librarian",
+      "rosa",
+      "help desk",
+      "front desk"
+    ],
+    "view": {
+      "x": -17.2,
+      "z": -5,
+      "yaw": 0,
+      "pitch": 0
+    },
+    "viewRef": null,
+    "viewSrc": "() => STAFF.rosa.view"
+  },
+  {
+    "id": "featured",
+    "label": "Featured books table",
+    "say": null,
+    "names": [
+      "featured books",
+      "featured table",
+      "display table",
+      "featured"
+    ],
+    "view": {
+      "x": -15,
+      "z": -0.9,
+      "yaw": 3.141592653589793,
+      "pitch": -0.32
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:-15, z:-0.9, yaw:Math.PI, pitch:-0.32 })"
+  },
+  {
+    "id": "freedomBoard",
+    "label": "Freedom to Read display",
+    "say": null,
+    "names": [
+      "freedom to read",
+      "book bans",
+      "banned books"
+    ],
+    "view": {
+      "x": -18.9,
+      "z": 1,
+      "yaw": 1.5707963267948966,
+      "pitch": -0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:-18.9, z:1.0, yaw:Math.PI / 2, pitch:-0.02 })"
+  },
+  {
+    "id": "window",
+    "label": "Library window",
+    "say": null,
+    "names": [
+      "window",
+      "big window"
+    ],
+    "view": {
+      "x": -29.5,
+      "z": -3,
+      "yaw": 1.5707963267948966,
+      "pitch": 0.14
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:-29.5, z:-3, yaw:Math.PI / 2, pitch:0.14 })"
+  },
+  {
+    "id": "school",
+    "label": "Workshop School hall",
+    "say": null,
+    "names": [
+      "school",
+      "workshop school",
+      "hallway",
+      "classes",
+      "classrooms",
+      "lockers"
+    ],
+    "view": {
+      "x": 12.9,
+      "z": -3,
+      "yaw": -1.5707963267948966,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:12.9, z:-3, yaw:-Math.PI / 2, pitch:0.02 })"
+  },
+  {
+    "id": "studio",
+    "label": "Room 101: 3D Art Studio",
+    "say": null,
+    "names": [
+      "studio",
+      "art studio",
+      "paint studio",
+      "room 101",
+      "workshop",
+      "painting",
+      "art room",
+      "3d art",
+      "blank canvas",
+      "mr hale",
+      "hale",
+      "teacher",
+      "easel"
+    ],
+    "view": {
+      "x": 19,
+      "z": -5.7,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:19, z:-5.7, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "lab",
+    "label": "Room 102: Science Lab",
+    "say": null,
+    "names": [
+      "science lab",
+      "the lab",
+      "lab",
+      "room 102",
+      "laboratory",
+      "chemistry lab",
+      "physics lab",
+      "science room"
+    ],
+    "view": {
+      "x": 29,
+      "z": -5.9,
+      "yaw": 0,
+      "pitch": -0.06
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:29, z:-5.9, yaw:0, pitch:-0.06 })"
+  },
+  {
+    "id": "sieve",
+    "label": "Sieve shaker",
+    "say": "the sieve shaker",
+    "names": [
+      "sieve",
+      "sieves",
+      "sieve shaker",
+      "sieve test",
+      "sieve analysis",
+      "psd",
+      "particle size",
+      "grain size",
+      "sand test"
+    ],
+    "view": null,
+    "viewRef": "@station:sieve",
+    "viewSrc": "() => STATIONS.sieve.view()"
+  },
+  {
+    "id": "titration",
+    "label": "Titration station",
+    "say": "the titration station",
+    "names": [
+      "titration",
+      "burette",
+      "acid base",
+      "chemistry"
+    ],
+    "view": null,
+    "viewRef": "@station:titration",
+    "viewSrc": "() => STATIONS.titration.view()"
+  },
+  {
+    "id": "pendulum",
+    "label": "Pendulum",
+    "say": "the pendulum",
+    "names": [
+      "pendulum",
+      "gravity experiment",
+      "physics experiment"
+    ],
+    "view": null,
+    "viewRef": "@station:pendulum",
+    "viewSrc": "() => STATIONS.pendulum.view()"
+  },
+  {
+    "id": "blueprints",
+    "label": "Room 103: Blueprint Lab",
+    "say": null,
+    "names": [
+      "blueprint lab",
+      "blueprints",
+      "blueprint",
+      "room 103",
+      "engineering room",
+      "engineering"
+    ],
+    "view": {
+      "x": 18.1,
+      "z": 3.6,
+      "yaw": 3.141592653589793,
+      "pitch": 0.03
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:18.1, z:3.6, yaw:Math.PI, pitch:0.03 })"
+  },
+  {
+    "id": "bp-car",
+    "label": "Automobile blueprint",
+    "say": "the automobile blueprint",
+    "names": [
+      "car blueprint",
+      "automobile blueprint",
+      "automobile"
+    ],
+    "view": null,
+    "viewRef": "@blueprint:car",
+    "viewSrc": "() => bpViewFor('car')"
+  },
+  {
+    "id": "bp-excavator",
+    "label": "Excavator blueprint",
+    "say": "the excavator blueprint",
+    "names": [
+      "excavator blueprint",
+      "excavator",
+      "heavy equipment",
+      "digger"
+    ],
+    "view": null,
+    "viewRef": "@blueprint:excavator",
+    "viewSrc": "() => bpViewFor('excavator')"
+  },
+  {
+    "id": "bp-house",
+    "label": "House blueprint",
+    "say": "the house blueprint",
+    "names": [
+      "house blueprint",
+      "building blueprint",
+      "house framing"
+    ],
+    "view": null,
+    "viewRef": "@blueprint:house",
+    "viewSrc": "() => bpViewFor('house')"
+  },
+  {
+    "id": "bp-bridge",
+    "label": "Truss bridge blueprint",
+    "say": "the bridge blueprint",
+    "names": [
+      "bridge blueprint",
+      "truss bridge",
+      "bridge"
+    ],
+    "view": null,
+    "viewRef": "@blueprint:bridge",
+    "viewSrc": "() => bpViewFor('bridge')"
+  },
+  {
+    "id": "bp-computer",
+    "label": "Computer blueprint",
+    "say": "the computer blueprint",
+    "names": [
+      "computer blueprint",
+      "pc blueprint",
+      "computer parts",
+      "motherboard"
+    ],
+    "view": null,
+    "viewRef": "@blueprint:computer",
+    "viewSrc": "() => bpViewFor('computer')"
+  },
+  {
+    "id": "modelbench",
+    "label": "Model bench",
+    "say": "the model bench",
+    "names": [
+      "model bench",
+      "model car",
+      "shake table",
+      "bench"
+    ],
+    "view": null,
+    "viewRef": "@station:bench",
+    "viewSrc": "() => STATIONS.bench.view()"
+  },
+  {
+    "id": "worldroom",
+    "label": "Room 104: World Builder Studio",
+    "say": null,
+    "names": [
+      "world builder studio",
+      "world builder",
+      "room 104",
+      "world building",
+      "game design",
+      "game room"
+    ],
+    "view": {
+      "x": 29,
+      "z": 0.6,
+      "yaw": 3.141592653589793,
+      "pitch": -0.18
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:29, z:0.6, yaw:Math.PI, pitch:-0.18 })"
+  },
+  {
+    "id": "diorama",
+    "label": "Layer table",
+    "say": "the layer table",
+    "names": [
+      "layer table",
+      "diorama",
+      "mini world"
+    ],
+    "view": null,
+    "viewRef": "@station:diorama",
+    "viewSrc": "() => STATIONS.diorama.view()"
+  },
+  {
+    "id": "sculpture",
+    "label": "Sample sculpture",
+    "say": null,
+    "names": [
+      "sculpture",
+      "sample sculpture",
+      "butterfly"
+    ],
+    "view": {
+      "x": 21.6,
+      "z": -7.6,
+      "yaw": 0,
+      "pitch": 0.12
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:21.6, z:-7.6, yaw:0, pitch:0.12 })"
+  },
+  {
+    "id": "margaret",
+    "label": "Margaret",
+    "say": null,
+    "names": [
+      "margaret",
+      "museum guide",
+      "greeter"
+    ],
+    "view": {
+      "x": -0.2,
+      "z": -2,
+      "yaw": -0.41,
+      "pitch": 0
+    },
+    "viewRef": null,
+    "viewSrc": "() => STAFF.margaret.view"
+  },
+  {
+    "id": "wax",
+    "label": "The Wax Hall",
+    "say": "the Wax Hall",
+    "names": [
+      "wax hall",
+      "wax museum",
+      "wax figures",
+      "wax figure",
+      "living history",
+      "reenactments",
+      "reenactment",
+      "history hall",
+      "the wax"
+    ],
+    "view": {
+      "x": 0,
+      "z": -46.4,
+      "yaw": 0,
+      "pitch": 0.02
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:0, z:-46.4, yaw:0, pitch:0.02 })"
+  },
+  {
+    "id": "yard",
+    "label": "The Recess Yard",
+    "say": null,
+    "names": [
+      "recess yard",
+      "recess",
+      "playground",
+      "the yard",
+      "yard",
+      "outside",
+      "rides",
+      "play outside"
+    ],
+    "view": {
+      "x": 38.6,
+      "z": -3,
+      "yaw": -1.5707963267948966,
+      "pitch": 0.06
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:38.6, z:-3, yaw:-Math.PI / 2, pitch:0.06 })"
+  },
+  {
+    "id": "coaster",
+    "label": "Comet Coaster",
+    "say": null,
+    "names": [
+      "comet coaster",
+      "roller coaster",
+      "rollercoaster",
+      "coaster"
+    ],
+    "view": {
+      "x": 50.2,
+      "z": -3.4,
+      "yaw": -0.6343828204760887,
+      "pitch": 0.2
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:50.2, z:-3.4, yaw:lookYaw(50.2, -3.4, 58, -14), pitch:0.2 })"
+  },
+  {
+    "id": "drop",
+    "label": "Sky Drop",
+    "say": null,
+    "names": [
+      "sky drop",
+      "skydrop",
+      "drop tower",
+      "the tower"
+    ],
+    "view": {
+      "x": 64.5,
+      "z": 4.5,
+      "yaw": -2.132717889051712,
+      "pitch": 0.32
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:64.5, z:4.5, yaw:lookYaw(64.5, 4.5, 78, 13), pitch:0.32 })"
+  },
+  {
+    "id": "dive",
+    "label": "Ocean Dive",
+    "say": null,
+    "names": [
+      "ocean dive",
+      "the dive",
+      "dive dome",
+      "underwater",
+      "scuba",
+      "dive"
+    ],
+    "view": {
+      "x": 54,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "pitch": 0.1
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:54, z:4.2, yaw:Math.PI, pitch:0.1 })"
+  },
+  {
+    "id": "rae",
+    "label": "Coach Rae",
+    "say": null,
+    "names": [
+      "coach rae",
+      "rae",
+      "coach",
+      "recess coach"
+    ],
+    "view": {
+      "x": 44.3,
+      "z": -0.45,
+      "yaw": -1.9554010416171101,
+      "pitch": 0
+    },
+    "viewRef": null,
+    "viewSrc": "() => STAFF.rae.view"
+  },
+  {
+    "id": "field",
+    "label": "Soccer goal",
+    "say": "the soccer goal",
+    "names": [
+      "soccer goal",
+      "soccer field",
+      "ball field",
+      "the goal",
+      "goal",
+      "soccer",
+      "penalty",
+      "goalkeeper",
+      "keeper"
+    ],
+    "view": {
+      "x": 77.75,
+      "z": -2,
+      "yaw": -1.5707963267948966,
+      "pitch": -0.1
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:77.75, z:-2.0, yaw:-Math.PI / 2, pitch:-0.1 })"
+  },
+  {
+    "id": "blocks",
+    "label": "Block tower",
+    "say": "the block tower",
+    "names": [
+      "block tower",
+      "foam blocks",
+      "tower of blocks",
+      "blocks"
+    ],
+    "view": {
+      "x": 61.2,
+      "z": 1.5,
+      "yaw": -1.5707963267948966,
+      "pitch": -0.08
+    },
+    "viewRef": null,
+    "viewSrc": "() => ({ x:61.2, z:1.5, yaw:-Math.PI / 2, pitch:-0.08 })"
+  },
+  {
+    "id": "sec-basics",
+    "label": "XR Basics section",
+    "say": null,
+    "names": [
+      "xr basics section",
+      "xr basics shelf",
+      "xr basics books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:basics",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-programs",
+    "label": "Library Programs section",
+    "say": null,
+    "names": [
+      "library programs section",
+      "library programs shelf",
+      "library programs books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:programs",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-careers",
+    "label": "Careers section",
+    "say": null,
+    "names": [
+      "careers section",
+      "careers shelf",
+      "careers books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:careers",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-story",
+    "label": "Storytelling section",
+    "say": null,
+    "names": [
+      "storytelling section",
+      "storytelling shelf",
+      "storytelling books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:story",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-equity",
+    "label": "Lost Stories section",
+    "say": null,
+    "names": [
+      "lost stories section",
+      "lost stories shelf",
+      "lost stories books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:equity",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-environment",
+    "label": "Environment section",
+    "say": null,
+    "names": [
+      "environment section",
+      "environment shelf",
+      "environment books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:environment",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-worlds",
+    "label": "Shared Worlds section",
+    "say": null,
+    "names": [
+      "shared worlds section",
+      "shared worlds shelf",
+      "shared worlds books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:worlds",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  },
+  {
+    "id": "sec-tech",
+    "label": "Technology section",
+    "say": null,
+    "names": [
+      "technology section",
+      "technology shelf",
+      "technology books"
+    ],
+    "view": null,
+    "viewRef": "@shelf:tech",
+    "viewSrc": "() => SHELF_VIEWS[s.id]"
+  }
+]

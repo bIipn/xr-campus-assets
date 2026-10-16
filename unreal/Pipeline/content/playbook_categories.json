@@ -1,0 +1,50 @@
+[
+  {
+    "index": 0,
+    "name": "Astronomy"
+  },
+  {
+    "index": 1,
+    "name": "History"
+  },
+  {
+    "index": 2,
+    "name": "Life Science"
+  },
+  {
+    "index": 3,
+    "name": "Physical Science"
+  },
+  {
+    "index": 4,
+    "name": "Environment"
+  },
+  {
+    "index": 5,
+    "name": "Travel"
+  },
+  {
+    "index": 6,
+    "name": "Museums"
+  },
+  {
+    "index": 7,
+    "name": "Music"
+  },
+  {
+    "index": 8,
+    "name": "Mindfulness"
+  },
+  {
+    "index": 9,
+    "name": "Health"
+  },
+  {
+    "index": 10,
+    "name": "Simulation"
+  },
+  {
+    "index": 11,
+    "name": "Play"
+  }
+]

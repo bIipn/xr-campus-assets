@@ -1,0 +1,178 @@
+[
+ {
+  "Name": "basics",
+  "DisplayName": "XR Basics",
+  "Side": "N",
+  "Slot": 0,
+  "Color": {
+   "R": 0.01229,
+   "G": 0.04374,
+   "B": 0.08438,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2400.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "programs",
+  "DisplayName": "Library Programs",
+  "Side": "N",
+  "Slot": 1,
+  "Color": {
+   "R": 0.02843,
+   "G": 0.06848,
+   "B": 0.0331,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2620.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "careers",
+  "DisplayName": "Careers",
+  "Side": "N",
+  "Slot": 2,
+  "Color": {
+   "R": 0.10224,
+   "G": 0.04374,
+   "B": 0.016,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2840.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "story",
+  "DisplayName": "Storytelling",
+  "Side": "N",
+  "Slot": 3,
+  "Color": {
+   "R": 0.15593,
+   "G": 0.02315,
+   "B": 0.016,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -3060.0,
+    "Y": -260.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "equity",
+  "DisplayName": "Lost Stories",
+  "Side": "S",
+  "Slot": 0,
+  "Color": {
+   "R": 0.11193,
+   "G": 0.0137,
+   "B": 0.02519,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2400.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "environment",
+  "DisplayName": "Environment",
+  "Side": "S",
+  "Slot": 1,
+  "Color": {
+   "R": 0.02315,
+   "G": 0.09084,
+   "B": 0.09084,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2620.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "worlds",
+  "DisplayName": "Shared Worlds",
+  "Side": "S",
+  "Slot": 2,
+  "Color": {
+   "R": 0.04374,
+   "G": 0.0356,
+   "B": 0.08022,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -2840.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "tech",
+  "DisplayName": "Technology",
+  "Side": "S",
+  "Slot": 3,
+  "Color": {
+   "R": 0.01764,
+   "G": 0.0319,
+   "B": 0.07819,
+   "A": 1.0
+  },
+  "ShelfView": {
+   "Location": {
+    "X": -3060.0,
+    "Y": -340.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ }
+]

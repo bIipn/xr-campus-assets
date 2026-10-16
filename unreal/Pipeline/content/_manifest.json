@@ -1,0 +1,251 @@
+{
+  "generated": "2026-10-16T19:58:52.597Z",
+  "repo": "/home/user/xr-campus-assets",
+  "threeVersion": "0.170.0",
+  "datasets": [
+    {
+      "file": "sources.json",
+      "count": 22,
+      "source": "parts/data.js:4-27",
+      "var": "SOURCES",
+      "drives": "Citation chips on exhibit/scene cards; staff srcLine()"
+    },
+    {
+      "file": "galleries.json",
+      "count": 4,
+      "source": "parts/data.js:29-34",
+      "var": "GALLERIES",
+      "drives": "Gallery wall labels, wall colour per gallery, map/search grouping"
+    },
+    {
+      "file": "exhibit_kinds.json",
+      "count": 9,
+      "source": "parts/data.js:35-35",
+      "var": "KIND",
+      "drives": "Kind label printed on exhibit cards and search rows"
+    },
+    {
+      "file": "exhibits.json",
+      "count": 16,
+      "source": "parts/data.js:37-106 (ITEMS) and 108-111 (FREEDOM)",
+      "var": "ITEMS + FREEDOM",
+      "drives": "Museum wall frames, exhibit catalog cards, tour stops, search, staff knowledge base (KB kind=item)"
+    },
+    {
+      "file": "facts.json",
+      "count": 15,
+      "source": "parts/data.js:114-130",
+      "var": "FACTS",
+      "drives": "Staff knowledge base (KB kind=fact) and the AI system prompt"
+    },
+    {
+      "file": "subjects.json",
+      "count": 8,
+      "source": "parts/data.js:133-142",
+      "var": "SUBJECTS",
+      "drives": "The eight library stacks (side N/S, slot 0-3, spine colour), shelf views, section places"
+    },
+    {
+      "file": "books.json",
+      "count": 15,
+      "source": "parts/data.js:145-384 (14 books) + parts/worldroom.js:265-278 (WB_BOOK, pushed by BOOKS.push at worldroom.js:279)",
+      "var": "BOOKS",
+      "drives": "Readable books on the featured table and stack ends, the reader panel, Rosa's recommendations, KB kind=page"
+    },
+    {
+      "file": "blueprints.json",
+      "count": 5,
+      "source": "parts/bpdata.js:4-95 (BP_INFO), :96 (BP_ORDER); parts/blueprints.js:4-10 (BP_PLACE)",
+      "var": "BP_INFO, BP_ORDER, BP_PLACE",
+      "drives": "Room 103 wall boards, blueprint viewer part callouts (12 parts each), KB kind=part, search",
+      "parts": 60
+    },
+    {
+      "file": "wax_scenes.json",
+      "count": 12,
+      "source": "parts/waxscenes.js:46-605 (WAX_SCENES); cards assembled at parts/waxhall.js:445-449 (WAX_ITEMS)",
+      "var": "WAX_SCENES / WAX_ITEMS",
+      "drives": "The 12 Wax Hall stages: backdrop painting, floor, caption rail lines (timed), catalog card (item), figure cast (Rocketbox avatar id + outfit colours), loop length",
+      "castTotal": 38
+    },
+    {
+      "file": "wax_poses.json",
+      "count": 9,
+      "source": "parts/waxscenes.js:34-44 (Object.assign(WAX_POSE,...)); base poses live in parts/waxfig.js:515+ (not extracted: animation data)",
+      "var": "WAX_POSE (scene additions only)",
+      "drives": "Named arm/elbow/hand/head pose presets referenced by scene keyframes (degrees)"
+    },
+    {
+      "file": "places.json",
+      "count": 42,
+      "source": "parts/engine.js:69-104 (34 literal places + 8 generated from SUBJECTS)",
+      "var": "PLACES",
+      "drives": "Staff \"take me to\" navigation targets and search Places group; each has a camera view (x,z,yaw,pitch) or a reference to a live view"
+    },
+    {
+      "file": "staff.json",
+      "count": 4,
+      "source": "parts/people.js:4-21 (STAFF); parts/ui.js:203-214 (CHIPS, GREET); parts/engine.js:153-158 (JOKES), 314-326 (greetingShort/helpText/fallbackText); parts/ui.js:322-355 (staffRules, rendered here)",
+      "var": "STAFF (+GREET, CHIPS, JOKES, staffRules)",
+      "drives": "The four virtual staff NPCs: Rocketbox avatar id, outfit colours, standing position/facing, chat greeting, suggestion chips, joke, help/fallback lines and the full LLM system prompt"
+    },
+    {
+      "file": "lessons.json",
+      "count": 11,
+      "source": "parts/engine.js:30-42",
+      "var": "LESSONS",
+      "drives": "What the lab, bench and layer table teach; KB kind=lesson so Mr. Hale can answer station questions; search Workshops group"
+    },
+    {
+      "file": "staff_answers.json",
+      "count": 43,
+      "source": "parts/engine.js:108-152 (RX), 192-265 (presetAnswer), 266-280 (directions), 4-66 (search engine)",
+      "var": "RX, presetAnswer, directions",
+      "drives": "Offline staff chat: regex intent rules (43), ordered preset reply branches (text + cards + actions), walking directions per place, and the KB search fallback",
+      "presetBranches": 45,
+      "directions": 42
+    },
+    {
+      "file": "rides.json",
+      "count": 3,
+      "source": "parts/rides.js:4-8 (RIDES), 16-26 (rideText/rideNote); parts/engine.js:166-182 (rideAbout/rideStats/rideSafety); parts/outdoor.js:6-7,456 (DROP, DOME, COASTER.stats)",
+      "var": "RIDES",
+      "drives": "Ride cards (title, text, note, Gentle option), exit camera view after a ride, badge awarded, and what staff say about each ride"
+    },
+    {
+      "file": "badges.json",
+      "count": 15,
+      "source": "parts/progress.js:5-21",
+      "var": "BADGES",
+      "drives": "Achievement list (award(id) calls scattered through stations/rides/progress; icon drawn procedurally in drawBadgeIcon progress.js:120-142)"
+    },
+    {
+      "file": "tokens.json",
+      "count": 11,
+      "source": "parts/progress.js:23-35",
+      "var": "TOKENS",
+      "drives": "The 11 hidden collectible XR tokens: world position [x,y,z] in metres (three.js, y up), or a ride anchor resolved at runtime (tokenPos progress.js:45-50)"
+    },
+    {
+      "file": "tour.json",
+      "count": 35,
+      "source": "parts/ui.js:128-139 (STOPS; item stops expanded from ITEMS and WAX_ITEMS), showStop() 142-158",
+      "var": "STOPS",
+      "drives": "The guided tour: 36 ordered stops with title/date/text, camera view (or item view), and an optional action button"
+    },
+    {
+      "file": "stations.json",
+      "count": 5,
+      "source": "parts/ui.js:305-311 (STATION_CARDS); STATIONS.sieve lab.js:329+, STATIONS.titration lab.js:572+, STATIONS.pendulum lab.js:694+, STATIONS.bench blueprints.js:361+, STATIONS.diorama worldroom.js:131+ (text literals only; the step logic/state machines are code)",
+      "var": "STATION_CARDS + STATIONS.*",
+      "drives": "The five hands-on stations: chat/search card text, docked panel kicker, room, step titles, explanatory paragraphs, button labels and toasts. Simulation logic (psd/titr/pend/bench state) is NOT data and must be reimplemented."
+    },
+    {
+      "file": "world_layers.json",
+      "count": 9,
+      "source": "parts/worldroom.js:6-16",
+      "var": "DIO_STEPS",
+      "drives": "Room 104 layer table: nine build layers (title, description, handbook page to open) and the pipeline banner"
+    },
+    {
+      "file": "bench_kits.json",
+      "count": 2,
+      "source": "parts/blueprints.js:251-271; result strings benchDrive()/benchShakeText() 427-436",
+      "var": "BENCH_KITS",
+      "drives": "Room 103 model bench: two kits with ordered steps (title, instruction, why-it-works, parts to show, action label, test flag)",
+      "steps": 15
+    },
+    {
+      "file": "sieves.json",
+      "count": 12,
+      "source": "parts/lab.js:40-40",
+      "var": "SIEVES",
+      "drives": "Sieve stack definition (US mesh number, opening in micrometres, AFS GFN multiplier) for the Room 102 sieve analysis"
+    },
+    {
+      "file": "map_rooms.json",
+      "count": 17,
+      "source": "parts/ui.js:677-695 (MAP_ROOMS), 696-696 (MAP_GO); MAP bounds x -33..92, z -82..26",
+      "var": "MAP_ROOMS + MAP_GO",
+      "drives": "The corner minimap: rectangles/rounds with labels, and which PLACES entry a tap on each one walks to"
+    },
+    {
+      "file": "rooms.json",
+      "count": 15,
+      "source": "parts/nav.js:5-21 (ROOMS, walkable AABBs in metres), 27-40 (ROOM_INFO: HUD room tag kicker/name/sub)",
+      "var": "ROOMS + ROOM_INFO",
+      "drives": "roomAt() lookup, walkable area, wing visibility, the HUD room tag text, staff home rooms"
+    },
+    {
+      "file": "doors.json",
+      "count": 14,
+      "source": "parts/nav.js:41-50 (DOORS), 23-25 (NOGO), 4 (M_WALL); parts/rooms.js:7-8; parts/waxhall.js:7 (WH)",
+      "var": "DOORS, NOGO, SCHOOL_DOORS, ROOM_NAMES, WH",
+      "drives": "Door openings between rooms (axis, position, centre, width, band), no-walk rectangles, school door x-positions, room number names, Wax Hall layout constants"
+    },
+    {
+      "file": "dive_facts.json",
+      "count": 9,
+      "source": "parts/dive.js:7-17 (DIVE_FACTS), 449 (DIVE_CREATURES), 6 (DIVE_PTS), 4 (DV)",
+      "var": "DIVE_FACTS, DIVE_CREATURES, DIVE_PTS",
+      "drives": "Ocean Dive ride: timed/positioned caption facts, which creature the camera looks at, tappable creature names, the 14-point swim path (local to DV origin x=420)"
+    },
+    {
+      "file": "paint_tools.json",
+      "count": 7,
+      "source": "parts/paint.js:5-19",
+      "var": "BRUSHES, SHAPES, PAINT_COLORS, PAINT_SIZES, STAMP_SIZES, PAINT_SPOT, STUDIO_BOX, PAINT_C",
+      "drives": "Room 101 3D Art Studio palette: 7 brushes, 8 stamp shapes, 12 colours, 4 sizes, where you stand, room bounds, symmetry centre"
+    },
+    {
+      "file": "physics_props.json",
+      "count": 4,
+      "source": "parts/phys.js:12-21, 335, 366",
+      "var": "BALL_DEFS, TOWER, BLOCK_COLS, GOAL, SWING, SPIN",
+      "drives": "Recess Yard physics props: balls (radius, mass, restitution, drag, spin lift, rolling resistance, start position, skin), foam block tower words/colours, soccer goal size, swing/merry-go-round params"
+    },
+    {
+      "file": "playbook_categories.json",
+      "count": 12,
+      "source": "parts/art.js:258-258",
+      "var": "PLAYBOOK_CATS",
+      "drives": "Category list painted on the XR Playbooks exhibit object cover (drawPlaybookCover)"
+    },
+    {
+      "file": "world_screens_tools.json",
+      "count": 3,
+      "source": "parts/worldroom.js:197-201 (SCREENS), 202-202 (TOOLS)",
+      "var": "SCREENS, TOOLS",
+      "drives": "Room 104 desk monitors (syntax-coloured code snippets that open a handbook page) and the toolkit shelf boxes",
+      "tools": 9
+    },
+    {
+      "file": "quality_tiers.json",
+      "count": 3,
+      "source": "parts/gfx.js:5-9",
+      "var": "QUALITY",
+      "drives": "Graphics tiers (web-specific; maps to UE Scalability groups, not a content table)"
+    },
+    {
+      "file": "ui_strings.json",
+      "count": 83,
+      "source": "parts/body.html (all element text nodes); page <title> set in assemble.py:33,40",
+      "var": "(HTML)",
+      "drives": "Intro/About panel copy, button labels, panel headings. Candidate for a UE StringTable rather than a DataTable"
+    },
+    {
+      "file": "books_legacy_pine_hollow.json",
+      "count": 14,
+      "source": "parts/books.js:4-13 (SUBJECTS), 16-266 (BOOKS) — ORPHAN, not assembled",
+      "var": "SUBJECTS/BOOKS (legacy)",
+      "drives": "Nothing at runtime. Kept for reference only."
+    }
+  ],
+  "totals": {
+    "blueprintParts": 60,
+    "waxCast": 38,
+    "bookPages": 82,
+    "presetBranches": 45,
+    "benchSteps": 15
+  }
+}

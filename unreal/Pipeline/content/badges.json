@@ -1,0 +1,77 @@
+[
+  {
+    "id": "first-steps",
+    "name": "First Steps",
+    "how": "Walk around the campus"
+  },
+  {
+    "id": "explorer",
+    "name": "Museum Explorer",
+    "how": "Open 5 exhibits in the museum"
+  },
+  {
+    "id": "bookworm",
+    "name": "Bookworm",
+    "how": "Read 5 pages of library books"
+  },
+  {
+    "id": "curious",
+    "name": "Ask Away",
+    "how": "Ask any staff member a question"
+  },
+  {
+    "id": "artist",
+    "name": "3D Artist",
+    "how": "Make art in the air in Room 101"
+  },
+  {
+    "id": "scientist",
+    "name": "Lab Scientist",
+    "how": "Finish a lab test in Room 102"
+  },
+  {
+    "id": "engineer",
+    "name": "Engineer",
+    "how": "Explore 3 blueprints in Room 103"
+  },
+  {
+    "id": "maker",
+    "name": "Model Maker",
+    "how": "Build and test a model in Room 103"
+  },
+  {
+    "id": "worldbuilder",
+    "name": "World Builder",
+    "how": "Build a world on the layer table in Room 104"
+  },
+  {
+    "id": "coaster",
+    "name": "Coaster Rider",
+    "how": "Ride the Comet Coaster"
+  },
+  {
+    "id": "drop",
+    "name": "Sky Dropper",
+    "how": "Ride the Sky Drop"
+  },
+  {
+    "id": "diver",
+    "name": "Deep Diver",
+    "how": "Finish the Ocean Dive"
+  },
+  {
+    "id": "striker",
+    "name": "Striker",
+    "how": "Kick a ball into the yard’s soccer goal"
+  },
+  {
+    "id": "hunter",
+    "name": "Token Hunter",
+    "how": "Find every hidden XR token"
+  },
+  {
+    "id": "historian",
+    "name": "Living Historian",
+    "how": "Watch 6 scenes come to life in the Wax Hall"
+  }
+]

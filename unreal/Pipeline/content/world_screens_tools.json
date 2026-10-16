@@ -1,0 +1,617 @@
+{
+  "codeScreens": [
+    {
+      "file": "models.js",
+      "handbookPage": 4,
+      "codeLines": [
+        "// a mesh = a shape + a material",
+        "const box = new THREE.Mesh(",
+        "  new THREE.BoxGeometry(1, 1, 1),",
+        "  new THREE.MeshStandardMaterial({",
+        "    color: '#f2c14e', roughness: 0.5",
+        "  })",
+        ");",
+        "box.position.set(0, 0.5, 0);",
+        "scene.add(box);"
+      ],
+      "tokens": [
+        [
+          [
+            "// a mesh = a shape + a material",
+            "#5c6c80"
+          ]
+        ],
+        [
+          [
+            "const ",
+            "#c792ea"
+          ],
+          [
+            "box",
+            "#e6edf3"
+          ],
+          [
+            " = ",
+            "#e6edf3"
+          ],
+          [
+            "new ",
+            "#c792ea"
+          ],
+          [
+            "THREE",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "Mesh",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "  new ",
+            "#c792ea"
+          ],
+          [
+            "THREE",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "BoxGeometry",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ],
+          [
+            "1",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "1",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "1",
+            "#f78c6c"
+          ],
+          [
+            "),",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "  new ",
+            "#c792ea"
+          ],
+          [
+            "THREE",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "MeshStandardMaterial",
+            "#82aaff"
+          ],
+          [
+            "({",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "    color: ",
+            "#e6edf3"
+          ],
+          [
+            "'#f2c14e'",
+            "#c3e88d"
+          ],
+          [
+            ", roughness: ",
+            "#e6edf3"
+          ],
+          [
+            "0.5",
+            "#f78c6c"
+          ]
+        ],
+        [
+          [
+            "  })",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            ");",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "box",
+            "#e6edf3"
+          ],
+          [
+            ".position.",
+            "#e6edf3"
+          ],
+          [
+            "set",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ],
+          [
+            "0",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "0.5",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "0",
+            "#f78c6c"
+          ],
+          [
+            ");",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "scene",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "add",
+            "#82aaff"
+          ],
+          [
+            "(box);",
+            "#e6edf3"
+          ]
+        ]
+      ]
+    },
+    {
+      "file": "lights.js",
+      "handbookPage": 6,
+      "codeLines": [
+        "// a sun that casts shadows",
+        "const sun = new THREE.DirectionalLight(",
+        "  '#fff0dc', 3.1);",
+        "sun.castShadow = true;",
+        "scene.add(sun);",
+        "",
+        "// sky light for soft reflections",
+        "scene.environment = skyTexture;"
+      ],
+      "tokens": [
+        [
+          [
+            "// a sun that casts shadows",
+            "#5c6c80"
+          ]
+        ],
+        [
+          [
+            "const ",
+            "#c792ea"
+          ],
+          [
+            "sun",
+            "#e6edf3"
+          ],
+          [
+            " = ",
+            "#e6edf3"
+          ],
+          [
+            "new ",
+            "#c792ea"
+          ],
+          [
+            "THREE",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "DirectionalLight",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "  ",
+            "#e6edf3"
+          ],
+          [
+            "'#fff0dc'",
+            "#c3e88d"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "3.1",
+            "#f78c6c"
+          ],
+          [
+            ");",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "sun",
+            "#e6edf3"
+          ],
+          [
+            ".castShadow = ",
+            "#e6edf3"
+          ],
+          [
+            "true",
+            "#c792ea"
+          ],
+          [
+            ";",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "scene",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "add",
+            "#82aaff"
+          ],
+          [
+            "(sun);",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "// sky light for soft reflections",
+            "#5c6c80"
+          ]
+        ],
+        [
+          [
+            "scene",
+            "#e6edf3"
+          ],
+          [
+            ".environment = ",
+            "#e6edf3"
+          ],
+          [
+            "skyTexture",
+            "#e6edf3"
+          ],
+          [
+            ";",
+            "#e6edf3"
+          ]
+        ]
+      ]
+    },
+    {
+      "file": "physics.js",
+      "handbookPage": 8,
+      "codeLines": [
+        "// 60 physics steps every second",
+        "const ball = world.createRigidBody(",
+        "  RAPIER.RigidBodyDesc.dynamic()",
+        "    .setTranslation(0, 3, 0));",
+        "world.createCollider(",
+        "  RAPIER.ColliderDesc.ball(0.11), ball);",
+        "function tick(){ world.step(); }"
+      ],
+      "tokens": [
+        [
+          [
+            "// 60 physics steps every second",
+            "#5c6c80"
+          ]
+        ],
+        [
+          [
+            "const ",
+            "#c792ea"
+          ],
+          [
+            "ball",
+            "#e6edf3"
+          ],
+          [
+            " = ",
+            "#e6edf3"
+          ],
+          [
+            "world",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "createRigidBody",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "  RAPIER",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "RigidBodyDesc",
+            "#82aaff"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "dynamic",
+            "#82aaff"
+          ],
+          [
+            "()",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "    .",
+            "#e6edf3"
+          ],
+          [
+            "setTranslation",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ],
+          [
+            "0",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "3",
+            "#f78c6c"
+          ],
+          [
+            ", ",
+            "#e6edf3"
+          ],
+          [
+            "0",
+            "#f78c6c"
+          ],
+          [
+            "));",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "world",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "createCollider",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "  RAPIER",
+            "#e6edf3"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "ColliderDesc",
+            "#82aaff"
+          ],
+          [
+            ".",
+            "#e6edf3"
+          ],
+          [
+            "ball",
+            "#82aaff"
+          ],
+          [
+            "(",
+            "#e6edf3"
+          ],
+          [
+            "0.11",
+            "#f78c6c"
+          ],
+          [
+            "), ball);",
+            "#e6edf3"
+          ]
+        ],
+        [
+          [
+            "function ",
+            "#c792ea"
+          ],
+          [
+            "tick",
+            "#82aaff"
+          ],
+          [
+            "(){ world.",
+            "#e6edf3"
+          ],
+          [
+            "step",
+            "#82aaff"
+          ],
+          [
+            "(); }",
+            "#e6edf3"
+          ]
+        ]
+      ]
+    }
+  ],
+  "toolboxes": [
+    {
+      "index": 0,
+      "name": "three.js",
+      "color": "#ffffff",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 1,
+      "name": "Blender",
+      "color": "#e07b2a",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 2,
+      "name": "Godot",
+      "color": "#7aa8ff",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 3,
+      "name": "Unity",
+      "color": "#e6edf3",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 4,
+      "name": "Unreal",
+      "color": "#e6edf3",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 5,
+      "name": "Krita",
+      "color": "#c38bff",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 6,
+      "name": "Audacity",
+      "color": "#5ee6c8",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 7,
+      "name": "VS Code",
+      "color": "#82aaff",
+      "bg": "#16232b",
+      "handbookPage": 2
+    },
+    {
+      "index": 8,
+      "name": "GitHub",
+      "color": "#e6edf3",
+      "bg": "#16232b",
+      "handbookPage": 2
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+[
+ {
+  "Name": "sieve",
+  "Room": "lab",
+  "Kicker": "Room 102 · Science Lab",
+  "Title": "Sieve analysis (PSD)",
+  "Subtitle": "Measure the grain sizes in sand",
+  "GoLabel": "Start the test",
+  "Steps": [
+   "Sieve analysis (PSD)",
+   "Split the sample",
+   "Dry and weigh",
+   "Stack the sieves",
+   "Shake",
+   "Weigh each sieve",
+   "Results"
+  ],
+  "Panel": [
+   "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials.",
+   "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams.",
+   "Dry the sample in the oven at about 110 °C until its mass stops changing, and let it cool. Then press TARE with the empty dish on the balance, so the reading only counts the sand, and pour the sample in.",
+   "Nest the sieves with the biggest openings on top and the finest at the bottom, with a pan underneath to catch the dust. Sieves are named by their US mesh number, roughly the number of openings per inch.",
+   "Pour the sample onto the top sieve, put the cover on, clamp the stack and press START. The shaker swirls and taps the stack so every grain gets its chance to fall through. Labs often shake for 10 to 15 minutes; this run is sped up.",
+   "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass."
+  ],
+  "bUsesHands": true,
+  "Location": {
+   "X": 3358.0,
+   "Y": -900.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 3210.0,
+    "Y": -900.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -16.043,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "titration",
+  "Room": "lab",
+  "Kicker": "Room 102 · Science Lab",
+  "Title": "Acid–base titration",
+  "Subtitle": "Find the concentration of a mystery acid",
+  "GoLabel": "Start titrating",
+  "Steps": [
+   "Acid–base titration",
+   "Set up",
+   "Titrate",
+   "Results"
+  ],
+  "Panel": [
+   "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid.",
+   "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2.",
+   "Pour exactly 25.00 mL of the mystery acid into the flask and add 2 drops of phenolphthalein. Fill the burette with 0.1000 M sodium hydroxide, then read the starting volume at the bottom of the curved liquid surface, the meniscus, with your eye level with it.",
+   "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
+  ],
+  "bUsesHands": true,
+  "Location": {
+   "X": 3100.0,
+   "Y": -1260.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 3095.0,
+    "Y": -1130.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -8.021,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "pendulum",
+  "Room": "lab",
+  "Kicker": "Room 102 · Science Lab",
+  "Title": "Pendulum",
+  "Subtitle": "Measure gravity with a string and a weight",
+  "GoLabel": "Start swinging",
+  "Steps": [],
+  "Panel": [
+   "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
+   "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
+   "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back).",
+   "Swinging… The photogate times each pass. Let it finish 10 full swings."
+  ],
+  "bUsesHands": true,
+  "Location": {
+   "X": 2590.0,
+   "Y": -920.0,
+   "Z": 262.0
+  },
+  "View": {
+   "Location": {
+    "X": 2825.0,
+    "Y": -920.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": 5.73,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "bench",
+  "Room": "blueprint",
+  "Kicker": "Room 103 · Model bench",
+  "Title": "Model bench",
+  "Subtitle": "Build a model car or building",
+  "GoLabel": "Start building",
+  "Steps": [],
+  "Panel": [
+   "Pick a kit. You’ll build it with your own hands, one part at a time, the way you would with real materials, then test it."
+  ],
+  "bUsesHands": true,
+  "Location": {
+   "X": 1810.0,
+   "Y": 240.0,
+   "Z": 92.5
+  },
+  "View": {
+   "Location": {
+    "X": 1810.0,
+    "Y": 110.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -18.335,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "diorama",
+  "Room": "world",
+  "Kicker": "Room 104 · Layer table",
+  "Title": "Layer table",
+  "Subtitle": "Build a mini world, one layer at a time",
+  "GoLabel": "Build a world",
+  "Steps": [],
+  "Panel": [],
+  "bUsesHands": false,
+  "Location": {
+   "X": 2900.0,
+   "Y": 290.0,
+   "Z": 87.0
+  },
+  "View": {
+   "Location": {
+    "X": 2900.0,
+    "Y": 105.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -17.189,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "easel",
+  "Room": "studio",
+  "Kicker": "Room 101 · 3D Art Studio",
+  "Title": "3D Art Studio",
+  "Subtitle": "Paint in the air with brushes, shapes and symmetry",
+  "GoLabel": "Start making art",
+  "Steps": [
+   "Pick a brush",
+   "Paint in the air",
+   "Turn the turntable",
+   "Save a picture"
+  ],
+  "Panel": [
+   "Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 1560.0,
+   "Y": -640.0,
+   "Z": 0.0
+  },
+  "View": {
+   "Location": {
+    "X": 1900.0,
+    "Y": -640.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 3.438,
+   "bValid": true
+  }
+ }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "index": 0,
+    "mesh": "6",
+    "openingMicrons": 3350,
+    "afsMultiplier": 3
+  },
+  {
+    "index": 1,
+    "mesh": "12",
+    "openingMicrons": 1700,
+    "afsMultiplier": 5
+  },
+  {
+    "index": 2,
+    "mesh": "20",
+    "openingMicrons": 850,
+    "afsMultiplier": 10
+  },
+  {
+    "index": 3,
+    "mesh": "30",
+    "openingMicrons": 600,
+    "afsMultiplier": 20
+  },
+  {
+    "index": 4,
+    "mesh": "40",
+    "openingMicrons": 425,
+    "afsMultiplier": 30
+  },
+  {
+    "index": 5,
+    "mesh": "50",
+    "openingMicrons": 300,
+    "afsMultiplier": 40
+  },
+  {
+    "index": 6,
+    "mesh": "70",
+    "openingMicrons": 212,
+    "afsMultiplier": 50
+  },
+  {
+    "index": 7,
+    "mesh": "100",
+    "openingMicrons": 150,
+    "afsMultiplier": 70
+  },
+  {
+    "index": 8,
+    "mesh": "140",
+    "openingMicrons": 106,
+    "afsMultiplier": 100
+  },
+  {
+    "index": 9,
+    "mesh": "200",
+    "openingMicrons": 75,
+    "afsMultiplier": 140
+  },
+  {
+    "index": 10,
+    "mesh": "270",
+    "openingMicrons": 53,
+    "afsMultiplier": 200
+  },
+  {
+    "index": 11,
+    "mesh": "Pan",
+    "openingMicrons": 0,
+    "afsMultiplier": 300
+  }
+]
