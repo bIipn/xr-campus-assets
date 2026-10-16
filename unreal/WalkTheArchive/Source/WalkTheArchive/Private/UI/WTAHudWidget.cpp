@@ -1,0 +1,427 @@
+// Walk the Archive - the always-on HUD, built in code.
+
+#include "UI/WTAHudWidget.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/HorizontalBox.h"
+#include "Components/HorizontalBoxSlot.h"
+#include "Components/PanelSlot.h"
+#include "Components/SizeBox.h"
+#include "Components/SlateWrapperTypes.h"
+#include "Components/Spacer.h"
+#include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
+#include "Components/VerticalBoxSlot.h"
+#include "Layout/Anchors.h"
+#include "Layout/Margin.h"
+#include "Styling/SlateBrush.h"
+#include "Systems/WTATourSubsystem.h"
+#include "UI/WTAActionButton.h"
+#include "UI/WTAUIStyle.h"
+
+namespace
+{
+	const FName NAME_HudTourBack(TEXT("TourBack"));
+	const FName NAME_HudTourNext(TEXT("TourNext"));
+	const FName NAME_HudTourEnd(TEXT("TourEnd"));
+	const FName NAME_HudTourOpen(TEXT("TourOpen"));
+
+	/** Put a widget on the canvas, auto-sized, at an anchor/alignment/position. */
+	UCanvasPanelSlot* HudPlace(UCanvasPanel* Canvas, UWidget* Widget, const FAnchors& Anchors, const FVector2D& Alignment, const FVector2D& Position)
+	{
+		UCanvasPanelSlot* Slot = Canvas->AddChildToCanvas(Widget);
+		Slot->SetAnchors(Anchors);
+		Slot->SetAlignment(Alignment);
+		Slot->SetPosition(Position);
+		Slot->SetAutoSize(true);
+		return Slot;
+	}
+
+	/** A text block inside a size box so long lines wrap at MaxWidth. */
+	USizeBox* HudClampWidth(UWidgetTree* Tree, UWidget* Inner, float MaxWidth)
+	{
+		USizeBox* Box = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		Box->SetMaxDesiredWidth(MaxWidth);
+		Box->SetContent(Inner);
+		return Box;
+	}
+}
+
+void UWTAHudWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	UWidgetTree* Tree = WidgetTree;
+	if (Tree == nullptr)
+	{
+		return;
+	}
+
+	Canvas = Tree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
+	Canvas->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	Tree->RootWidget = Canvas;
+
+	// --- Room label, top-left ---------------------------------------------------
+	RoomPlate = WTAWidgets::MakePlate(Tree, WTAStyle::Plate(), FMargin(16.f, 12.f), 8.f);
+	RoomPlate->SetVisibility(ESlateVisibility::Collapsed);
+	{
+		UVerticalBox* Box = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+		RoomKickerText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(11, true), WTAStyle::Brass(), false);
+		RoomNameText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(21, true), WTAStyle::Bone(), false);
+		RoomSubText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(12), WTAStyle::BoneDim(), false);
+		Box->AddChildToVerticalBox(RoomKickerText)->SetPadding(FMargin(0.f, 0.f, 0.f, 2.f));
+		Box->AddChildToVerticalBox(RoomNameText)->SetPadding(FMargin(0.f, 0.f, 0.f, 2.f));
+		Box->AddChildToVerticalBox(RoomSubText);
+		RoomPlate->SetContent(Box);
+	}
+	HudPlace(Canvas, RoomPlate, FAnchors(0.f, 0.f), FVector2D(0.f, 0.f), FVector2D(24.f, 24.f));
+
+	// --- Badge counter, top-right ------------------------------------------------
+	BadgePlate = WTAWidgets::MakePlate(Tree, WTAStyle::Plate(), FMargin(14.f, 8.f), 8.f);
+	BadgePlate->SetVisibility(ESlateVisibility::HitTestInvisible);
+	BadgeText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Badges 0 / 0")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
+	BadgePlate->SetContent(BadgeText);
+	HudPlace(Canvas, BadgePlate, FAnchors(1.f, 0.f), FVector2D(1.f, 0.f), FVector2D(-24.f, 24.f));
+
+	// --- Crosshair and hover label, centre -------------------------------------------
+	CrosshairDot = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	CrosshairDot->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Bone(), 3.f, WTAStyle::Ink(), 1.f));
+	CrosshairDot->SetPadding(FMargin(0.f));
+	CrosshairDot->SetVisibility(ESlateVisibility::HitTestInvisible);
+	{
+		UCanvasPanelSlot* Slot = Canvas->AddChildToCanvas(CrosshairDot);
+		Slot->SetAnchors(FAnchors(0.5f, 0.5f));
+		Slot->SetAlignment(FVector2D(0.5f, 0.5f));
+		Slot->SetPosition(FVector2D(0.f, 0.f));
+		Slot->SetAutoSize(false);
+		Slot->SetSize(FVector2D(6.f, 6.f));
+	}
+
+	HoverLabelText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14, true), WTAStyle::Bone(), false);
+	HoverLabelText->SetShadowOffset(FVector2D(1.f, 1.f));
+	HoverLabelText->SetShadowColorAndOpacity(FLinearColor(0.f, 0.f, 0.f, 0.8f));
+	HoverLabelText->SetVisibility(ESlateVisibility::Collapsed);
+	HudPlace(Canvas, HoverLabelText, FAnchors(0.5f, 0.5f), FVector2D(0.5f, 0.f), FVector2D(0.f, 22.f));
+
+	// --- Toast, top-centre ----------------------------------------------------------
+	ToastPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	ToastPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Plate(), 8.f, WTAStyle::Brass()));
+	ToastPlate->SetPadding(FMargin(18.f, 10.f));
+	ToastPlate->SetVisibility(ESlateVisibility::Collapsed);
+	ToastText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(15), WTAStyle::Bone(), true);
+	ToastText->SetJustification(ETextJustify::Center);
+	ToastPlate->SetContent(HudClampWidth(Tree, ToastText, 720.f));
+	HudPlace(Canvas, ToastPlate, FAnchors(0.5f, 0.f), FVector2D(0.5f, 0.f), FVector2D(0.f, 28.f));
+
+	// --- Caption, lower-centre (wax scenes) -------------------------------------------
+	CaptionPlate = WTAWidgets::MakePlate(Tree, FLinearColor(0.f, 0.f, 0.f, 0.72f), FMargin(20.f, 12.f), 6.f);
+	CaptionPlate->SetVisibility(ESlateVisibility::Collapsed);
+	CaptionText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(18), WTAStyle::Bone(), true);
+	CaptionText->SetJustification(ETextJustify::Center);
+	CaptionPlate->SetContent(HudClampWidth(Tree, CaptionText, 860.f));
+	HudPlace(Canvas, CaptionPlate, FAnchors(0.5f, 1.f), FVector2D(0.5f, 1.f), FVector2D(0.f, -250.f));
+
+	// --- Hint, bottom-left --------------------------------------------------------------
+	HintPlate = WTAWidgets::MakePlate(Tree, WTAStyle::Plate(), FMargin(14.f, 10.f), 8.f);
+	HintPlate->SetVisibility(ESlateVisibility::Collapsed);
+	HintText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14), WTAStyle::Bone(), true);
+	HintPlate->SetContent(HudClampWidth(Tree, HintText, 460.f));
+	HudPlace(Canvas, HintPlate, FAnchors(0.f, 1.f), FVector2D(0.f, 1.f), FVector2D(24.f, -24.f));
+
+	// --- Tour bar, bottom-centre ------------------------------------------------------------
+	TourPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	TourPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Panel(), 10.f, WTAStyle::Brass()));
+	TourPlate->SetPadding(FMargin(22.f, 16.f, 22.f, 18.f));
+	TourPlate->SetVisibility(ESlateVisibility::Collapsed);
+	{
+		USizeBox* Width = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		Width->SetWidthOverride(680.f);
+		TourPlate->SetContent(Width);
+
+		UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+		Width->SetContent(Column);
+
+		TourStepText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(11, true), WTAStyle::Brass(), false);
+		TourTitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(20, true), WTAStyle::Bone(), true);
+		TourDateText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(12), WTAStyle::BoneDim(), false);
+		TourBodyText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14), WTAStyle::Bone(), true);
+		Column->AddChildToVerticalBox(TourStepText)->SetPadding(FMargin(0.f, 0.f, 0.f, 4.f));
+		Column->AddChildToVerticalBox(TourTitleText)->SetPadding(FMargin(0.f, 0.f, 0.f, 2.f));
+		Column->AddChildToVerticalBox(TourDateText)->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
+		Column->AddChildToVerticalBox(TourBodyText)->SetPadding(FMargin(0.f, 0.f, 0.f, 14.f));
+
+		UHorizontalBox* Buttons = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+		Column->AddChildToVerticalBox(Buttons);
+
+		TourBackButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Back")), NAME_HudTourBack, NAME_None, -1,
+			WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::Bone());
+		TourBackButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
+		Buttons->AddChildToHorizontalBox(TourBackButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
+
+		TourNextButton = Tree->ConstructWidget<UWTAActionButton>(UWTAActionButton::StaticClass());
+		TourNextButton->SetStyle(WTAStyle::PrimaryButton());
+		TourNextButton->Init(NAME_HudTourNext, NAME_None, -1);
+		TourNextButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
+		TourNextText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Next")), WTAStyle::Font(13, true), WTAStyle::Ink(), false);
+		TourNextButton->AddChild(TourNextText);
+		Buttons->AddChildToHorizontalBox(TourNextButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
+
+		TourOpenButton = Tree->ConstructWidget<UWTAActionButton>(UWTAActionButton::StaticClass());
+		TourOpenButton->SetStyle(WTAStyle::SecondaryButton());
+		TourOpenButton->Init(NAME_HudTourOpen, NAME_None, -1);
+		TourOpenButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
+		TourOpenText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Open")), WTAStyle::Font(13), WTAStyle::Brass(), false);
+		TourOpenButton->AddChild(TourOpenText);
+		TourOpenButton->SetVisibility(ESlateVisibility::Collapsed);
+		Buttons->AddChildToHorizontalBox(TourOpenButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
+
+		USpacer* Gap = Tree->ConstructWidget<USpacer>(USpacer::StaticClass());
+		UHorizontalBoxSlot* GapSlot = Buttons->AddChildToHorizontalBox(Gap);
+		GapSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+
+		TourEndButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("End tour")), NAME_HudTourEnd, NAME_None, -1,
+			WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::BoneDim());
+		TourEndButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
+		Buttons->AddChildToHorizontalBox(TourEndButton);
+	}
+	HudPlace(Canvas, TourPlate, FAnchors(0.5f, 1.f), FVector2D(0.5f, 1.f), FVector2D(0.f, -24.f));
+}
+
+void UWTAHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	AdvanceToasts(InDeltaTime);
+
+	if (HintTimeLeft > 0.f)
+	{
+		HintTimeLeft -= InDeltaTime;
+		if (HintTimeLeft <= 0.f)
+		{
+			HideHint();
+		}
+	}
+
+	// With the crosshair hidden (free cursor) the hover label follows the mouse instead.
+	if (HoverLabelText != nullptr && CrosshairDot != nullptr && HoverLabelText->GetVisibility() != ESlateVisibility::Collapsed)
+	{
+		if (UCanvasPanelSlot* Slot = Cast<UCanvasPanelSlot>(HoverLabelText->Slot))
+		{
+			if (CrosshairDot->GetVisibility() == ESlateVisibility::Collapsed)
+			{
+				const FVector2D Mouse = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
+				Slot->SetAnchors(FAnchors(0.f, 0.f));
+				Slot->SetAlignment(FVector2D(0.f, 0.f));
+				Slot->SetPosition(Mouse + FVector2D(16.f, 18.f));
+			}
+			else
+			{
+				Slot->SetAnchors(FAnchors(0.5f, 0.5f));
+				Slot->SetAlignment(FVector2D(0.5f, 0.f));
+				Slot->SetPosition(FVector2D(0.f, 22.f));
+			}
+		}
+	}
+}
+
+void UWTAHudWidget::SetRoom(const FText& Kicker, const FText& Name, const FText& Sub)
+{
+	if (RoomPlate == nullptr)
+	{
+		return;
+	}
+	if (Name.IsEmpty() && Kicker.IsEmpty())
+	{
+		RoomPlate->SetVisibility(ESlateVisibility::Collapsed);
+		return;
+	}
+	RoomKickerText->SetText(FText::FromString(Kicker.ToString().ToUpper()));
+	RoomKickerText->SetVisibility(Kicker.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	RoomNameText->SetText(Name);
+	RoomNameText->SetVisibility(Name.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	RoomSubText->SetText(Sub);
+	RoomSubText->SetVisibility(Sub.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	RoomPlate->SetVisibility(ESlateVisibility::HitTestInvisible);
+}
+
+void UWTAHudWidget::SetHoverLabel(const FText& Label)
+{
+	if (HoverLabelText == nullptr)
+	{
+		return;
+	}
+	HoverLabelText->SetText(Label);
+	HoverLabelText->SetVisibility(Label.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
+void UWTAHudWidget::ShowToast(const FText& Text, float Seconds)
+{
+	if (Text.IsEmpty())
+	{
+		return;
+	}
+	FWTAToastEntry Entry;
+	Entry.Text = Text;
+	Entry.Seconds = Seconds > 0.f ? Seconds : WTAStyle::ToastSeconds;
+	ToastQueue.Add(Entry);
+
+	if (ToastTimeLeft <= 0.f)
+	{
+		AdvanceToasts(0.f);
+	}
+}
+
+void UWTAHudWidget::AdvanceToasts(float DeltaSeconds)
+{
+	if (ToastTimeLeft > 0.f)
+	{
+		ToastTimeLeft -= DeltaSeconds;
+		if (ToastTimeLeft > 0.f)
+		{
+			return;
+		}
+	}
+
+	if (ToastPlate == nullptr || ToastText == nullptr)
+	{
+		return;
+	}
+
+	if (ToastQueue.Num() > 0)
+	{
+		const FWTAToastEntry Next = ToastQueue[0];
+		ToastQueue.RemoveAt(0);
+		ToastText->SetText(Next.Text);
+		ToastPlate->SetVisibility(ESlateVisibility::HitTestInvisible);
+		ToastTimeLeft = Next.Seconds;
+	}
+	else if (ToastPlate->GetVisibility() != ESlateVisibility::Collapsed)
+	{
+		ToastPlate->SetVisibility(ESlateVisibility::Collapsed);
+		ToastTimeLeft = 0.f;
+	}
+}
+
+void UWTAHudWidget::ShowCaption(const FText& Text)
+{
+	if (CaptionPlate == nullptr || CaptionText == nullptr)
+	{
+		return;
+	}
+	CaptionText->SetText(Text);
+	CaptionPlate->SetVisibility(Text.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
+void UWTAHudWidget::ShowHint(const FText& Text, float Seconds)
+{
+	if (HintPlate == nullptr || HintText == nullptr || Text.IsEmpty())
+	{
+		return;
+	}
+	HintText->SetText(Text);
+	HintPlate->SetVisibility(ESlateVisibility::HitTestInvisible);
+	HintTimeLeft = Seconds > 0.f ? Seconds : 6.f;
+}
+
+void UWTAHudWidget::HideHint()
+{
+	HintTimeLeft = 0.f;
+	if (HintPlate != nullptr)
+	{
+		HintPlate->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const FText& DateLabel, const FText& Body, const FText& OpenLabel)
+{
+	if (TourPlate == nullptr)
+	{
+		return;
+	}
+
+	TourStepText->SetText(FText::Format(FText::FromString(TEXT("STOP {0} OF {1}")), FText::AsNumber(Index + 1), FText::AsNumber(Total)));
+	TourTitleText->SetText(Title);
+	TourDateText->SetText(DateLabel);
+	TourDateText->SetVisibility(DateLabel.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	TourBodyText->SetText(Body);
+	TourBodyText->SetVisibility(Body.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+
+	TourBackButton->SetIsEnabled(Index > 0);
+	TourNextText->SetText(FText::FromString(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next")));
+
+	if (OpenLabel.IsEmpty())
+	{
+		TourOpenButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	else
+	{
+		TourOpenText->SetText(OpenLabel);
+		TourOpenButton->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	bTourShowing = true;
+	TourPlate->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UWTAHudWidget::HideTour()
+{
+	bTourShowing = false;
+	if (TourPlate != nullptr)
+	{
+		TourPlate->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void UWTAHudWidget::SetTourVisible(bool bVisible)
+{
+	if (TourPlate == nullptr || !bTourShowing)
+	{
+		return;
+	}
+	TourPlate->SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+}
+
+void UWTAHudWidget::SetBadgeCount(int32 Count, int32 Total)
+{
+	if (BadgeText != nullptr)
+	{
+		BadgeText->SetText(FText::Format(FText::FromString(TEXT("Badges {0} / {1}")), FText::AsNumber(Count), FText::AsNumber(Total)));
+	}
+}
+
+void UWTAHudWidget::SetCrosshairVisible(bool bVisible)
+{
+	if (CrosshairDot != nullptr)
+	{
+		CrosshairDot->SetVisibility(bVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	}
+}
+
+void UWTAHudWidget::HandleAction(FName Action, FName Arg, int32 Index)
+{
+	UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+	if (Tour == nullptr)
+	{
+		return;
+	}
+
+	if (Action == NAME_HudTourBack)
+	{
+		Tour->Back();
+	}
+	else if (Action == NAME_HudTourNext)
+	{
+		Tour->Next();
+	}
+	else if (Action == NAME_HudTourEnd)
+	{
+		Tour->End();
+	}
+	else if (Action == NAME_HudTourOpen)
+	{
+		Tour->OpenCurrent();
+	}
+}

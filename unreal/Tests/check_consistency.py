@@ -40,7 +40,7 @@ def strip_comments(s):
 
 # ---------- C++ model ----------
 headers = {p: strip_comments(read(p)) for p in glob.glob(os.path.join(SRC, '**', '*.h'), recursive=True)}
-TYPE_DECL = re.compile(r'\b(UCLASS|USTRUCT|UINTERFACE)\s*\([^)]*\)\s*(?:class|struct)\s+(?:WALKTHEARCHIVE_API\s+)?(\w+)\s*(?:final\s*)?(?::\s*public\s+(\w+))?')
+TYPE_DECL = re.compile(r'\b(UCLASS|USTRUCT|UINTERFACE)\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)\s*(?:class|struct)\s+(?:WALKTHEARCHIVE_API\s+)?(\w+)\s*(?:final\s*)?(?::\s*public\s+(\w+))?')
 types = {}       # name -> (kind, parent, header, body)
 for p, s in headers.items():
     for m in TYPE_DECL.finditer(s):
