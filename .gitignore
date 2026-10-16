@@ -1,17 +1,13 @@
-# Blender (bpy) venv lives in bl/; only the scripts are tracked
+# Blender (bpy) venv lives in bl/; only the scripts are tracked. It can't go on GitHub:
+# bpy/__init__.so alone is 210 MB (GitHub caps files at 100 MB) and the binaries are Linux-only.
+# Reinstall with: python3.13 -m venv bl && bl/bin/pip install bpy==5.2.2
 bl/*
 !bl/*.py
-# Tools and caches
+# Installed tools and download caches (reinstall / redownload)
 node_modules/
 ktx/
 mh/
 __pycache__/
-*.log
-# Generated: bake intermediates, avatar builds, deploy outputs, test screenshots
-assets/
-hk/out/
-public/
-deploy/*
-!deploy/assets.json
-test/shots*/
-xrlibraries-campus.html
+# Local-run copies (see README)
+deploy/h/
+deploy/lib/

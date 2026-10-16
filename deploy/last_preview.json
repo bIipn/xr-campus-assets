@@ -1,0 +1,11 @@
+{
+ "id": "dpl_2Z1UDbGm9EBqVqY53XpFyDfqE4Jw",
+ "url": "https://walk-the-archive-jmhgtppvm-biipns-projects.vercel.app",
+ "created": "2026-10-15T21:58Z (PDT 14:58? no: 21:58 PDT = 04:58Z next day)",
+ "target": "preview",
+ "page": "830011 bytes, 278703 gzipped, 14 chunks",
+ "patch_parts": 4,
+ "prev_dictionary": "deploy/prev (sha c44754d6\u2026, unchanged)",
+ "assets": "lib/lib.glb 8.75 MB + lib/probe.hdr fetched at build from bIipn/xr-campus-assets@f96a0a3 (sha256 ok)",
+ "note": "Artifact Version 11 carries lib/lib.glb.txt + lib/probe.hdr.txt (base64; the artifact host serves only web file types) and parts/baked.js decodes them when HK.b64."
+}

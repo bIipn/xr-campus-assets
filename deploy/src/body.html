@@ -1,0 +1,243 @@
+<canvas id="scene" aria-label="Walkable 3D view of the XRLibraries Campus concept" tabindex="0"></canvas>
+
+<header class="hud">
+  <div class="room" aria-live="polite">
+    <span class="kicker" id="roomK">Lobby</span>
+    <span class="name" id="roomN">XRLibraries Campus</span>
+    <span class="years" id="roomY">Start here</span>
+  </div>
+  <nav class="actions" aria-label="Campus controls">
+    <button class="btn" id="bVR" type="button" hidden>Enter VR</button>
+    <button class="btn" id="bTour" type="button">Tour</button>
+    <button class="btn" id="bSearch" type="button">Search</button>
+    <button class="btn" id="bBadges" type="button"><span class="long">Badges</span><span class="short star" aria-hidden="true">★</span><span class="bcount" id="bCount">0/10</span></button>
+    <button class="btn" id="bAbout" type="button" aria-label="About this concept"><span class="long">About</span><span class="short">?</span></button>
+  </nav>
+</header>
+
+<button class="plan" id="plan" type="button" aria-label="Campus map. Choose a place to walk there.">
+  <span class="kicker">Campus map · tap a place</span>
+  <canvas id="planC" width="180" height="150"></canvas>
+</button>
+
+<div class="hint" id="hint">Tap the floor to walk · Drag to look around</div>
+<div class="tag" id="tag" hidden></div>
+<div class="stick" id="stick" hidden aria-hidden="true"><span class="knob" id="stickKnob"></span></div>
+<button class="jumpbtn" id="bJump" type="button" hidden>Jump</button>
+<button class="kickbtn" id="bKick" type="button" hidden aria-label="Kick: hold to power up, release to shoot">Kick</button>
+<div class="kickmeter" id="kickMeter" hidden aria-hidden="true"><i></i><span>Power</span></div>
+<div class="aimdot" id="aimDot" hidden aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="waxcap" id="waxCap" hidden aria-live="polite"><span class="wk"></span><span class="wt"></span></div>
+
+<section id="intro" aria-labelledby="introTitle">
+  <div class="intro-card">
+    <span class="kicker">A concept by Ev Holt · Walk the Archive</span>
+    <h1 id="introTitle">XRLibraries Campus</h1>
+    <p class="lede">A museum with a living-history Wax Hall, a library, a hands-on workshop school and a recess yard about XR in libraries, built to walk through in a web browser.</p>
+    <p class="note">An unofficial concept made for XRLibraries. The museum and library use facts from public sources, mainly xrlibraries.com and the news reports cited on each card. Wax Hall figures are generic reenactors, not likenesses of real people. The staff are virtual and answer common questions on their own. The rides in the Recess Yard are made up for fun. The people are Microsoft Rocketbox avatars (MIT License, © 2020 Microsoft).</p>
+    <span class="meta" id="introMeta">Setting up the campus…</span>
+    <div class="row">
+      <button class="btn primary" id="bEnter" type="button" disabled>Enter the campus</button>
+      <button class="btn" id="bTourStart" type="button" disabled>Take the guided tour</button>
+    </div>
+    <p class="controls" id="controlsText">Tap the floor to walk and drag to look around.</p>
+    <div class="gfxrow"><span class="kicker" id="gfxLabel">Graphics</span><div class="seg" id="gfxSeg" role="group" aria-labelledby="gfxLabel"></div><span class="gfxnote" id="gfxNote" aria-live="polite"></span></div>
+    <details class="sources"><summary>Sources</summary><ul id="srcList"></ul></details>
+    <span class="sig">Built by Ev Holt</span>
+  </div>
+</section>
+
+<div id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="vTitle">
+  <div class="vbox">
+    <button class="btn vclose" id="vClose" type="button">Close</button>
+    <div class="art"><canvas id="vArt" width="10" height="10" aria-hidden="true"></canvas></div>
+    <article class="card">
+      <span class="pill" id="vKind">Milestone</span>
+      <h2 id="vTitle">Title</h2>
+      <p class="dateline" id="vDate"></p>
+      <p class="desc" id="vDesc"></p>
+      <p class="desc" id="vMore" hidden></p>
+      <p class="quote" id="vQuote" hidden></p>
+      <p class="qnote" id="vQnote" hidden></p>
+      <dl class="fields">
+        <dt>Where</dt><dd id="vWhere"></dd>
+        <dt>Partners</dt><dd id="vPartners"></dd>
+        <dt>Source</dt><dd id="vSource"></dd>
+        <dt>On view</dt><dd id="vGallery"></dd>
+      </dl>
+      <div class="vnav">
+        <button class="btn" id="vPrev" type="button">Previous</button>
+        <button class="btn" id="vNext" type="button">Next</button>
+      </div>
+    </article>
+  </div>
+</div>
+
+<section id="tour" hidden aria-live="polite" aria-label="Guided tour">
+  <span class="kicker" id="tStep">Stop 1</span>
+  <h3 id="tTitle">Welcome</h3>
+  <p class="tdate" id="tDate"></p>
+  <p class="ttext" id="tText"></p>
+  <div class="tbtns">
+    <button class="btn" id="tBack" type="button">Back</button>
+    <button class="btn primary" id="tNext" type="button">Next stop</button>
+    <button class="btn" id="tOpen" type="button">Open exhibit</button>
+    <span class="spacer"></span>
+    <button class="btn quiet" id="tEnd" type="button">End tour</button>
+  </div>
+</section>
+
+<section id="search" hidden aria-label="Search the campus">
+  <div class="sh">
+    <label for="q">Search the campus</label>
+    <input id="q" type="search" placeholder="Try VR, Nevada, 360 or ocean" autocomplete="off" enterkeyhint="search">
+    <span class="count" id="sCount"></span>
+  </div>
+  <ul class="results" id="sResults"></ul>
+  <div class="sfoot"><button class="btn quiet" id="sClose" type="button">Close</button></div>
+</section>
+
+<button class="askfab" id="askBtn" type="button" hidden><span class="mono" id="askMono" aria-hidden="true">M</span><span id="askName">Ask Margaret</span></button>
+
+<section id="guide" hidden role="dialog" aria-labelledby="gName">
+  <header class="gh">
+    <span class="mono" id="gMono" aria-hidden="true">M</span>
+    <div><div class="gname" id="gName">Margaret</div><div class="gsub" id="gSub">Museum guide</div></div>
+    <button class="btn quiet" id="gClose" type="button">Close</button>
+  </header>
+  <div class="gmsgs" id="gMsgs" aria-live="polite"></div>
+  <div class="gchips" id="gChips"></div>
+  <form class="gform" id="gForm" autocomplete="off">
+    <label for="gq" class="sr" id="gLabel">Ask Margaret</label>
+    <input id="gq" type="text" placeholder="Ask a question" enterkeyhint="send" maxlength="300">
+    <button class="btn primary" id="gSend" type="submit">Ask</button>
+  </form>
+  <p class="gnote" id="gNote"></p>
+</section>
+
+<div id="reader" hidden role="dialog" aria-modal="true" aria-labelledby="rdTitle">
+  <div class="rdbox" id="rdBox">
+    <button class="btn vclose" id="rdClose" type="button">Close</button>
+    <div class="rdcover"><canvas id="rdCover" width="384" height="526" aria-hidden="true"></canvas></div>
+    <article class="rdpage" id="rdPage" tabindex="-1">
+      <span class="kicker" id="rdKick"></span>
+      <h2 id="rdTitle"></h2>
+      <div id="rdBody"></div>
+    </article>
+    <nav class="rdnav" aria-label="Pages">
+      <button class="btn" id="rdPrev" type="button">Previous</button>
+      <span class="rdcount" id="rdCount"></span>
+      <button class="btn primary" id="rdNext" type="button">Next page</button>
+    </nav>
+  </div>
+</div>
+
+<div id="paintbar" hidden role="toolbar" aria-label="3D art tools">
+  <div class="pbrow pbscroll" id="pbTools" role="radiogroup" aria-label="Brush or shape"></div>
+  <div class="pbrow pbscroll">
+    <div class="swatches" id="pbColors" role="radiogroup" aria-label="Color"></div>
+    <label class="pbcustom" id="pbCustomWrap" title="Pick any color"><input type="color" id="pbCustom" value="#ff5a8a" aria-label="Pick any color"></label>
+  </div>
+  <div class="pbrow pbscroll">
+    <span class="pbgroup"><span class="pblab">Size</span><span class="seg" id="pbSize" role="radiogroup" aria-label="Size"><button type="button" role="radio" data-i="0">S</button><button type="button" role="radio" data-i="1">M</button><button type="button" role="radio" data-i="2">L</button><button type="button" role="radio" data-i="3">XL</button></span></span>
+    <span class="pbgroup"><span class="pblab">Mirror</span><span class="seg" id="pbSym" role="radiogroup" aria-label="Symmetry"><button type="button" role="radio" data-v="">Off</button><button type="button" role="radio" data-v="x">Mirror</button><button type="button" role="radio" data-v="r6">×6</button></span></span>
+    <span class="pbgroup"><span class="pblab">Canvas</span><span class="seg" id="pbCanvas" role="radiogroup" aria-label="Canvas"><button type="button" role="radio" data-v="room">Room</button><button type="button" role="radio" data-v="blank">Blank</button><button type="button" role="radio" data-v="night">Night</button></span></span>
+    <button class="btn" id="pbSpin" type="button" aria-pressed="false">Spin</button>
+    <label class="pbdist"><span>Near</span><input type="range" id="pbDist" min="1" max="3.5" step="0.1" value="2" aria-label="Paint distance"><span>Far</span></label>
+  </div>
+  <div class="pbrow pbacts">
+    <button class="btn" id="pbMode" type="button" aria-pressed="false">Look around</button>
+    <button class="btn" id="pbUndo" type="button">Undo</button>
+    <button class="btn" id="pbClear" type="button">Clear</button>
+    <button class="btn" id="pbSave" type="button" hidden>Save picture</button>
+    <span class="spacer"></span>
+    <button class="btn primary" id="pbDone" type="button">Done</button>
+  </div>
+</div>
+
+<section id="station" hidden role="dialog" aria-labelledby="stTitle">
+  <header class="sth">
+    <div class="sthead"><span class="kicker" id="stKick"></span><h2 id="stTitle"></h2><span class="ststep" id="stStep" hidden></span></div>
+    <button class="btn quiet" id="stClose" type="button">Close</button>
+  </header>
+  <div class="stbody" id="stBody"></div>
+  <div class="stbtns" id="stBtns"></div>
+</section>
+
+<div id="bp" hidden role="dialog" aria-modal="true" aria-labelledby="bpTitle">
+  <div class="bpbox">
+    <button class="btn vclose" id="bpClose" type="button">Close</button>
+    <div class="bpart">
+      <canvas id="bpCanvas" width="920" height="780" aria-label="Blueprint drawing with numbered parts"></canvas>
+      <p class="bphint" id="bpHint"></p>
+    </div>
+    <article class="bpcard">
+      <span class="pill" id="bpKind">Blueprint</span>
+      <h2 id="bpTitle"></h2>
+      <p class="dateline" id="bpSub"></p>
+      <div class="bpbody" id="bpBody"></div>
+      <div class="bpparts" id="bpParts" role="group" aria-label="Parts"></div>
+      <div class="vnav">
+        <button class="btn" id="bpPrev" type="button">Previous</button>
+        <button class="btn" id="bpNext" type="button">Next part</button>
+        <button class="btn" id="bpOver" type="button">Overview</button>
+        <button class="btn primary" id="bpModel" type="button" hidden>Build a model</button>
+      </div>
+    </article>
+  </div>
+</div>
+
+<section id="rideCard" hidden role="dialog" aria-labelledby="rcTitle">
+  <span class="kicker" id="rcKick">Recess Yard · Ride</span>
+  <h3 id="rcTitle">Comet Coaster</h3>
+  <p class="rctext" id="rcText"></p>
+  <p class="rcnote" id="rcNote"></p>
+  <div class="rcbtns">
+    <button class="btn primary" id="rcGo" type="button">Ride now</button>
+    <button class="btn" id="rcGentle" type="button">Gentle ride</button>
+    <span class="spacer"></span>
+    <button class="btn quiet" id="rcCancel" type="button">Not now</button>
+  </div>
+</section>
+
+<div id="rideHud" hidden>
+  <div class="rhinfo">
+    <div class="rhtop"><span class="kicker" id="rhKick">Comet Coaster</span><span class="rhstat" id="rhStat"></span></div>
+    <p class="rhcap" id="rhCap" aria-live="polite" hidden></p>
+  </div>
+  <div class="rhbtns">
+    <button class="btn" id="rhPause" type="button" hidden>Pause</button>
+    <button class="btn primary" id="rhExit" type="button">Exit ride</button>
+  </div>
+</div>
+
+<div id="fade" aria-hidden="true"></div>
+
+<div id="award" role="status" hidden>
+  <canvas id="awIcon" width="88" height="88" aria-hidden="true"></canvas>
+  <div><span class="kicker">Badge unlocked</span><b id="awName">First Steps</b></div>
+</div>
+
+<section id="badges" hidden role="dialog" aria-labelledby="bgTitle">
+  <header class="bgh">
+    <div><span class="kicker">Recess rewards</span><h2 id="bgTitle">Badges</h2><span class="count" id="bgCount"></span></div>
+    <button class="btn quiet" id="bgClose" type="button">Close</button>
+  </header>
+  <div class="bgbody">
+    <ul class="bglist" id="bgList"></ul>
+    <div class="tkh"><span class="kicker">XR tokens</span><span class="count" id="tkCount"></span></div>
+    <ul class="tklist" id="tkList"></ul>
+  </div>
+  <div class="bgfoot"><span class="bgsave">Saved on this device</span><button class="btn quiet" id="bgReset" type="button">Start over</button></div>
+</section>
+
+<section id="nogl" hidden>
+  <div class="intro-card">
+    <span class="kicker">A concept by Ev Holt · Walk the Archive</span>
+    <h1>XRLibraries Campus</h1>
+    <p class="lede">This browser can’t show the 3D campus, but you can still read every exhibit and book.</p>
+    <div class="row"><button class="btn primary" id="bBrowse" type="button">Browse exhibits and books</button></div>
+    <span class="sig">Built by Ev Holt</span>
+  </div>
+</section>

@@ -1,0 +1,18 @@
+{
+ "repo": "bIipn/xr-campus-assets",
+ "commit": "f96a0a3416a987942861538f9870ee36a1caaa33",
+ "files": [
+  {
+   "dest": "lib/lib.glb",
+   "url": "https://raw.githubusercontent.com/bIipn/xr-campus-assets/f96a0a3416a987942861538f9870ee36a1caaa33/lib/lib.glb",
+   "sha256": "cc4c16326e5cb596a5ff0fcd1d0a0fc9086050b90b8d4de8e4e6126a20e78f2e",
+   "bytes": 8753684
+  },
+  {
+   "dest": "lib/probe.hdr",
+   "url": "https://raw.githubusercontent.com/bIipn/xr-campus-assets/f96a0a3416a987942861538f9870ee36a1caaa33/lib/probe.hdr",
+   "sha256": "a8067a4e3c0f230bd830326e7edd54e87336e36e8db603896e8c23bbf8678669",
+   "bytes": 524337
+  }
+ ]
+}

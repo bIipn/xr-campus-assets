@@ -1,0 +1,6 @@
+{"info":true, "camYaw":-1.5708, "poses":[
+ {"av":"sm04","lib":"b","p":"contact","h":1.733,"nohead":true,"ball":[-0.09,0.11,0.38]},
+ {"av":"sm04","lib":"b","p":"stand","h":1.733,"nohead":true,"ball":[0.0,0.11,0.9]},
+ {"av":"sm04","lib":"b","p":"stand","h":1.733,"nohead":true,"gait":[1.2,1,0.3]},
+ {"av":"sm04","lib":"b","p":"plant","h":1.733,"nohead":true,"ball":[-0.09,0.11,0.38]}
+], "fp":[{"fig":0,"pitch":-1.15,"name":"contact"},{"fig":0,"pitch":-1.15,"fov":80,"name":"contactM"},{"fig":1,"pitch":-0.75,"name":"stand"},{"fig":2,"pitch":-0.6,"name":"walk"},{"fig":3,"pitch":-1.0,"name":"plant"}]}

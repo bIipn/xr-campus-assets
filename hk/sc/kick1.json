@@ -1,0 +1,10 @@
+{"info":true, "camYaw":-1.5708, "poses":[
+ {"av":"sm04","lib":"b","p":"stand","h":1.75},
+ {"av":"sm04","lib":"b","p":"approach","h":1.75},
+ {"av":"sm04","lib":"b","p":"plant","h":1.75},
+ {"av":"sm04","lib":"b","p":"contact","h":1.75},
+ {"av":"sm04","lib":"b","p":"follow","h":1.75},
+ {"av":"sm04","lib":"b","p":"land","h":1.75},
+ {"av":"sm04","lib":"b","p":"stand","h":1.75,"gait":[1.57,1,0]},
+ {"av":"sm04","lib":"b","p":"stand","h":1.75,"gait":[1.57,1,1]}
+]}

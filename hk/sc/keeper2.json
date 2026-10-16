@@ -1,0 +1,10 @@
+{"poses":[
+ {"av":"sm02","p":"dive","side":1,"roll":0.6,"com":1.2},
+ {"av":"sm02","p":"dive","side":1,"roll":1.2,"com":0.8},
+ {"av":"sm02","p":"divelow","side":1,"roll":1.4,"com":0.35},
+ {"av":"sm02","p":"dive","side":-1,"roll":-1.0,"com":0.95},
+ {"av":"sm02","p":"lie","side":1,"roll":1.52,"com":0.2},
+ {"av":"sm02","p":"roll1"},
+ {"av":"sm02","p":"roll2"},
+ {"av":"sm02","p":"cheer"}
+]}

@@ -1,0 +1,5 @@
+{"info":true, "camYaw":-1.5708, "poses":[
+ {"av":"sm04","lib":"b","p":"plant","h":1.75,"nohead":true,"ball":[-0.08,0.11,0.42]},
+ {"av":"sm04","lib":"b","p":"contact","h":1.75,"nohead":true,"ball":[-0.08,0.11,0.42]},
+ {"av":"sm04","lib":"b","p":"follow","h":1.75,"nohead":true,"ball":[-0.08,0.6,1.6]}
+], "fp":[{"fig":0,"pitch":-1.0,"name":"plant"},{"fig":1,"pitch":-1.1,"name":"contact"},{"fig":2,"pitch":-0.7,"name":"follow"},{"fig":1,"pitch":-1.1,"fov":80,"name":"contactM"}]}

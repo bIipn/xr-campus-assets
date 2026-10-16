@@ -1,0 +1,9 @@
+{"poses":[
+ {"av":"sm02","p":"ready"},
+ {"av":"sm02","p":"chest"},
+ {"av":"sm02","p":"jump","com":1.3},
+ {"av":"sm02","p":"scoop"},
+ {"av":"sm02","p":"hold"},
+ {"av":"sm02","p":"pick"},
+ {"av":"sm02","p":"beaten"}
+]}

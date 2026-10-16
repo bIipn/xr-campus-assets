@@ -1,0 +1,93 @@
+[
+ {
+  "file": "prev/c/9b1ce9b98fd2.bin",
+  "sha": "9b1ce9b98fd202932be822dac122e1858433fdce",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/14c6f11a18c8.bin",
+  "sha": "14c6f11a18c8495bdc0b82550e652db91dbb505e",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/631e025380d0.bin",
+  "sha": "631e025380d0e75794241af09f18a3bde96f28a8",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/f4a941f1c638.bin",
+  "sha": "f4a941f1c6387c8f951a62d2e7de7d0cfbfaf413",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/433f038390cd.bin",
+  "sha": "433f038390cd91be1862ed92a2c75f14f9ea8669",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/d0ccf05ecc7a.bin",
+  "sha": "d0ccf05ecc7a9f65993f2ed44863b4249398c43a",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/b452442670e5.bin",
+  "sha": "b452442670e5ffb1767f04052c2de209af89d004",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/9d8f2a6d522f.bin",
+  "sha": "9d8f2a6d522fc2038119548200359f261942d49c",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/dfc7954c0238.bin",
+  "sha": "dfc7954c02389d168ee4f96325f526929061544e",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/c82eb9067c1a.bin",
+  "sha": "c82eb9067c1abcc24910043ea8abec1a3eeb42bf",
+  "size": 21000
+ },
+ {
+  "file": "prev/c/e730ffed8c5c.bin",
+  "sha": "e730ffed8c5c731d0342c473a0debc821651753a",
+  "size": 16293
+ },
+ {
+  "file": "patch/0.bin",
+  "sha": "12330367a583ee34f57e67c9d4bf7f9d6ce85323",
+  "size": 19291
+ },
+ {
+  "file": "patch/1.bin",
+  "sha": "0acc36c3aec696d6a71720dd34bc5e6e49c652e7",
+  "size": 19291
+ },
+ {
+  "file": "patch/2.bin",
+  "sha": "46ee81da293c4235c067f0433b07d39ebda79347",
+  "size": 19291
+ },
+ {
+  "file": "patch/3.bin",
+  "sha": "5831ad21b8e5bd9ace8fd4c06b0eea0195f2ec57",
+  "size": 19288
+ },
+ {
+  "file": "site.mjs",
+  "data": "/* Vercel build, step 1 of 2: rebuild the campus page.\n   prev/c/*.bin are the previous preview's page chunks, reused by hash, so nothing large is uploaded twice.\n   patch/*.bin is one zstd frame that uses the previous page as its dictionary. It holds the new page,\n   the loading-screen template and the avatar build script. Step 2 (hk/build.mjs) converts the\n   Microsoft Rocketbox avatars into public/h. */\nimport fs from 'node:fs';\nimport zlib from 'node:zlib';\nimport crypto from 'node:crypto';\n\nconst PREV = ['9b1ce9b98fd2', '14c6f11a18c8', '631e025380d0', 'f4a941f1c638', '433f038390cd', 'd0ccf05ecc7a', 'b452442670e5', '9d8f2a6d522f', 'dfc7954c0238', 'c82eb9067c1a', 'e730ffed8c5c'];\nconst PREV_SHA = 'c44754d6db894ddbe9f75e0da7f54dc44b5e6afd';\nconst PARTS = 4;\nconst CHUNK = 21000;\nconst sha1 = (b) => crypto.createHash('sha1').update(b).digest('hex');\n\nconsole.log('Node ' + process.version);\nconst dict = zlib.gunzipSync(Buffer.concat(PREV.map((h) => fs.readFileSync('prev/c/' + h + '.bin'))));\nif (sha1(dict) !== PREV_SHA) throw new Error('The previous page did not rebuild exactly');\nif (typeof zlib.zstdDecompressSync !== 'function') throw new Error('This Node.js has no zstd; use Node 24');\nconst zst = Buffer.concat(Array.from({ length:PARTS }, (_, i) => fs.readFileSync('patch/' + i + '.bin')));\nconst bundle = zlib.zstdDecompressSync(zst, { dictionary:dict });\nif (bundle.toString('latin1', 0, 4) !== 'XRB1') throw new Error('The patch is not a campus bundle');\nconst hl = bundle.readUInt32LE(4), head = JSON.parse(bundle.toString('utf8', 8, 8 + hl));\nconst got = {};\nlet at = 8 + hl;\nfor (const f of head.files){\n  const b = bundle.subarray(at, at + f.size);\n  at += f.size;\n  if (sha1(b) !== f.sha) throw new Error('Patch file ' + f.name + ' did not match');\n  got[f.name] = b;\n  if (f.name.includes('/')){\n    fs.mkdirSync(f.name.slice(0, f.name.lastIndexOf('/')), { recursive:true });\n    fs.writeFileSync(f.name, b);\n  }\n}\n\n/* The page ships as gzip chunks behind a small loading screen (the browser unzips them) */\nconst gz = zlib.gzipSync(got.payload, { level:9, memLevel:9 });\nfs.mkdirSync('public/c', { recursive:true });\nconst urls = [];\nfor (let i = 0; i < gz.length; i += CHUNK){\n  const b = gz.subarray(i, i + CHUNK), name = 'c/' + sha1(b).slice(0, 12) + '.bin';\n  fs.writeFileSync('public/' + name, b);\n  urls.push(\"'/\" + name + \"'\");\n}\nconst page = got['loader.html'].toString('utf8');\nif (page.split('/*CHUNKS*/').length !== 2) throw new Error('Loader template');\nfs.writeFileSync('public/index.html', page.replace('/*CHUNKS*/', urls.join(',')));\nconsole.log('Page: ' + got.payload.length + ' bytes, ' + gz.length + ' gzipped, ' + urls.length + ' chunks');\n"
+ },
+ {
+  "file": "vercel.json",
+  "data": "{\n  \"installCommand\": \"npm install --prefix hk --no-audit --no-fund\",\n  \"buildCommand\": \"node site.mjs && node web/fetch_assets.mjs && node hk/build.mjs public/h --expect hk/names.json --jobs 4\",\n  \"outputDirectory\": \"public\",\n  \"headers\": [\n    {\n      \"source\": \"/(.*)\",\n      \"headers\": [\n        {\n          \"key\": \"X-Robots-Tag\",\n          \"value\": \"noindex, nofollow\"\n        },\n        {\n          \"key\": \"X-Content-Type-Options\",\n          \"value\": \"nosniff\"\n        },\n        {\n          \"key\": \"Referrer-Policy\",\n          \"value\": \"strict-origin-when-cross-origin\"\n        }\n      ]\n    },\n    {\n      \"source\": \"/c/(.*)\",\n      \"headers\": [\n        {\n          \"key\": \"Cache-Control\",\n          \"value\": \"public, max-age=31536000, immutable\"\n        }\n      ]\n    },\n    {\n      \"source\": \"/h/(.*)\",\n      \"headers\": [\n        {\n          \"key\": \"Cache-Control\",\n          \"value\": \"public, max-age=86400\"\n        }\n      ]\n    },\n    {\n      \"source\": \"/lib/(.*)\",\n      \"headers\": [\n        {\n          \"key\": \"Cache-Control\",\n          \"value\": \"public, max-age=86400\"\n        }\n      ]\n    }\n  ]\n}\n"
+ },
+ {
+  "file": "package.json",
+  "data": "{ \"name\": \"walk-the-archive\", \"private\": true }\n"
+ },
+ {
+  "file": "hk/package.json",
+  "data": "{\"name\":\"humankit\",\"private\":true,\"type\":\"module\",\"dependencies\":{\"meshoptimizer\":\"^0.21.0\",\"sharp\":\"^0.33.5\",\"three\":\"0.170.0\"}}"
+ }
+]
