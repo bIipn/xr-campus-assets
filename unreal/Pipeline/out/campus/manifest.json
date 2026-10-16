@@ -1,0 +1,69 @@
+{
+ "source": "three.js campus (parts/*.js) via test/harness.py",
+ "units": "metres, three.js axes (y up)",
+ "prep": {
+  "removed": {
+   "glow_to_emissive": 110,
+   "points/lines": 43,
+   "staff": 4,
+   "baked_room": 1,
+   "baked": 28,
+   "attr_stripped": 6,
+   "shader_mesh": 1,
+   "grass": 1
+  },
+  "tagged": 226
+ },
+ "wings": {
+  "museum": {
+   "file": "museum.glb",
+   "bytes": 13208676
+  },
+  "waxIntro": {
+   "file": "waxIntro.glb",
+   "bytes": 530920
+  },
+  "wax": {
+   "file": "wax.glb",
+   "bytes": 16824700
+  },
+  "lib": {
+   "file": "lib.glb",
+   "bytes": 8466824
+  },
+  "school": {
+   "file": "school.glb",
+   "bytes": 14487640
+  },
+  "outside": {
+   "file": "outside.glb",
+   "bytes": 2501344
+  },
+  "play": {
+   "file": "play.glb",
+   "bytes": 5294692
+  },
+  "dive": {
+   "file": "dive.glb",
+   "bytes": 1445412
+  }
+ },
+ "art": [
+  "ca-200",
+  "charleston",
+  "cil-talks",
+  "dialysis",
+  "freedom",
+  "headset",
+  "mission",
+  "nv-1100",
+  "nv-2017",
+  "playbooks",
+  "pollinators",
+  "sandi",
+  "seeking",
+  "showcase",
+  "ukraine",
+  "way-out"
+ ]
+}

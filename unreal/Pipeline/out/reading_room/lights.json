@@ -1,0 +1,270 @@
+{
+ "source": "assets/lib/library.blend",
+ "units": "metres, three.js campus axes (y up)",
+ "lights": [
+  {
+   "name": "L",
+   "type": "POINT",
+   "campus_pos_m": [
+    -18.3,
+    1.35,
+    -7.0
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.001",
+   "type": "POINT",
+   "campus_pos_m": [
+    -18.7,
+    1.09,
+    -10.8
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.002",
+   "type": "POINT",
+   "campus_pos_m": [
+    -17.5,
+    1.09,
+    -10.8
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.003",
+   "type": "POINT",
+   "campus_pos_m": [
+    -16.3,
+    1.09,
+    -10.8
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.004",
+   "type": "POINT",
+   "campus_pos_m": [
+    -18.7,
+    1.09,
+    4.6
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.005",
+   "type": "POINT",
+   "campus_pos_m": [
+    -17.5,
+    1.09,
+    4.6
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.006",
+   "type": "POINT",
+   "campus_pos_m": [
+    -16.3,
+    1.09,
+    4.6
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 18.0,
+   "color_linear": [
+    1.0,
+    0.75,
+    0.45
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.007",
+   "type": "POINT",
+   "campus_pos_m": [
+    -27.5,
+    5.45,
+    -9.5
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 200.0,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.008",
+   "type": "POINT",
+   "campus_pos_m": [
+    -16.5,
+    5.45,
+    -9.5
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 200.0,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.009",
+   "type": "POINT",
+   "campus_pos_m": [
+    -27.5,
+    5.45,
+    3.5
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 200.0,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "L.010",
+   "type": "POINT",
+   "campus_pos_m": [
+    -16.5,
+    5.45,
+    3.5
+   ],
+   "campus_dir": [
+    0.0,
+    -1.0,
+    -0.0
+   ],
+   "blender_watts": 200.0,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "Sun",
+   "type": "SUN",
+   "campus_pos_m": [
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "campus_dir": [
+    0.9056,
+    -0.3256,
+    -0.2717
+   ],
+   "blender_watts": 26.0,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.84
+   ],
+   "radius_m": 0.0,
+   "area_size_m": null
+  }
+ ]
+}

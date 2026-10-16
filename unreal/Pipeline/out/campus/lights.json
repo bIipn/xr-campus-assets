@@ -1,0 +1,228 @@
+{
+ "units": "metres, three.js axes (y up)",
+ "lamps": [
+  {
+   "pos_m": [
+    0,
+    3.300000000000004,
+    -3
+   ],
+   "color_srgb": "#ffe2b9",
+   "intensity_threejs": 7.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    3.300000000000002,
+    -12
+   ],
+   "color_srgb": "#ffe2b9",
+   "intensity_threejs": 9,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    3.2999999999999994,
+    -24
+   ],
+   "color_srgb": "#ffe2b9",
+   "intensity_threejs": 9,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    3.2999999999999967,
+    -36
+   ],
+   "color_srgb": "#ffe2b9",
+   "intensity_threejs": 9,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    3.8,
+    -43.4
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 7,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -43.8
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "museum"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -48.1
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -54
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -59.9
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -65.8
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    0,
+    4.09,
+    -71.7
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    0,
+    3.815337764581385,
+    -76.4
+   ],
+   "color_srgb": "#ffdcb2",
+   "intensity_threejs": 9.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "wax"
+  },
+  {
+   "pos_m": [
+    -17.5,
+    6.4,
+    -3
+   ],
+   "color_srgb": "#ffe2b9",
+   "intensity_threejs": 9.5,
+   "distance_m": 26,
+   "decay": 1,
+   "wing": "lib"
+  },
+  {
+   "pos_m": [
+    23,
+    2.5,
+    -3
+   ],
+   "color_srgb": "#fff5e8",
+   "intensity_threejs": 8.5,
+   "distance_m": 26,
+   "decay": 1,
+   "wing": "school"
+  },
+  {
+   "pos_m": [
+    19,
+    2.5,
+    -9
+   ],
+   "color_srgb": "#fff3e2",
+   "intensity_threejs": 8,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "school"
+  },
+  {
+   "pos_m": [
+    29.8,
+    2.5,
+    -8.9
+   ],
+   "color_srgb": "#f2f7ff",
+   "intensity_threejs": 8.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "school"
+  },
+  {
+   "pos_m": [
+    18.1,
+    2.485,
+    2.9
+   ],
+   "color_srgb": "#fff4e6",
+   "intensity_threejs": 8.5,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "school"
+  },
+  {
+   "pos_m": [
+    29,
+    2.4999999999999996,
+    0.9
+   ],
+   "color_srgb": "#eef3ff",
+   "intensity_threejs": 8,
+   "distance_m": 22,
+   "decay": 1,
+   "wing": "school"
+  }
+ ],
+ "sun": {
+  "dir_to_sun": [
+   75.33474392808526,
+   118.38659008429188,
+   42.18221028981395
+  ]
+ }
+}

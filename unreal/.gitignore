@@ -1,0 +1,19 @@
+# Unreal build products and caches (regenerated on every machine)
+WalkTheArchive/Binaries/
+WalkTheArchive/Intermediate/
+WalkTheArchive/Saved/
+WalkTheArchive/DerivedDataCache/
+WalkTheArchive/Build/
+WalkTheArchive/Plugins/*/Binaries/
+WalkTheArchive/Plugins/*/Intermediate/
+WalkTheArchive/.vs/
+WalkTheArchive/.idea/
+WalkTheArchive/*.sln
+WalkTheArchive/*.xcworkspace
+WalkTheArchive/*.code-workspace
+WalkTheArchive/Packaged/
+# Python bytecode
+__pycache__/
+*.pyc
+# Local tool caches
+Tools/.cache/
