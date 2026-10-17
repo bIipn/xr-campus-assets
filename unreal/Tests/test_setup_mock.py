@@ -42,6 +42,19 @@ def parse_results(stdout):
     return results
 
 
+def real_content_snapshot():
+    """(file count, newest mtime) under the real Content/WTA; None before the first real setup run."""
+    root = os.path.join(PROJECT_DIR, "Content", "WTA")
+    if not os.path.isdir(root):
+        return None
+    count, newest = 0, 0.0
+    for dirpath, _dirs, files in os.walk(root):
+        for name in files:
+            count += 1
+            newest = max(newest, os.path.getmtime(os.path.join(dirpath, name)))
+    return count, newest
+
+
 class SetupPipelineMockTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -62,6 +75,7 @@ class SetupPipelineMockTest(unittest.TestCase):
         return proc, parse_results(proc.stdout)
 
     def test_1_all_steps_ok(self):
+        before = real_content_snapshot()
         proc, results = self.run_entry()
         self.assertEqual([r["step"] for r in results], STEPS, "one WTA_RESULT line per step, in contract order\n" + proc.stdout + proc.stderr)
         self.assertEqual(proc.stdout.count("WTA_RESULT "), len(STEPS), "exactly one WTA_RESULT per step")
@@ -101,7 +115,8 @@ class SetupPipelineMockTest(unittest.TestCase):
         with open(os.path.join(self.proj, "Config", "DefaultGame.ini")) as fh:
             game_ini = fh.read()
         self.assertIn("Exhibits=/Game/WTA/Data/DT_Exhibits.DT_Exhibits", game_ini)
-        self.assertFalse(os.path.exists(os.path.join(PROJECT_DIR, "Content", "WTA")), "real Content folder untouched")
+        # The mock writes only to the scratch project; a real setup run may already have filled Content/WTA.
+        self.assertEqual(real_content_snapshot(), before, "real Content folder untouched")
 
     def test_2_step_subset_and_failure_semantics(self):
         proc, results = self.run_entry({"WTA_STEPS": "probe, project_settings"})
