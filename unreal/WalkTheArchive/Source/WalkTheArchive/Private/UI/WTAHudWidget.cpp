@@ -165,7 +165,7 @@ void UWTAHudWidget::NativeOnInitialized()
 		TourNextButton->SetStyle(WTAStyle::PrimaryButton());
 		TourNextButton->Init(NAME_HudTourNext, NAME_None, -1);
 		TourNextButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
-		TourNextText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Next")), WTAStyle::Font(13, true), WTAStyle::Ink(), false);
+		TourNextText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Next (T)")), WTAStyle::Font(13, true), WTAStyle::Ink(), false);
 		TourNextButton->AddChild(TourNextText);
 		Buttons->AddChildToHorizontalBox(TourNextButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
 
@@ -350,7 +350,7 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 	TourBodyText->SetVisibility(Body.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 
 	TourBackButton->SetIsEnabled(Index > 0);
-	TourNextText->SetText(FText::FromString(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next")));
+	TourNextText->SetText(FText::FromString(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next (T)")));
 
 	if (OpenLabel.IsEmpty())
 	{

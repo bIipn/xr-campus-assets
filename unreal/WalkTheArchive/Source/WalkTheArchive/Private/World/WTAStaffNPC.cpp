@@ -1,6 +1,7 @@
 // Walk the Archive - a virtual staff member with a placeholder body until a MetaHuman is assigned.
 
 #include "World/WTAStaffNPC.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/ChildActorComponent.h"
@@ -86,6 +87,20 @@ AWTAStaffNPC::AWTAStaffNPC()
 	NameLabel->SetGenerateOverlapEvents(false);
 	NameLabel->SetCanEverAffectNavigation(false);
 	NameLabel->SetCastShadow(false);
+
+	// Hover target: the body and the floating name (capsule centre -90 .. +125 cm), 80 cm wide, so looking at
+	// the person or at their name both show "Ask ...". Visibility only: the player still bumps into the capsule.
+	PickZone = CreateDefaultSubobject<UBoxComponent>(TEXT("PickZone"));
+	PickZone->SetupAttachment(Capsule);
+	PickZone->SetBoxExtent(FVector(40.f, 40.f, 107.5f));
+	PickZone->SetRelativeLocation(FVector(0.f, 0.f, 17.5f));
+	PickZone->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	PickZone->SetCollisionObjectType(ECC_WorldDynamic);
+	PickZone->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PickZone->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	PickZone->SetGenerateOverlapEvents(false);
+	PickZone->SetCanEverAffectNavigation(false);
+	PickZone->SetHiddenInGame(true);
 }
 
 void AWTAStaffNPC::BeginPlay()

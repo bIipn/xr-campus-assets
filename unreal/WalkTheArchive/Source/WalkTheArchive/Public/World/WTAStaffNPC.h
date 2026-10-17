@@ -16,6 +16,7 @@
 #include "Interaction/WTAInteractable.h"
 #include "WTAStaffNPC.generated.h"
 
+class UBoxComponent;
 class UChildActorComponent;
 class UStaticMeshComponent;
 class UTextRenderComponent;
@@ -43,6 +44,10 @@ public:
 	/** Floating name above the head, faces the camera. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
 	TObjectPtr<UTextRenderComponent> NameLabel;
+
+	/** Hover target covering the body and the floating name, a little wider than the body (blocks Visibility only). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TObjectPtr<UBoxComponent> PickZone;
 
 	/** Turn toward the player within this distance (web: 12 m). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")

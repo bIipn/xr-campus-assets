@@ -293,4 +293,8 @@ protected:
 	bool bFaceTravelDirection = false;
 	bool bCursorFree = false;
 	bool bUIMode = false;
+	/** A tour is running (last HandleTourChanged index >= 0). */
+	bool bTourActive = false;
+	/** The tour freed the cursor (so its bar's buttons can be clicked) and gives mouse look back when it ends. */
+	bool bCursorFreedForTour = false;
 };

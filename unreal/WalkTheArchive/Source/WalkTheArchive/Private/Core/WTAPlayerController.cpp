@@ -941,6 +941,7 @@ void AWTAPlayerController::OnToggleCursor(const FInputActionValue& Value)
 	{
 		return;
 	}
+	bCursorFreedForTour = false; // the player chose; a tour ending leaves the cursor as it is
 	SetCursorFree(!bCursorFree);
 }
 
@@ -1075,6 +1076,26 @@ void AWTAPlayerController::HandleTokenCollected(FName TokenId, int32 Found, int3
 
 void AWTAPlayerController::HandleTourChanged(int32 Index)
 {
+	// A tour frees the cursor so its bar's Back / Next / End buttons can be clicked (T and Esc work too);
+	// mouse look comes back when it ends, unless the player toggled the cursor with Tab in between.
+	const bool bTouring = Index >= 0;
+	if (bTouring && !bTourActive)
+	{
+		if (!bCursorFree)
+		{
+			bCursorFree = true;
+			bCursorFreedForTour = true;
+			UpdateInputMode();
+		}
+		ShowToast(FText::FromString(TEXT("Tour: click Next or press T. Tab looks around, Esc ends the tour.")), 0.f);
+	}
+	else if (!bTouring && bTourActive && bCursorFreedForTour)
+	{
+		bCursorFreedForTour = false;
+		SetCursorFree(false);
+	}
+	bTourActive = bTouring;
+
 	if (Hud == nullptr)
 	{
 		return;
