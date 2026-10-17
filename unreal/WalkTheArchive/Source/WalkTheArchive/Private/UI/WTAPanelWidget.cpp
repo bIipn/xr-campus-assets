@@ -30,6 +30,9 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "UI/WTAActionButton.h"
 #include "UI/WTAUIStyle.h"
+#if WITH_EDITOR
+#include "TextureCompiler.h"
+#endif
 
 namespace
 {
@@ -858,6 +861,15 @@ void UWTAPanelWidget::AddImage(const TSoftObjectPtr<UTexture2D>& Texture, float 
 	{
 		return;
 	}
+#if WITH_EDITOR
+	// Run from the editor binary (play.ps1, PIE), a texture that was just loaded can still be compiling and report
+	// its 32 x 32 placeholder size, which would leave the art at thumbnail size on the first open. Finish it first.
+	if (Loaded->IsCompiling())
+	{
+		UTexture* const ToFinish[] = { Loaded };
+		FTextureCompilingManager::Get().FinishCompilation(MakeArrayView(ToFinish));
+	}
+#endif
 	const float Width = static_cast<float>(Loaded->GetSizeX());
 	const float Height = static_cast<float>(Loaded->GetSizeY());
 	if (Width <= 0.f || Height <= 0.f)
