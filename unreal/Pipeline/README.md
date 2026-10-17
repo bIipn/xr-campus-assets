@@ -11,6 +11,7 @@ parts/*.js ──► content/extract_content.mjs ──► content/*.json ──
 test/harness.py + web/export_campus.py ──► out/campus/*.glb, art/*.png, lights.json
 bl/library.py --ue ──► assets/lib_ue/library.blend ──► blender/export_reading_room.py ──► out/reading_room/ReadingRoom.glb, lights.json
 out/campus/*.glb + ReadingRoom.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
+out/ue/Outside.glb ──► blender/cull_indoor_trees.py (in place: drops the 2 web trees that grow inside the Wax Hall)
 ```
 
 ## Coordinates
@@ -39,6 +40,7 @@ python3 unreal/Pipeline/web/export_campus.py                     # boots the web
 python bl/library.py --ue                                        # Reading Room for Unreal (real books, thick walls)
 python unreal/Pipeline/blender/export_reading_room.py
 python unreal/Pipeline/blender/prepare_for_unreal.py            # -> out/ue/*.glb
+python unreal/Pipeline/blender/cull_indoor_trees.py             # stdlib only; removes trees standing inside indoor rooms
 ```
 
 The web test harness needs `three@0.170.0` and the `@fontsource` packages in `test/node_modules`, plus
