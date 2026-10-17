@@ -272,8 +272,11 @@ function Get-VsInstall {
 }
 
 function Get-EpicLauncherPath {
-    $p = Join-EnvPath ${env:ProgramFiles(x86)} 'Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe'
-    if (Test-FileExists $p) { return $p }
+    # The Launcher lives under Program Files (x86) or Program Files, depending on its installer version.
+    foreach ($base in @(${env:ProgramFiles(x86)}, $env:ProgramFiles)) {
+        $p = Join-EnvPath $base 'Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe'
+        if (Test-FileExists $p) { return $p }
+    }
     return $null
 }
 
