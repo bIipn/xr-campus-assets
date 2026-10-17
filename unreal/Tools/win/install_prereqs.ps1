@@ -90,7 +90,8 @@ foreach ($item in $items) {
             }
             $id = 'Microsoft.VisualStudio.Community'
             if ($VS2022) { $id = 'Microsoft.VisualStudio.2022.Community' }
-            $override = '--passive --norestart --config \"' + $cfg + '\"'
+            # --wait keeps the bootstrapper alive until the install finishes, so winget reports the real result.
+            $override = '--wait --passive --norestart --config \"' + $cfg + '\"'
             $results.vs = (Invoke-Winget 'Visual Studio' ('install --id ' + $id + ' -e --accept-package-agreements --accept-source-agreements --override "' + $override + '"'))
         }
         'blender' {
