@@ -18,6 +18,7 @@
 #include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
+#include "World/WTAExhibitActor.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Engine/GameViewportClient.h"
@@ -207,6 +208,12 @@ void AWTAPlayerController::SetupInputComponent()
 void AWTAPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	// Standing between two facing wax scenes: the plaque and the narration follow where the player looks.
+	if (InsideStageIds.Num() > 1)
+	{
+		UpdateFacedStage();
+	}
 
 	AWTACharacter* PlayerCharacter = GetWTACharacter();
 	if (PlayerCharacter == nullptr)
@@ -673,6 +680,127 @@ void AWTAPlayerController::ShowHint(const FText& Text)
 	Hud->ShowHint(Text, Settings ? Settings->HintSeconds : 6.f);
 }
 
+// --- Walk-up story plaque -------------------------------------------------------------
+
+/** The opening sentences of a story, up to about MaxChars, ending on a full stop when there is one. */
+static FText WTAStorySummary(const FText& Text, int32 MaxChars)
+{
+	const FString Full = Text.ToString();
+	if (Full.Len() <= MaxChars)
+	{
+		return Text;
+	}
+	int32 Cut = INDEX_NONE;
+	for (int32 i = 0; i + 1 < Full.Len() && i < MaxChars; ++i)
+	{
+		const TCHAR C = Full[i];
+		if ((C == TEXT('.') || C == TEXT('!') || C == TEXT('?')) && Full[i + 1] == TEXT(' '))
+		{
+			Cut = i + 1;
+		}
+	}
+	if (Cut != INDEX_NONE && Cut >= 60)
+	{
+		return FText::FromString(Full.Left(Cut));
+	}
+	// No sentence break early enough: cut at a word and add an ellipsis.
+	const FString Head = Full.Left(MaxChars);
+	int32 Space = INDEX_NONE;
+	Head.FindLastChar(TEXT(' '), Space);
+	return FText::FromString((Space > 0 ? Head.Left(Space) : Head) + FString(TEXT("...")));
+}
+
+void AWTAPlayerController::ShowStoryPlaque(FName ItemId)
+{
+	ShownStoryId = ItemId;
+	if (Hud == nullptr)
+	{
+		return;
+	}
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTAExhibitRow* Row = (Data != nullptr && !ItemId.IsNone()) ? Data->FindExhibit(ItemId) : nullptr;
+	if (Row == nullptr)
+	{
+		Hud->HideStory();
+		return;
+	}
+	const FText Kicker = (Row->bWax && !Row->Hall.IsEmpty()) ? Row->Hall : Row->Kind;
+	const FText Hint = bCursorFree
+		? FText::FromString(TEXT("Click to read the full story"))
+		: FText::FromString(TEXT("Press E to read the full story"));
+	Hud->ShowStory(Kicker, Row->Date, Row->Title, WTAStorySummary(Row->Description, 200), Hint);
+}
+
+void AWTAPlayerController::SetStageStory(FName ItemId, bool bInside)
+{
+	if (ItemId.IsNone())
+	{
+		return;
+	}
+	if (bInside)
+	{
+		InsideStageIds.AddUnique(ItemId);
+	}
+	else
+	{
+		InsideStageIds.Remove(ItemId);
+	}
+	UpdateFacedStage();
+}
+
+void AWTAPlayerController::UpdateFacedStage()
+{
+	FName Best = NAME_None;
+	if (InsideStageIds.Num() == 1)
+	{
+		Best = InsideStageIds[0];
+	}
+	else if (InsideStageIds.Num() > 1)
+	{
+		// Scenes face each other across the aisle: pick the stage most in front of the camera.
+		const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+		FVector ViewLocation;
+		FRotator ViewRotation;
+		GetPlayerViewPoint(ViewLocation, ViewRotation);
+		const FVector Forward = ViewRotation.Vector().GetSafeNormal2D();
+		float BestDot = -2.f;
+		for (const FName& Id : InsideStageIds)
+		{
+			const FWTAExhibitRow* ExhibitRow = Data != nullptr ? Data->FindExhibit(Id) : nullptr;
+			const FName SceneName = (ExhibitRow != nullptr && !ExhibitRow->WaxSceneId.IsNone()) ? ExhibitRow->WaxSceneId : Id;
+			const FWTAWaxSceneRow* SceneRow = Data != nullptr ? Data->FindWaxScene(SceneName) : nullptr;
+			if (SceneRow == nullptr)
+			{
+				continue;
+			}
+			const float Dot = static_cast<float>(FVector::DotProduct(Forward, (SceneRow->StageLocation - ViewLocation).GetSafeNormal2D()));
+			if (Dot > BestDot)
+			{
+				BestDot = Dot;
+				Best = Id;
+			}
+		}
+		if (Best.IsNone())
+		{
+			Best = InsideStageIds.Last();
+		}
+	}
+	if (Best != StageStoryId)
+	{
+		StageStoryId = Best;
+		RefreshStoryPlaque();
+	}
+}
+
+void AWTAPlayerController::RefreshStoryPlaque()
+{
+	const FName Wanted = !HoverStoryId.IsNone() ? HoverStoryId : StageStoryId;
+	if (Wanted != ShownStoryId)
+	{
+		ShowStoryPlaque(Wanted);
+	}
+}
+
 // --- Actions and travel ------------------------------------------------------------
 
 void AWTAPlayerController::RunAction(FName Action, FName Arg)
@@ -793,6 +921,11 @@ void AWTAPlayerController::SetUIMode(bool bPanelOpen)
 	}
 	UpdateInputMode();
 	RefreshTourBar();
+	// The plaque steps aside while a card, chat or menu is open and comes back after.
+	if (Hud != nullptr)
+	{
+		Hud->SetStoryVisible(!bPanelOpen);
+	}
 	OnUIModeChanged.Broadcast(bPanelOpen);
 }
 
@@ -807,6 +940,11 @@ void AWTAPlayerController::SetCursorFree(bool bFree)
 	if (bCursorFree && !bUIMode)
 	{
 		ShowToast(FText::FromString(TEXT("Cursor free: click the floor to walk, click things to open them. Tab goes back to mouse look.")), 0.f);
+	}
+	// The plaque's key hint ("Press E" / "Click") follows the cursor mode.
+	if (!ShownStoryId.IsNone())
+	{
+		ShowStoryPlaque(ShownStoryId);
 	}
 }
 
@@ -915,6 +1053,12 @@ void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 	}
 	if (Interaction->TryInteract())
 	{
+		return;
+	}
+	// Standing in a wax scene with nothing under the crosshair: E opens that scene's story.
+	if (!bCursorFree && !StageStoryId.IsNone())
+	{
+		OpenExhibit(StageStoryId);
 		return;
 	}
 	// Free cursor: a click on the floor walks there; a click on a wall walks to 1.1 m in front of it.
@@ -1037,10 +1181,14 @@ void AWTAPlayerController::OnChat(const FInputActionValue& Value)
 
 void AWTAPlayerController::HandleHoverChanged(const FText& Label)
 {
+	// Exhibits (gallery and wax scenes) get the museum plaque instead of the one-line label under the crosshair.
+	const AWTAExhibitActor* Exhibit = Interaction != nullptr ? Cast<AWTAExhibitActor>(Interaction->GetHovered()) : nullptr;
+	HoverStoryId = Exhibit != nullptr ? Exhibit->ItemId : NAME_None;
 	if (Hud != nullptr)
 	{
-		Hud->SetHoverLabel(Label);
+		Hud->SetHoverLabel(Exhibit != nullptr ? FText::GetEmpty() : Label);
 	}
+	RefreshStoryPlaque();
 }
 
 void AWTAPlayerController::HandleRoomChanged(FName RoomId)

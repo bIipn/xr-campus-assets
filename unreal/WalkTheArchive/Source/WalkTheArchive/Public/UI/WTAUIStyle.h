@@ -72,6 +72,14 @@ namespace WTAStyle
 		return FCoreStyle::GetDefaultFontStyle(FName(TEXT("Mono")), Size);
 	}
 
+	/** Small caps for kickers and section labels: bold Roboto with wide letter spacing (museum-label style). */
+	inline FSlateFontInfo Kicker(int32 Size)
+	{
+		FSlateFontInfo Info = Font(Size, true);
+		Info.LetterSpacing = 140;
+		return Info;
+	}
+
 	/** A solid-colour brush. */
 	inline FSlateBrush SolidBrush(const FLinearColor& Color)
 	{

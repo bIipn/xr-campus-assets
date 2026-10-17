@@ -1,9 +1,10 @@
 // Walk the Archive - the one modal panel (built in C++, no widget asset).
 //
-// A dark scrim with a bone card in the middle: kicker + title header, a scroll box of content rows, and a footer
-// with Prev / page label / Next / Close. Show* functions clear the content and rebuild it from the tables:
-//   ShowExhibit  art image, kind, title, date, description, more, quote + quote-by, where, partners, source links
-//                (Action "Link", Payload = url), Prev/Next step through the exhibit's list
+// A dark scrim with a bone card in the middle: kicker / big year / title / italic place header, a scroll box of
+// content rows, and a footer with Prev / page label / Next / Close. Show* functions clear the content and rebuild it:
+//   ShowExhibit  museum-label card: art, "In this scene" numbered lines (wax scenes), "The story" (description,
+//                more), quote, "At a glance" facts (when, where, partners), source chips (Action "Link"),
+//                Prev/Next step through the exhibit's list (the 12 wax scenes form a timeline)
 //   ShowBook     cover (Page -1: title, subtitle, TOC buttons Action "Page", "Start reading") or page N
 //                (heading, blocks Para/List/Quote/Note/Code, "Page N of M", Prev/Next, "Contents" = Page -1)
 //   ShowStation  kicker, title, subtitle, numbered steps, intro paragraphs, Close
@@ -30,6 +31,7 @@ class UBorder;
 class UHorizontalBox;
 class UImage;
 class UScrollBox;
+class USizeBox;
 class UTextBlock;
 class UTexture2D;
 class UVerticalBox;
@@ -131,12 +133,31 @@ protected:
 	/** A clickable source link (Action "Link", Payload = Url). */
 	void AddLink(const FText& Label, const FString& Url);
 
+	/** Big year and an italic place line under the title; empty values hide them. */
+	void SetHeaderExtras(const FText& Year, const FText& Subtitle);
+
+	/** Small brass section label with a hairline under it ("In this scene", "The story", "Sources"). */
+	void AddSection(const FText& Label);
+
+	/** One "at a glance" row: brass label on the left, value on the right. Skips empty values. */
+	void AddFact(const FText& Label, const FText& Value);
+
+	/** A wax scene's caption lines as a numbered list. */
+	void AddSceneLines(const TArray<FWTAWaxLine>& Lines);
+
+	/** DT_Sources rows as compact chips that wrap (Action "Link", Arg = the source id). */
+	void AddSourceChips(const TArray<FName>& SourceIds);
+
 	void SetOpen(bool bNewOpen);
 
 	UPROPERTY(Transient) TObjectPtr<UBorder> Scrim;
 	UPROPERTY(Transient) TObjectPtr<UBorder> Card;
+	/** Card width: wide reading cards for exhibits and books, compact for the rest. */
+	UPROPERTY(Transient) TObjectPtr<USizeBox> CardSize;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> KickerText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> YearText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> TitleText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> SubtitleText;
 	UPROPERTY(Transient) TObjectPtr<UScrollBox> Scroll;
 	UPROPERTY(Transient) TObjectPtr<UVerticalBox> Content;
 	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> Footer;

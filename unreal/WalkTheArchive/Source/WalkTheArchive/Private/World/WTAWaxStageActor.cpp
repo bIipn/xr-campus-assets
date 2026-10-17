@@ -83,6 +83,15 @@ void AWTAWaxStageActor::NotifyActorBeginOverlap(AActor* OtherActor)
 	PlayTime = 0.f;
 	WatchSeconds = 0.f;
 	LineIndex = -1;
+
+	// Walking up to a scene shows its museum plaque; E opens the full story.
+	if (bHasScene)
+	{
+		if (AWTAPlayerController* PC = WaxFindController(this))
+		{
+			PC->SetStageStory(Scene.ItemId.IsNone() ? SceneId : Scene.ItemId, true);
+		}
+	}
 }
 
 void AWTAWaxStageActor::NotifyActorEndOverlap(AActor* OtherActor)
@@ -100,6 +109,10 @@ void AWTAWaxStageActor::NotifyActorEndOverlap(AActor* OtherActor)
 	if (AWTAPlayerController* PC = WaxFindController(this))
 	{
 		PC->ShowCaption(FText::GetEmpty());
+		if (bHasScene)
+		{
+			PC->SetStageStory(Scene.ItemId.IsNone() ? SceneId : Scene.ItemId, false);
+		}
 	}
 }
 
@@ -109,7 +122,24 @@ void AWTAWaxStageActor::Tick(float DeltaSeconds)
 
 	if (!bPlayerInside || !bHasScene)
 	{
+		bWasActive = false;
 		return;
+	}
+
+	// Scenes face each other across the aisle, so the player can stand in two triggers at once: only the scene
+	// the camera faces speaks, and it starts its narration from the first line when the player turns to it.
+	const AWTAPlayerController* Watcher = WaxFindController(this);
+	const FName MyStory = Scene.ItemId.IsNone() ? SceneId : Scene.ItemId;
+	if (Watcher != nullptr && Watcher->GetActiveStageStory() != MyStory)
+	{
+		bWasActive = false;
+		return;
+	}
+	if (!bWasActive)
+	{
+		bWasActive = true;
+		PlayTime = 0.f;
+		LineIndex = -1;
 	}
 
 	PlayTime += DeltaSeconds;

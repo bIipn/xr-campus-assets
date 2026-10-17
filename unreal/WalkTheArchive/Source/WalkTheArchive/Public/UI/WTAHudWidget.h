@@ -3,7 +3,9 @@
 // Layout (a UCanvasPanel root): room label top-left (kicker / name / sub on a translucent plate), badge counter
 // top-right, crosshair dot at the centre with the hover label just under it, caption line lower-centre (wax
 // scenes), toast line above the caption, hint line bottom-left, tour bar bottom-centre (step, title, date, body,
-// Back / Next / End and the stop's Open button). Toasts queue; each shows for its seconds then the next one.
+// Back / Next / End and the stop's Open button), and the walk-up story plaque on the right (kicker, big year,
+// title, first lines of the story, "Press E to read the full story"; it fades in). Toasts queue; each shows for
+// its seconds then the next one.
 // The tour bar's buttons call UWTATourSubsystem (Back/Next/End) and OpenCurrent (Open).
 
 #pragma once
@@ -75,6 +77,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void SetCrosshairVisible(bool bVisible);
 
+	/** Walk-up museum plaque on the right: kicker, big year, title, summary, key hint. Empty parts collapse. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowStory(const FText& Kicker, const FText& Year, const FText& Title, const FText& Summary, const FText& Hint);
+
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void HideStory();
+
+	/** Collapse/restore the plaque without losing its content (while a panel is open). */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetStoryVisible(bool bVisible);
+
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool IsStoryShowing() const { return bStoryShowing; }
+
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -113,8 +129,19 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> TourOpenButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> TourOpenText;
 
+	UPROPERTY(Transient) TObjectPtr<UBorder> StoryPlate;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryKickerText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryYearText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryTitleText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StorySummaryText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryHintText;
+
 	TArray<FWTAToastEntry> ToastQueue;
 	float ToastTimeLeft = 0.f;
 	float HintTimeLeft = 0.f;
 	bool bTourShowing = false;
+	/** Plaque state: has content, allowed on screen (no panel open), fade-in 0..1. */
+	bool bStoryShowing = false;
+	bool bStoryVisible = true;
+	float StoryFade = 0.f;
 };

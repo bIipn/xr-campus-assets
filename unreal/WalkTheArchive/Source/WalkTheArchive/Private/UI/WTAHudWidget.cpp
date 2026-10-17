@@ -48,6 +48,17 @@ namespace
 		Box->SetContent(Inner);
 		return Box;
 	}
+
+	/** Set a text block's text and collapse it when the text is empty. */
+	void HudSetOptional(UTextBlock* Block, const FText& Text)
+	{
+		if (Block == nullptr)
+		{
+			return;
+		}
+		Block->SetText(Text);
+		Block->SetVisibility(Text.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	}
 }
 
 void UWTAHudWidget::NativeOnInitialized()
@@ -111,7 +122,10 @@ void UWTAHudWidget::NativeOnInitialized()
 	ToastPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Plate(), 8.f, WTAStyle::Brass()));
 	ToastPlate->SetPadding(FMargin(18.f, 10.f));
 	ToastPlate->SetVisibility(ESlateVisibility::Collapsed);
-	ToastText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(15), WTAStyle::Bone(), true);
+	// Fixed wrap widths (not auto-wrap): an auto-sized canvas slot gives auto-wrapped text no width to wrap at,
+	// which squeezed these plates down to a word or two per line.
+	ToastText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(15), WTAStyle::Bone(), false);
+	ToastText->SetWrapTextAt(720.f);
 	ToastText->SetJustification(ETextJustify::Center);
 	ToastPlate->SetContent(HudClampWidth(Tree, ToastText, 720.f));
 	HudPlace(Canvas, ToastPlate, FAnchors(0.5f, 0.f), FVector2D(0.5f, 0.f), FVector2D(0.f, 28.f));
@@ -119,7 +133,8 @@ void UWTAHudWidget::NativeOnInitialized()
 	// --- Caption, lower-centre (wax scenes) -------------------------------------------
 	CaptionPlate = WTAWidgets::MakePlate(Tree, FLinearColor(0.f, 0.f, 0.f, 0.72f), FMargin(20.f, 12.f), 6.f);
 	CaptionPlate->SetVisibility(ESlateVisibility::Collapsed);
-	CaptionText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(18), WTAStyle::Bone(), true);
+	CaptionText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(19), WTAStyle::Bone(), false);
+	CaptionText->SetWrapTextAt(860.f);
 	CaptionText->SetJustification(ETextJustify::Center);
 	CaptionPlate->SetContent(HudClampWidth(Tree, CaptionText, 860.f));
 	HudPlace(Canvas, CaptionPlate, FAnchors(0.5f, 1.f), FVector2D(0.5f, 1.f), FVector2D(0.f, -250.f));
@@ -127,9 +142,45 @@ void UWTAHudWidget::NativeOnInitialized()
 	// --- Hint, bottom-left --------------------------------------------------------------
 	HintPlate = WTAWidgets::MakePlate(Tree, WTAStyle::Plate(), FMargin(14.f, 10.f), 8.f);
 	HintPlate->SetVisibility(ESlateVisibility::Collapsed);
-	HintText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14), WTAStyle::Bone(), true);
+	HintText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14), WTAStyle::Bone(), false);
+	HintText->SetWrapTextAt(460.f);
 	HintPlate->SetContent(HudClampWidth(Tree, HintText, 460.f));
 	HudPlace(Canvas, HintPlate, FAnchors(0.f, 1.f), FVector2D(0.f, 1.f), FVector2D(24.f, -24.f));
+
+	// --- Story plaque, right side: the museum label that appears when you walk up to an exhibit or scene ---
+	StoryPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	StoryPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Plate(), 10.f, WTAStyle::Brass()));
+	StoryPlate->SetPadding(FMargin(26.f, 22.f, 26.f, 20.f));
+	StoryPlate->SetVisibility(ESlateVisibility::Collapsed);
+	{
+		USizeBox* Width = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		Width->SetWidthOverride(470.f);
+		StoryPlate->SetContent(Width);
+
+		UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+		Width->SetContent(Column);
+
+		StoryKickerText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Kicker(11), WTAStyle::Brass(), true);
+		StoryYearText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(34, true), WTAStyle::Brass(), true);
+		StoryTitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(24, true), WTAStyle::Bone(), true);
+		StorySummaryText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(16), WTAStyle::Bone(), true);
+		StorySummaryText->SetLineHeightPercentage(1.25f);
+		StoryHintText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14, true), WTAStyle::Brass(), true);
+
+		Column->AddChildToVerticalBox(StoryKickerText)->SetPadding(FMargin(0.f, 0.f, 0.f, 6.f));
+		Column->AddChildToVerticalBox(StoryYearText);
+		Column->AddChildToVerticalBox(StoryTitleText)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+		Column->AddChildToVerticalBox(StorySummaryText)->SetPadding(FMargin(0.f, 0.f, 0.f, 14.f));
+
+		USizeBox* Rule = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		Rule->SetHeightOverride(1.f);
+		FLinearColor RuleColor = WTAStyle::Brass();
+		RuleColor.A = 0.5f;
+		Rule->SetContent(WTAWidgets::MakePlate(Tree, RuleColor, FMargin(0.f)));
+		Column->AddChildToVerticalBox(Rule)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+		Column->AddChildToVerticalBox(StoryHintText);
+	}
+	HudPlace(Canvas, StoryPlate, FAnchors(1.f, 0.5f), FVector2D(1.f, 0.5f), FVector2D(-32.f, -40.f));
 
 	// --- Tour bar, bottom-centre ------------------------------------------------------------
 	TourPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
@@ -195,6 +246,13 @@ void UWTAHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	AdvanceToasts(InDeltaTime);
+
+	// The story plaque fades in over a fifth of a second instead of popping.
+	if (bStoryShowing && bStoryVisible && StoryPlate != nullptr && StoryFade < 1.f)
+	{
+		StoryFade = FMath::Min(1.f, StoryFade + InDeltaTime * 5.f);
+		StoryPlate->SetRenderOpacity(StoryFade);
+	}
 
 	if (HintTimeLeft > 0.f)
 	{
@@ -397,6 +455,48 @@ void UWTAHudWidget::SetCrosshairVisible(bool bVisible)
 	if (CrosshairDot != nullptr)
 	{
 		CrosshairDot->SetVisibility(bVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	}
+}
+
+void UWTAHudWidget::ShowStory(const FText& Kicker, const FText& Year, const FText& Title, const FText& Summary, const FText& Hint)
+{
+	if (StoryPlate == nullptr)
+	{
+		return;
+	}
+	// Re-showing the same story (e.g. looking away and back) keeps it on screen without a new fade.
+	const bool bSameStory = bStoryShowing && StoryTitleText != nullptr && StoryTitleText->GetText().EqualTo(Title);
+
+	HudSetOptional(StoryKickerText, FText::FromString(Kicker.ToString().ToUpper()));
+	HudSetOptional(StoryYearText, Year);
+	HudSetOptional(StoryTitleText, Title);
+	HudSetOptional(StorySummaryText, Summary);
+	HudSetOptional(StoryHintText, Hint);
+
+	bStoryShowing = true;
+	if (!bSameStory)
+	{
+		StoryFade = 0.f;
+		StoryPlate->SetRenderOpacity(0.f);
+	}
+	StoryPlate->SetVisibility(bStoryVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+}
+
+void UWTAHudWidget::HideStory()
+{
+	bStoryShowing = false;
+	if (StoryPlate != nullptr)
+	{
+		StoryPlate->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void UWTAHudWidget::SetStoryVisible(bool bVisible)
+{
+	bStoryVisible = bVisible;
+	if (StoryPlate != nullptr)
+	{
+		StoryPlate->SetVisibility(bStoryShowing && bStoryVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 	}
 }
 

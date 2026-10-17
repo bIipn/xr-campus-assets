@@ -65,4 +65,6 @@ protected:
 	float PlayTime = 0.f;
 	float WatchSeconds = 0.f;
 	int32 LineIndex = -1;
+	/** This stage was the one the player faces last tick (stages face each other across the aisle; only one speaks). */
+	bool bWasActive = false;
 };

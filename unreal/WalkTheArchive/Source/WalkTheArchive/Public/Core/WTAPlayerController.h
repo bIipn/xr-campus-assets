@@ -204,6 +204,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowHint(const FText& Text);
 
+	// --- Walk-up story plaque ----------------------------------------------
+
+	/** Show DT_Exhibits[ItemId] as a museum plaque on the HUD (kicker, year, title, first lines, "E to read"). NAME_None hides it. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowStoryPlaque(FName ItemId);
+
+	/** A Wax Hall stage reports the player stepping into (bInside) or out of its scene; E then opens that scene's card. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetStageStory(FName ItemId, bool bInside);
+
+	/** The wax scene the player is watching: inside its trigger and, when several overlap, the one the camera faces. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FName GetActiveStageStory() const { return StageStoryId; }
+
 	// --- Actions and travel ------------------------------------------------
 
 	/** Run one action of the shared vocabulary (GoPlace, OpenItem, OpenBook, OpenStation, OpenRide, StartTour, OpenBadges). */
@@ -252,6 +266,12 @@ protected:
 	/** Hide the tour bar while a panel/chat is open and show it again after. */
 	void RefreshTourBar();
 
+	/** Pick the plaque to show: the exhibit under the crosshair wins, else the wax scene the player stands in. */
+	void RefreshStoryPlaque();
+
+	/** Among the wax scenes the player stands in, make the one the camera faces the stage story. */
+	void UpdateFacedStage();
+
 	// Input handlers (bound in SetupInputComponent with UEnhancedInputComponent::BindAction).
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
@@ -297,4 +317,10 @@ protected:
 	bool bTourActive = false;
 	/** The tour freed the cursor (so its bar's buttons can be clicked) and gives mouse look back when it ends. */
 	bool bCursorFreedForTour = false;
+	/** Story plaque sources: the exhibit under the crosshair and the wax scene the player stands in; what shows now. */
+	FName HoverStoryId;
+	FName StageStoryId;
+	FName ShownStoryId;
+	/** Every wax scene whose trigger the player is inside (scenes face each other across the aisle and overlap). */
+	TArray<FName> InsideStageIds;
 };

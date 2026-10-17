@@ -67,6 +67,25 @@ namespace
 		Slot->SetHorizontalAlignment(HAlign);
 		return Slot;
 	}
+
+	/** Card width per mode: wide reading cards for exhibits and books, compact for the rest. */
+	float PanelCardWidth(EWTAPanelMode InMode)
+	{
+		switch (InMode)
+		{
+		case EWTAPanelMode::Exhibit: return 900.f;
+		case EWTAPanelMode::Book:    return 880.f;
+		default:                     return 780.f;
+		}
+	}
+
+	/** Brass at partial opacity, for hairlines. */
+	FLinearColor PanelHairline()
+	{
+		FLinearColor Color = WTAStyle::Brass();
+		Color.A = 0.45f;
+		return Color;
+	}
 }
 
 void UWTAPanelWidget::NativeOnInitialized()
@@ -118,26 +137,33 @@ void UWTAPanelWidget::NativeOnInitialized()
 		CardSlot->SetPadding(FMargin(0.f, 24.f));
 	}
 
-	USizeBox* CardWidth = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
-	CardWidth->SetWidthOverride(760.f);
-	Card->SetContent(CardWidth);
+	CardSize = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+	CardSize->SetWidthOverride(PanelCardWidth(EWTAPanelMode::None));
+	Card->SetContent(CardSize);
 
 	UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
-	CardWidth->SetContent(Column);
+	CardSize->SetContent(Column);
 
-	// Header: kicker + title, then a brass rule.
+	// Header, laid out like a museum label: kicker, big year, title, italic place line, then a brass rule.
 	{
 		UVerticalBox* Header = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
-		KickerText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(11, true), WTAStyle::BrassDark(), false);
-		TitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(26, true), WTAStyle::CardInk(), true);
-		Header->AddChildToVerticalBox(KickerText)->SetPadding(FMargin(0.f, 0.f, 0.f, 6.f));
+		KickerText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Kicker(12), WTAStyle::BrassDark(), true);
+		YearText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(40, true), WTAStyle::BrassDark(), true);
+		YearText->SetVisibility(ESlateVisibility::Collapsed);
+		TitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(30, true), WTAStyle::CardInk(), true);
+		TitleText->SetLineHeightPercentage(1.05f);
+		SubtitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Italic(17), WTAStyle::CardInkDim(), true);
+		SubtitleText->SetVisibility(ESlateVisibility::Collapsed);
+		Header->AddChildToVerticalBox(KickerText)->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
+		Header->AddChildToVerticalBox(YearText);
 		Header->AddChildToVerticalBox(TitleText);
-		Column->AddChildToVerticalBox(Header)->SetPadding(FMargin(28.f, 24.f, 28.f, 14.f));
+		Header->AddChildToVerticalBox(SubtitleText)->SetPadding(FMargin(0.f, 6.f, 0.f, 0.f));
+		Column->AddChildToVerticalBox(Header)->SetPadding(FMargin(40.f, 30.f, 40.f, 18.f));
 
 		USizeBox* Rule = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
 		Rule->SetHeightOverride(2.f);
 		Rule->SetContent(WTAWidgets::MakePlate(Tree, WTAStyle::Brass(), FMargin(0.f)));
-		Column->AddChildToVerticalBox(Rule)->SetPadding(FMargin(28.f, 0.f, 28.f, 0.f));
+		Column->AddChildToVerticalBox(Rule)->SetPadding(FMargin(40.f, 0.f, 40.f, 0.f));
 	}
 
 	// Scrolling content, height clamped in SetOpen from the viewport size.
@@ -152,22 +178,22 @@ void UWTAPanelWidget::NativeOnInitialized()
 		Content = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 		if (UScrollBoxSlot* ContentSlot = Cast<UScrollBoxSlot>(Scroll->AddChild(Content)))
 		{
-			ContentSlot->SetPadding(FMargin(28.f, 18.f, 28.f, 18.f));
+			ContentSlot->SetPadding(FMargin(40.f, 22.f, 40.f, 22.f));
 		}
 	}
 
 	// Footer: Prev, page label, Next, Close.
 	{
 		Footer = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
-		Column->AddChildToVerticalBox(Footer)->SetPadding(FMargin(28.f, 10.f, 28.f, 24.f));
+		Column->AddChildToVerticalBox(Footer)->SetPadding(FMargin(40.f, 12.f, 40.f, 28.f));
 
 		PrevButton = WTAWidgets::MakeButton(Tree, PanelText(TEXT("Previous")), NAME_PanelPrev, NAME_None, -1,
-			WTAStyle::CardButton(), WTAStyle::Font(13, true), WTAStyle::CardInk());
+			WTAStyle::CardButton(), WTAStyle::Font(15, true), WTAStyle::CardInk());
 		PrevButton->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
 		UHorizontalBoxSlot* PrevSlot = Footer->AddChildToHorizontalBox(PrevButton);
 		PrevSlot->SetVerticalAlignment(VAlign_Center);
 
-		PageText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(13), WTAStyle::CardInkDim(), false);
+		PageText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(15), WTAStyle::CardInkDim(), false);
 		PageText->SetJustification(ETextJustify::Center);
 		UHorizontalBoxSlot* PageSlot = Footer->AddChildToHorizontalBox(PageText);
 		PageSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
@@ -176,14 +202,14 @@ void UWTAPanelWidget::NativeOnInitialized()
 		PageSlot->SetPadding(FMargin(12.f, 0.f));
 
 		NextButton = WTAWidgets::MakeButton(Tree, PanelText(TEXT("Next")), NAME_PanelNext, NAME_None, -1,
-			WTAStyle::CardButton(), WTAStyle::Font(13, true), WTAStyle::CardInk());
+			WTAStyle::CardButton(), WTAStyle::Font(15, true), WTAStyle::CardInk());
 		NextButton->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
 		UHorizontalBoxSlot* NextSlot = Footer->AddChildToHorizontalBox(NextButton);
 		NextSlot->SetVerticalAlignment(VAlign_Center);
 		NextSlot->SetPadding(FMargin(0.f, 0.f, 12.f, 0.f));
 
 		CloseButton = WTAWidgets::MakeButton(Tree, PanelText(TEXT("Close")), NAME_PanelClose, NAME_None, -1,
-			WTAStyle::PrimaryButton(), WTAStyle::Font(13, true), WTAStyle::Ink());
+			WTAStyle::PrimaryButton(), WTAStyle::Font(15, true), WTAStyle::Ink());
 		CloseButton->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
 		UHorizontalBoxSlot* CloseSlot = Footer->AddChildToHorizontalBox(CloseButton);
 		CloseSlot->SetVerticalAlignment(VAlign_Center);
@@ -255,34 +281,40 @@ void UWTAPanelWidget::ShowExhibit(FName ItemId)
 		}
 	}
 
+	// Museum-label header: kicker, big year, title, and the place in italics under it.
 	BeginCard(EWTAPanelMode::Exhibit, ItemId, Kicker, Row->Title);
-	AddImage(Row->Art, 704.f);
-	if (!Row->Date.IsEmpty())
+	SetHeaderExtras(Row->Date, Row->Where);
+	AddImage(Row->Art, 820.f);
+
+	// A wax scene first says what the figures are acting out, then tells the story behind it.
+	if (Row->bWax)
 	{
-		AddText(PanelUpper(Row->Date), WTAStyle::Font(12, true), WTAStyle::BrassDark());
+		const FWTAWaxSceneRow* Scene = Data->FindWaxScene(Row->WaxSceneId.IsNone() ? ItemId : Row->WaxSceneId);
+		if (Scene != nullptr && Scene->Lines.Num() > 0)
+		{
+			AddSection(PanelText(TEXT("In this scene")));
+			AddSceneLines(Scene->Lines);
+		}
 	}
-	AddParagraph(Row->Description);
-	AddParagraph(Row->More);
+	if (!Row->Description.IsEmpty() || !Row->More.IsEmpty())
+	{
+		AddSection(PanelText(TEXT("The story")));
+		AddParagraph(Row->Description);
+		AddParagraph(Row->More);
+	}
 	AddQuote(Row->Quote, Row->QuoteBy);
-	if (!Row->Where.IsEmpty())
+	if (!Row->Where.IsEmpty() || !Row->Partners.IsEmpty())
 	{
-		AddText(FText::Format(PanelText(TEXT("Where \u00B7 {0}")), Row->Where), WTAStyle::Font(13), WTAStyle::CardInkDim());
-	}
-	if (!Row->Partners.IsEmpty())
-	{
-		AddText(FText::Format(PanelText(TEXT("With \u00B7 {0}")), Row->Partners), WTAStyle::Font(13), WTAStyle::CardInkDim());
+		AddSection(PanelText(TEXT("At a glance")));
+		AddFact(PanelText(TEXT("When")), Row->Date);
+		AddFact(PanelText(TEXT("Where")), Row->Where);
+		AddFact(PanelText(TEXT("Partners")), Row->Partners);
 	}
 	if (Row->Sources.Num() > 0)
 	{
-		AddHeading(PanelText(TEXT("Sources")));
-		for (int32 i = 0; i < Row->Sources.Num(); ++i)
-		{
-			const FName SourceId = Row->Sources[i];
-			const FWTASourceRow* Source = Data->FindSource(SourceId);
-			const FText Label = (Source != nullptr && !Source->Label.IsEmpty()) ? Source->Label : FText::FromName(SourceId);
-			// Arg = the DT_Sources row; HandleAction looks the URL up again.
-			AddButton(Label, NAME_PanelLink, SourceId, i, false);
-		}
+		// Arg = the DT_Sources row; HandleAction looks the URL up again.
+		AddSection(PanelText(TEXT("Sources")));
+		AddSourceChips(Row->Sources);
 	}
 
 	// Position in the list for the footer and Prev/Next.
@@ -686,6 +718,11 @@ void UWTAPanelWidget::BeginCard(EWTAPanelMode NewMode, FName Id, const FText& Ki
 	{
 		TitleText->SetText(Title);
 	}
+	SetHeaderExtras(FText::GetEmpty(), FText::GetEmpty());
+	if (CardSize != nullptr)
+	{
+		CardSize->SetWidthOverride(PanelCardWidth(NewMode));
+	}
 	if (Content != nullptr)
 	{
 		Content->ClearChildren();
@@ -732,8 +769,8 @@ void UWTAPanelWidget::AddHeading(const FText& Text)
 	{
 		return;
 	}
-	UTextBlock* Block = WTAWidgets::MakeText(WidgetTree, Text, WTAStyle::Font(17, true), WTAStyle::CardInk(), true);
-	PanelAddRow(Content, Block, FMargin(0.f, 10.f, 0.f, 6.f));
+	UTextBlock* Block = WTAWidgets::MakeText(WidgetTree, Text, WTAStyle::Font(21, true), WTAStyle::CardInk(), true);
+	PanelAddRow(Content, Block, FMargin(0.f, 12.f, 0.f, 8.f));
 }
 
 void UWTAPanelWidget::AddParagraph(const FText& Text)
@@ -742,7 +779,15 @@ void UWTAPanelWidget::AddParagraph(const FText& Text)
 	{
 		return;
 	}
-	AddText(Text, WTAStyle::Font(15), WTAStyle::CardInk());
+	// Reading size: 18 pt with open leading and a paragraph gap, so long histories stay easy on the eyes.
+	if (UTextBlock* Block = AddText(Text, WTAStyle::Font(18), WTAStyle::CardInk()))
+	{
+		Block->SetLineHeightPercentage(1.3f);
+		if (UVerticalBoxSlot* ParagraphSlot = Cast<UVerticalBoxSlot>(Block->Slot))
+		{
+			ParagraphSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 14.f));
+		}
+	}
 }
 
 void UWTAPanelWidget::AddQuote(const FText& Quote, const FText& By)
@@ -751,15 +796,16 @@ void UWTAPanelWidget::AddQuote(const FText& Quote, const FText& By)
 	{
 		return;
 	}
-	UBorder* Plate = WTAWidgets::MakePlate(WidgetTree, WTAStyle::FromHex(0xe6dcc4), FMargin(18.f, 12.f), 8.f);
+	UBorder* Plate = WTAWidgets::MakePlate(WidgetTree, WTAStyle::FromHex(0xe6dcc4), FMargin(22.f, 16.f), 8.f);
 	UVerticalBox* Box = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 	UTextBlock* QuoteText = WTAWidgets::MakeText(WidgetTree,
-		FText::Format(PanelText(TEXT("\u201C{0}\u201D")), Quote), WTAStyle::Italic(16), WTAStyle::CardInk(), true);
+		FText::Format(PanelText(TEXT("\u201C{0}\u201D")), Quote), WTAStyle::Italic(19), WTAStyle::CardInk(), true);
+	QuoteText->SetLineHeightPercentage(1.25f);
 	Box->AddChildToVerticalBox(QuoteText);
 	if (!By.IsEmpty())
 	{
 		UTextBlock* ByText = WTAWidgets::MakeText(WidgetTree,
-			FText::Format(PanelText(TEXT("\u2014 {0}")), By), WTAStyle::Font(13), WTAStyle::CardInkDim(), true);
+			FText::Format(PanelText(TEXT("\u2014 {0}")), By), WTAStyle::Font(15), WTAStyle::CardInkDim(), true);
 		Box->AddChildToVerticalBox(ByText)->SetPadding(FMargin(0.f, 6.f, 0.f, 0.f));
 	}
 	Plate->SetContent(Box);
@@ -772,8 +818,8 @@ void UWTAPanelWidget::AddNote(const FText& Text)
 	{
 		return;
 	}
-	UBorder* Plate = WTAWidgets::MakePlate(WidgetTree, WTAStyle::FromHex(0xe4d8c0), FMargin(16.f, 10.f), 8.f);
-	Plate->SetContent(WTAWidgets::MakeText(WidgetTree, Text, WTAStyle::Font(14), WTAStyle::CardInk(), true));
+	UBorder* Plate = WTAWidgets::MakePlate(WidgetTree, WTAStyle::FromHex(0xe4d8c0), FMargin(18.f, 12.f), 8.f);
+	Plate->SetContent(WTAWidgets::MakeText(WidgetTree, Text, WTAStyle::Font(16), WTAStyle::CardInk(), true));
 	PanelAddRow(Content, Plate, FMargin(0.f, 2.f, 0.f, 10.f));
 }
 
@@ -802,7 +848,8 @@ void UWTAPanelWidget::AddList(const TArray<FText>& Items)
 		UHorizontalBoxSlot* BulletSlot = Line->AddChildToHorizontalBox(Bullet);
 		BulletSlot->SetPadding(FMargin(4.f, 0.f, 10.f, 0.f));
 		BulletSlot->SetVerticalAlignment(VAlign_Top);
-		UTextBlock* ItemText = WTAWidgets::MakeText(WidgetTree, Item, WTAStyle::Font(15), WTAStyle::CardInk(), true);
+		UTextBlock* ItemText = WTAWidgets::MakeText(WidgetTree, Item, WTAStyle::Font(17), WTAStyle::CardInk(), true);
+		ItemText->SetLineHeightPercentage(1.2f);
 		UHorizontalBoxSlot* ItemSlot = Line->AddChildToHorizontalBox(ItemText);
 		ItemSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		Box->AddChildToVerticalBox(Line)->SetPadding(FMargin(0.f, 0.f, 0.f, 4.f));
@@ -896,7 +943,7 @@ UWTAActionButton* UWTAPanelWidget::AddButton(const FText& Label, FName Action, F
 	}
 	UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, Label, Action, Arg, Index,
 		bPrimary ? WTAStyle::PrimaryButton() : WTAStyle::CardButton(),
-		WTAStyle::Font(14, bPrimary), bPrimary ? WTAStyle::Ink() : WTAStyle::CardInk());
+		WTAStyle::Font(15, bPrimary), bPrimary ? WTAStyle::Ink() : WTAStyle::CardInk());
 	Button->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
 	PanelAddRow(Content, Button, FMargin(0.f, 2.f, 0.f, 6.f), HAlign_Left);
 	return Button;
@@ -909,6 +956,117 @@ void UWTAPanelWidget::AddLink(const FText& Label, const FString& Url)
 	{
 		Button->Payload = Url;
 	}
+}
+
+void UWTAPanelWidget::SetHeaderExtras(const FText& Year, const FText& Subtitle)
+{
+	if (YearText != nullptr)
+	{
+		YearText->SetText(Year);
+		YearText->SetVisibility(Year.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	}
+	if (SubtitleText != nullptr)
+	{
+		SubtitleText->SetText(Subtitle);
+		SubtitleText->SetVisibility(Subtitle.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	}
+}
+
+void UWTAPanelWidget::AddSection(const FText& Label)
+{
+	if (Content == nullptr || Label.IsEmpty())
+	{
+		return;
+	}
+	UVerticalBox* Box = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+	UTextBlock* LabelText = WTAWidgets::MakeText(WidgetTree, PanelUpper(Label), WTAStyle::Kicker(12), WTAStyle::BrassDark(), false);
+	Box->AddChildToVerticalBox(LabelText)->SetPadding(FMargin(0.f, 0.f, 0.f, 6.f));
+
+	USizeBox* Rule = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+	Rule->SetHeightOverride(1.f);
+	Rule->SetContent(WTAWidgets::MakePlate(WidgetTree, PanelHairline(), FMargin(0.f)));
+	Box->AddChildToVerticalBox(Rule);
+
+	// The first section sits close under the header rule; later ones get air above them.
+	const float Top = Content->GetChildrenCount() > 0 ? 18.f : 2.f;
+	PanelAddRow(Content, Box, FMargin(0.f, Top, 0.f, 12.f));
+}
+
+void UWTAPanelWidget::AddFact(const FText& Label, const FText& Value)
+{
+	if (Content == nullptr || Value.IsEmpty())
+	{
+		return;
+	}
+	UHorizontalBox* Line = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+
+	USizeBox* LabelWidth = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+	LabelWidth->SetWidthOverride(120.f);
+	LabelWidth->SetContent(WTAWidgets::MakeText(WidgetTree, PanelUpper(Label), WTAStyle::Kicker(11), WTAStyle::BrassDark(), false));
+	UHorizontalBoxSlot* LabelSlot = Line->AddChildToHorizontalBox(LabelWidth);
+	LabelSlot->SetVerticalAlignment(VAlign_Top);
+	LabelSlot->SetPadding(FMargin(0.f, 4.f, 12.f, 0.f));
+
+	UTextBlock* ValueText = WTAWidgets::MakeText(WidgetTree, Value, WTAStyle::Font(17), WTAStyle::CardInk(), true);
+	UHorizontalBoxSlot* ValueSlot = Line->AddChildToHorizontalBox(ValueText);
+	ValueSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+
+	PanelAddRow(Content, Line, FMargin(0.f, 0.f, 0.f, 10.f));
+}
+
+void UWTAPanelWidget::AddSceneLines(const TArray<FWTAWaxLine>& Lines)
+{
+	if (Content == nullptr || Lines.Num() == 0)
+	{
+		return;
+	}
+	UVerticalBox* Box = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+	int32 Number = 0;
+	for (const FWTAWaxLine& SceneLine : Lines)
+	{
+		if (SceneLine.Text.IsEmpty())
+		{
+			continue;
+		}
+		++Number;
+		UHorizontalBox* LineBox = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+
+		USizeBox* NumberWidth = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		NumberWidth->SetWidthOverride(34.f);
+		NumberWidth->SetContent(WTAWidgets::MakeText(WidgetTree, FText::AsNumber(Number), WTAStyle::Font(18, true), WTAStyle::BrassDark(), false));
+		UHorizontalBoxSlot* NumberSlot = LineBox->AddChildToHorizontalBox(NumberWidth);
+		NumberSlot->SetVerticalAlignment(VAlign_Top);
+
+		UTextBlock* LineText = WTAWidgets::MakeText(WidgetTree, SceneLine.Text, WTAStyle::Font(18), WTAStyle::CardInk(), true);
+		LineText->SetLineHeightPercentage(1.2f);
+		UHorizontalBoxSlot* LineSlot = LineBox->AddChildToHorizontalBox(LineText);
+		LineSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+
+		Box->AddChildToVerticalBox(LineBox)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+	}
+	PanelAddRow(Content, Box, FMargin(0.f, 0.f, 0.f, 4.f));
+}
+
+void UWTAPanelWidget::AddSourceChips(const TArray<FName>& SourceIds)
+{
+	if (Content == nullptr || SourceIds.Num() == 0)
+	{
+		return;
+	}
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	UWrapBox* Wrap = WidgetTree->ConstructWidget<UWrapBox>(UWrapBox::StaticClass());
+	Wrap->SetInnerSlotPadding(FVector2D(8.f, 8.f));
+	for (int32 i = 0; i < SourceIds.Num(); ++i)
+	{
+		const FName SourceId = SourceIds[i];
+		const FWTASourceRow* Source = Data != nullptr ? Data->FindSource(SourceId) : nullptr;
+		const FText Label = (Source != nullptr && !Source->Label.IsEmpty()) ? Source->Label : FText::FromName(SourceId);
+		UWTAActionButton* Chip = WTAWidgets::MakeButton(WidgetTree, Label, NAME_PanelLink, SourceId, i,
+			WTAStyle::CardButton(), WTAStyle::Font(14), WTAStyle::CardInk());
+		Chip->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
+		Wrap->AddChildToWrapBox(Chip);
+	}
+	PanelAddRow(Content, Wrap, FMargin(0.f, 0.f, 0.f, 8.f));
 }
 
 void UWTAPanelWidget::SetOpen(bool bNewOpen)
@@ -930,7 +1088,8 @@ void UWTAPanelWidget::SetOpen(bool bNewOpen)
 			const float Scale = UWidgetLayoutLibrary::GetViewportScale(this);
 			if (Viewport.Y > 0.f && Scale > 0.f)
 			{
-				ScrollHeight->SetMaxDesiredHeight(FMath::Max(200.f, static_cast<float>(Viewport.Y) / Scale - 300.f));
+				// Header (kicker, year, title, place) and footer take about 360 px at reading sizes.
+				ScrollHeight->SetMaxDesiredHeight(FMath::Max(220.f, static_cast<float>(Viewport.Y) / Scale - 360.f));
 			}
 		}
 	}
