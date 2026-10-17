@@ -172,11 +172,17 @@ def build_books():
 def build_rooms(L):
     lay = {r['id']: r for r in L['rooms']}
     maps = {m['id']: m for m in load('map_rooms.json')}
+    galleries = {g['index']: g for g in load('galleries.json')}
     staff = load('staff.json')
     rows = []
     for r in load('rooms.json'):
         lr = lay[r['id']]
         info = r.get('info') or {}
+        if r.get('gal') and r['gal'] in galleries:
+            # Gallery rooms carry no info of their own; the web HUD (ui.js setRoom) shows the gallery's label,
+            # name and years instead ("Gallery 1 of 3", "Headsets in Libraries", "2016 to 2022").
+            g = galleries[r['gal']]
+            info = {'k': g['label'], 'n': g['name'], 'y': g['years']}
         mn, mx = lr['ue_bounds_cm']['min'], lr['ue_bounds_cm']['max']
         if r['id'] == 'yard':
             mx = [mx[0], mx[1], max(mx[2], 3000.0)]

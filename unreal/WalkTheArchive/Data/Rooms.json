@@ -22,9 +22,9 @@
  },
  {
   "Name": "g1",
-  "Kicker": "",
-  "DisplayName": "",
-  "Sub": "",
+  "Kicker": "Gallery 1 of 3",
+  "DisplayName": "Headsets in Libraries",
+  "Sub": "2016 to 2022",
   "Wing": "museum",
   "BoundsMin": {
    "X": -600.0,
@@ -43,9 +43,9 @@
  },
  {
   "Name": "g2",
-  "Kicker": "",
-  "DisplayName": "",
-  "Sub": "",
+  "Kicker": "Gallery 2 of 3",
+  "DisplayName": "Learning That Works",
+  "Sub": "Careers and resources",
   "Wing": "museum",
   "BoundsMin": {
    "X": -600.0,
@@ -64,9 +64,9 @@
  },
  {
   "Name": "g3",
-  "Kicker": "",
-  "DisplayName": "",
-  "Sub": "",
+  "Kicker": "Gallery 3 of 3",
+  "DisplayName": "Stories Worth Saving",
+  "Sub": "Equity, worlds, nature",
   "Wing": "museum",
   "BoundsMin": {
    "X": -600.0,
