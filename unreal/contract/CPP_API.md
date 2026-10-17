@@ -55,6 +55,7 @@ return the action `FName`s; `WTABadge::FirstSteps()/Explorer()/Bookworm()/Curiou
 
 ### `AWTAGameMode : AGameModeBase` (`Core/WTAGameMode.h`)
 Constructor: `DefaultPawnClass = AWTACharacter`, `PlayerControllerClass = AWTAPlayerController`, `HUDClass = nullptr`.
+`StartPlay()` override: when the default `ARecastNavMesh` uses `RuntimeGeneration=Dynamic` and has no active tiles (the headless setup run cannot build it: the editor holds its async-load navigation lock), calls `UNavigationSystemV1::Build()` once, so click-to-walk and the tour walk instead of teleporting. A NavMesh built and saved in the editor is kept.
 
 ### `AWTAPlayerController : APlayerController` (`Core/WTAPlayerController.h`) — the hub
 Delegate `FWTAUIModeChanged(bool bPanelOpen)`; `UP(BlueprintAssignable) OnUIModeChanged`.

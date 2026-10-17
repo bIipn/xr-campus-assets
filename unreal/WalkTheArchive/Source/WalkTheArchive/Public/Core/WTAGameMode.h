@@ -1,6 +1,6 @@
 // Walk the Archive - game mode.
-// Only wires the framework classes together: pawn = AWTACharacter, controller = AWTAPlayerController, no HUD class
-// (all UI is UMG owned by the controller).
+// Wires the framework classes together: pawn = AWTACharacter, controller = AWTAPlayerController, no HUD class
+// (all UI is UMG owned by the controller). At start it builds the NavMesh when the level has none built.
 
 #pragma once
 
@@ -15,4 +15,7 @@ class WALKTHEARCHIVE_API AWTAGameMode : public AGameModeBase
 
 public:
 	AWTAGameMode();
+
+	/** Builds the default NavMesh once when it uses runtime generation and has no tiles yet. */
+	virtual void StartPlay() override;
 };
