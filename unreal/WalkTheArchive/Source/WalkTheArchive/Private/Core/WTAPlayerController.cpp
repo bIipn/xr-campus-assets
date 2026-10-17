@@ -20,6 +20,7 @@
 #include "UI/WTAPanelWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Engine/GameViewportClient.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
@@ -32,6 +33,7 @@
 #include "InputModifiers.h"
 #include "InputTriggers.h"
 #include "NavigationSystem.h"
+#include "Widgets/SViewport.h"
 #include "Widgets/SWidget.h"
 
 namespace
@@ -398,6 +400,12 @@ void AWTAPlayerController::UpdateInputMode()
 		else if (Panel != nullptr && Panel->IsOpen())
 		{
 			Mode.SetWidgetToFocus(Panel->TakeWidget());
+		}
+		else if (UGameViewportClient* GameViewport = GetWorld() ? GetWorld()->GetGameViewport() : nullptr)
+		{
+			// Cursor free with nothing open (Tab or a running tour): give the keys back to the game. Without a widget
+			// to focus, Slate keeps focus on the panel that just closed and Esc, T, Tab and WASD do nothing.
+			Mode.SetWidgetToFocus(GameViewport->GetGameViewportWidget());
 		}
 		SetInputMode(Mode);
 		bShowMouseCursor = true;
