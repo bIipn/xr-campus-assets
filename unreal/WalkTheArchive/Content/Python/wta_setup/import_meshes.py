@@ -90,9 +90,11 @@ def import_glb(glb_path, dest_folder):
         except Exception:
             continue
     # Interchange imports are asynchronous internally; wait for the mesh builds to finish.
+    # The argument is bCancel (UInterchangeManager::WaitUntilAllTasksDone): True would cancel every
+    # import still in flight, so only the first GLB of a run would land.
     try:
         mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
-        mgr.wait_until_all_tasks_done(True)
+        mgr.wait_until_all_tasks_done(False)
     except Exception:
         pass
     return objects

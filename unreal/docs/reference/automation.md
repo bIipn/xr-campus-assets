@@ -165,10 +165,10 @@ def interchange_import(src, dest_folder, pipeline):
     source = unreal.InterchangeManager.create_source_data(src)
     mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
     ok = mgr.import_asset(dest_folder, source, params)        # bool
-    mgr.wait_until_all_tasks_done(True)                       # [C] - imports are async
+    mgr.wait_until_all_tasks_done(False)                      # [C] - imports are async; the arg is bCancel (True cancels them)
     return ok
 ```
-Verified names: `InterchangeManager.get_interchange_manager_scripted()`, `InterchangeManager.create_source_data(path)`, `ImportAssetParameters` (`is_automated`, `replace_existing`, `override_pipelines` list of `SoftObjectPath`), `manager.import_asset(content_path, source_data, params)`, `wait_until_all_tasks_done(bool)` [C]; `import_scene(...)` for level import exists in the C++ API (`ImportScene`) [S] - for a campus, import **assets**, then spawn actors from your own JSON layout (deterministic).
+Verified names: `InterchangeManager.get_interchange_manager_scripted()`, `InterchangeManager.create_source_data(path)`, `ImportAssetParameters` (`is_automated`, `replace_existing`, `override_pipelines` list of `SoftObjectPath`), `manager.import_asset(content_path, source_data, params)`, `wait_until_all_tasks_done(bCancel)` [C] (verified on 5.8.3: pass False to wait, True cancels in-flight imports); `import_scene(...)` for level import exists in the C++ API (`ImportScene`) [S] - for a campus, import **assets**, then spawn actors from your own JSON layout (deterministic).
 Texture import: PNG/TGA/JPEG/EXR/HDR/DDS/PSD via Interchange; normal maps auto-detected (`bDetectNormalMapTexture`), set `srgb=False` + `compression_settings=unreal.TextureCompressionSettings.TC_NORMALMAP` for data maps (names [C]).
 
 ### 3.2 Levels
