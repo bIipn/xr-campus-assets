@@ -9,6 +9,7 @@ with a different engine build still opens the project.
 
 Groups (use --only / --skip with these names):
   mcp         ModelContextProtocol (5.8 Experimental MCP server) plus its *Toolset* plugins
+              (minus MCP_TOOLSET_EXCLUDE: AllToolsets and SemanticSearchToolset)
   metahuman   every MetaHuman*.uplugin (MetaHuman Creator / core plugins in 5.8)
   openxr      OpenXR
   pixelstreaming  PixelStreaming2
@@ -44,6 +45,11 @@ GROUPS = {
     "geoscript": {"exact": ["GeometryScripting"]},
 }
 GROUP_ORDER = ["mcp", "metahuman", "openxr", "pixelstreaming", "water", "niagara", "procmesh", "geoscript"]
+
+# Toolsets the mcp group leaves out on purpose. AllToolsets is a bundle that pulls every toolset in again,
+# including SemanticSearchToolset, whose Experimental SemanticSearch plugin crashed UnrealEditor on exit in
+# 5.8.3 (access violation in UnrealEditor-SemanticSearch.dll while cancelling its asset indexing).
+MCP_TOOLSET_EXCLUDE = {"AllToolsets", "SemanticSearchToolset"}
 
 
 def index_uplugins(engine_root):
@@ -93,7 +99,7 @@ def resolve_group(group, index):
     elif pattern == "mcp_toolsets" and "ModelContextProtocol" in index:
         mcp_dir = os.path.dirname(os.path.dirname(index["ModelContextProtocol"]))
         for name in sorted(index):
-            if "Toolset" not in name:
+            if "Toolset" not in name or name in MCP_TOOLSET_EXCLUDE:
                 continue
             path = index[name]
             data = read_uplugin(path)
