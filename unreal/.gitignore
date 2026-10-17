@@ -9,6 +9,8 @@ WalkTheArchive/Plugins/*/Intermediate/
 WalkTheArchive/.vs/
 WalkTheArchive/.idea/
 WalkTheArchive/*.sln
+WalkTheArchive/*.slnx
+WalkTheArchive/.vsconfig
 WalkTheArchive/*.xcworkspace
 WalkTheArchive/*.code-workspace
 WalkTheArchive/Packaged/
