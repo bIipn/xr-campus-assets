@@ -27,7 +27,13 @@ Every person, the 4 staff and all 38 Wax Hall reenactors, is its own generic Met
 
 The bridge into a running editor is `Tools/common/ue_exec.py` (Python Remote Execution, localhost only). `people_batch.py` turns it on for the editors it starts.
 
-**Known limits (Oct 2026):** Core Data ships one outfit (T-shirt, shorts, bare feet), so everyone wears it in their own colours until better outfits are added from Fab as MetaHuman wardrobe items (`.mhpkg`). MetaHuman has no child bodies, so the web build's "kid" roles are young-looking teenagers about 148 cm tall. There are no glasses or caps in Core Data.
+**Clothes and shoes (Fab outfits).** Core Data only has a T-shirt, shorts and bare feet, so everyone wears parametric outfits from Fab that fit any MetaHuman body. Each one is a `.mhpkg` that Ev adds to his Fab library and downloads, imported into its own folder under `/Game/Outfits` (an `AssetImportTask` on the `.mhpkg`; `Content/Outfits` is local content and never committed):
+- **MetaHuman Techwear Outfit** (Epic Games, free): jacket, long pants and shoes in one wardrobe item, `WI_OA_techwearOutfit`. Its nine colours are set per person in `people.json` (`jacket`, `yoke`, `cuffs`, `trim`, `pants`, `pants_cuffs`, `shoes`, `shoes2`, `soles`). The jacket takes the person's top colour and the pants their bottom colour, and the shoes are one of six styles. 36 people wear it.
+- **Street Wear 12**: hoodie, shorts and sneakers, `WI_Street_Wear_12`, with fixed colours. One young person per Wax Hall scene wears it (6 people), so no scene shows two identical outfits.
+
+`build.py` finds an outfit by name under `/Game/Outfits`, and `OUTFIT_PARAMS` maps the `people.json` colour keys to each outfit's parameters. After changing outfits, run `--steps wardrobe,build,save`.
+
+**Known limits (Oct 2026):** MetaHuman has no child bodies, so the web build's "kid" roles are young-looking teenagers about 148 cm tall. There are no glasses or caps in Core Data. Socks don't show, because the shoes and long pants cover them.
 
 **Hardware:** Epic recommends an RTX 3070 / RX 6800 XT / M2 Ultra-class GPU with 8 GB VRAM and 32 GB RAM for MetaHuman work. A Mac can create MetaHumans, but some MetaHuman Animator solves and body capture are Windows-only.
 

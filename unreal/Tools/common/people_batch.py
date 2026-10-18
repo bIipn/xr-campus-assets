@@ -68,12 +68,15 @@ def editor_running():
     return "UnrealEditor.exe" in out
 
 
-def find_node(remote, wait_s):
+def find_node(remote, wait_s, proc=None):
+    """The editor's Remote Execution node; None after wait_s, or at once if the editor process has ended."""
     t0 = time.time()
     while time.time() - t0 < wait_s:
         for node in remote.remote_nodes:
             if "WalkTheArchive" in json.dumps(node):
                 return node
+        if proc is not None and proc.poll() is not None:
+            return None
         time.sleep(1.0)
     return None
 
@@ -86,9 +89,12 @@ def run_batch(rx, editor, ids, steps, startup_timeout):
     remote.start()
     results, signin = {}, False
     try:
-        node = find_node(remote, startup_timeout)
+        node = find_node(remote, startup_timeout, proc)
         if node is None:
-            log("editor did not answer within %ds" % startup_timeout)
+            if proc.poll() is not None:
+                log("editor exited during startup (exit code %s)" % proc.returncode)
+            else:
+                log("editor did not answer within %ds" % startup_timeout)
             return results, False, proc
         remote.open_command_connection(node["node_id"])
         cmd = ("import importlib, json, wta_people.build as b; importlib.reload(b); "
@@ -148,6 +154,11 @@ def main():
         chunk = ids[i:i + a.batch]
         results, signin, proc = run_batch(rx, editor, chunk, a.steps, a.startup_timeout)
         close_editor(proc)
+        if not results and not signin:
+            # no result at all: the editor crashed (5.8 sometimes asserts while starting); one more try
+            log("no result for %s; starting a fresh editor once more" % ",".join(chunk))
+            results, signin, proc = run_batch(rx, editor, chunk, a.steps, a.startup_timeout)
+            close_editor(proc)
         for pid in chunk:
             (done if results.get(pid) else failed).append(pid)
         log("PEOPLE_BATCH %s" % json.dumps({"batch": chunk, "results": results}))

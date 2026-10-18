@@ -3,6 +3,7 @@
 #include "World/WTAPeopleLibrary.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/Skeleton.h"
+#include "Components/LODSyncComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Core/WTALog.h"
@@ -97,6 +98,28 @@ bool UWTAPeopleLibrary::PlayPose(AActor* MetaHuman, UAnimSequence* Anim, bool bL
 	if (!bLoop)
 	{
 		Body->Stop();
+		// A held pose is evaluated once and then frozen (Freeze). Evaluate it even while off screen, and at LOD0,
+		// so every bone (fingers, face) is posed before the freeze; otherwise a figure the player has not seen yet
+		// keeps its bind pose (arms out).
+		TInlineComponentArray<USkeletalMeshComponent*> Meshes;
+		MetaHuman->GetComponents(Meshes);
+		ULODSyncComponent* Sync = MetaHuman->FindComponentByClass<ULODSyncComponent>();
+		for (USkeletalMeshComponent* Mesh : Meshes)
+		{
+			if (Mesh != nullptr)
+			{
+				Mesh->bNoSkeletonUpdate = false;
+				Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+				if (Sync == nullptr)
+				{
+					Mesh->SetForcedLOD(1);  // 1 = LOD0
+				}
+			}
+		}
+		if (Sync != nullptr)
+		{
+			Sync->ForcedLOD = 0;
+		}
 	}
 	return true;
 }
@@ -109,12 +132,24 @@ void UWTAPeopleLibrary::Freeze(AActor* MetaHuman)
 	}
 	TInlineComponentArray<USkeletalMeshComponent*> Meshes;
 	MetaHuman->GetComponents(Meshes);
+	ULODSyncComponent* Sync = MetaHuman->FindComponentByClass<ULODSyncComponent>();
 	for (USkeletalMeshComponent* Mesh : Meshes)
 	{
 		if (Mesh != nullptr)
 		{
-			Mesh->SetComponentTickEnabled(false);
+			// Keep the evaluated bones and skip all further animation work (body, face rig, clothes). The
+			// component still ticks, so its LOD keeps following the camera.
+			Mesh->bNoSkeletonUpdate = true;
+			Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
+			if (Sync == nullptr)
+			{
+				Mesh->SetForcedLOD(0);
+			}
 		}
+	}
+	if (Sync != nullptr)
+	{
+		Sync->ForcedLOD = -1;
 	}
 }
 

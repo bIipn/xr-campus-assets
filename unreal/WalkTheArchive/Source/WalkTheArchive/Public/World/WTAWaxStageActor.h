@@ -8,7 +8,7 @@
 // scene_id and trigger_extent.
 // Reenactors: at BeginPlay every row Figure whose MetaHuman has been built (/Game/WTA/Characters/<Person>/
 // BP_<Person>) is spawned on the stage floor at StageLocation + Offset (rotated by StageYaw), facing StageYaw + Yaw,
-// posed on its own frame of FigurePose, and frozen half a second later like a wax figure.
+// posed on its own frame of FigurePose, and frozen 1.5 seconds later like a wax figure.
 
 #pragma once
 

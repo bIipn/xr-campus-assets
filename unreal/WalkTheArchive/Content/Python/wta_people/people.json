@@ -44,11 +44,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#274a52",
-        "shirt2": "#274a52",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#274a52",
         "bottom": "#2a292d",
-        "bottom2": "#2a292d"
+        "jacket": "#274a52",
+        "yoke": "#4e6b71",
+        "cuffs": "#4e6b71",
+        "trim": "#2a2a2c",
+        "pants": "#2a292d",
+        "pants_cuffs": "#222225",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       }
     },
     {
@@ -86,11 +93,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#b07d2a",
-        "shirt2": "#b07d2a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#b07d2a",
         "bottom": "#26304a",
-        "bottom2": "#26304a"
+        "jacket": "#b07d2a",
+        "yoke": "#896221",
+        "cuffs": "#896221",
+        "trim": "#2a2a2c",
+        "pants": "#26304a",
+        "pants_cuffs": "#1f273d",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       }
     },
     {
@@ -128,11 +142,18 @@
       "beard": "WI_Beard_S_Stubble",
       "mustache": "WI_Mustache_S_Stubble",
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#a8c0d8",
-        "shirt2": "#a8c0d8",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#a8c0d8",
         "bottom": "#3a3f46",
-        "bottom2": "#3a3f46"
+        "jacket": "#a8c0d8",
+        "yoke": "#8396a8",
+        "cuffs": "#8396a8",
+        "trim": "#2a2a2c",
+        "pants": "#3a3f46",
+        "pants_cuffs": "#303439",
+        "shoes": "#2b2b2d",
+        "shoes2": "#3d3d40",
+        "soles": "#e9e7e2"
       }
     },
     {
@@ -173,11 +194,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#d2462f",
-        "shirt2": "#d2462f",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#d2462f",
         "bottom": "#26303f",
-        "bottom2": "#26303f"
+        "jacket": "#d2462f",
+        "yoke": "#a43725",
+        "cuffs": "#a43725",
+        "trim": "#2a2a2c",
+        "pants": "#26303f",
+        "pants_cuffs": "#1f2734",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       }
     },
     {
@@ -212,11 +240,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#1f7a72",
-        "shirt2": "#1f7a72",
-        "bottom": "#2b3445",
-        "bottom2": "#2b3445"
+        "item": "WI_Street_Wear_12",
+        "top": "#1f7a72",
+        "bottom": "#2b3445"
       },
       "quality": "MEDIUM"
     },
@@ -252,11 +278,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#6b7a4a",
-        "shirt2": "#6b7a4a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#6b7a4a",
         "bottom": "#3a3f46",
-        "bottom2": "#3a3f46"
+        "jacket": "#6b7a4a",
+        "yoke": "#535f3a",
+        "cuffs": "#535f3a",
+        "trim": "#2a2a2c",
+        "pants": "#3a3f46",
+        "pants_cuffs": "#303439",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -292,11 +325,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#d8573f",
-        "shirt2": "#d8573f",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#d8573f",
         "bottom": "#2f4a7a",
-        "bottom2": "#2f4a7a"
+        "jacket": "#d8573f",
+        "yoke": "#a84431",
+        "cuffs": "#a84431",
+        "trim": "#2a2a2c",
+        "pants": "#2f4a7a",
+        "pants_cuffs": "#273d64",
+        "shoes": "#2b2b2d",
+        "shoes2": "#3d3d40",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -340,11 +380,18 @@
         "redness": 0.17
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#31506e",
-        "shirt2": "#31506e",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#31506e",
         "bottom": "#3a3530",
-        "bottom2": "#3a3530"
+        "jacket": "#31506e",
+        "yoke": "#567088",
+        "cuffs": "#567088",
+        "trim": "#2a2a2c",
+        "pants": "#3a3530",
+        "pants_cuffs": "#302b27",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -380,11 +427,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#c04a3a",
-        "shirt2": "#c04a3a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#c04a3a",
         "bottom": "#2a2d36",
-        "bottom2": "#2a2d36"
+        "jacket": "#c04a3a",
+        "yoke": "#963a2d",
+        "cuffs": "#963a2d",
+        "trim": "#2a2a2c",
+        "pants": "#2a2d36",
+        "pants_cuffs": "#22252c",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -420,11 +474,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#d9a441",
-        "shirt2": "#d9a441",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#d9a441",
         "bottom": "#2b3445",
-        "bottom2": "#2b3445"
+        "jacket": "#d9a441",
+        "yoke": "#a98033",
+        "cuffs": "#a98033",
+        "trim": "#2a2a2c",
+        "pants": "#2b3445",
+        "pants_cuffs": "#232b39",
+        "shoes": "#1f1f21",
+        "shoes2": "#2b2b2d",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -460,11 +521,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#f2c14e",
-        "shirt2": "#f2c14e",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#f2c14e",
         "bottom": "#3a2a5a",
-        "bottom2": "#3a2a5a"
+        "jacket": "#f2c14e",
+        "yoke": "#bd973d",
+        "cuffs": "#bd973d",
+        "trim": "#2a2a2c",
+        "pants": "#3a2a5a",
+        "pants_cuffs": "#30224a",
+        "shoes": "#2b2b2d",
+        "shoes2": "#3d3d40",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -500,11 +568,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#3b6ea8",
-        "shirt2": "#3b6ea8",
-        "bottom": "#4a3a2a",
-        "bottom2": "#4a3a2a"
+        "item": "WI_Street_Wear_12",
+        "top": "#3b6ea8",
+        "bottom": "#4a3a2a"
       },
       "quality": "MEDIUM"
     },
@@ -540,11 +606,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e76f51",
-        "shirt2": "#e76f51",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#e76f51",
         "bottom": "#2a9d8f",
-        "bottom2": "#2a9d8f"
+        "jacket": "#e76f51",
+        "yoke": "#b4573f",
+        "cuffs": "#b4573f",
+        "trim": "#2a2a2c",
+        "pants": "#2a9d8f",
+        "pants_cuffs": "#228175",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -580,11 +653,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2b2f38",
-        "shirt2": "#2b2f38",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#2b2f38",
         "bottom": "#3a4a6a",
-        "bottom2": "#3a4a6a"
+        "jacket": "#2b2f38",
+        "yoke": "#51545c",
+        "cuffs": "#51545c",
+        "trim": "#2a2a2c",
+        "pants": "#3a4a6a",
+        "pants_cuffs": "#303d57",
+        "shoes": "#26304a",
+        "shoes2": "#1b2236",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -620,11 +700,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#9a2f33",
-        "shirt2": "#9a2f33",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#9a2f33",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#9a2f33",
+        "yoke": "#ac5458",
+        "cuffs": "#ac5458",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#26304a",
+        "shoes2": "#1b2236",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -660,11 +747,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e9e2d0",
-        "shirt2": "#e9e2d0",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#e9e2d0",
         "bottom": "#2a2d36",
-        "bottom2": "#2a2d36"
+        "jacket": "#e9e2d0",
+        "yoke": "#b6b0a2",
+        "cuffs": "#b6b0a2",
+        "trim": "#2a2a2c",
+        "pants": "#2a2d36",
+        "pants_cuffs": "#22252c",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -700,11 +794,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#8a5a9a",
-        "shirt2": "#8a5a9a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#8a5a9a",
         "bottom": "#3a3a42",
-        "bottom2": "#3a3a42"
+        "jacket": "#8a5a9a",
+        "yoke": "#6c4678",
+        "cuffs": "#6c4678",
+        "trim": "#2a2a2c",
+        "pants": "#3a3a42",
+        "pants_cuffs": "#303036",
+        "shoes": "#2b2b2d",
+        "shoes2": "#3d3d40",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -748,11 +849,18 @@
         "melanin": 0.3
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#5a6a7a",
-        "shirt2": "#5a6a7a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#5a6a7a",
         "bottom": "#3a3530",
-        "bottom2": "#3a3530"
+        "jacket": "#5a6a7a",
+        "yoke": "#46535f",
+        "cuffs": "#46535f",
+        "trim": "#2a2a2c",
+        "pants": "#3a3530",
+        "pants_cuffs": "#302b27",
+        "shoes": "#1f1f21",
+        "shoes2": "#2b2b2d",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -788,11 +896,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#f2c14e",
-        "shirt2": "#f2c14e",
-        "bottom": "#2f4a7a",
-        "bottom2": "#2f4a7a"
+        "item": "WI_Street_Wear_12",
+        "top": "#f2c14e",
+        "bottom": "#2f4a7a"
       },
       "quality": "MEDIUM"
     },
@@ -836,11 +942,18 @@
         "redness": 0.14
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2a9d8f",
-        "shirt2": "#2a9d8f",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#2a9d8f",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#2a9d8f",
+        "yoke": "#217a70",
+        "cuffs": "#217a70",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -848,7 +961,7 @@
       "id": "wax-2019b-cat1",
       "role": "wax",
       "scene": "wax-2019b",
-      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look fa07.",
+      "brief": "Cataloguer, 2019 VR in the World’s Catalog. Cast look fa07.",
       "preset": "Aera",
       "face_blend": [
         [
@@ -876,11 +989,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e2d6bf",
-        "shirt2": "#e2d6bf",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#e2d6bf",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#e2d6bf",
+        "yoke": "#b0a795",
+        "cuffs": "#b0a795",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -888,7 +1008,7 @@
       "id": "wax-2019b-cat2",
       "role": "wax",
       "scene": "wax-2019b",
-      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look ma04.",
+      "brief": "Cataloguer, 2019 VR in the World’s Catalog. Cast look ma04.",
       "preset": "Jorge",
       "face_blend": [
         [
@@ -924,11 +1044,18 @@
         "redness": 0.19
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#3b6ea8",
-        "shirt2": "#3b6ea8",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#3b6ea8",
         "bottom": "#3a3530",
-        "bottom2": "#3a3530"
+        "jacket": "#3b6ea8",
+        "yoke": "#2e5683",
+        "cuffs": "#2e5683",
+        "trim": "#2a2a2c",
+        "pants": "#3a3530",
+        "pants_cuffs": "#302b27",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -936,7 +1063,7 @@
       "id": "wax-2019b-cat3",
       "role": "wax",
       "scene": "wax-2019b",
-      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look fa06.",
+      "brief": "Cataloguer, 2019 VR in the World’s Catalog. Cast look fa06.",
       "preset": "Asha",
       "face_blend": [
         [
@@ -964,11 +1091,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#5a4a7a",
-        "shirt2": "#5a4a7a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#5a4a7a",
         "bottom": "#2a2a30",
-        "bottom2": "#2a2a30"
+        "jacket": "#5a4a7a",
+        "yoke": "#786b92",
+        "cuffs": "#786b92",
+        "trim": "#2a2a2c",
+        "pants": "#2a2a30",
+        "pants_cuffs": "#222227",
+        "shoes": "#2b2b2d",
+        "shoes2": "#3d3d40",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1004,11 +1138,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#f2c14e",
-        "shirt2": "#f2c14e",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#f2c14e",
         "bottom": "#3a4a6a",
-        "bottom2": "#3a4a6a"
+        "jacket": "#f2c14e",
+        "yoke": "#bd973d",
+        "cuffs": "#bd973d",
+        "trim": "#2a2a2c",
+        "pants": "#3a4a6a",
+        "pants_cuffs": "#303d57",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1044,11 +1185,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2a9d8f",
-        "shirt2": "#2a9d8f",
-        "bottom": "#2b3445",
-        "bottom2": "#2b3445"
+        "item": "WI_Street_Wear_12",
+        "top": "#2a9d8f",
+        "bottom": "#2b3445"
       },
       "quality": "MEDIUM"
     },
@@ -1084,11 +1223,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#c77dff",
-        "shirt2": "#c77dff",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#c77dff",
         "bottom": "#3a4a6a",
-        "bottom2": "#3a4a6a"
+        "jacket": "#c77dff",
+        "yoke": "#9b62c7",
+        "cuffs": "#9b62c7",
+        "trim": "#2a2a2c",
+        "pants": "#3a4a6a",
+        "pants_cuffs": "#303d57",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1124,11 +1270,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#3a8a9a",
-        "shirt2": "#3a8a9a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#3a8a9a",
         "bottom": "#3a8a9a",
-        "bottom2": "#3a8a9a"
+        "jacket": "#3a8a9a",
+        "yoke": "#2d6c78",
+        "cuffs": "#2d6c78",
+        "trim": "#2a2a2c",
+        "pants": "#3a8a9a",
+        "pants_cuffs": "#30717e",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1172,11 +1325,18 @@
         "melanin": 0.3
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#1d3b52",
-        "shirt2": "#1d3b52",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#1d3b52",
         "bottom": "#6b6252",
-        "bottom2": "#6b6252"
+        "jacket": "#1d3b52",
+        "yoke": "#465e71",
+        "cuffs": "#465e71",
+        "trim": "#2a2a2c",
+        "pants": "#6b6252",
+        "pants_cuffs": "#585043",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1212,11 +1372,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#d8792c",
-        "shirt2": "#d8792c",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#d8792c",
         "bottom": "#2b3445",
-        "bottom2": "#2b3445"
+        "jacket": "#d8792c",
+        "yoke": "#a85e22",
+        "cuffs": "#a85e22",
+        "trim": "#2a2a2c",
+        "pants": "#2b3445",
+        "pants_cuffs": "#232b39",
+        "shoes": "#1f1f21",
+        "shoes2": "#2b2b2d",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1224,7 +1391,7 @@
       "id": "wax-2022a-trainer",
       "role": "wax",
       "scene": "wax-2022a",
-      "brief": "Trainer, 2022 360\u00b0 Stories in Washington. Cast look ma07.",
+      "brief": "Trainer, 2022 360° Stories in Washington. Cast look ma07.",
       "preset": "Orlando",
       "face_blend": [
         [
@@ -1252,11 +1419,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e9e2d0",
-        "shirt2": "#e9e2d0",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#e9e2d0",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#e9e2d0",
+        "yoke": "#b6b0a2",
+        "cuffs": "#b6b0a2",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1264,7 +1438,7 @@
       "id": "wax-2022a-lib1",
       "role": "wax",
       "scene": "wax-2022a",
-      "brief": "Librarian, 2022 360\u00b0 Stories in Washington. Cast look fa05.",
+      "brief": "Librarian, 2022 360° Stories in Washington. Cast look fa05.",
       "preset": "Jelena",
       "face_blend": [
         [
@@ -1292,11 +1466,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2f6b5a",
-        "shirt2": "#2f6b5a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#2f6b5a",
         "bottom": "#3a3f46",
-        "bottom2": "#3a3f46"
+        "jacket": "#2f6b5a",
+        "yoke": "#255346",
+        "cuffs": "#255346",
+        "trim": "#2a2a2c",
+        "pants": "#3a3f46",
+        "pants_cuffs": "#303439",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1304,7 +1485,7 @@
       "id": "wax-2022a-lib2",
       "role": "wax",
       "scene": "wax-2022a",
-      "brief": "Senior librarian, 2022 360\u00b0 Stories in Washington. Cast look gm01.",
+      "brief": "Senior librarian, 2022 360° Stories in Washington. Cast look gm01.",
       "preset": "Isaiah",
       "face_blend": [
         [
@@ -1340,11 +1521,18 @@
         "melanin": 0.3
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#6a4a8a",
-        "shirt2": "#6a4a8a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#6a4a8a",
         "bottom": "#3a3530",
-        "bottom2": "#3a3530"
+        "jacket": "#6a4a8a",
+        "yoke": "#856b9f",
+        "cuffs": "#856b9f",
+        "trim": "#2a2a2c",
+        "pants": "#3a3530",
+        "pants_cuffs": "#302b27",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1380,11 +1568,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#d9a441",
-        "shirt2": "#d9a441",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#d9a441",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#d9a441",
+        "yoke": "#a98033",
+        "cuffs": "#a98033",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#26304a",
+        "shoes2": "#1b2236",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1420,11 +1615,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e9e2d0",
-        "shirt2": "#e9e2d0",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#e9e2d0",
         "bottom": "#2b3445",
-        "bottom2": "#2b3445"
+        "jacket": "#e9e2d0",
+        "yoke": "#b6b0a2",
+        "cuffs": "#b6b0a2",
+        "trim": "#2a2a2c",
+        "pants": "#2b3445",
+        "pants_cuffs": "#232b39",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1460,11 +1662,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2f5d7c",
-        "shirt2": "#2f5d7c",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#2f5d7c",
         "bottom": "#3a3530",
-        "bottom2": "#3a3530"
+        "jacket": "#2f5d7c",
+        "yoke": "#547a94",
+        "cuffs": "#547a94",
+        "trim": "#2a2a2c",
+        "pants": "#3a3530",
+        "pants_cuffs": "#302b27",
+        "shoes": "#26304a",
+        "shoes2": "#1b2236",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1500,11 +1709,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#3b6ea8",
-        "shirt2": "#3b6ea8",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#3b6ea8",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#3b6ea8",
+        "yoke": "#2e5683",
+        "cuffs": "#2e5683",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#7a7d82",
+        "shoes2": "#5b5e63",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1540,11 +1756,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#f2c14e",
-        "shirt2": "#f2c14e",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#f2c14e",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#f2c14e",
+        "yoke": "#bd973d",
+        "cuffs": "#bd973d",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#5a4636",
+        "shoes2": "#3e3026",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     },
@@ -1580,11 +1803,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#e76f51",
-        "shirt2": "#e76f51",
-        "bottom": "#3a4a6a",
-        "bottom2": "#3a4a6a"
+        "item": "WI_Street_Wear_12",
+        "top": "#e76f51",
+        "bottom": "#3a4a6a"
       },
       "quality": "MEDIUM"
     },
@@ -1620,11 +1841,9 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#f2c14e",
-        "shirt2": "#f2c14e",
-        "bottom": "#2a9d8f",
-        "bottom2": "#2a9d8f"
+        "item": "WI_Street_Wear_12",
+        "top": "#f2c14e",
+        "bottom": "#2a9d8f"
       },
       "quality": "MEDIUM"
     },
@@ -1660,11 +1879,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#3b6ea8",
-        "shirt2": "#3b6ea8",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#3b6ea8",
         "bottom": "#4a3a2a",
-        "bottom2": "#4a3a2a"
+        "jacket": "#3b6ea8",
+        "yoke": "#2e5683",
+        "cuffs": "#2e5683",
+        "trim": "#2a2a2c",
+        "pants": "#4a3a2a",
+        "pants_cuffs": "#3d3022",
+        "shoes": "#26304a",
+        "shoes2": "#1b2236",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1708,11 +1934,18 @@
         "redness": 0.24
       },
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#6b7a4a",
-        "shirt2": "#6b7a4a",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#6b7a4a",
         "bottom": "#3a3f46",
-        "bottom2": "#3a3f46"
+        "jacket": "#6b7a4a",
+        "yoke": "#535f3a",
+        "cuffs": "#535f3a",
+        "trim": "#2a2a2c",
+        "pants": "#3a3f46",
+        "pants_cuffs": "#303439",
+        "shoes": "#e8e6e1",
+        "shoes2": "#c9ccd0",
+        "soles": "#e9e7e2"
       },
       "quality": "MEDIUM"
     },
@@ -1748,11 +1981,18 @@
       "beard": null,
       "mustache": null,
       "outfit": {
-        "item": "WI_DefaultGarment",
-        "shirt": "#2a9d8f",
-        "shirt2": "#2a9d8f",
+        "item": "WI_OA_techwearOutfit",
+        "top": "#2a9d8f",
         "bottom": "#2b2f38",
-        "bottom2": "#2b2f38"
+        "jacket": "#2a9d8f",
+        "yoke": "#217a70",
+        "cuffs": "#217a70",
+        "trim": "#2a2a2c",
+        "pants": "#2b2f38",
+        "pants_cuffs": "#23272e",
+        "shoes": "#1f1f21",
+        "shoes2": "#2b2b2d",
+        "soles": "#1c1c1e"
       },
       "quality": "MEDIUM"
     }

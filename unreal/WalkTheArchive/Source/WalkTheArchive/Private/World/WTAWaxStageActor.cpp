@@ -130,8 +130,9 @@ void AWTAWaxStageActor::SpawnFigures()
 	}
 	if (Figures.Num() > 0)
 	{
-		// Let the held pose evaluate (body, then face, clothes and grooms that follow it), then stop ticking.
-		GetWorldTimerManager().SetTimer(FreezeTimer, this, &AWTAWaxStageActor::FreezeFigures, 0.5f, false);
+		// Let the held pose evaluate (body, then face, clothes and grooms that follow it; PlayPose makes that
+		// happen at LOD0 even off screen), then freeze the bones.
+		GetWorldTimerManager().SetTimer(FreezeTimer, this, &AWTAWaxStageActor::FreezeFigures, 1.5f, false);
 	}
 }
 

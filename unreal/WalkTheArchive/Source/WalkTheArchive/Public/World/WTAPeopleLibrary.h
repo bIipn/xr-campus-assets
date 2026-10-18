@@ -40,12 +40,16 @@ public:
 
 	/**
 	 * Plays Anim on the body (single-node mode). bLoop: a living idle (staff). Otherwise the body holds the frame at
-	 * StartTime seconds (a wax figure). Returns false when there is no body or no animation.
+	 * StartTime seconds (a wax figure), and every mesh on the actor evaluates at LOD0 even off screen until Freeze.
+	 * Returns false when there is no body or no animation.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
 	static bool PlayPose(AActor* MetaHuman, UAnimSequence* Anim, bool bLoop, float StartTime);
 
-	/** Stops every skeletal mesh on the actor from ticking; a held pose stays as it was last evaluated. */
+	/**
+	 * Holds the pose as last evaluated: every skeletal mesh on the actor skips further animation and bone updates
+	 * (bNoSkeletonUpdate) but keeps ticking, so LODs still follow the camera.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
 	static void Freeze(AActor* MetaHuman);
 

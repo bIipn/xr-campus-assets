@@ -27,6 +27,8 @@ COMMON_FOLDER = CHAR_ROOT + "/Common"
 PRESETS = "/MetaHumanCharacter/Optional/Presets"
 GROOMS = "/MetaHumanCharacter/Optional/Grooms/Bindings"
 CLOTHING = "/MetaHumanCharacter/Optional/Clothing"
+# Outfits imported from Fab (.mhpkg), one folder each, e.g. /Game/Outfits/techwearOutfit/WI_OA_techwearOutfit
+FAB_OUTFITS = "/Game/Outfits"
 ALL_STEPS = ["create", "face", "body", "skin", "eyes", "makeup", "wardrobe", "rig", "textures", "build", "idle",
              "save"]
 STEP_GROUPS = {
@@ -53,9 +55,18 @@ WARDROBE = {
 # people.json groom colour keys -> instance parameter names (UMetaHumanDefaultGroomPipelineMaterialParameters)
 GROOM_PARAMS = {"melanin": "Melanin", "redness": "Redness", "roughness": "Roughness",
                 "whiteness": "Whiteness", "lightness": "Lightness"}
-# people.json outfit colour keys -> WI_DefaultGarment instance parameter names
-OUTFIT_PARAMS = {"shirt": "PrimaryColorShirt", "shirt2": "SecondaryColorShirt",
-                 "bottom": "PrimaryColorShort", "bottom2": "SecondaryColorShort"}
+# people.json outfit colour keys -> instance parameter names, per outfit wardrobe item. An outfit entry may
+# also carry "params": {<exact parameter name>: value} for anything not mapped here.
+OUTFIT_PARAMS = {
+    "WI_DefaultGarment": {"shirt": "PrimaryColorShirt", "shirt2": "SecondaryColorShirt",
+                          "bottom": "PrimaryColorShort", "bottom2": "SecondaryColorShort"},
+    # Epic's free MetaHuman Techwear Outfit (Fab): jacket, long pants, shoes
+    "WI_OA_techwearOutfit": {"jacket": "JacketBodyColor", "yoke": "JacketYokeColor", "cuffs": "JacketCuffsColor",
+                             "trim": "JacketTrimColor", "pants": "PantsPrimaryColor", "pants_cuffs": "PantsCuffsColor",
+                             "shoes": "ShoesPrimaryColor", "shoes2": "ShoesSecondaryColor", "soles": "ShoesSoles"},
+    # Street Wear 12 (Fab): hoodie, shorts, sneakers, fixed colours
+    "WI_Street_Wear_12": {},
+}
 BODY_PARAMS = {"masculine_feminine": "Masculine/Feminine", "fat": "Fat", "muscularity": "Muscularity"}
 
 
@@ -331,9 +342,18 @@ def step_makeup(spec, character):
 
 
 def _wardrobe_item(folder, name):
-    asset = unreal.load_asset("%s/%s.%s" % (folder, name, name))
+    """A wardrobe item by full path, by name in its Core Data folder, or by name under /Game/Outfits (Fab)."""
+    if name.startswith("/"):
+        asset = unreal.load_asset(name)
+    else:
+        asset = unreal.load_asset("%s/%s.%s" % (folder, name, name))
+        if asset is None and unreal.EditorAssetLibrary.does_directory_exist(FAB_OUTFITS):
+            for path in unreal.EditorAssetLibrary.list_assets(FAB_OUTFITS, recursive=True, include_folder=False):
+                if path.split("/")[-1].split(".")[0] == name:
+                    asset = unreal.load_asset(path)
+                    break
     if asset is None:
-        raise RuntimeError("wardrobe item not found: %s/%s" % (folder, name))
+        raise RuntimeError("wardrobe item not found: %s (looked in %s and %s)" % (name, folder, FAB_OUTFITS))
     return asset
 
 
@@ -396,9 +416,10 @@ def step_wardrobe(spec, character):
         name, item_key, entry = value
         wanted = {}
         if slot == "Outfits":
-            for k, pname in OUTFIT_PARAMS.items():
+            for k, pname in OUTFIT_PARAMS.get(name.split("/")[-1].split(".")[0], {}).items():
                 if k in entry:
                     wanted[pname] = entry[k]
+            wanted.update(entry.get("params", {}))
         else:
             for k, pname in GROOM_PARAMS.items():
                 if k in entry:
@@ -407,7 +428,8 @@ def step_wardrobe(spec, character):
                 wanted["DyeColor"] = entry["dye"]
         if not wanted:
             continue
-        keys = [k for k in preview.get_item_keys_for_slot(slot) if str(unreal.MetaHumanPaletteKeyBlueprintLibrary.to_asset_name_string(k)) == name]
+        short = name.split("/")[-1].split(".")[0]
+        keys = [k for k in preview.get_item_keys_for_slot(slot) if str(unreal.MetaHumanPaletteKeyBlueprintLibrary.to_asset_name_string(k)) == short]
         if not keys:
             report(spec["id"], "wardrobe", False, error="no preview item for " + name)
             continue
