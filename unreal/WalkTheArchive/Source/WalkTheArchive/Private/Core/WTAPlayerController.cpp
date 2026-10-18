@@ -33,7 +33,10 @@
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
 #include "InputTriggers.h"
+#include "Misc/Paths.h"
 #include "NavigationSystem.h"
+#include "TimerManager.h"
+#include "UnrealClient.h"
 #include "Widgets/SViewport.h"
 #include "Widgets/SWidget.h"
 
@@ -951,6 +954,85 @@ void AWTAPlayerController::SetCursorFree(bool bFree)
 AWTACharacter* AWTAPlayerController::GetWTACharacter() const
 {
 	return Cast<AWTACharacter>(GetPawn());
+}
+
+void AWTAPlayerController::WTAShotTour(float SecondsPerShot)
+{
+	UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	if (Content == nullptr)
+	{
+		return;
+	}
+	ShotTourViews.Reset();
+	ShotTourSeconds = FMath::Max(SecondsPerShot, 1.f);
+	for (const FName& Name : Content->GetRowNames(EWTATable::Places))
+	{
+		const FWTAPlaceRow* Row = Content->FindPlace(Name);
+		if (Row != nullptr && !Row->View.Location.IsNearlyZero())
+		{
+			ShotTourViews.Emplace(TEXT("place_") + Name.ToString(), Row->View);
+		}
+	}
+	for (const FName& Name : Content->GetRowNames(EWTATable::Staff))
+	{
+		const FWTAStaffRow* Row = Content->FindStaff(Name);
+		if (Row != nullptr && Row->TalkView.bValid)
+		{
+			ShotTourViews.Emplace(TEXT("staff_") + Name.ToString(), Row->TalkView);
+		}
+	}
+	for (const FName& Name : Content->GetRowNames(EWTATable::WaxScenes))
+	{
+		if (const FWTAWaxSceneRow* Row = Content->FindWaxScene(Name))
+		{
+			// From the aisle, 4.2 m in front of the stage, at eye height, looking back at the reenactors.
+			const FVector Forward = FRotator(0.f, Row->StageYaw, 0.f).Vector();
+			FWTAView View;
+			View.Location = Row->StageLocation + Forward * 420.f;
+			View.Location.Z = 162.f;
+			View.Yaw = Row->StageYaw + 180.f;
+			View.Pitch = -8.f;
+			View.bValid = true;
+			ShotTourViews.Emplace(TEXT("wax_") + Name.ToString(), View);
+		}
+	}
+	while (CloseTopPanel())
+	{
+	}
+	ShotTourIndex = 0;
+	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR start %d views, %.1f s each"), ShotTourViews.Num(), ShotTourSeconds);
+	ShotTourTeleport();
+}
+
+void AWTAPlayerController::ShotTourTeleport()
+{
+	if (!ShotTourViews.IsValidIndex(ShotTourIndex))
+	{
+		UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR done %d views"), ShotTourViews.Num());
+		ShotTourIndex = INDEX_NONE;
+		return;
+	}
+	if (AWTACharacter* WTACharacter = GetWTACharacter())
+	{
+		WTACharacter->TeleportToView(ShotTourViews[ShotTourIndex].Value);
+	}
+	GetWorldTimerManager().SetTimer(ShotTourTimer, this, &AWTAPlayerController::ShotTourCapture, ShotTourSeconds, false);
+}
+
+void AWTAPlayerController::ShotTourCapture()
+{
+	if (!ShotTourViews.IsValidIndex(ShotTourIndex))
+	{
+		return;
+	}
+	// An absolute path: a relative one with a folder in it would land next to the engine binaries.
+	const FString File = FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() /
+		FString::Printf(TEXT("QA/%02d_%s.png"), ShotTourIndex, *ShotTourViews[ShotTourIndex].Key));
+	FScreenshotRequest::RequestScreenshot(File, true, false);
+	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR %s"), *File);
+	++ShotTourIndex;
+	// Leave the screenshot a few frames before moving on.
+	GetWorldTimerManager().SetTimer(ShotTourTimer, this, &AWTAPlayerController::ShotTourTeleport, 0.5f, false);
 }
 
 // --- Input handlers ---------------------------------------------------------------------

@@ -78,13 +78,13 @@ AWTAStaffNPC::AWTAStaffNPC()
 	MetaHumanChild->SetupAttachment(Capsule);
 	MetaHumanChild->SetRelativeLocation(FVector::ZeroVector);
 
-	// Floating name, 20 cm above the capsule top.
+	// Floating name, 20 cm above the capsule top, small enough to read as a name tag from across a room.
 	NameLabel = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameLabel"));
 	NameLabel->SetupAttachment(Capsule);
 	NameLabel->SetRelativeLocation(FVector(0.f, 0.f, 110.f));
 	NameLabel->SetHorizontalAlignment(EHTA_Center);
 	NameLabel->SetVerticalAlignment(EVRTA_TextBottom);
-	NameLabel->SetWorldSize(16.f);
+	NameLabel->SetWorldSize(11.f);
 	NameLabel->SetTextRenderColor(FColor(205, 169, 97));
 	NameLabel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	NameLabel->SetGenerateOverlapEvents(false);
@@ -239,14 +239,19 @@ void AWTAStaffNPC::Tick(float DeltaSeconds)
 	const float Alpha = 1.f - FMath::Exp(-TurnRate * DeltaSeconds);
 	SetActorRotation(FRotator(0.f, CurrentYaw + Delta * Alpha, 0.f));
 
-	// The name label always faces the camera.
+	// The name label faces the camera, and hides at talking distance where the hover label names the person.
 	if (NameLabel != nullptr)
 	{
 		if (const APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0))
 		{
 			FVector ToCamera = Camera->GetCameraLocation() - NameLabel->GetComponentLocation();
 			ToCamera.Z = 0.f;
-			if (ToCamera.SizeSquared() > 1.f)
+			const bool bShow = ToCamera.SizeSquared() > FMath::Square(NameHideDistance);
+			if (NameLabel->IsVisible() != bShow)
+			{
+				NameLabel->SetVisibility(bShow);
+			}
+			if (bShow)
 			{
 				NameLabel->SetWorldRotation(ToCamera.Rotation());
 			}

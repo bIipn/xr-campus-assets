@@ -248,6 +248,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	AWTACharacter* GetWTACharacter() const;
 
+	/**
+	 * QA: closes the menu and panels, then visits every valid place view (DT_Places), every staff talk view (DT_Staff)
+	 * and a view of every Wax Hall stage from the aisle (DT_WaxScenes). At each it waits SecondsPerShot (Lumen and
+	 * exposure settle) and saves a screenshot with the HUD to Saved/Screenshots/<platform>/QA/<NN>_<name>.png.
+	 * The player keeps walking mode (no ghosting). Console: WTAShotTour [Seconds]. Logs WTA_SHOTTOUR lines.
+	 */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAShotTour(float SecondsPerShot = 5.f);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -323,4 +332,12 @@ protected:
 	FName ShownStoryId;
 	/** Every wax scene whose trigger the player is inside (scenes face each other across the aisle and overlap). */
 	TArray<FName> InsideStageIds;
+
+	/** WTAShotTour: teleport to the current view, then capture it after ShotTourSeconds and move on. */
+	void ShotTourTeleport();
+	void ShotTourCapture();
+	TArray<TPair<FString, FWTAView>> ShotTourViews;
+	int32 ShotTourIndex = INDEX_NONE;
+	float ShotTourSeconds = 5.f;
+	FTimerHandle ShotTourTimer;
 };

@@ -58,6 +58,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")
 	float TurnRate = 4.f;
 
+	/** The floating name hides closer than this (cm): at talking distance the "Ask <name>" hover label says it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")
+	float NameHideDistance = 400.f;
+
 	/** Idle the MetaHuman loops while the game runs (default: UWTAPeopleLibrary::DefaultIdlePath). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|People")
 	TSoftObjectPtr<UAnimSequence> IdleAnimation;
