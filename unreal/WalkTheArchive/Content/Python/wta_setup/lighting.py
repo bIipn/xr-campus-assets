@@ -5,22 +5,31 @@ Units and exposure, decided here and consistent with docs/reference/render.md se
     to lumens. The sun is SUN_LUX (75 000 lux: clear sky at 51 deg elevation, slightly below the 100 klx
     textbook value so the galleries' roof glass does not blow out), with the SkyAtmosphere driven by it
     and a real-time captured SkyLight.
-  * With physical lights an outdoor view meters at about EV100 14-15 and a lamp-lit interior at EV100 6-9,
-    so the PostProcessVolume uses histogram auto exposure clamped to EV100 PPV_MIN_EV..PPV_MAX_EV (5..15),
+  * With physical lights an outdoor view meters at about EV100 13-15 and a lamp-lit interior at EV100 5-9,
+    so the PostProcessVolume uses histogram auto exposure clamped to EV100 PPV_MIN_EV..PPV_MAX_EV (4..15),
     local exposure contrast 0.8 (windows versus rooms), subtle bloom and vignette, film grain off.
+    The histogram aims the average at mid grey, which shows white-walled rooms as grey ones, so the
+    Workshop School gets an exposure compensation volume (WING_EXPOSURE_BIAS).
   * Interior lights come from Pipeline/out/campus/lights.json (three.js lamps, by wing) and
     Pipeline/out/reading_room/lights.json (Blender lamps and pendants). three.js intensities and Blender
     watts are not photometric, so the lumen values are chosen per fixture type (assets.md section 1.6):
-    gallery and hall ceiling lights 8000 lm, wax hall ceiling lights 6000 lm, school rooms 6000 lm,
-    reading lamps 900 lm, pendants 9000 lm, plus a RectLight under the Reading Room laylight.
+    gallery and hall ceiling lights 8000 lm, wax hall ceiling lights 6000 lm, reading lamps 900 lm,
+    pendants 9000 lm, plus a RectLight under the Reading Room laylight.
+  * The Workshop School is lit like a real school: one RectLight under every ceiling panel listed in
+    layout.json emissive_fixtures (PANEL_LUMENS each, pointing down, the panel's own size) instead of the
+    single three.js fill lamp per room, which lit the rooms from mid-air and left the panels dark. The
+    museum's ceiling discs become real downlights too (DOWNLIGHT_LUMENS each, a wide SpotLight).
+  * Self-lit surfaces (the web's glows and unlit pictures) are calibrated by emissive.py: physical
+    luminance for light fixtures, display referred for windows, screens and labels.
   * One SpotLight per gallery exhibit (600 lm, 30 degree cone) 180 cm out from the wall and 100 cm above
     the art, aimed at the art, and one per Wax Hall stage. These picture lights carry most of the realism.
 All lights are movable, tagged WTA_Setup / WTA_lighting, and live in Outliner folders Lighting/<wing>.
 """
-import os
+import re
 
 import unreal
 
+from . import emissive
 from . import log
 from . import paths
 from . import util
@@ -29,19 +38,36 @@ STEP = "lighting"
 
 SUN_LUX = 75000.0
 SUN_COLOR_SRGB = "#fff0dc"
-PPV_MIN_EV = 5.0
+PPV_MIN_EV = 4.0
 PPV_MAX_EV = 15.0
 ART_SPOT_LUMENS = 600.0
 ART_SPOT_CONE = 30.0
 STAGE_SPOT_LUMENS = 1500.0
 STAGE_SPOT_CONE = 45.0
 
+# Ceiling panels (layout.json emissive_fixtures ids): a 1.2 x 0.5 m LED troffer gives about 3000-4000 lm.
+PANEL_FIXTURES = ("school-hall-troffers", "studio-troffers", "lab-panels", "blueprint-panels", "world-panels")
+PANEL_LUMENS = 3500.0
+PANEL_RADIUS = 900.0
+PANEL_WINGS = ("school",)   # wings whose three.js fill lamps the panel lights replace
+
+# Museum ceiling discs (layout.json emissive_fixtures): wide downlights under each disc.
+DOWNLIGHT_FIXTURES = ("museum-ceiling-discs",)
+DOWNLIGHT_LUMENS = 2000.0
+DOWNLIGHT_CONE = 55.0       # outer half angle (degrees)
+DOWNLIGHT_RADIUS = 900.0
+
+# Exposure compensation (EV) on a PostProcessVolume around a wing's rooms (layout.json wings / rooms).
+WING_EXPOSURE_BIAS = {"school": 0.7}
+WING_PPV_BLEND_CM = 150.0
+BRUSH_SIZE = 200.0          # a volume spawned from its class has the default 200 cm cube brush
+
 # Lumens per fixture family (see the module docstring).
 LUMENS = {
     "museum": 8000.0,
     "wax": 6000.0,
     "lib": 9000.0,
-    "school": 6000.0,
+    "school": 6000.0,           # only used when layout.json lists no school ceiling panels
     "reading_lamp": 900.0,
     "reading_pendant": 9000.0,
     "laylight": 8000.0,
@@ -257,14 +283,105 @@ def reading_room_lamps():
     return out
 
 
-def build_point_lights(report):
-    count = 0
+def build_point_lights(report, skip_wings=()):
+    count, skipped = 0, 0
     for lamp in campus_lamps() + reading_room_lamps():
+        if lamp["wing"] in skip_wings:
+            skipped += 1
+            continue
         _actor, comp = spawn_light("PointLight", lamp["loc"], (0.0, 0.0, 0.0), lamp["label"], lamp["wing"])
         set_lumens(comp, lamp["lumens"], lamp["radius"], lamp["source_radius"])
         set_light_color(comp, lamp["rgb"])
         count += 1
     report["point_lights"] = count
+    report["point_lights_replaced_by_panels"] = skipped
+
+
+def layout_fixtures(ids):
+    """[(id, shape, colour, [(x, y, z) three.js metres, ...]), ...] for these layout.json emissive_fixtures."""
+    out = []
+    try:
+        fixtures = paths.read_json(paths.LAYOUT_JSON).get("emissive_fixtures", [])
+    except Exception as exc:
+        log.warn("layout emissive_fixtures unreadable: %s" % exc)
+        return out
+    for fx in fixtures:
+        if fx.get("id") in ids and fx.get("positions_m"):
+            out.append((fx["id"], fx.get("shape", ""), fx.get("color", "#fffaf0"), fx["positions_m"]))
+    return out
+
+
+def build_panel_lights(report):
+    """One RectLight just under each ceiling panel's lower face, pointing down, as large as the panel.
+
+    three.js boxes are w (x) by h (y) by d (z). With pitch -90 the light's local Y stays along world Y (the
+    panel's d side) and local Z lies along world X (the w side), as for the laylight.
+    """
+    count = 0
+    for fid, shape, colour, positions in layout_fixtures(PANEL_FIXTURES):
+        m = re.match(r"box\s+([\d.]+)x([\d.]+)x([\d.]+)", shape)
+        if not m:
+            log.warn("panel fixture %s has no box shape (%s)" % (fid, shape))
+            continue
+        w, h, d = (float(v) for v in m.groups())
+        for i, (x, y, z) in enumerate(positions):
+            loc = (100.0 * x, 100.0 * z, 100.0 * (y - h / 2.0) - 1.0)
+            _actor, comp = spawn_light("RectLight", loc, (-90.0, 0.0, 0.0), "Panel_%s_%02d" % (fid, i), "school")
+            set_lumens(comp, PANEL_LUMENS, PANEL_RADIUS, None)
+            util.set_props(comp, {"source_width": 100.0 * d, "source_height": 100.0 * w}, label="Panel_" + fid)
+            set_light_color(comp, util.hex_rgb(colour))
+            count += 1
+    report["panel_lights"] = count
+    return count
+
+
+def build_downlights(report):
+    """A wide SpotLight just under each museum ceiling disc, pointing straight down."""
+    count = 0
+    for fid, _shape, colour, positions in layout_fixtures(DOWNLIGHT_FIXTURES):
+        for i, (x, y, z) in enumerate(positions):
+            loc = (100.0 * x, 100.0 * z, 100.0 * y - 3.0)
+            _actor, comp = spawn_light("SpotLight", loc, (-90.0, 0.0, 0.0), "Downlight_%s_%02d" % (fid, i), "museum")
+            set_lumens(comp, DOWNLIGHT_LUMENS, DOWNLIGHT_RADIUS, 5.0)
+            util.set_props(comp, {"inner_cone_angle": DOWNLIGHT_CONE * 0.6, "outer_cone_angle": DOWNLIGHT_CONE},
+                           label="Downlight_" + fid)
+            set_light_color(comp, util.hex_rgb(colour))
+            count += 1
+    report["downlights"] = count
+    return count
+
+
+def build_wing_exposure(report):
+    """A PostProcessVolume around each wing in WING_EXPOSURE_BIAS (its rooms' union) with that compensation."""
+    try:
+        layout = paths.read_json(paths.LAYOUT_JSON)
+    except Exception as exc:
+        log.warn("layout unreadable, no exposure volumes: %s" % exc)
+        return 0
+    rooms = dict((r.get("id"), r) for r in layout.get("rooms", []))
+    count = 0
+    for wing, bias in WING_EXPOSURE_BIAS.items():
+        boxes = [rooms[i]["ue_bounds_cm"] for i in layout.get("wings", {}).get(wing, [])
+                 if rooms.get(i, {}).get("ue_bounds_cm")]
+        if not boxes:
+            log.warn("wing %s has no room bounds; no exposure volume" % wing)
+            continue
+        lo = [min(b["min"][k] for b in boxes) for k in range(3)]
+        hi = [max(b["max"][k] for b in boxes) for k in range(3)]
+        centre = tuple((lo[k] + hi[k]) / 2.0 for k in range(3))
+        ppv = util.spawn_class(unreal.PostProcessVolume, centre, None, step=STEP, label="PPV_Exposure_" + wing,
+                               folder="Lighting")
+        ppv.set_actor_scale3d(unreal.Vector(*[(hi[k] - lo[k]) / BRUSH_SIZE for k in range(3)]))
+        util.set_props(ppv, {"unbound": False, "priority": 2.0, "blend_radius": WING_PPV_BLEND_CM}, label="PPV_" + wing)
+        settings = util.get_prop(ppv, "settings")
+        if settings is None or util.set_props(settings, {"override_auto_exposure_bias": True,
+                                                         "auto_exposure_bias": float(bias)}, label="PPV_" + wing):
+            log.warn("exposure bias not settable on the %s volume" % wing)
+            continue
+        util.set_props(ppv, {"settings": settings}, label="PPV_" + wing)
+        count += 1
+    report["exposure_volumes"] = count
+    return count
 
 
 def build_laylight(report):
@@ -333,15 +450,20 @@ def run():
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     build_sky(report)
     build_post_process(report)
-    build_point_lights(report)
+    panels = build_panel_lights(report)
+    build_point_lights(report, skip_wings=PANEL_WINGS if panels else ())
+    build_downlights(report)
     build_laylight(report)
     build_art_lights(report)
     build_stage_lights(report)
+    build_wing_exposure(report)
+    errors = emissive.run(report)
     report["lights_total"] = len(util.find_actors(tag=util.step_tag(STEP)))
     report["saved"] = util.save_level()
-    errors = []
     if report.get("point_lights", 0) == 0:
         errors.append("no point lights created (lights.json missing?)")
+    if not panels:
+        errors.append("no school ceiling panel lights created (layout.json emissive_fixtures missing?)")
     if report.get("art_spots", 0) == 0:
         errors.append("no art spotlights created (Exhibits.json missing?)")
     if not report["saved"]:

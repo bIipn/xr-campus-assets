@@ -8,6 +8,7 @@ import json
 import math
 import os
 import re
+import struct
 
 import unreal
 
@@ -641,3 +642,17 @@ def write_json(path, data):
     paths.ensure_dir(os.path.dirname(path))
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=1, default=str)
+
+
+def glb_json(glb_path):
+    """The JSON chunk of a .glb file (materials, meshes, accessors ...) or None. Standard library only."""
+    try:
+        with open(glb_path, "rb") as fh:
+            magic, _version, _length = struct.unpack("<III", fh.read(12))
+            if magic != 0x46546C67:
+                return None
+            chunk_len, _chunk_type = struct.unpack("<II", fh.read(8))
+            return json.loads(fh.read(chunk_len).decode("utf-8"))
+    except Exception as exc:
+        log.warn("could not parse %s: %s" % (glb_path, exc))
+        return None

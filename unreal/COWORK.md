@@ -95,11 +95,11 @@ then runs `UnrealEditor-Cmd <uproject> -ExecutePythonScript=unreal/WalkTheArchiv
 | Step | What it does |
 |---|---|
 | `probe` | Checks the engine, Python and that the C++ module loaded |
-| `import_meshes` | Imports the 9 campus meshes (`unreal/Pipeline/out/ue/*.glb`) with Nanite and walkable collision |
+| `import_meshes` | Imports the 9 campus meshes (`unreal/Pipeline/out/ue/*.glb`) with Nanite and walkable collision (double-sided, so no wall can be walked through from behind) |
 | `import_art` | Imports the exhibit artwork |
 | `data_tables` | Builds the 17 data tables (exhibits, books, tour, staff answers, …) |
 | `build_level` | Creates `/Game/WTA/Maps/L_Campus`, places the campus, player start and game mode |
-| `lighting` | Sun, sky, clouds, fog, exposure, every interior light and the exhibit spotlights |
+| `lighting` | Sun, sky, clouds, fog, exposure, every interior light (school ceiling panels and museum downlights included), the exhibit spotlights, and glowing fixtures, screens and windows calibrated to the camera exposure |
 | `actors` | Rooms, exhibits, books, stations, rides, tokens, staff and Wax Hall stages |
 | `navmesh` | Walkable area for click-to-walk (the game builds missing nav tiles at start: `RuntimeGeneration=Dynamic`) |
 | `project_settings` | Startup map, game mode and the data-table settings in the ini files |

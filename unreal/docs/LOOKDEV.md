@@ -6,9 +6,10 @@ The order below gives the biggest visual jump first. Check every change on the *
 
 ## 1. Lighting first (an hour, huge payoff)
 
-- **Exposure:** the unbound PostProcessVolume uses auto exposure in EV100 (about 4 indoors to 15 in sun) with Local Exposure on. Tune *Exposure Compensation* per wing with small local PostProcessVolumes (Reading Room +0.3 to +0.7, galleries 0, yard 0).
+- **Exposure:** the unbound PostProcessVolume uses auto exposure in EV100 (about 4 indoors to 15 in sun) with Local Exposure on. Tune *Exposure Compensation* per wing with small local PostProcessVolumes; the setup builds one for the Workshop School (+0.7, so white classrooms read white instead of grey). Reading Room +0.3 to +0.7 is worth a try, galleries 0, yard 0.
+- **Self-lit surfaces:** the web's glows are display referred, so the setup gives light fixtures physical luminance (about 3,000 cd/m² for a ceiling panel; saturated indoor glows about 250 so they keep their colour) and puts the web's unlit pictures (frosted windows, screens, labels, the horizon) on `M_WTA_Unlit`, which shows them as drawn whatever the exposure. Both stay out of Lumen's GI (`emissive.py`).
 - **Sun and sky:** one Directional Light (*Atmosphere Sun Light* on), Sky Atmosphere, Sky Light (*Real Time Capture*), Volumetric Clouds and Exponential Height Fog with volumetric fog. In the Reading Room, a little volumetric fog makes visible light shafts through the arched window.
-- **Practical lights in physical units:** gallery downlights around 1,500–3,000 lm, desk lamps 800–1,000 lm at 2700–3000 K, Reading Room pendants 8–11 klm, plus a large Rect Light under the laylight (about 5000 K). Each exhibit has its own spotlight (about 600 lm, 30° cone); keep artwork the brightest thing in a gallery.
+- **Practical lights in physical units:** gallery downlights around 1,500–3,000 lm (the setup puts a 2,000 lm downlight under each museum ceiling disc), desk lamps 800–1,000 lm at 2700–3000 K, Reading Room pendants 8–11 klm, plus a large Rect Light under the laylight (about 5000 K). Each school ceiling panel is a Rect Light of its own size (3,500 lm, pointing down). Each exhibit has its own spotlight (about 600 lm, 30° cone); keep artwork the brightest thing in a gallery.
 - **MegaLights** keeps many shadowed lights cheap. Give the shadowed lights a source radius of 2–8 cm so shadows look soft and real.
 
 ## 2. Materials (most of the work)
