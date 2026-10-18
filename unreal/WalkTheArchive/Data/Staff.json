@@ -91,7 +91,7 @@
   ],
   "RocketboxId": "fa14",
   "LookNotes": "Rocketbox fa14; body pants; top #b07d2a; bottom #26304a; skin #a8775a; hair #2a1d16 topbun",
-  "MetaHuman": ""
+  "MetaHuman": "/Game/WTA/Characters/rosa/BP_rosa.BP_rosa_C"
  },
  {
   "Name": "hale",
@@ -140,7 +140,7 @@
   ],
   "RocketboxId": "ma05",
   "LookNotes": "Rocketbox ma05; body pants; top #a8c0d8; bottom #3a3f46; skin #b98a68; hair #4a3b2e short",
-  "MetaHuman": ""
+  "MetaHuman": "/Game/WTA/Characters/hale/BP_hale.BP_hale_C"
  },
  {
   "Name": "rae",
@@ -184,6 +184,6 @@
   ],
   "RocketboxId": "sf02",
   "LookNotes": "Rocketbox sf02; body pants; top #d2462f; bottom #26303f; skin #8d5a3b; hair #1b1410 short",
-  "MetaHuman": ""
+  "MetaHuman": "/Game/WTA/Characters/rae/BP_rae.BP_rae_C"
  }
 ]
