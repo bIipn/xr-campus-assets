@@ -26,7 +26,36 @@
   },
   "StageYaw": 0.0,
   "ItemId": "wax-2016",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2016-teen",
+    "Offset": {
+     "X": -175.0,
+     "Y": -130.0,
+     "Z": 0.0
+    },
+    "Yaw": 55.0
+   },
+   {
+    "Person": "wax-2016-man",
+    "Offset": {
+     "X": -200.0,
+     "Y": -22.0,
+     "Z": 0.0
+    },
+    "Yaw": -15.0
+   },
+   {
+    "Person": "wax-2016-kid",
+    "Offset": {
+     "X": -135.0,
+     "Y": 100.0,
+     "Z": 0.0
+    },
+    "Yaw": -38.0
+   }
+  ]
  },
  {
   "Name": "wax-2017a",
@@ -55,7 +84,36 @@
   },
   "StageYaw": 180.0,
   "ItemId": "wax-2017a",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2017a-tech",
+    "Offset": {
+     "X": -158.0,
+     "Y": 82.0,
+     "Z": 0.0
+    },
+    "Yaw": -180.0
+   },
+   {
+    "Person": "wax-2017a-lib",
+    "Offset": {
+     "X": -160.0,
+     "Y": -110.0,
+     "Z": 0.0
+    },
+    "Yaw": 35.0
+   },
+   {
+    "Person": "wax-2017a-mover",
+    "Offset": {
+     "X": -120.0,
+     "Y": -200.0,
+     "Z": 0.0
+    },
+    "Yaw": 90.0
+   }
+  ]
  },
  {
   "Name": "wax-2017b",
@@ -84,7 +142,45 @@
   },
   "StageYaw": 0.0,
   "ItemId": "wax-2017b",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2017b-reader",
+    "Offset": {
+     "X": -262.0,
+     "Y": -0.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2017b-k1",
+    "Offset": {
+     "X": -125.0,
+     "Y": 85.0,
+     "Z": 0.0
+    },
+    "Yaw": -25.0
+   },
+   {
+    "Person": "wax-2017b-k2",
+    "Offset": {
+     "X": -115.0,
+     "Y": -55.0,
+     "Z": 0.0
+    },
+    "Yaw": 20.0
+   },
+   {
+    "Person": "wax-2017b-teen",
+    "Offset": {
+     "X": -240.0,
+     "Y": -210.0,
+     "Z": 0.0
+    },
+    "Yaw": 40.0
+   }
+  ]
  },
  {
   "Name": "wax-2018a",
@@ -113,7 +209,36 @@
   },
   "StageYaw": 180.0,
   "ItemId": "wax-2018a",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2018a-dir",
+    "Offset": {
+     "X": -180.0,
+     "Y": 95.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2018a-staff",
+    "Offset": {
+     "X": -200.0,
+     "Y": 210.0,
+     "Z": 0.0
+    },
+    "Yaw": -30.0
+   },
+   {
+    "Person": "wax-2018a-visitor",
+    "Offset": {
+     "X": -220.0,
+     "Y": -150.0,
+     "Z": 0.0
+    },
+    "Yaw": 20.0
+   }
+  ]
  },
  {
   "Name": "wax-2019a",
@@ -142,7 +267,36 @@
   },
   "StageYaw": 0.0,
   "ItemId": "wax-2019a",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2019a-grandpa",
+    "Offset": {
+     "X": -220.0,
+     "Y": 40.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2019a-kid",
+    "Offset": {
+     "X": -225.0,
+     "Y": -30.0,
+     "Z": 0.0
+    },
+    "Yaw": 10.0
+   },
+   {
+    "Person": "wax-2019a-lib",
+    "Offset": {
+     "X": -115.0,
+     "Y": 195.0,
+     "Z": 0.0
+    },
+    "Yaw": -156.0
+   }
+  ]
  },
  {
   "Name": "wax-2019b",
@@ -171,7 +325,36 @@
   },
   "StageYaw": 180.0,
   "ItemId": "wax-2019b",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2019b-cat1",
+    "Offset": {
+     "X": -240.0,
+     "Y": 110.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2019b-cat2",
+    "Offset": {
+     "X": -240.0,
+     "Y": 10.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2019b-cat3",
+    "Offset": {
+     "X": -155.0,
+     "Y": -105.0,
+     "Z": 0.0
+    },
+    "Yaw": 30.0
+   }
+  ]
  },
  {
   "Name": "wax-2019c",
@@ -200,7 +383,36 @@
   },
   "StageYaw": 0.0,
   "ItemId": "wax-2019c",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2019c-star",
+    "Offset": {
+     "X": -155.0,
+     "Y": 10.0,
+     "Z": 0.0
+    },
+    "Yaw": 60.0
+   },
+   {
+    "Person": "wax-2019c-boy",
+    "Offset": {
+     "X": -240.0,
+     "Y": -145.0,
+     "Z": 0.0
+    },
+    "Yaw": 150.0
+   },
+   {
+    "Person": "wax-2019c-kid",
+    "Offset": {
+     "X": -230.0,
+     "Y": 160.0,
+     "Z": 0.0
+    },
+    "Yaw": -30.0
+   }
+  ]
  },
  {
   "Name": "wax-2020",
@@ -229,7 +441,36 @@
   },
   "StageYaw": 180.0,
   "ItemId": "wax-2020",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2020-nurse",
+    "Offset": {
+     "X": -200.0,
+     "Y": 100.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2020-coach",
+    "Offset": {
+     "X": -120.0,
+     "Y": -20.0,
+     "Z": 0.0
+    },
+    "Yaw": 30.0
+   },
+   {
+    "Person": "wax-2020-tech",
+    "Offset": {
+     "X": -210.0,
+     "Y": -130.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   }
+  ]
  },
  {
   "Name": "wax-2022a",
@@ -258,7 +499,36 @@
   },
   "StageYaw": 0.0,
   "ItemId": "wax-2022a",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2022a-trainer",
+    "Offset": {
+     "X": -200.0,
+     "Y": -75.0,
+     "Z": 0.0
+    },
+    "Yaw": 50.0
+   },
+   {
+    "Person": "wax-2022a-lib1",
+    "Offset": {
+     "X": -160.0,
+     "Y": 130.0,
+     "Z": 0.0
+    },
+    "Yaw": -40.0
+   },
+   {
+    "Person": "wax-2022a-lib2",
+    "Offset": {
+     "X": -260.0,
+     "Y": 210.0,
+     "Z": 0.0
+    },
+    "Yaw": -30.0
+   }
+  ]
  },
  {
   "Name": "wax-2022b",
@@ -287,7 +557,36 @@
   },
   "StageYaw": 180.0,
   "ItemId": "wax-2022b",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2022b-player",
+    "Offset": {
+     "X": -194.0,
+     "Y": 184.0,
+     "Z": 0.0
+    },
+    "Yaw": -20.0
+   },
+   {
+    "Person": "wax-2022b-builder",
+    "Offset": {
+     "X": -160.0,
+     "Y": -0.0,
+     "Z": 0.0
+    },
+    "Yaw": -0.0
+   },
+   {
+    "Person": "wax-2022b-modeler",
+    "Offset": {
+     "X": -157.0,
+     "Y": -176.7,
+     "Z": 0.0
+    },
+    "Yaw": -162.8
+   }
+  ]
  },
  {
   "Name": "wax-2024",
@@ -316,7 +615,36 @@
   },
   "StageYaw": 90.0,
   "ItemId": "wax-2024",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2024-visitor",
+    "Offset": {
+     "X": -200.0,
+     "Y": 160.0,
+     "Z": 0.0
+    },
+    "Yaw": -30.0
+   },
+   {
+    "Person": "wax-2024-lib",
+    "Offset": {
+     "X": -160.0,
+     "Y": -130.0,
+     "Z": 0.0
+    },
+    "Yaw": 30.0
+   },
+   {
+    "Person": "wax-2024-kid",
+    "Offset": {
+     "X": -190.0,
+     "Y": -190.0,
+     "Z": 0.0
+    },
+    "Yaw": 60.0
+   }
+  ]
  },
  {
   "Name": "wax-2025",
@@ -345,6 +673,44 @@
   },
   "StageYaw": 90.0,
   "ItemId": "wax-2025",
-  "Sequence": ""
+  "Sequence": "",
+  "Figures": [
+   {
+    "Person": "wax-2025-k1",
+    "Offset": {
+     "X": -125.0,
+     "Y": 70.0,
+     "Z": 0.0
+    },
+    "Yaw": -14.0
+   },
+   {
+    "Person": "wax-2025-k2",
+    "Offset": {
+     "X": -120.0,
+     "Y": -70.0,
+     "Z": 0.0
+    },
+    "Yaw": 14.0
+   },
+   {
+    "Person": "wax-2025-dad",
+    "Offset": {
+     "X": -190.0,
+     "Y": -190.0,
+     "Z": 0.0
+    },
+    "Yaw": 40.0
+   },
+   {
+    "Person": "wax-2025-vol",
+    "Offset": {
+     "X": -210.0,
+     "Y": 220.0,
+     "Z": 0.0
+    },
+    "Yaw": -45.0
+   }
+  ]
  }
 ]

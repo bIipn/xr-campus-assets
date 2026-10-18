@@ -87,6 +87,27 @@ struct WALKTHEARCHIVE_API FWTAWaxLine
 	FText Text;
 };
 
+/**
+ * One reenactor standing on a Wax Hall stage. Person = id in Content/Python/wta_people/people.json; its MetaHuman
+ * Blueprint is /Game/WTA/Characters/<Person>/BP_<Person>. Offset = feet position in the stage's frame in cm
+ * (X toward the aisle along StageYaw, Y to the right of X, Z up from the stage floor). Yaw = degrees added to
+ * StageYaw (0 = facing the aisle).
+ */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAWaxFigure
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Person;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FVector Offset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Yaw = 0.f;
+};
+
 // ---------------------------------------------------------------------------
 // Table rows
 // ---------------------------------------------------------------------------
@@ -498,7 +519,8 @@ struct WALKTHEARCHIVE_API FWTATokenRow : public FTableRowBase
 
 /**
  * DT_WaxScenes: a Wax Hall scene. StageLocation = front-centre of the stage floor; StageYaw = direction the
- * stage faces (toward the aisle). Sequence = Level Sequence once authored (empty until then).
+ * stage faces (toward the aisle). Sequence = Level Sequence once authored (empty until then). Figures = the
+ * reenactors on the stage (AWTAWaxStageActor spawns each one's MetaHuman once it has been built).
  */
 USTRUCT(BlueprintType)
 struct WALKTHEARCHIVE_API FWTAWaxSceneRow : public FTableRowBase
@@ -531,6 +553,9 @@ struct WALKTHEARCHIVE_API FWTAWaxSceneRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FSoftObjectPath Sequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTAWaxFigure> Figures;
 };
 
 /**

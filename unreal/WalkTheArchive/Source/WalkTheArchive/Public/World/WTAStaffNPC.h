@@ -16,6 +16,7 @@
 #include "Interaction/WTAInteractable.h"
 #include "WTAStaffNPC.generated.h"
 
+class UAnimSequence;
 class UBoxComponent;
 class UChildActorComponent;
 class UStaticMeshComponent;
@@ -56,6 +57,14 @@ public:
 	/** Exponential turn rate (1/s). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")
 	float TurnRate = 4.f;
+
+	/** Idle the MetaHuman loops while the game runs (default: UWTAPeopleLibrary::DefaultIdlePath). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|People")
+	TSoftObjectPtr<UAnimSequence> IdleAnimation;
+
+	/** Added to the MetaHuman child's yaw. MetaHuman Creator Blueprints face +Y; -90 turns them to the actor's +X. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|People")
+	float MetaHumanYawOffset = -90.f;
 
 	// Copied from the row at BeginPlay (ApplyStaffRow).
 	UPROPERTY(BlueprintReadOnly, Category = "WTA")

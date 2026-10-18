@@ -21,12 +21,15 @@
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Systems/WTAContentSubsystem.h"
+#include "Animation/AnimSequence.h"
 #include "UObject/ConstructorHelpers.h"
+#include "World/WTAPeopleLibrary.h"
 
 AWTAStaffNPC::AWTAStaffNPC()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	IdleAnimation = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(UWTAPeopleLibrary::DefaultIdlePath));
 
 	// Staff stand still; no AI controller, no controller-driven rotation.
 	AutoPossessAI = EAutoPossessAI::Disabled;
@@ -161,6 +164,15 @@ void AWTAStaffNPC::ApplyStaffRow()
 				const bool bIsCharacter = Child->IsA<ACharacter>();
 				const float HalfHeight = GetCapsuleComponent() ? GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 90.f;
 				MetaHumanChild->SetRelativeLocation(bIsCharacter ? FVector::ZeroVector : FVector(0.f, 0.f, -HalfHeight));
+				MetaHumanChild->SetRelativeRotation(FRotator(0.f, MetaHumanYawOffset, 0.f));
+
+				// A living idle while the game runs (the editor shows the bind pose).
+				const UWorld* World = GetWorld();
+				if (World != nullptr && World->IsGameWorld())
+				{
+					UWTAPeopleLibrary::PlayPose(Child, IdleAnimation.LoadSynchronous(), true,
+						UWTAPeopleLibrary::PersonPhase(StaffId) * 10.f);
+				}
 
 				// Our capsule does all the colliding; the child must not block the player or steal hover traces.
 				TInlineComponentArray<UPrimitiveComponent*> Prims;

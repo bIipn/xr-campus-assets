@@ -6,6 +6,9 @@
 // UWTAProgressSubsystem::NoteWaxScene(SceneId) is called once per visit. The row's Sequence (Level Sequence) is
 // played in phase 1; phase 0 only does captions. The editor Python places it at StageLocation/StageYaw and sets
 // scene_id and trigger_extent.
+// Reenactors: at BeginPlay every row Figure whose MetaHuman has been built (/Game/WTA/Characters/<Person>/
+// BP_<Person>) is spawned on the stage floor at StageLocation + Offset (rotated by StageYaw), facing StageYaw + Yaw,
+// posed on its own frame of FigurePose, and frozen half a second later like a wax figure.
 
 #pragma once
 
@@ -14,6 +17,7 @@
 #include "Data/WTATypes.h"
 #include "WTAWaxStageActor.generated.h"
 
+class UAnimSequence;
 class UBoxComponent;
 
 UCLASS(Blueprintable)
@@ -47,13 +51,34 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	float GetPlayTime() const { return PlayTime; }
 
+	/** Idle the reenactors each hold one frame of (default: UWTAPeopleLibrary::DefaultIdlePath). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|People")
+	TSoftObjectPtr<UAnimSequence> FigurePose;
+
+	/** Added to every figure's yaw. MetaHuman Creator Blueprints face +Y; -90 turns them to the stage's +X. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|People")
+	float FigureYawOffset = -90.f;
+
+	/** The reenactors spawned at BeginPlay (destroyed at EndPlay). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|People")
+	TArray<TObjectPtr<AActor>> Figures;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
+
+	/** Spawn the row's Figures whose MetaHumans exist and pose them. */
+	void SpawnFigures();
+
+	/** Stop the posed figures from ticking (a held pose stays). */
+	void FreezeFigures();
+
+	FTimerHandle FreezeTimer;
 
 	/** Copy of the row, read at BeginPlay. */
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA")

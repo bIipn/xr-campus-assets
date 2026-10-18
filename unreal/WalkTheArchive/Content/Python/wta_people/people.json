@@ -1,0 +1,1760 @@
+{
+  "version": 1,
+  "about": "Looks for every MetaHuman in Walk the Archive. Generic people designed for the project: an Epic preset as the start, a face blend toward other presets, then skin, eyes, hair and outfit set from the cast briefs (docs/HUMANS.md, Data/Staff.json LookNotes, Pipeline/content/wax_scenes.json). Never a likeness of a real person. Skin u: 0 light .. 1 dark, v: 0 cool .. 1 red. Iris u: 0 cool .. 1 warm, v: 0 dark .. 1 light. Body 0..1 values are fractions of the model range. Colours are sRGB hex.",
+  "defaults": {
+    "rig": "JOINTS_ONLY",
+    "quality": "MEDIUM",
+    "makeup": "keep"
+  },
+  "people": [
+    {
+      "id": "margaret",
+      "role": "staff",
+      "brief": "Museum guide, about 65. Light-medium skin, silver hair in a bun, deep teal top, charcoal bottom.",
+      "preset": "Grace",
+      "face_blend": [
+        [
+          "Sook-ja",
+          0.2
+        ]
+      ],
+      "skin": {
+        "u": 0.39,
+        "v": 0.6
+      },
+      "eyes": {
+        "u": 0.85,
+        "v": 0.42
+      },
+      "hair": {
+        "item": "WI_Hair_S_Updo",
+        "melanin": 0.2,
+        "whiteness": 0.9,
+        "lightness": 0.45,
+        "redness": 0.04,
+        "roughness": 0.3
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Fine",
+        "melanin": 0.3,
+        "whiteness": 0.65,
+        "redness": 0.05
+      },
+      "eyelashes": "WI_Eyelashes_S_Sparse",
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#274a52",
+        "shirt2": "#274a52",
+        "bottom": "#2a292d",
+        "bottom2": "#2a292d"
+      }
+    },
+    {
+      "id": "rosa",
+      "role": "staff",
+      "brief": "Reference librarian, about 35. Medium warm skin, dark brown hair in a top bun, ochre top, navy trousers.",
+      "preset": "Tuya",
+      "face_blend": [
+        [
+          "Sunita",
+          0.25
+        ]
+      ],
+      "skin": {
+        "u": 0.55,
+        "v": 0.62
+      },
+      "eyes": {
+        "u": 0.92,
+        "v": 0.22
+      },
+      "hair": {
+        "item": "WI_Hair_S_UpdoBuns",
+        "melanin": 0.85,
+        "redness": 0.18,
+        "lightness": 0.2,
+        "roughness": 0.28
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.85,
+        "redness": 0.15
+      },
+      "eyelashes": "WI_Eyelashes_L_SlightCurl",
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#b07d2a",
+        "shirt2": "#b07d2a",
+        "bottom": "#26304a",
+        "bottom2": "#26304a"
+      }
+    },
+    {
+      "id": "hale",
+      "role": "staff",
+      "brief": "Workshop teacher, about 45. Medium skin, short brown hair, pale blue shirt, grey trousers.",
+      "preset": "Victor",
+      "face_blend": [
+        [
+          "Orlando",
+          0.25
+        ]
+      ],
+      "skin": {
+        "u": 0.45,
+        "v": 0.6
+      },
+      "eyes": {
+        "u": 0.75,
+        "v": 0.35
+      },
+      "hair": {
+        "item": "WI_Hair_S_Casual",
+        "melanin": 0.62,
+        "redness": 0.28,
+        "lightness": 0.3,
+        "whiteness": 0.08
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.62,
+        "redness": 0.25
+      },
+      "eyelashes": "WI_Eyelashes_S_Fine",
+      "beard": "WI_Beard_S_Stubble",
+      "mustache": "WI_Mustache_S_Stubble",
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#a8c0d8",
+        "shirt2": "#a8c0d8",
+        "bottom": "#3a3f46",
+        "bottom2": "#3a3f46"
+      }
+    },
+    {
+      "id": "rae",
+      "role": "staff",
+      "brief": "Recess coach, about 30. Athletic, deep brown skin, short black hair, red sports top, navy trousers.",
+      "preset": "Ada",
+      "face_blend": [
+        [
+          "Etta",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 170,
+        "muscularity": 0.62,
+        "fat": 0.32
+      },
+      "skin": {
+        "u": 0.74,
+        "v": 0.62
+      },
+      "eyes": {
+        "u": 0.95,
+        "v": 0.12
+      },
+      "hair": {
+        "item": "WI_Hair_S_Coil",
+        "melanin": 0.95,
+        "redness": 0.05,
+        "lightness": 0.08
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.95
+      },
+      "eyelashes": "WI_Eyelashes_L_Curl",
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#d2462f",
+        "shirt2": "#d2462f",
+        "bottom": "#26303f",
+        "bottom2": "#26303f"
+      }
+    },
+    {
+      "id": "wax-2016-teen",
+      "role": "wax",
+      "scene": "wax-2016",
+      "brief": "Teen volunteer, 2016 The First Headsets. Cast look fa12.",
+      "preset": "Celeste",
+      "face_blend": [
+        [
+          "Lani",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 158
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 0.98,
+        "redness": 0.37,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_LowPonytail"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.98,
+        "redness": 0.37
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#1f7a72",
+        "shirt2": "#1f7a72",
+        "bottom": "#2b3445",
+        "bottom2": "#2b3445"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2016-man",
+      "role": "wax",
+      "scene": "wax-2016",
+      "brief": "First-time visitor, 2016 The First Headsets. Cast look ma02.",
+      "preset": "Kelvin",
+      "face_blend": [
+        [
+          "Orlando",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 178
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.65,
+        "redness": 0.3,
+        "lightness": 0.31,
+        "item": "WI_Hair_S_Clean"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.65,
+        "redness": 0.3
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#6b7a4a",
+        "shirt2": "#6b7a4a",
+        "bottom": "#3a3f46",
+        "bottom2": "#3a3f46"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2016-kid",
+      "role": "wax",
+      "scene": "wax-2016",
+      "brief": "Young visitor, 2016 The First Headsets. Cast look mc02.",
+      "preset": "Mateo",
+      "face_blend": [
+        [
+          "Zuri",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 150
+      },
+      "skin": {
+        "hex": "#a66f4a"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.28,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Coil"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.28
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#d8573f",
+        "shirt2": "#d8573f",
+        "bottom": "#2f4a7a",
+        "bottom2": "#2f4a7a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017a-tech",
+      "role": "wax",
+      "scene": "wax-2017a",
+      "brief": "Tech installing a station, 2017 VR Goes Statewide. Cast look ma12.",
+      "preset": "Trey",
+      "face_blend": [
+        [
+          "Omari",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 180
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.17,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_CoilBuzzCut"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.17
+      },
+      "beard": {
+        "item": "WI_Beard_S_Full",
+        "melanin": 1.0,
+        "redness": 0.17
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Full",
+        "melanin": 1.0,
+        "redness": 0.17
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#31506e",
+        "shirt2": "#31506e",
+        "bottom": "#3a3530",
+        "bottom2": "#3a3530"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017a-lib",
+      "role": "wax",
+      "scene": "wax-2017a",
+      "brief": "Librarian, 2017 VR Goes Statewide. Cast look bf03.",
+      "preset": "Vivian",
+      "face_blend": [
+        [
+          "Jelena",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 165
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "melanin": 0.35,
+        "redness": 0.17,
+        "lightness": 0.57,
+        "item": "WI_Hair_M_BobStraight"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.35,
+        "redness": 0.17
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#c04a3a",
+        "shirt2": "#c04a3a",
+        "bottom": "#2a2d36",
+        "bottom2": "#2a2d36"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017a-mover",
+      "role": "wax",
+      "scene": "wax-2017a",
+      "brief": "Mover, 2017 VR Goes Statewide. Cast look ma06.",
+      "preset": "Orlando",
+      "face_blend": [
+        [
+          "Lorenzo",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 175
+      },
+      "skin": {
+        "hex": "#cf9e74"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Casual"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#d9a441",
+        "shirt2": "#d9a441",
+        "bottom": "#2b3445",
+        "bottom2": "#2b3445"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017b-reader",
+      "role": "wax",
+      "scene": "wax-2017b",
+      "brief": "Storyteller, 2017 Story Time in 3D. Cast look fp02.",
+      "preset": "Zuri",
+      "face_blend": [
+        [
+          "Asha",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 166
+      },
+      "skin": {
+        "hex": "#5a3622"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.2,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_UpdoBuns"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.2
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#f2c14e",
+        "shirt2": "#f2c14e",
+        "bottom": "#3a2a5a",
+        "bottom2": "#3a2a5a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017b-k1",
+      "role": "wax",
+      "scene": "wax-2017b",
+      "brief": "Young listener, 2017 Story Time in 3D. Cast look mc01.",
+      "preset": "Bo",
+      "face_blend": [
+        [
+          "Aera",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 148
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "melanin": 0.25,
+        "redness": 0.29,
+        "lightness": 0.6,
+        "item": "WI_Hair_S_Messy"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.25,
+        "redness": 0.29
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#3b6ea8",
+        "shirt2": "#3b6ea8",
+        "bottom": "#4a3a2a",
+        "bottom2": "#4a3a2a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017b-k2",
+      "role": "wax",
+      "scene": "wax-2017b",
+      "brief": "Young listener, 2017 Story Time in 3D. Cast look fc02.",
+      "preset": "Lani",
+      "face_blend": [
+        [
+          "Etta",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 148
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_M_TwistedBraids"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e76f51",
+        "shirt2": "#e76f51",
+        "bottom": "#2a9d8f",
+        "bottom2": "#2a9d8f"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2017b-teen",
+      "role": "wax",
+      "scene": "wax-2017b",
+      "brief": "Teen helper, 2017 Story Time in 3D. Cast look ma16.",
+      "preset": "Aoi",
+      "face_blend": [
+        [
+          "Bo",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 168
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_SideSweptFringe"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2b2f38",
+        "shirt2": "#2b2f38",
+        "bottom": "#3a4a6a",
+        "bottom2": "#3a4a6a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2018a-dir",
+      "role": "wax",
+      "scene": "wax-2018a",
+      "brief": "Library director, 2018 Nevada Opens Its Stations. Cast look fa15.",
+      "preset": "Celeste",
+      "face_blend": [
+        [
+          "Vivian",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 168
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.47,
+        "redness": 0.15,
+        "lightness": 0.47,
+        "item": "WI_Hair_L_Straight"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.47,
+        "redness": 0.15
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#9a2f33",
+        "shirt2": "#9a2f33",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2018a-staff",
+      "role": "wax",
+      "scene": "wax-2018a",
+      "brief": "Library staff, 2018 Nevada Opens Its Stations. Cast look bm05.",
+      "preset": "Lorenzo",
+      "face_blend": [
+        [
+          "Jorge",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 177
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_SlickBack"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e9e2d0",
+        "shirt2": "#e9e2d0",
+        "bottom": "#2a2d36",
+        "bottom2": "#2a2d36"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2018a-visitor",
+      "role": "wax",
+      "scene": "wax-2018a",
+      "brief": "Visitor, 2018 Nevada Opens Its Stations. Cast look fa09.",
+      "preset": "Jelena",
+      "face_blend": [
+        [
+          "Celeste",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 163
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "whiteness": 0.95,
+        "melanin": 0.3,
+        "lightness": 0.45,
+        "item": "WI_Hair_S_BobLayered"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#8a5a9a",
+        "shirt2": "#8a5a9a",
+        "bottom": "#3a3a42",
+        "bottom2": "#3a3a42"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019a-grandpa",
+      "role": "wax",
+      "scene": "wax-2019a",
+      "brief": "Grandfather, By 2019 VR on the Road. Cast look ma14.",
+      "preset": "Walter",
+      "face_blend": [
+        [
+          "Bruce",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 172
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "whiteness": 0.95,
+        "melanin": 0.3,
+        "lightness": 0.45,
+        "item": "WI_Hair_S_BaldingStubble"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "beard": {
+        "item": "WI_Beard_M_Curly",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "mustache": {
+        "item": "WI_Mustache_M_Curly",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#5a6a7a",
+        "shirt2": "#5a6a7a",
+        "bottom": "#3a3530",
+        "bottom2": "#3a3530"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019a-kid",
+      "role": "wax",
+      "scene": "wax-2019a",
+      "brief": "Grandchild, By 2019 VR on the Road. Cast look mc01.",
+      "preset": "Mateo",
+      "face_blend": [
+        [
+          "Bo",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 149
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_CurlyFade"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#f2c14e",
+        "shirt2": "#f2c14e",
+        "bottom": "#2f4a7a",
+        "bottom2": "#2f4a7a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019a-lib",
+      "role": "wax",
+      "scene": "wax-2019a",
+      "brief": "Outreach librarian, By 2019 VR on the Road. Cast look ma18.",
+      "preset": "Isaiah",
+      "face_blend": [
+        [
+          "Cameron",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 182
+      },
+      "skin": {
+        "hex": "#5a3622"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.14,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_CoilBuzzCut"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "beard": {
+        "item": "WI_Beard_S_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2a9d8f",
+        "shirt2": "#2a9d8f",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019b-cat1",
+      "role": "wax",
+      "scene": "wax-2019b",
+      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look fa07.",
+      "preset": "Aera",
+      "face_blend": [
+        [
+          "Vivian",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 162
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "melanin": 0.65,
+        "redness": 0.28,
+        "lightness": 0.3,
+        "item": "WI_Hair_S_Updo"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.65,
+        "redness": 0.28
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e2d6bf",
+        "shirt2": "#e2d6bf",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019b-cat2",
+      "role": "wax",
+      "scene": "wax-2019b",
+      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look ma04.",
+      "preset": "Jorge",
+      "face_blend": [
+        [
+          "Trey",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 176
+      },
+      "skin": {
+        "hex": "#a66f4a"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_CurlyFade"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": {
+        "item": "WI_Beard_S_Curly",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Curly",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#3b6ea8",
+        "shirt2": "#3b6ea8",
+        "bottom": "#3a3530",
+        "bottom2": "#3a3530"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019b-cat3",
+      "role": "wax",
+      "scene": "wax-2019b",
+      "brief": "Cataloguer, 2019 VR in the World\u2019s Catalog. Cast look fa06.",
+      "preset": "Asha",
+      "face_blend": [
+        [
+          "Etta",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 167
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.2,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_UpdoBraids"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.2
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#5a4a7a",
+        "shirt2": "#5a4a7a",
+        "bottom": "#2a2a30",
+        "bottom2": "#2a2a30"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019c-star",
+      "role": "wax",
+      "scene": "wax-2019c",
+      "brief": "Teen xr star, 2019 XR Marin and the XR Stars. Cast look fa03.",
+      "preset": "Lani",
+      "face_blend": [
+        [
+          "Aera",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 158
+      },
+      "skin": {
+        "hex": "#cf9e74"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_L_Straight"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#f2c14e",
+        "shirt2": "#f2c14e",
+        "bottom": "#3a4a6a",
+        "bottom2": "#3a4a6a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019c-boy",
+      "role": "wax",
+      "scene": "wax-2019c",
+      "brief": "Teen xr star, 2019 XR Marin and the XR Stars. Cast look ma17.",
+      "preset": "Mikel",
+      "face_blend": [
+        [
+          "Mateo",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 165
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.14,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_AfroFade"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2a9d8f",
+        "shirt2": "#2a9d8f",
+        "bottom": "#2b3445",
+        "bottom2": "#2b3445"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2019c-kid",
+      "role": "wax",
+      "scene": "wax-2019c",
+      "brief": "Young visitor, 2019 XR Marin and the XR Stars. Cast look fc01.",
+      "preset": "Vivian",
+      "face_blend": [
+        [
+          "Aera",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 149
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "melanin": 0.12,
+        "redness": 0.0,
+        "lightness": 0.6,
+        "item": "WI_Hair_S_LowPonytail"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.12,
+        "redness": 0.0
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#c77dff",
+        "shirt2": "#c77dff",
+        "bottom": "#3a4a6a",
+        "bottom2": "#3a4a6a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2020-nurse",
+      "role": "wax",
+      "scene": "wax-2020",
+      "brief": "Nurse, 2020 Project SANDI. Cast look mf01.",
+      "preset": "Sunita",
+      "face_blend": [
+        [
+          "Tuya",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 164
+      },
+      "skin": {
+        "hex": "#a66f4a"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Updo"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#3a8a9a",
+        "shirt2": "#3a8a9a",
+        "bottom": "#3a8a9a",
+        "bottom2": "#3a8a9a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2020-coach",
+      "role": "wax",
+      "scene": "wax-2020",
+      "brief": "Career coach, 2020 Project SANDI. Cast look mm03.",
+      "preset": "Bruce",
+      "face_blend": [
+        [
+          "Kelvin",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 179
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "whiteness": 0.61,
+        "melanin": 0.3,
+        "lightness": 0.45,
+        "item": "WI_Hair_S_Casual"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "whiteness": 0.61,
+        "melanin": 0.3
+      },
+      "beard": {
+        "item": "WI_Beard_S_Full",
+        "whiteness": 0.61,
+        "melanin": 0.3
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Full",
+        "whiteness": 0.61,
+        "melanin": 0.3
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#1d3b52",
+        "shirt2": "#1d3b52",
+        "bottom": "#6b6252",
+        "bottom2": "#6b6252"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2020-tech",
+      "role": "wax",
+      "scene": "wax-2020",
+      "brief": "Technician, 2020 Project SANDI. Cast look mm04.",
+      "preset": "Cameron",
+      "face_blend": [
+        [
+          "Omari",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 183
+      },
+      "skin": {
+        "hex": "#5a3622"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.14,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_BuzzCut"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#d8792c",
+        "shirt2": "#d8792c",
+        "bottom": "#2b3445",
+        "bottom2": "#2b3445"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022a-trainer",
+      "role": "wax",
+      "scene": "wax-2022a",
+      "brief": "Trainer, 2022 360\u00b0 Stories in Washington. Cast look ma07.",
+      "preset": "Orlando",
+      "face_blend": [
+        [
+          "Victor",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 177
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_SideSweptFringe"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e9e2d0",
+        "shirt2": "#e9e2d0",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022a-lib1",
+      "role": "wax",
+      "scene": "wax-2022a",
+      "brief": "Librarian, 2022 360\u00b0 Stories in Washington. Cast look fa05.",
+      "preset": "Jelena",
+      "face_blend": [
+        [
+          "Celeste",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 166
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.25,
+        "redness": 0.29,
+        "lightness": 0.6,
+        "item": "WI_Hair_L_StraightBangs"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.25,
+        "redness": 0.29
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2f6b5a",
+        "shirt2": "#2f6b5a",
+        "bottom": "#3a3f46",
+        "bottom2": "#3a3f46"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022a-lib2",
+      "role": "wax",
+      "scene": "wax-2022a",
+      "brief": "Senior librarian, 2022 360\u00b0 Stories in Washington. Cast look gm01.",
+      "preset": "Isaiah",
+      "face_blend": [
+        [
+          "Walter",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 174
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "whiteness": 0.95,
+        "melanin": 0.3,
+        "lightness": 0.45,
+        "item": "WI_Hair_S_CoilBuzzCut"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "beard": {
+        "item": "WI_Beard_S_Full",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Full",
+        "whiteness": 0.95,
+        "melanin": 0.3
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#6a4a8a",
+        "shirt2": "#6a4a8a",
+        "bottom": "#3a3530",
+        "bottom2": "#3a3530"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022b-player",
+      "role": "wax",
+      "scene": "wax-2022b",
+      "brief": "Teen player, 2022 Lost Stories. Cast look ma12.",
+      "preset": "Mikel",
+      "face_blend": [
+        [
+          "Zuri",
+          0.2
+        ]
+      ],
+      "body": {
+        "height_cm": 164
+      },
+      "skin": {
+        "hex": "#5a3622"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.14,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Coil"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.14
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#d9a441",
+        "shirt2": "#d9a441",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022b-builder",
+      "role": "wax",
+      "scene": "wax-2022b",
+      "brief": "Teen builder, 2022 Lost Stories. Cast look fa11.",
+      "preset": "Asha",
+      "face_blend": [
+        [
+          "Zuri",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 158
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.2,
+        "lightness": 0.05,
+        "item": "WI_Hair_M_TwistedBraids"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.2
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e9e2d0",
+        "shirt2": "#e9e2d0",
+        "bottom": "#2b3445",
+        "bottom2": "#2b3445"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2022b-modeler",
+      "role": "wax",
+      "scene": "wax-2022b",
+      "brief": "Teen modeler, 2022 Lost Stories. Cast look ma09.",
+      "preset": "Bo",
+      "face_blend": [
+        [
+          "Mateo",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 166
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.19,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_BrushCut"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 1.0,
+        "redness": 0.19
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2f5d7c",
+        "shirt2": "#2f5d7c",
+        "bottom": "#3a3530",
+        "bottom2": "#3a3530"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2024-visitor",
+      "role": "wax",
+      "scene": "wax-2024",
+      "brief": "Gallery visitor, 2024 Children Draw War, Not Flowers. Cast look fa08.",
+      "preset": "Celeste",
+      "face_blend": [
+        [
+          "Jelena",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 167
+      },
+      "skin": {
+        "hex": "#f0c9ab"
+      },
+      "hair": {
+        "melanin": 0.88,
+        "redness": 0.24,
+        "lightness": 0.11,
+        "item": "WI_Hair_S_LowPonytail"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.88,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#3b6ea8",
+        "shirt2": "#3b6ea8",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2024-lib",
+      "role": "wax",
+      "scene": "wax-2024",
+      "brief": "Librarian, 2024 Children Draw War, Not Flowers. Cast look fa01.",
+      "preset": "Sunita",
+      "face_blend": [
+        [
+          "Aera",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 164
+      },
+      "skin": {
+        "hex": "#cf9e74"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_M_BobSlick"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#f2c14e",
+        "shirt2": "#f2c14e",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2024-kid",
+      "role": "wax",
+      "scene": "wax-2024",
+      "brief": "Young visitor, 2024 Children Draw War, Not Flowers. Cast look fc01.",
+      "preset": "Aera",
+      "face_blend": [
+        [
+          "Vivian",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 148
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.12,
+        "redness": 0.0,
+        "lightness": 0.6,
+        "item": "WI_Hair_M_BobBangs"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.12,
+        "redness": 0.0
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#e76f51",
+        "shirt2": "#e76f51",
+        "bottom": "#3a4a6a",
+        "bottom2": "#3a4a6a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2025-k1",
+      "role": "wax",
+      "scene": "wax-2025",
+      "brief": "Young visitor, 2025 Pollinators at the Fair. Cast look mc02.",
+      "preset": "Mateo",
+      "face_blend": [
+        [
+          "Zuri",
+          0.3
+        ]
+      ],
+      "body": {
+        "height_cm": 147
+      },
+      "skin": {
+        "hex": "#80522f"
+      },
+      "hair": {
+        "melanin": 1.0,
+        "redness": 0.2,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Coil"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 1.0,
+        "redness": 0.2
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#f2c14e",
+        "shirt2": "#f2c14e",
+        "bottom": "#2a9d8f",
+        "bottom2": "#2a9d8f"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2025-k2",
+      "role": "wax",
+      "scene": "wax-2025",
+      "brief": "Young visitor, 2025 Pollinators at the Fair. Cast look mc01.",
+      "preset": "Bo",
+      "face_blend": [
+        [
+          "Vivian",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 149
+      },
+      "skin": {
+        "hex": "#e4b08c"
+      },
+      "hair": {
+        "melanin": 0.65,
+        "redness": 0.28,
+        "lightness": 0.3,
+        "item": "WI_Hair_S_Messy"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.65,
+        "redness": 0.28
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#3b6ea8",
+        "shirt2": "#3b6ea8",
+        "bottom": "#4a3a2a",
+        "bottom2": "#4a3a2a"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2025-dad",
+      "role": "wax",
+      "scene": "wax-2025",
+      "brief": "Parent, 2025 Pollinators at the Fair. Cast look ma20.",
+      "preset": "Trey",
+      "face_blend": [
+        [
+          "Jorge",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 178
+      },
+      "skin": {
+        "hex": "#a66f4a"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_S_Clean"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Full",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": {
+        "item": "WI_Beard_S_Stubble",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "mustache": {
+        "item": "WI_Mustache_S_Stubble",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#6b7a4a",
+        "shirt2": "#6b7a4a",
+        "bottom": "#3a3f46",
+        "bottom2": "#3a3f46"
+      },
+      "quality": "MEDIUM"
+    },
+    {
+      "id": "wax-2025-vol",
+      "role": "wax",
+      "scene": "wax-2025",
+      "brief": "Volunteer, 2025 Pollinators at the Fair. Cast look fa17.",
+      "preset": "Etta",
+      "face_blend": [
+        [
+          "Sunita",
+          0.25
+        ]
+      ],
+      "body": {
+        "height_cm": 166
+      },
+      "skin": {
+        "hex": "#c08660"
+      },
+      "hair": {
+        "melanin": 0.97,
+        "redness": 0.24,
+        "lightness": 0.05,
+        "item": "WI_Hair_L_MessyClumps"
+      },
+      "eyebrows": {
+        "item": "WI_Eyebrows_M_Natural",
+        "melanin": 0.97,
+        "redness": 0.24
+      },
+      "beard": null,
+      "mustache": null,
+      "outfit": {
+        "item": "WI_DefaultGarment",
+        "shirt": "#2a9d8f",
+        "shirt2": "#2a9d8f",
+        "bottom": "#2b2f38",
+        "bottom2": "#2b2f38"
+      },
+      "quality": "MEDIUM"
+    }
+  ]
+}

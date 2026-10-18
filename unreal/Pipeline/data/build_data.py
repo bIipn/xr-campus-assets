@@ -271,8 +271,14 @@ def build_staff(L):
                      'Yaw': round(ls['ue_yaw_deg'], 3), 'TalkView': view_from_layout(ls['view']), 'Greeting': txt(s.get('greeting')),
                      'GreetingShort': txt(s.get('greetingShort')), 'Help': txt(s.get('help')), 'Fallback': txt(s.get('fallback')),
                      'Chips': [txt(c if isinstance(c, str) else c.get('q') or c.get('label') or c.get('text')) for c in (s.get('chips') or [])],
-                     'RocketboxId': look.get('av') or 'None', 'LookNotes': notes, 'MetaHuman': ''})
+                     'RocketboxId': look.get('av') or 'None', 'LookNotes': notes, 'MetaHuman': built_metahuman(s['id'])})
     return rows
+
+
+def built_metahuman(person):
+    """The person's MetaHuman Blueprint class path once wta_people has built it (the .uasset exists), else ''."""
+    asset = os.path.join(UNREAL, 'WalkTheArchive', 'Content', 'WTA', 'Characters', person, 'BP_%s.uasset' % person)
+    return '/Game/WTA/Characters/%s/BP_%s.BP_%s_C' % (person, person, person) if os.path.isfile(asset) else ''
 
 
 SIMPLE = re.compile(r"^RX\.(\w+)\.test\(s\)(?:\s*&&\s*words\s*<=\s*(\d+))?(?:\s*&&\s*!travel)?$")
@@ -335,6 +341,14 @@ def build_tokens(L):
     return rows
 
 
+def wax_figure(scene_id, c):
+    """Web cast member -> FWTAWaxFigure. The web places it at at=[x, z] metres in the stage group's frame (+z toward
+    the walkway) turned ry degrees about +Y; in the stage frame of the contract that is X = z, Y = -x (cm), Yaw = -ry."""
+    at = c.get('at') or [0.0, 0.0]
+    return {'Person': '%s-%s' % (scene_id, c['var']), 'Offset': vec(100.0 * float(at[1]), -100.0 * float(at[0]), 0.0),
+            'Yaw': round(-float(c.get('ry') or 0.0), 3)}
+
+
 def build_wax(L):
     stages = {s['id']: s for s in L['wax_hall']['stages']}
     rows = []
@@ -342,7 +356,8 @@ def build_wax(L):
         st = stages[w['id']]
         rows.append({'Name': w['id'], 'Number': int(w['n']), 'Year': txt(w['year']), 'Title': txt(w['title']),
                      'LoopSeconds': float(w.get('loopSeconds') or 14), 'Lines': [{'Time': float(l['t']), 'Text': txt(l['text'])} for l in w['lines']],
-                     'StageLocation': vec(*st['ue_origin_cm']), 'StageYaw': round(st['ue_yaw_deg'], 3), 'ItemId': w['item']['id'], 'Sequence': ''})
+                     'StageLocation': vec(*st['ue_origin_cm']), 'StageYaw': round(st['ue_yaw_deg'], 3), 'ItemId': w['item']['id'], 'Sequence': '',
+                     'Figures': [wax_figure(w['id'], c) for c in w.get('cast', [])]})
     return rows
 
 

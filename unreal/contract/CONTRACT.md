@@ -35,7 +35,7 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 | Data tables | `/Game/WTA/Data/DT_<Table>` (see structs.json `table`), source `unreal/WalkTheArchive/Data/<File>.json` |
 | Main level | `/Game/WTA/Maps/L_Campus` (not World Partition: the campus is small; Ocean Dive sits 420 m east in the same level) |
 | Materials | `/Game/WTA/Materials/` |
-| Characters (MetaHumans) | `/Game/WTA/Characters/<StaffId>/` |
+| Characters (MetaHumans) | `/Game/WTA/Characters/<PersonId>/MHC_<PersonId>` (MetaHuman Character) and `BP_<PersonId>` (built actor), one folder per id in `Content/Python/wta_people/people.json` (staff ids and Wax Hall `<sceneId>-<role>`); shared build assets `/Game/WTA/Characters/Common/`, the idle `/Game/WTA/Characters/Common/Anims/AS_WTA_StandIdle` |
 
 ## 4. C++ classes (module `WalkTheArchive`)
 
@@ -82,9 +82,9 @@ The pick volume is a `UBoxComponent` named `PickBox` (root), collision preset th
 | `AWTAStationActor` | `FName StationId`, `FVector PickExtent` | open the station panel (title, steps, panel text; hands-on logic is phase 1+) |
 | `AWTARideActor` | `FName RideId`, `FVector PickExtent` | open the ride card (ride mechanics are phase 1) |
 | `AWTATokenActor` | `FName TokenId` (location: the `token__<id>` mesh centre when that mesh exists, else `DT_Tokens.Location`) | collect the token (hidden if already collected; spins and bobs; uses `/Engine/BasicShapes/Sphere` scaled 0.25 with an emissive dynamic material) |
-| `AWTAStaffNPC` (parent `ACharacter`) | `FName StaffId` | open the staff chat. Placeholder body = capsule + `/Engine/BasicShapes/Cylinder` until `DT_Staff.MetaHuman` is set; then spawns that Blueprint as a child actor |
+| `AWTAStaffNPC` (parent `ACharacter`) | `FName StaffId` | open the staff chat. Placeholder body = capsule + `/Engine/BasicShapes/Cylinder` until `DT_Staff.MetaHuman` is set; then spawns that Blueprint as a child actor that loops the standing idle in game |
 | `AWTARoomVolume` (not interactable) | `FName RoomId`, `FVector Extent` (half size cm) | on player overlap → `UWTARoomSubsystem::EnterRoom(RoomId)` |
-| `AWTAWaxStageActor` (not interactable) | `FName SceneId`, `FVector TriggerExtent` | while the player is inside: plays the scene's captions (`Lines`) on the HUD in a loop; later plays `Sequence` |
+| `AWTAWaxStageActor` (not interactable) | `FName SceneId`, `FVector TriggerExtent` | at BeginPlay spawns the row's built `Figures` (MetaHuman reenactors, posed and frozen like wax figures); while the player is inside: plays the scene's captions (`Lines`) on the HUD in a loop; later plays `Sequence` |
 
 ### 4.6 Systems (`Systems/`)
 | Class | Parent | Must have |

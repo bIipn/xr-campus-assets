@@ -1,6 +1,7 @@
 // Walk the Archive - a Wax Hall stage: captions loop while the player stands in front of it.
 
 #include "World/WTAWaxStageActor.h"
+#include "Animation/AnimSequence.h"
 #include "Components/BoxComponent.h"
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
@@ -10,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "TimerManager.h"
+#include "World/WTAPeopleLibrary.h"
 
 namespace
 {
@@ -36,6 +39,8 @@ AWTAWaxStageActor::AWTAWaxStageActor()
 	Trigger->SetCanEverAffectNavigation(false);
 	Trigger->CanCharacterStepUpOn = ECB_No;
 	Trigger->SetHiddenInGame(true);
+
+	FigurePose = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(UWTAPeopleLibrary::DefaultIdlePath));
 }
 
 void AWTAWaxStageActor::OnConstruction(const FTransform& Transform)
@@ -64,6 +69,77 @@ void AWTAWaxStageActor::BeginPlay()
 	if (!bHasScene)
 	{
 		UE_LOG(LogWTA, Warning, TEXT("%s: no DT_WaxScenes row '%s'"), *GetName(), *SceneId.ToString());
+		return;
+	}
+	SpawnFigures();
+}
+
+void AWTAWaxStageActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorldTimerManager().ClearTimer(FreezeTimer);
+	for (AActor* Figure : Figures)
+	{
+		if (IsValid(Figure))
+		{
+			Figure->Destroy();
+		}
+	}
+	Figures.Reset();
+	Super::EndPlay(EndPlayReason);
+}
+
+void AWTAWaxStageActor::SpawnFigures()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr || Scene.Figures.Num() == 0)
+	{
+		return;
+	}
+	UAnimSequence* Pose = FigurePose.LoadSynchronous();
+	const FRotator StageRotation(0.f, Scene.StageYaw, 0.f);
+	int32 NotBuilt = 0;
+	for (const FWTAWaxFigure& Figure : Scene.Figures)
+	{
+		UClass* Class = UWTAPeopleLibrary::LoadMetaHumanClass(Figure.Person);
+		if (Class == nullptr)
+		{
+			++NotBuilt;
+			continue;
+		}
+		const FVector Location = Scene.StageLocation + StageRotation.RotateVector(Figure.Offset);
+		const FRotator Rotation(0.f, Scene.StageYaw + Figure.Yaw + FigureYawOffset, 0.f);
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AActor* Person = World->SpawnActor<AActor>(Class, Location, Rotation, Params);
+		if (Person == nullptr)
+		{
+			continue;
+		}
+		// Wax figures stand behind the rope: nothing to collide with or hover.
+		Person->SetActorEnableCollision(false);
+		if (Pose != nullptr)
+		{
+			UWTAPeopleLibrary::PlayPose(Person, Pose, false, UWTAPeopleLibrary::PersonPhase(Figure.Person) * Pose->GetPlayLength());
+		}
+		Figures.Add(Person);
+	}
+	if (NotBuilt > 0)
+	{
+		UE_LOG(LogWTA, Log, TEXT("%s: %d of %d reenactors not built yet"), *GetName(), NotBuilt, Scene.Figures.Num());
+	}
+	if (Figures.Num() > 0)
+	{
+		// Let the held pose evaluate (body, then face, clothes and grooms that follow it), then stop ticking.
+		GetWorldTimerManager().SetTimer(FreezeTimer, this, &AWTAWaxStageActor::FreezeFigures, 0.5f, false);
+	}
+}
+
+void AWTAWaxStageActor::FreezeFigures()
+{
+	for (AActor* Figure : Figures)
+	{
+		UWTAPeopleLibrary::Freeze(Figure);
 	}
 }
 
