@@ -8,9 +8,11 @@
 #include "Core/WTACharacter.h"
 #include "Core/WTASettings.h"
 #include "Core/WTALog.h"
+#include "Core/WTAPlayTest.h"
 #include "Data/WTATypes.h"
 #include "Interaction/WTAInteractionComponent.h"
 #include "Systems/WTAContentSubsystem.h"
+#include "Systems/WTADialogueSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
@@ -33,6 +35,7 @@
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
 #include "InputTriggers.h"
+#include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "NavigationSystem.h"
 #include "TimerManager.h"
@@ -815,6 +818,12 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
 	if (Action == WTAAction::GoPlace())
 	{
+		// The chat is a card in the middle of the screen: put it away so the player sees where they are going.
+		if (Chat != nullptr && Chat->IsOpen())
+		{
+			Chat->Close();
+			SetUIMode(IsAnyPanelOpen());
+		}
 		GoToPlace(Arg);
 	}
 	else if (Action == WTAAction::OpenItem())
@@ -827,8 +836,17 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	}
 	else if (Action == WTAAction::OpenBook())
 	{
-		// From a tour stop or a staff answer the book opens on its cover with the table of contents.
-		OpenBook(Arg, -1);
+		// "<book>" opens on the cover with the table of contents; "<book>#<page index>" (a staff answer that named
+		// a page) opens at that page.
+		const FString ArgString = Arg.ToString();
+		FString BookId = ArgString;
+		FString PagePart;
+		int32 PageIndex = -1;
+		if (ArgString.Split(TEXT("#"), &BookId, &PagePart) && PagePart.IsNumeric())
+		{
+			PageIndex = FCString::Atoi(*PagePart);
+		}
+		OpenBook(FName(*BookId), PageIndex);
 	}
 	else if (Action == WTAAction::OpenStation())
 	{
@@ -1004,6 +1022,172 @@ void AWTAPlayerController::WTAShotTour(float SecondsPerShot)
 	ShotTourTeleport();
 }
 
+void AWTAPlayerController::WTAChatTest()
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	UWTADialogueSubsystem* Dialogue = UWTADialogueSubsystem::Get(this);
+	if (Content == nullptr || Dialogue == nullptr)
+	{
+		return;
+	}
+	// Each staff member's own chips, then questions any visitor might type: the lines of Saved/QA/chat_questions.txt
+	// when that file exists (blank lines and lines starting with # are skipped), else a short built-in list.
+	TArray<FString> Common;
+	TArray<FString> Lines;
+	if (FFileHelper::LoadFileToStringArray(Lines, *(FPaths::ProjectSavedDir() / TEXT("QA") / TEXT("chat_questions.txt"))))
+	{
+		for (const FString& Line : Lines)
+		{
+			const FString Trimmed = Line.TrimStartAndEnd();
+			if (!Trimmed.IsEmpty() && !Trimmed.StartsWith(TEXT("#")))
+			{
+				Common.Add(Trimmed);
+			}
+		}
+	}
+	if (Common.Num() == 0)
+	{
+		Common = { TEXT("hello"), TEXT("who are you"), TEXT("what can you do"), TEXT("where is the library"), TEXT("take me to the yard"),
+			TEXT("how do I move"), TEXT("tell me about Nevada"), TEXT("who runs XRLibraries"), TEXT("how many exhibits are there"),
+			TEXT("what happened in 2019"), TEXT("recommend a book about oceans"), TEXT("is the coaster scary") };
+	}
+	int32 Count = 0;
+	for (const FName& Name : Content->GetRowNames(EWTATable::Staff))
+	{
+		TArray<FString> Questions;
+		for (const FText& Chip : Dialogue->GetChips(Name))
+		{
+			Questions.Add(Chip.ToString());
+		}
+		Questions.Append(Common);
+		for (const FString& Question : Questions)
+		{
+			const FWTAReply Reply = Dialogue->Ask(Name, Question);
+			const FString Offer = Reply.bOffer ? FString::Printf(TEXT(" offered: %s"), *Reply.OfferLabel.ToString()) : FString();
+			UE_LOG(LogWTA, Display, TEXT("WTA_CHAT %s | %s -> %s [%s %s%s]"), *Name.ToString(), *Question, *Reply.Text.ToString(),
+				*Reply.Action.ToString(), *Reply.ActionArg.ToString(), *Offer);
+			++Count;
+		}
+	}
+	UE_LOG(LogWTA, Display, TEXT("WTA_CHAT done %d questions"), Count);
+}
+
+void AWTAPlayerController::WTAChatShots(float SecondsPerShot)
+{
+	ChatShots.Reset();
+	ChatShotClicks.Reset();
+	bChatShotClicked = false;
+	ChatShotSeconds = FMath::Max(SecondsPerShot, 1.f);
+	TArray<FString> Lines;
+	if (FFileHelper::LoadFileToStringArray(Lines, *(FPaths::ProjectSavedDir() / TEXT("QA") / TEXT("chat_shots.txt"))))
+	{
+		for (const FString& Line : Lines)
+		{
+			// "<staff> | <question>" or "<staff> | <question> | click"
+			TArray<FString> Parts;
+			Line.ParseIntoArray(Parts, TEXT("|"));
+			for (FString& Part : Parts)
+			{
+				Part.TrimStartAndEndInline();
+			}
+			if (Parts.Num() >= 2 && !Parts[0].StartsWith(TEXT("#")) && !Parts[0].IsEmpty() && !Parts[1].IsEmpty())
+			{
+				ChatShots.Emplace(FName(*Parts[0]), Parts[1]);
+				ChatShotClicks.Add(Parts.Num() >= 3 && Parts[2].Equals(TEXT("click"), ESearchCase::IgnoreCase));
+			}
+		}
+	}
+	if (ChatShots.Num() == 0)
+	{
+		ChatShots.Emplace(FName(TEXT("margaret")), TEXT("What is XRLibraries?"));
+		ChatShots.Emplace(FName(TEXT("rosa")), TEXT("Recommend a book"));
+		ChatShots.Emplace(FName(TEXT("hale")), TEXT("How do blueprints work?"));
+		ChatShots.Emplace(FName(TEXT("rae")), TEXT("Where are the hidden tokens?"));
+		ChatShotClicks.Init(false, ChatShots.Num());
+	}
+	while (CloseTopPanel())
+	{
+	}
+	ChatShotIndex = 0;
+	UE_LOG(LogWTA, Display, TEXT("WTA_CHATSHOT start %d questions, %.1f s each"), ChatShots.Num(), ChatShotSeconds);
+	ChatShotAsk();
+}
+
+void AWTAPlayerController::WTAPlayTest(const FString& Phases)
+{
+	if (PlayTest == nullptr)
+	{
+		PlayTest = NewObject<UWTAPlayTest>(this, TEXT("WTAPlayTest"));
+		PlayTest->RegisterComponent();
+	}
+	if (PlayTest->IsRunning())
+	{
+		UE_LOG(LogWTA, Warning, TEXT("WTAPlayTest: already running"));
+		return;
+	}
+	PlayTest->Run(Phases);
+}
+
+void AWTAPlayerController::ChatShotAsk()
+{
+	while (CloseTopPanel())
+	{
+	}
+	if (!ChatShots.IsValidIndex(ChatShotIndex))
+	{
+		UE_LOG(LogWTA, Display, TEXT("WTA_CHATSHOT done %d questions"), ChatShots.Num());
+		ChatShotIndex = INDEX_NONE;
+		return;
+	}
+	const FName StaffId = ChatShots[ChatShotIndex].Key;
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	const FWTAStaffRow* Staff = Content ? Content->FindStaff(StaffId) : nullptr;
+	if (Staff != nullptr && Staff->TalkView.bValid)
+	{
+		GoToView(Staff->TalkView, false);
+	}
+	if (Chat != nullptr)
+	{
+		Chat->ClearConversation();
+	}
+	OpenStaffChat(StaffId);
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Send(ChatShots[ChatShotIndex].Value);
+	}
+	GetWorldTimerManager().SetTimer(ChatShotTimer, this, &AWTAPlayerController::ChatShotCapture, ChatShotSeconds, false);
+}
+
+void AWTAPlayerController::ChatShotCapture()
+{
+	if (!ChatShots.IsValidIndex(ChatShotIndex))
+	{
+		return;
+	}
+	const FString File = FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() / FString::Printf(TEXT("QA/chat_%02d_%s%s.png"),
+		ChatShotIndex, *ChatShots[ChatShotIndex].Key.ToString(), bChatShotClicked ? TEXT("_after") : TEXT("")));
+	FScreenshotRequest::RequestScreenshot(File, true, false);
+	UE_LOG(LogWTA, Display, TEXT("WTA_CHATSHOT %s | %s"), *File, *ChatShots[ChatShotIndex].Value);
+	if (!bChatShotClicked && ChatShotClicks.IsValidIndex(ChatShotIndex) && ChatShotClicks[ChatShotIndex])
+	{
+		// Leave the screenshot a few frames, then click the answer's offer button and capture what it opens.
+		GetWorldTimerManager().SetTimer(ChatShotTimer, this, &AWTAPlayerController::ChatShotClick, 0.5f, false);
+		return;
+	}
+	bChatShotClicked = false;
+	++ChatShotIndex;
+	// Leave the screenshot a few frames before the next question.
+	GetWorldTimerManager().SetTimer(ChatShotTimer, this, &AWTAPlayerController::ChatShotAsk, 0.5f, false);
+}
+
+void AWTAPlayerController::ChatShotClick()
+{
+	bChatShotClicked = true;
+	const bool bClicked = Chat != nullptr && Chat->ClickOffer(0);
+	UE_LOG(LogWTA, Display, TEXT("WTA_CHATSHOT click %s"), bClicked ? TEXT("ran the offer") : TEXT("found no offer button"));
+	GetWorldTimerManager().SetTimer(ChatShotTimer, this, &AWTAPlayerController::ChatShotCapture, ChatShotSeconds, false);
+}
+
 void AWTAPlayerController::ShotTourTeleport()
 {
 	if (!ShotTourViews.IsValidIndex(ShotTourIndex))
@@ -1012,10 +1196,7 @@ void AWTAPlayerController::ShotTourTeleport()
 		ShotTourIndex = INDEX_NONE;
 		return;
 	}
-	if (AWTACharacter* WTACharacter = GetWTACharacter())
-	{
-		WTACharacter->TeleportToView(ShotTourViews[ShotTourIndex].Value);
-	}
+	GoToView(ShotTourViews[ShotTourIndex].Value, false);
 	GetWorldTimerManager().SetTimer(ShotTourTimer, this, &AWTAPlayerController::ShotTourCapture, ShotTourSeconds, false);
 }
 

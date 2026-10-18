@@ -48,6 +48,7 @@ class UWTAHudWidget;
 class UWTAInteractionComponent;
 class UWTAMenuWidget;
 class UWTAPanelWidget;
+class UWTAPlayTest;
 struct FInputActionValue;
 
 /** Fired after SetUIMode: true when a panel, the chat or the menu is open. */
@@ -257,7 +258,33 @@ public:
 	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
 	void WTAShotTour(float SecondsPerShot = 5.f);
 
+	/** QA: asks every staff member their own chips, then each line of Saved/QA/chat_questions.txt (or a short built-in
+	 *  list); logs one WTA_CHAT line per answer (text, action, arg, offer label) and "WTA_CHAT done N questions". */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAChatTest();
+
+	/**
+	 * QA: for each line "<staff id> | <question>" of Saved/QA/chat_shots.txt (or a built-in set), stands the player at
+	 * that staff member's talk view, opens a fresh chat, asks the question and, SecondsPerShot later, saves a
+	 * screenshot with the UI to Saved/Screenshots/<platform>/QA/chat_<NN>_<staff>.png. A line ending in "| click" then
+	 * clicks the answer's first offer button and saves chat_<NN>_<staff>_after.png. Logs WTA_CHATSHOT lines.
+	 */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAChatShots(float SecondsPerShot = 2.5f);
+
+	/**
+	 * QA: plays the game like a player and logs a PASS / FAIL line per check (see UWTAPlayTest): the menu, walking into
+	 * every wall of Saved/QA/walk_tests.txt, E on every interactable, the Wax Hall stories, the tour, chat, badges,
+	 * graphics presets, frame rate, the people's poses and a close-up of every face. Console: WTAPlayTest [phases]
+	 * ("all" or e.g. "faces people"). Logs WTA_PLAY lines and "WTA_PLAY done ...".
+	 */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAPlayTest(const FString& Phases = TEXT("all"));
+
 protected:
+	/** The play test drives the input handlers directly when keys cannot be sent through Slate. */
+	friend class UWTAPlayTest;
+
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -340,4 +367,20 @@ protected:
 	int32 ShotTourIndex = INDEX_NONE;
 	float ShotTourSeconds = 5.f;
 	FTimerHandle ShotTourTimer;
+
+	/** WTAChatShots: ask the current question in a fresh chat, capture it after ChatShotSeconds, optionally click its
+	 *  first offer button and capture what that opens, then move on. */
+	void ChatShotAsk();
+	void ChatShotCapture();
+	void ChatShotClick();
+	TArray<TPair<FName, FString>> ChatShots;
+	TArray<bool> ChatShotClicks;
+	int32 ChatShotIndex = INDEX_NONE;
+	float ChatShotSeconds = 2.5f;
+	bool bChatShotClicked = false;
+	FTimerHandle ChatShotTimer;
+
+	/** WTAPlayTest: the scripted play test, created on first use. */
+	UPROPERTY(Transient)
+	TObjectPtr<UWTAPlayTest> PlayTest;
 };

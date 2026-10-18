@@ -38,9 +38,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
 	static USkeletalMeshComponent* FindBody(AActor* MetaHuman);
 
+	/** The MetaHuman's face mesh: the skeletal mesh component named "Face" (null when there is none). */
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	static USkeletalMeshComponent* FindFace(AActor* MetaHuman);
+
+	/**
+	 * True once the face has caught up with the body's pose: its head joint sits on the body's head joint (within
+	 * half a centimetre). The face copies the body's neck and head in its own anim graph, a frame or more after the
+	 * body moves; a face frozen before that keeps its reference pose under a posed head, which pulls the face out of
+	 * shape (the "drooping" look). Also true when either mesh or joint is missing (nothing to wait for).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	static bool IsFaceOnBody(AActor* MetaHuman, float& OutGapCm);
+
 	/**
 	 * Plays Anim on the body (single-node mode). bLoop: a living idle (staff). Otherwise the body holds the frame at
-	 * StartTime seconds (a wax figure), and every mesh on the actor evaluates at LOD0 even off screen until Freeze.
+	 * StartTime seconds (a wax figure), and every mesh on the actor evaluates even off screen (Thaw) until Freeze.
 	 * Returns false when there is no body or no animation.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
@@ -48,10 +61,33 @@ public:
 
 	/**
 	 * Holds the pose as last evaluated: every skeletal mesh on the actor skips further animation and bone updates
-	 * (bNoSkeletonUpdate) but keeps ticking, so LODs still follow the camera.
+	 * (bNoSkeletonUpdate) but keeps ticking, so LODs still follow the camera. Each LOD skins with its own set of
+	 * bones and an evaluation only poses the current LOD's, so a frozen mesh drawn at a finer LOD than it was posed
+	 * at has bones left at the component origin (they drag the jaw and lips down to the feet): whoever freezes a
+	 * person must Thaw it for a frame or two whenever its LOD changes (AWTAWaxStageActor does).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
 	static void Freeze(AActor* MetaHuman);
+
+	/** Lets every skeletal mesh on the actor evaluate again, off screen too, until the next Freeze. */
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	static void Thaw(AActor* MetaHuman);
+
+	/**
+	 * The LOD the mesh will draw and evaluate this frame when called after its LOD sync ticked and before the mesh
+	 * ticks: the LOD the sync forced, clamped the way USkinnedMeshComponent::UpdateLODStatus clamps it (the mesh's
+	 * LOD range, nothing finer than is streamed in). A mesh nothing forces keeps last frame's LOD.
+	 */
+	static int32 NextLOD(const USkeletalMeshComponent* Mesh);
+
+	/**
+	 * Bones the mesh's current LOD skins with that sit at the component origin although the reference pose has them
+	 * well away from it: bones that were never evaluated. OutNames (optional) gets the first few names.
+	 */
+	static int32 CountCollapsedBones(const USkeletalMeshComponent* Mesh, FString* OutNames = nullptr);
+
+	/** One entry per skeletal mesh on the actor: its LOD (forced, best streamed in, wanted), frozen, collapsed bones. */
+	static FString DescribeMeshes(AActor* MetaHuman);
 
 	/** A stable 0..1 value per person, used to give each figure its own frame of the idle. */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")

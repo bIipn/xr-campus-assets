@@ -8,7 +8,8 @@
 // scene_id and trigger_extent.
 // Reenactors: at BeginPlay every row Figure whose MetaHuman has been built (/Game/WTA/Characters/<Person>/
 // BP_<Person>) is spawned on the stage floor at StageLocation + Offset (rotated by StageYaw), facing StageYaw + Yaw,
-// posed on its own frame of FigurePose, and frozen 1.5 seconds later like a wax figure.
+// posed on its own frame of FigurePose, and frozen about 1.5 seconds later like a wax figure. A frozen figure is
+// posed again for a couple of frames whenever one of its meshes changes LOD (see UpdateFigureBones).
 
 #pragma once
 
@@ -19,6 +20,7 @@
 
 class UAnimSequence;
 class UBoxComponent;
+class USkeletalMeshComponent;
 
 UCLASS(Blueprintable)
 class WALKTHEARCHIVE_API AWTAWaxStageActor : public AActor
@@ -63,6 +65,10 @@ public:
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|People")
 	TArray<TObjectPtr<AActor>> Figures;
 
+	/** How many times a frozen figure on this stage has been posed again for a new LOD (QA). */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	int32 GetReposeCount() const { return NumReposes; }
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
@@ -75,10 +81,44 @@ protected:
 	/** Spawn the row's Figures whose MetaHumans exist and pose them. */
 	void SpawnFigures();
 
-	/** Stop the posed figures from ticking (a held pose stays). */
-	void FreezeFigures();
+	/**
+	 * Every frame, after the figures' LOD syncs pick this frame's LODs and before the figures' meshes tick:
+	 * - a new figure evaluates for SettleSeconds (and MinFramesBeforeFreeze frames) until its face sits on its body
+	 *   (UWTAPeopleLibrary::IsFaceOnBody), then freezes; after MaxSecondsBeforeFreeze it freezes anyway (warning);
+	 * - a frozen figure whose mesh is about to change LOD thaws, so it evaluates at the new LOD in the same frame the
+	 *   LOD is first drawn (each LOD skins with its own bones; unevaluated ones sit at the feet), and freezes again
+	 *   two frames later;
+	 * - a figure only freezes on a frame whose LODs match the frame it last evaluated.
+	 */
+	void UpdateFigureBones();
 
-	FTimerHandle FreezeTimer;
+	/** A figure freezes no sooner than this many frames after it was spawned and posed. */
+	UPROPERTY(EditAnywhere, Category = "WTA|People")
+	int32 MinFramesBeforeFreeze = 10;
+
+	/** ...and no sooner than this many seconds. */
+	UPROPERTY(EditAnywhere, Category = "WTA|People")
+	float SettleSeconds = 1.5f;
+
+	/** Give up waiting for a face to settle after this many seconds and freeze anyway. */
+	UPROPERTY(EditAnywhere, Category = "WTA|People")
+	float MaxSecondsBeforeFreeze = 15.f;
+
+	/** One reenactor's skeletal meshes and the LOD each was last evaluated at while frozen. */
+	struct FFigureBones
+	{
+		TWeakObjectPtr<AActor> Figure;
+		TArray<TWeakObjectPtr<USkeletalMeshComponent>> Meshes;
+		TArray<int32> PosedLOD;
+		bool bFrozen = false;
+		bool bEverFrozen = false;
+		/** Frames evaluated since it was spawned or last thawed. */
+		int32 EvalFrames = 0;
+	};
+	TArray<FFigureBones> FigureBones;
+	uint64 SpawnFrame = 0;
+	double SpawnSeconds = 0.0;
+	int32 NumReposes = 0;
 
 	/** Copy of the row, read at BeginPlay. */
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA")

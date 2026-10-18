@@ -1,0 +1,1810 @@
+// Walk the Archive - QA play test (see the header for the phases and the log format).
+
+#include "Core/WTAPlayTest.h"
+#include "Core/WTACharacter.h"
+#include "Core/WTALog.h"
+#include "Core/WTAPlayerController.h"
+#include "Core/WTASettings.h"
+#include "Interaction/WTAInteractable.h"
+#include "Interaction/WTAInteractionComponent.h"
+#include "Systems/WTAContentSubsystem.h"
+#include "Systems/WTAGraphicsLibrary.h"
+#include "Systems/WTAProgressSubsystem.h"
+#include "Systems/WTARoomSubsystem.h"
+#include "Systems/WTATourSubsystem.h"
+#include "UI/WTAChatWidget.h"
+#include "UI/WTAMenuWidget.h"
+#include "UI/WTAPanelWidget.h"
+#include "World/WTABookActor.h"
+#include "World/WTAExhibitActor.h"
+#include "World/WTAPeopleLibrary.h"
+#include "World/WTARideActor.h"
+#include "World/WTAStaffNPC.h"
+#include "World/WTAStationActor.h"
+#include "World/WTATokenActor.h"
+#include "World/WTAWaxStageActor.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
+#include "CollisionQueryParams.h"
+#include "CollisionShape.h"
+#include "Components/ChildActorComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/Engine.h"
+#include "Engine/PostProcessVolume.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Framework/Application/SlateApplication.h"
+#include "GameFramework/GameUserSettings.h"
+#include "HAL/IConsoleManager.h"
+#include "InputActionValue.h"
+#include "Misc/App.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "UnrealClient.h"
+
+namespace
+{
+	const TCHAR* ResultWord(int32 Result)
+	{
+		switch (Result)
+		{
+		case 0: return TEXT("PASS");
+		case 1: return TEXT("FAIL");
+		case 2: return TEXT("SKIP");
+		default: return TEXT("INFO");
+		}
+	}
+
+	/** The floor height under (X, Y), searching down from FromZ; false when there is none within 6 m. */
+	bool FloorUnder(const UWorld* World, double X, double Y, double FromZ, const AActor* Ignore, double& OutZ)
+	{
+		FCollisionQueryParams Params(FName(TEXT("WTAPlayFloor")), false, Ignore);
+		FHitResult Hit;
+		if (World->LineTraceSingleByChannel(Hit, FVector(X, Y, FromZ), FVector(X, Y, FromZ - 600.0), ECC_Pawn, Params))
+		{
+			OutZ = Hit.ImpactPoint.Z;
+			return true;
+		}
+		return false;
+	}
+
+	/** True when a player capsule standing on FloorZ at (X, Y) touches nothing that blocks it. */
+	bool CapsuleFits(const UWorld* World, double X, double Y, double FloorZ, const AActor* Ignore)
+	{
+		FCollisionQueryParams Params(FName(TEXT("WTAPlayFit")), false, Ignore);
+		return !World->OverlapBlockingTestByChannel(FVector(X, Y, FloorZ + 92.0), FQuat::Identity, ECC_Pawn,
+			FCollisionShape::MakeCapsule(29.f, 88.f), Params);
+	}
+
+	/** A component-space bone location, or zero when the mesh has no such bone. */
+	FVector BoneInComponent(const USkeletalMeshComponent* Mesh, FName Bone)
+	{
+		if (Mesh == nullptr || Mesh->GetBoneIndex(Bone) == INDEX_NONE)
+		{
+			return FVector::ZeroVector;
+		}
+		return Mesh->GetSocketTransform(Bone, RTS_Component).GetLocation();
+	}
+
+	/** The MetaHuman face mesh: the skeletal mesh component named Face, else one whose mesh asset says Face. */
+	USkeletalMeshComponent* FindFace(AActor* Person)
+	{
+		if (Person == nullptr)
+		{
+			return nullptr;
+		}
+		TInlineComponentArray<USkeletalMeshComponent*> Meshes;
+		Person->GetComponents(Meshes);
+		for (USkeletalMeshComponent* Mesh : Meshes)
+		{
+			if (Mesh != nullptr && Mesh->GetFName() == TEXT("Face"))
+			{
+				return Mesh;
+			}
+		}
+		for (USkeletalMeshComponent* Mesh : Meshes)
+		{
+			if (Mesh != nullptr && Mesh->GetSkeletalMeshAsset() != nullptr && Mesh->GetSkeletalMeshAsset()->GetName().Contains(TEXT("Face")))
+			{
+				return Mesh;
+			}
+		}
+		return nullptr;
+	}
+
+	const TCHAR* PanelModeName(EWTAPanelMode Mode)
+	{
+		switch (Mode)
+		{
+		case EWTAPanelMode::Exhibit: return TEXT("Exhibit");
+		case EWTAPanelMode::Book: return TEXT("Book");
+		case EWTAPanelMode::Station: return TEXT("Station");
+		case EWTAPanelMode::Ride: return TEXT("Ride");
+		case EWTAPanelMode::Badges: return TEXT("Badges");
+		case EWTAPanelMode::Places: return TEXT("Places");
+		default: return TEXT("None");
+		}
+	}
+
+	/** The data row an interactable stands for (exhibit, book, station, ride, person or token), so a line names it. */
+	FName InteractRowId(const AActor* Actor)
+	{
+		if (const AWTAExhibitActor* Exhibit = Cast<AWTAExhibitActor>(Actor)) { return Exhibit->ItemId; }
+		if (const AWTABookActor* Book = Cast<AWTABookActor>(Actor)) { return Book->BookId; }
+		if (const AWTAStationActor* Station = Cast<AWTAStationActor>(Actor)) { return Station->StationId; }
+		if (const AWTARideActor* Ride = Cast<AWTARideActor>(Actor)) { return Ride->RideId; }
+		if (const AWTAStaffNPC* Staff = Cast<AWTAStaffNPC>(Actor)) { return Staff->StaffId; }
+		if (const AWTATokenActor* Token = Cast<AWTATokenActor>(Actor)) { return Token->TokenId; }
+		return NAME_None;
+	}
+
+	/** The view a place row stands at, or an invalid view. */
+	FWTAView PlaceView(const UObject* WorldContext, const TCHAR* PlaceId)
+	{
+		const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(WorldContext);
+		const FWTAPlaceRow* Row = Content != nullptr ? Content->FindPlace(FName(PlaceId)) : nullptr;
+		FWTAView View = Row != nullptr ? Row->View : FWTAView();
+		// Like the shot tour: a place with a location is a place to stand.
+		View.bValid = View.bValid || !View.Location.IsNearlyZero();
+		return View;
+	}
+}
+
+UWTAPlayTest::UWTAPlayTest()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+	PrimaryComponentTick.bTickEvenWhenPaused = true;
+}
+
+AWTAPlayerController* UWTAPlayTest::PC() const
+{
+	return Cast<AWTAPlayerController>(GetOwner());
+}
+
+AWTACharacter* UWTAPlayTest::Player() const
+{
+	const AWTAPlayerController* Controller = PC();
+	return Controller != nullptr ? Controller->GetWTACharacter() : nullptr;
+}
+
+void UWTAPlayTest::Report(const TCHAR* Phase, EResult Result, const FString& What, const FString& Details)
+{
+	switch (Result)
+	{
+	case EResult::Pass: ++NumPass; break;
+	case EResult::Fail: ++NumFail; break;
+	case EResult::Skip: ++NumSkip; break;
+	default: break;
+	}
+	UE_LOG(LogWTA, Display, TEXT("WTA_PLAY %s %s %s | %s"), Phase, ResultWord(static_cast<int32>(Result)), *What, *Details);
+}
+
+void UWTAPlayTest::Shot(const FString& Name, bool bShowUI)
+{
+	const FString File = bShowUI
+		? FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() / FString::Printf(TEXT("QA/play_%02d_%s.png"), ShotIndex++, *Name))
+		: FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() / FString::Printf(TEXT("QA/face_%02d_%s.png"), FaceIndex++, *Name));
+	FScreenshotRequest::RequestScreenshot(File, bShowUI, false);
+	UE_LOG(LogWTA, Display, TEXT("WTA_PLAY shot %s"), *File);
+}
+
+void UWTAPlayTest::KeyDown(const FKey& Key)
+{
+	AWTAPlayerController* Controller = PC();
+	if (bKeysWork && FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().ProcessKeyDownEvent(FKeyEvent(Key, FModifierKeysState(), 0u, false, 0u, 0u));
+		return;
+	}
+	if (Controller == nullptr)
+	{
+		return;
+	}
+	// No key routing: run what the binding runs.
+	const FInputActionValue Pressed(true);
+	if (Key == EKeys::E)
+	{
+		Controller->OnInteract(Pressed);
+	}
+	else if (Key == EKeys::Escape)
+	{
+		Controller->OnBack(Pressed);
+	}
+	else if (Key == EKeys::T)
+	{
+		Controller->OnTourNext(Pressed);
+	}
+	else if (Key == EKeys::M)
+	{
+		Controller->OnPlaces(Pressed);
+	}
+	else if (Key == EKeys::Enter)
+	{
+		Controller->OnChat(Pressed);
+	}
+	else if ((Key == EKeys::Right || Key == EKeys::Left) && Controller->Panel != nullptr && Controller->Panel->GetMode() == EWTAPanelMode::Book)
+	{
+		Controller->OpenBook(Controller->Panel->GetCurrentId(), Controller->Panel->GetCurrentPage() + (Key == EKeys::Right ? 1 : -1));
+	}
+	else if (Key == EKeys::W)
+	{
+		bHoldForward = true;
+	}
+	else if (Key == EKeys::LeftShift)
+	{
+		if (AWTACharacter* Character = Player())
+		{
+			Character->SetSprinting(true);
+		}
+	}
+}
+
+void UWTAPlayTest::KeyUp(const FKey& Key)
+{
+	if (bKeysWork && FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().ProcessKeyUpEvent(FKeyEvent(Key, FModifierKeysState(), 0u, false, 0u, 0u));
+		return;
+	}
+	if (Key == EKeys::W)
+	{
+		bHoldForward = false;
+	}
+	else if (Key == EKeys::LeftShift)
+	{
+		if (AWTACharacter* Character = Player())
+		{
+			Character->SetSprinting(false);
+		}
+	}
+}
+
+void UWTAPlayTest::AddTap(const FString& Name, const FKey& Key, float After)
+{
+	Steps.Add({ Name + TEXT(" down"), [this, Key]() -> float { KeyDown(Key); return 0.12f; } });
+	Steps.Add({ Name + TEXT(" up"), [this, Key, After]() -> float { KeyUp(Key); return After; } });
+}
+
+void UWTAPlayTest::CloseAll()
+{
+	if (AWTAPlayerController* Controller = PC())
+	{
+		for (int32 Guard = 0; Guard < 6 && Controller->CloseTopPanel(); ++Guard)
+		{
+		}
+	}
+}
+
+void UWTAPlayTest::StandAt(const FWTAView& View)
+{
+	// Through the controller, like the game's own teleports: that also drops a view the camera was still turning
+	// toward. (E on an exhibit or station walks to its view spot and turns the camera there; a test teleporting
+	// away mid-walk would otherwise be turned back toward the last exhibit.)
+	if (AWTAPlayerController* Controller = PC())
+	{
+		Controller->GoToView(View, false);
+	}
+	else if (AWTACharacter* Character = Player())
+	{
+		Character->TeleportToView(View);
+	}
+}
+
+FString UWTAPlayTest::DescribeAim(const AActor* Target) const
+{
+	const AWTAPlayerController* Controller = PC();
+	const UWorld* World = GetWorld();
+	if (Controller == nullptr || World == nullptr)
+	{
+		return TEXT("no view");
+	}
+	FVector Eye;
+	FRotator Rotation;
+	Controller->GetPlayerViewPoint(Eye, Rotation);
+	FCollisionQueryParams Params(FName(TEXT("WTAPlayWhy")), false, Controller->GetPawn());
+	FHitResult Hit;
+	const bool bHit = World->LineTraceSingleByChannel(Hit, Eye, Eye + Rotation.Vector() * 1500.0, ECC_Visibility, Params);
+	const FString Ray = bHit
+		? FString::Printf(TEXT("the ray hits %s (%s) at %.0f cm"), *GetNameSafe(Hit.GetActor()), *GetNameSafe(Hit.GetComponent()), Hit.Distance)
+		: FString(TEXT("the ray hits nothing within 15 m"));
+	const FVector Centre = Target != nullptr ? Target->GetComponentsBoundingBox(true).GetCenter() : FVector::ZeroVector;
+	return FString::Printf(TEXT("eye %s pitch %.0f yaw %.0f, %s; its centre %s is %.0f cm away"), *Eye.ToCompactString(),
+		Rotation.Pitch, Rotation.Yaw, *Ray, *Centre.ToCompactString(), FVector::Dist(Eye, Centre));
+}
+
+void UWTAPlayTest::Run(const FString& Phases)
+{
+	Steps.Reset();
+	StepIndex = INDEX_NONE;
+	WaitSeconds = 0.f;
+	NumPass = NumFail = NumSkip = 0;
+	ShotIndex = FaceIndex = 0;
+	WalkMoved = WalkTests = 0;
+	bKeysWork = true;
+	bHoldForward = false;
+	bMeasuring = false;
+
+	TArray<FString> Wanted;
+	Phases.ToLower().ParseIntoArrayWS(Wanted, TEXT(","));
+	// "only=<text>" keeps the people (faces, people) whose name contains <text>; several may be given.
+	PeopleFilter.Reset();
+	float SpeedDown = -1.f;
+	for (int32 i = Wanted.Num() - 1; i >= 0; --i)
+	{
+		if (Wanted[i].StartsWith(TEXT("only=")))
+		{
+			PeopleFilter.Add(Wanted[i].Mid(5));
+			Wanted.RemoveAt(i);
+		}
+		else if (Wanted[i].StartsWith(TEXT("speeddown=")))
+		{
+			SpeedDown = FCString::Atof(*Wanted[i].Mid(10));
+			Wanted.RemoveAt(i);
+		}
+	}
+	const bool bAll = Wanted.Num() == 0 || Wanted.Contains(TEXT("all"));
+	auto Want = [&](const TCHAR* Phase) { return bAll || Wanted.Contains(Phase); };
+	if (SpeedDown > 0.f)
+	{
+		Steps.Add({ TEXT("speed down"), [this, SpeedDown]() -> float
+		{
+			int32 Volumes = 0;
+			for (TActorIterator<APostProcessVolume> It(GetWorld()); It; ++It)
+			{
+				It->Settings.bOverride_AutoExposureSpeedDown = true;
+				It->Settings.AutoExposureSpeedDown = SpeedDown;
+				++Volumes;
+			}
+			Report(TEXT("save"), EResult::Info, TEXT("auto exposure speed down"), FString::Printf(TEXT("%.1f on %d volumes"), SpeedDown, Volumes));
+			return 0.f;
+		} });
+	}
+
+	// The menu check needs the intro menu as the game left it, so it goes first; every other phase starts closed.
+	if (Want(TEXT("menu")))
+	{
+		AddMenuPhase();
+	}
+	Steps.Add({ TEXT("close"), [this]() -> float { CloseAll(); return 0.3f; } });
+	if (Want(TEXT("keys")) || Want(TEXT("walk")) || Want(TEXT("interact")) || Want(TEXT("wax")) || Want(TEXT("ui")))
+	{
+		AddKeysPhase();
+	}
+	if (Want(TEXT("walk")))
+	{
+		AddWalkPhase();
+	}
+	if (Want(TEXT("interact")))
+	{
+		AddInteractPhase();
+	}
+	if (Want(TEXT("wax")))
+	{
+		AddWaxPhase();
+	}
+	if (Want(TEXT("ui")))
+	{
+		AddUIPhase();
+	}
+	if (Want(TEXT("graphics")))
+	{
+		AddGraphicsPhase();
+	}
+	if (Want(TEXT("fps")))
+	{
+		AddFpsPhase();
+	}
+	if (Want(TEXT("people")))
+	{
+		AddPeoplePhase();
+	}
+	if (Want(TEXT("faces")))
+	{
+		AddFacesPhase();
+	}
+	// Only when named: a minute of standing in rooms, for screenshots rather than checks.
+	if (Wanted.Contains(TEXT("adapt")))
+	{
+		AddAdaptPhase();
+	}
+	Steps.Add({ TEXT("done"), [this]() -> float
+	{
+		CloseAll();
+		UE_LOG(LogWTA, Display, TEXT("WTA_PLAY done %d pass, %d fail, %d skip"), NumPass, NumFail, NumSkip);
+		return 0.f;
+	} });
+
+	UE_LOG(LogWTA, Display, TEXT("WTA_PLAY start '%s': %d steps"), *Phases, Steps.Num());
+	if (const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
+	{
+		Report(TEXT("save"), EResult::Info, TEXT("progress at start"), FString::Printf(TEXT("%d of %d badges, %d of %d tokens"),
+			Progress->NumBadges(), Progress->TotalBadges(), Progress->NumTokens(), Progress->TotalTokens()));
+	}
+	StepIndex = 0;
+	WaitSeconds = 0.f;
+}
+
+void UWTAPlayTest::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (bHoldForward)
+	{
+		if (AWTACharacter* Character = Player())
+		{
+			Character->AddMoveInput(FVector2D(0.f, 1.f));
+		}
+	}
+	if (bMeasuring)
+	{
+		const float Frame = static_cast<float>(FApp::GetDeltaTime());
+		MeasureSeconds += Frame;
+		++MeasureFrames;
+		WorstFrame = FMath::Max(WorstFrame, Frame);
+	}
+
+	if (!Steps.IsValidIndex(StepIndex))
+	{
+		return;
+	}
+	WaitSeconds -= DeltaTime;
+	// Several zero-wait steps may run in one frame; a waiting step ends the frame.
+	for (int32 Guard = 0; Guard < 64 && WaitSeconds <= 0.f && Steps.IsValidIndex(StepIndex); ++Guard)
+	{
+		const float Next = Steps[StepIndex].Do();
+		if (Next < 0.f)
+		{
+			WaitSeconds = -Next;   // poll: run this step again later
+		}
+		else
+		{
+			WaitSeconds = Next;
+			++StepIndex;
+		}
+	}
+}
+
+// --- menu ------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddMenuPhase()
+{
+	Steps.Add({ TEXT("menu at start"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const UWTASettings* Settings = UWTASettings::Get();
+		const bool bWanted = Settings == nullptr || Settings->bShowIntroMenu;
+		const bool bOpen = Controller != nullptr && Controller->Menu != nullptr && Controller->Menu->IsOpen();
+		Report(TEXT("menu"), (bOpen || !bWanted) ? EResult::Pass : EResult::Fail, TEXT("intro menu at start"),
+			bOpen ? TEXT("open") : (bWanted ? TEXT("not open") : TEXT("switched off in the settings")));
+		Shot(TEXT("menu_intro"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("menu enter"), [this]() -> float
+	{
+		// The Enter button runs CloseTopPanel.
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->CloseTopPanel();
+		}
+		return 1.5f;
+	} });
+	Steps.Add({ TEXT("menu start view"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		AWTACharacter* Character = Player();
+		const UWTARoomSubsystem* Rooms = UWTARoomSubsystem::Get(this);
+		if (Controller == nullptr || Character == nullptr)
+		{
+			Report(TEXT("menu"), EResult::Fail, TEXT("start"), TEXT("no player"));
+			return 0.f;
+		}
+		const FName Room = Rooms != nullptr ? Rooms->GetCurrentRoom() : NAME_None;
+		const float Yaw = static_cast<float>(Controller->GetControlRotation().Yaw);
+		// The galleries run along -Y from the lobby: facing them is a yaw of -90.
+		const float Off = FMath::Abs(FMath::FindDeltaAngleDegrees(Yaw, -90.f));
+		const bool bOk = Room == FName(TEXT("lobby")) && Off < 35.f && !Controller->IsAnyPanelOpen();
+		Report(TEXT("menu"), bOk ? EResult::Pass : EResult::Fail, TEXT("Enter starts in the lobby facing the galleries"),
+			FString::Printf(TEXT("room %s, yaw %.0f (%.0f off), at %s, panels %s"), *Room.ToString(), Yaw, Off,
+				*Character->GetActorLocation().ToCompactString(), Controller->IsAnyPanelOpen() ? TEXT("open") : TEXT("closed")));
+		Shot(TEXT("start_view"));
+		return 0.4f;
+	} });
+	AddTap(TEXT("menu esc"), EKeys::Escape, 0.5f);
+	Steps.Add({ TEXT("menu pause"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->Menu != nullptr && Controller->Menu->IsOpen();
+		Report(TEXT("menu"), bOpen ? EResult::Pass : EResult::Fail, TEXT("Esc opens the pause menu"), bOpen ? TEXT("open") : TEXT("not open"));
+		if (bOpen)
+		{
+			Shot(TEXT("menu_pause"));
+		}
+		return 0.4f;
+	} });
+	AddTap(TEXT("menu esc again"), EKeys::Escape, 0.5f);
+	Steps.Add({ TEXT("menu closed"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->IsAnyPanelOpen();
+		Report(TEXT("menu"), bOpen ? EResult::Fail : EResult::Pass, TEXT("Esc closes the pause menu"), bOpen ? TEXT("still open") : TEXT("closed"));
+		return 0.2f;
+	} });
+}
+
+// --- keys ------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddKeysPhase()
+{
+	Steps.Add({ TEXT("keys m"), [this]() -> float
+	{
+		CloseAll();
+		KeyDown(EKeys::M);
+		return 0.12f;
+	} });
+	Steps.Add({ TEXT("keys m up"), [this]() -> float { KeyUp(EKeys::M); return 0.5f; } });
+	Steps.Add({ TEXT("keys check"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bPlaces = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen()
+			&& Controller->Panel->GetMode() == EWTAPanelMode::Places;
+		if (bPlaces)
+		{
+			Report(TEXT("keys"), EResult::Pass, TEXT("M opens the places list"), TEXT("keys reach the game through Slate"));
+			Shot(TEXT("places"));
+		}
+		else
+		{
+			bKeysWork = false;
+			Report(TEXT("keys"), EResult::Info, TEXT("M through Slate did nothing"), TEXT("the window has no keyboard focus; the input handlers are called directly from here on"));
+			KeyDown(EKeys::M);
+			const bool bDirect = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->GetMode() == EWTAPanelMode::Places;
+			Report(TEXT("keys"), bDirect ? EResult::Pass : EResult::Fail, TEXT("M handler opens the places list"), bDirect ? TEXT("open") : TEXT("not open"));
+		}
+		return 0.3f;
+	} });
+	AddTap(TEXT("keys esc"), EKeys::Escape, 0.4f);
+	Steps.Add({ TEXT("keys esc check"), [this]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->IsAnyPanelOpen();
+		Report(TEXT("keys"), bOpen ? EResult::Fail : EResult::Pass, TEXT("Esc closes the places list"), bOpen ? TEXT("still open") : TEXT("closed"));
+		CloseAll();
+		return 0.2f;
+	} });
+}
+
+// --- walk ------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddWalkPhase()
+{
+	TArray<FString> Lines;
+	const FString File = FPaths::ProjectSavedDir() / TEXT("QA") / TEXT("walk_tests.txt");
+	if (!FFileHelper::LoadFileToStringArray(Lines, *File))
+	{
+		Steps.Add({ TEXT("walk none"), [this, File]() -> float
+		{
+			Report(TEXT("walk"), EResult::Skip, TEXT("walk tests"), FString::Printf(TEXT("no %s"), *File));
+			return 0.f;
+		} });
+		return;
+	}
+	int32 Added = 0;
+	for (const FString& Line : Lines)
+	{
+		// "<name> | <x> <y> | <yaw> | x|y <wall coordinate>"
+		TArray<FString> Parts;
+		Line.ParseIntoArray(Parts, TEXT("|"));
+		for (FString& Part : Parts)
+		{
+			Part.TrimStartAndEndInline();
+		}
+		if (Parts.Num() < 4 || Parts[0].StartsWith(TEXT("#")))
+		{
+			continue;
+		}
+		TArray<FString> XY;
+		TArray<FString> Wall;
+		Parts[1].ParseIntoArrayWS(XY);
+		Parts[3].ParseIntoArrayWS(Wall);
+		if (XY.Num() < 2 || Wall.Num() < 2)
+		{
+			continue;
+		}
+		AddWalkTest(Parts[0], FVector2D(FCString::Atod(*XY[0]), FCString::Atod(*XY[1])), FCString::Atof(*Parts[2]),
+			Wall[0].Equals(TEXT("x"), ESearchCase::IgnoreCase), FCString::Atof(*Wall[1]));
+		++Added;
+	}
+	Steps.Add({ TEXT("walk summary"), [this, Added]() -> float
+	{
+		// The tests prove nothing if the keys never moved the player: some must cover real ground.
+		Report(TEXT("walk"), (WalkTests == 0 || WalkMoved > 0) ? EResult::Pass : EResult::Fail, TEXT("summary"),
+			FString::Printf(TEXT("%d tests from %d lines, %d walked 50 cm or more before stopping"), WalkTests, Added, WalkMoved));
+		return 0.f;
+	} });
+}
+
+void UWTAPlayTest::AddWalkTest(const FString& Name, const FVector2D& XY, float Yaw, bool bAxisX, float WallAt)
+{
+	TSharedRef<FVector> Start = MakeShared<FVector>(FVector::ZeroVector);
+	TSharedRef<bool> bValid = MakeShared<bool>(false);
+
+	Steps.Add({ Name, [this, Name, XY, Yaw, Start, bValid]() -> float
+	{
+		*bValid = false;
+		AWTACharacter* Character = Player();
+		const UWorld* World = GetWorld();
+		if (Character == nullptr || World == nullptr)
+		{
+			return 0.f;
+		}
+		// The start is 150 cm from the wall's centre line. A thick wall (closets, a service gap between rooms) can
+		// swallow that spot, so step back from the wall, 50 cm at a time, up to 250 cm further, to find floor
+		// with room to stand.
+		const FVector2D Back = -FVector2D(FMath::Cos(FMath::DegreesToRadians(Yaw)), FMath::Sin(FMath::DegreesToRadians(Yaw)));
+		FVector2D At = XY;
+		double FloorZ = 0.0;
+		bool bFound = false;
+		bool bAnyFloor = false;
+		for (int32 Step = 0; Step <= 5 && !bFound; ++Step)
+		{
+			At = XY + Back * (50.0 * Step);
+			// Search down from 60 cm: above stage platforms, below desks and benches (a start on a desk top
+			// stepped off it and read as a fall).
+			if (FloorUnder(World, At.X, At.Y, 60.0, Character, FloorZ))
+			{
+				bAnyFloor = true;
+				bFound = CapsuleFits(World, At.X, At.Y, FloorZ, Character);
+			}
+		}
+		if (!bFound)
+		{
+			Report(TEXT("walk"), EResult::Skip, Name, bAnyFloor ? TEXT("no room to stand within 4 m of the wall") : TEXT("no floor there"));
+			return 0.f;
+		}
+		FWTAView View;
+		View.Location = FVector(At.X, At.Y, FloorZ + Character->EyeHeight);
+		View.Yaw = Yaw;
+		View.Pitch = 0.f;
+		View.bValid = true;
+		CloseAll();
+		StandAt(View);
+		*bValid = true;
+		return 0.3f;
+	} });
+	Steps.Add({ Name + TEXT(" go"), [this, Start, bValid]() -> float
+	{
+		if (!*bValid)
+		{
+			return 0.f;
+		}
+		if (AWTACharacter* Character = Player())
+		{
+			*Start = Character->GetActorLocation();
+		}
+		KeyDown(EKeys::LeftShift);
+		KeyDown(EKeys::W);
+		return 1.1f;
+	} });
+	Steps.Add({ Name + TEXT(" stop"), [this, bValid]() -> float
+	{
+		if (!*bValid)
+		{
+			return 0.f;
+		}
+		KeyUp(EKeys::W);
+		KeyUp(EKeys::LeftShift);
+		return 0.2f;
+	} });
+	Steps.Add({ Name + TEXT(" check"), [this, Name, Start, bValid, bAxisX, WallAt]() -> float
+	{
+		if (!*bValid)
+		{
+			return 0.f;
+		}
+		AWTACharacter* Character = Player();
+		if (Character == nullptr)
+		{
+			return 0.f;
+		}
+		const FVector End = Character->GetActorLocation();
+		const double S0 = (bAxisX ? Start->X : Start->Y) - WallAt;
+		const double S1 = (bAxisX ? End.X : End.Y) - WallAt;
+		const bool bCrossed = S0 * S1 < 0.0;
+		const bool bFell = End.Z < Start->Z - 60.0;
+		const double Moved = FVector::Dist2D(*Start, End);
+		++WalkTests;
+		if (Moved >= 50.0)
+		{
+			++WalkMoved;
+		}
+		Report(TEXT("walk"), (bCrossed || bFell) ? EResult::Fail : EResult::Pass, Name,
+			FString::Printf(TEXT("started %.0f cm from the wall, walked %.0f cm, stopped %.0f cm from it%s%s"),
+				FMath::Abs(S0), Moved, FMath::Abs(S1), bCrossed ? TEXT(", WENT THROUGH") : TEXT(""), bFell ? TEXT(", FELL") : TEXT("")));
+		if (bCrossed || bFell)
+		{
+			Shot(TEXT("walk_fail_") + Name.Replace(TEXT(" "), TEXT("_")));
+		}
+		return 0.f;
+	} });
+}
+
+// --- interact --------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddInteractPhase()
+{
+	TArray<AActor*> Found;
+	int32 Collected = 0;
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (Actor == nullptr || !Actor->Implements<UWTAInteractable>())
+		{
+			continue;
+		}
+		if (Actor->IsHidden())
+		{
+			++Collected;   // collected tokens hide
+			continue;
+		}
+		// "only=<text>" keeps the interactables whose row id or actor name contains <text>.
+		if (PeopleFilter.Num() > 0)
+		{
+			const FString Id = InteractRowId(Actor).ToString() + TEXT(" ") + Actor->GetName();
+			if (!PeopleFilter.ContainsByPredicate([&Id](const FString& Part) { return Id.Contains(Part); }))
+			{
+				continue;
+			}
+		}
+		Found.Add(Actor);
+	}
+	// Grouped by class (books, exhibits, rides, staff, stations, tokens), then by name.
+	Found.Sort([](const AActor& A, const AActor& B)
+	{
+		const FString ClassA = A.GetClass()->GetName();
+		const FString ClassB = B.GetClass()->GetName();
+		return ClassA != ClassB ? ClassA < ClassB : A.GetName() < B.GetName();
+	});
+	const int32 Count = Found.Num();
+	Steps.Add({ TEXT("interact start"), [this, Count, Collected]() -> float
+	{
+		Report(TEXT("interact"), EResult::Info, TEXT("interactables"), FString::Printf(TEXT("%d to try, %d hidden (collected tokens)"), Count, Collected));
+		return 0.f;
+	} });
+	TMap<UClass*, int32> PerClass;
+	for (AActor* Actor : Found)
+	{
+		int32& Index = PerClass.FindOrAdd(Actor->GetClass());
+		AddInteractTest(Actor, Index++);
+	}
+}
+
+void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
+{
+	struct FState
+	{
+		bool bOk = false;
+		int32 Try = 0;
+		FString Label;
+		int32 PageBefore = -2;
+	};
+	const TWeakObjectPtr<AActor> Weak(Actor);
+	const FString Kind = Actor->GetClass()->GetName().Replace(TEXT("WTA"), TEXT("")).Replace(TEXT("Actor"), TEXT("")).Replace(TEXT("NPC"), TEXT(""));
+	const FString Name = FString::Printf(TEXT("%s %s (%s)"), *Kind, *InteractRowId(Actor).ToString(), *Actor->GetName());
+	const FString ShotName = FString::Printf(TEXT("%s_%02d"), *Kind.ToLower(), ClassIndex);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	const bool bToken = Actor->IsA<AWTATokenActor>();
+	const bool bBook = Actor->IsA<AWTABookActor>();
+
+	// A token only a ride reaches (the rides are a later build): out of reach on foot is right for it.
+	FName RideGate;
+	if (const AWTATokenActor* Token = Cast<AWTATokenActor>(Actor))
+	{
+		const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		const FWTATokenRow* Row = Content != nullptr ? Content->FindToken(Token->TokenId) : nullptr;
+		RideGate = Row != nullptr ? Row->RideGate : NAME_None;
+	}
+	const bool bGated = !RideGate.IsNone();
+	auto OutOfReach = [this, Name, RideGate](const FString& Why)
+	{
+		if (!RideGate.IsNone())
+		{
+			Report(TEXT("interact"), EResult::Pass, Name, FString::Printf(TEXT("out of reach on foot, as it should be: the %s ride gets it (a later build)"),
+				*RideGate.ToString()));
+		}
+		else
+		{
+			Report(TEXT("interact"), EResult::Fail, Name, Why);
+		}
+	};
+
+	// 1. Stand at its view spot (where travel puts the player), else in front of it.
+	Steps.Add({ Name, [this, Weak, Name, S, OutOfReach]() -> float
+	{
+		S->bOk = false;
+		AActor* Target = Weak.Get();
+		if (Target == nullptr)
+		{
+			Report(TEXT("interact"), EResult::Skip, Name, TEXT("gone"));
+			return 0.f;
+		}
+		CloseAll();
+		FWTAView View;
+		S->Try = 0;
+		bool bHave = IWTAInteractable::Execute_GetViewSpot(Target, View) && View.bValid;
+		FString Why;
+		if (!bHave)
+		{
+			S->Try = 1;
+			bHave = FindAimView(Target, View, &Why);
+		}
+		if (!bHave)
+		{
+			OutOfReach(TEXT("no clear spot to stand and look at it, ") + Why);
+			return 0.f;
+		}
+		StandAt(View);
+		S->bOk = true;
+		return 0.45f;
+	} });
+
+	// 2. The crosshair must name it. When the view spot frames it so something else is under the crosshair,
+	//    try straight in front of it before calling it a failure.
+	Steps.Add({ Name + TEXT(" hover"), [this, Weak, Name, ShotName, S, OutOfReach, bGated]() -> float
+	{
+		if (!S->bOk)
+		{
+			return 0.f;
+		}
+		AActor* Target = Weak.Get();
+		AWTAPlayerController* Controller = PC();
+		if (Target == nullptr || Controller == nullptr || Controller->Interaction == nullptr)
+		{
+			S->bOk = false;
+			return 0.f;
+		}
+		if (Controller->Interaction->GetHovered() == Target)
+		{
+			return 0.f;
+		}
+		FString Why;
+		if (S->Try == 0)
+		{
+			FWTAView Aim;
+			if (FindAimView(Target, Aim, &Why))
+			{
+				S->Try = 1;
+				StandAt(Aim);
+				return -0.45f;
+			}
+		}
+		S->bOk = false;
+		if (bGated)
+		{
+			OutOfReach(Why);
+			return 0.f;
+		}
+		const AActor* Other = Controller->Interaction->GetHovered();
+		Report(TEXT("interact"), EResult::Fail, Name, FString::Printf(TEXT("the crosshair does not reach it (%s under it; %s)%s%s"),
+			Other != nullptr ? *Other->GetName() : TEXT("nothing"), *DescribeAim(Target),
+			Why.IsEmpty() ? TEXT("") : TEXT("; no spot to aim from, "), *Why));
+		Shot(TEXT("interact_nohover_") + ShotName);
+		// Hold this view for the screenshot (taken at the end of a frame) before the next test moves the player.
+		return 0.3f;
+	} });
+
+	// 3. E.
+	Steps.Add({ Name + TEXT(" E"), [this, Weak, S]() -> float
+	{
+		if (!S->bOk || Weak.Get() == nullptr)
+		{
+			return 0.f;
+		}
+		S->Label = IWTAInteractable::Execute_GetInteractLabel(Weak.Get()).ToString();
+		KeyDown(EKeys::E);
+		return 0.12f;
+	} });
+	Steps.Add({ Name + TEXT(" E up"), [this, S]() -> float
+	{
+		if (!S->bOk)
+		{
+			return 0.f;
+		}
+		KeyUp(EKeys::E);
+		return 0.75f;
+	} });
+
+	// 4. What opened?
+	Steps.Add({ Name + TEXT(" check"), [this, Weak, Name, ShotName, S, ClassIndex]() -> float
+	{
+		AActor* Target = Weak.Get();
+		AWTAPlayerController* Controller = PC();
+		if (!S->bOk || Target == nullptr || Controller == nullptr)
+		{
+			return 0.f;
+		}
+		const UWTAPanelWidget* Panel = Controller->Panel;
+		const bool bPanel = Panel != nullptr && Panel->IsOpen();
+		auto PanelIs = [&](EWTAPanelMode Mode, FName Id) { return bPanel && Panel->GetMode() == Mode && Panel->GetCurrentId() == Id; };
+		FString Expected;
+		bool bPass = false;
+		bool bShot = ClassIndex < 2;
+		if (const AWTAExhibitActor* Exhibit = Cast<AWTAExhibitActor>(Target))
+		{
+			Expected = TEXT("exhibit card ") + Exhibit->ItemId.ToString();
+			bPass = PanelIs(EWTAPanelMode::Exhibit, Exhibit->ItemId);
+		}
+		else if (const AWTABookActor* Book = Cast<AWTABookActor>(Target))
+		{
+			Expected = TEXT("book ") + Book->BookId.ToString();
+			bPass = PanelIs(EWTAPanelMode::Book, Book->BookId);
+		}
+		else if (const AWTAStationActor* Station = Cast<AWTAStationActor>(Target))
+		{
+			Expected = TEXT("station ") + Station->StationId.ToString();
+			bPass = PanelIs(EWTAPanelMode::Station, Station->StationId);
+		}
+		else if (const AWTARideActor* Ride = Cast<AWTARideActor>(Target))
+		{
+			Expected = TEXT("ride card ") + Ride->RideId.ToString();
+			bPass = PanelIs(EWTAPanelMode::Ride, Ride->RideId);
+		}
+		else if (const AWTAStaffNPC* Staff = Cast<AWTAStaffNPC>(Target))
+		{
+			Expected = TEXT("chat with ") + Staff->StaffId.ToString();
+			bPass = Controller->Chat != nullptr && Controller->Chat->IsOpen() && Controller->Chat->GetStaffId() == Staff->StaffId;
+		}
+		else if (const AWTATokenActor* Token = Cast<AWTATokenActor>(Target))
+		{
+			const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+			const FWTATokenRow* Row = Content != nullptr ? Content->FindToken(Token->TokenId) : nullptr;
+			const bool bGated = Row != nullptr && !Row->RideGate.IsNone();
+			const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+			const bool bGot = Progress != nullptr && Progress->HasToken(Token->TokenId);
+			Expected = bGated ? FString::Printf(TEXT("token %s stays (needs the %s ride, a later build)"), *Token->TokenId.ToString(), *Row->RideGate.ToString())
+				: FString::Printf(TEXT("token %s collected"), *Token->TokenId.ToString());
+			bPass = bGated ? !bGot : (bGot && Token->IsCollected());
+			bShot = ClassIndex < 1;
+		}
+		else
+		{
+			Expected = TEXT("something");
+			bPass = Controller->IsAnyPanelOpen();
+		}
+		FString Got = TEXT("nothing open");
+		if (Controller->Chat != nullptr && Controller->Chat->IsOpen())
+		{
+			Got = TEXT("chat with ") + Controller->Chat->GetStaffId().ToString();
+		}
+		else if (bPanel)
+		{
+			Got = FString::Printf(TEXT("panel %s %s page %d"), PanelModeName(Panel->GetMode()), *Panel->GetCurrentId().ToString(), Panel->GetCurrentPage());
+		}
+		Report(TEXT("interact"), bPass ? EResult::Pass : EResult::Fail, FString::Printf(TEXT("%s \"%s\""), *Name, *S->Label),
+			FString::Printf(TEXT("expected %s; %s"), *Expected, *Got));
+		if (bShot || !bPass)
+		{
+			Shot(TEXT("interact_") + ShotName);
+		}
+		if (!bPass)
+		{
+			S->bOk = false;
+		}
+		return 0.2f;
+	} });
+
+	// 5. Books: the right arrow turns the page.
+	if (bBook)
+	{
+		Steps.Add({ Name + TEXT(" page"), [this, S]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			if (!S->bOk || Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			S->PageBefore = Controller->Panel->GetCurrentPage();
+			KeyDown(EKeys::Right);
+			return 0.12f;
+		} });
+		Steps.Add({ Name + TEXT(" page up"), [this, S]() -> float
+		{
+			if (!S->bOk)
+			{
+				return 0.f;
+			}
+			KeyUp(EKeys::Right);
+			return 0.5f;
+		} });
+		Steps.Add({ Name + TEXT(" page check"), [this, Weak, Name, ShotName, S, ClassIndex]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			const AWTABookActor* Book = Cast<AWTABookActor>(Weak.Get());
+			if (!S->bOk || Controller == nullptr || Controller->Panel == nullptr || Book == nullptr)
+			{
+				return 0.f;
+			}
+			const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+			const FWTABookRow* Row = Content != nullptr ? Content->FindBook(Book->BookId) : nullptr;
+			const int32 Last = Row != nullptr ? Row->Pages.Num() - 1 : 0;
+			const int32 After = Controller->Panel->GetCurrentPage();
+			const bool bPass = S->PageBefore >= Last ? After == S->PageBefore : After == S->PageBefore + 1;
+			Report(TEXT("interact"), bPass ? EResult::Pass : EResult::Fail, Name + TEXT(" right arrow turns the page"),
+				FString::Printf(TEXT("page %d -> %d of %d"), S->PageBefore, After, Last + 1));
+			if (ClassIndex < 1 || !bPass)
+			{
+				Shot(TEXT("book_page_") + ShotName);
+			}
+			return 0.1f;
+		} });
+	}
+
+	// 6. Esc closes it. A token opens nothing, and Esc would open the pause menu.
+	if (!bToken)
+	{
+		Steps.Add({ Name + TEXT(" esc"), [this, S]() -> float
+		{
+			if (!S->bOk)
+			{
+				return 0.f;
+			}
+			KeyDown(EKeys::Escape);
+			return 0.12f;
+		} });
+		Steps.Add({ Name + TEXT(" esc up"), [this, S]() -> float
+		{
+			if (!S->bOk)
+			{
+				return 0.f;
+			}
+			KeyUp(EKeys::Escape);
+			return 0.45f;
+		} });
+		Steps.Add({ Name + TEXT(" closed"), [this, Name, S]() -> float
+		{
+			if (!S->bOk)
+			{
+				return 0.f;
+			}
+			AWTAPlayerController* Controller = PC();
+			const bool bOpen = Controller != nullptr && Controller->IsAnyPanelOpen();
+			Report(TEXT("interact"), bOpen ? EResult::Fail : EResult::Pass, Name + TEXT(" Esc closes it"), bOpen ? TEXT("still open") : TEXT("closed"));
+			CloseAll();
+			return 0.15f;
+		} });
+	}
+}
+
+bool UWTAPlayTest::FindAimView(AActor* Actor, FWTAView& OutView, FString* OutWhy) const
+{
+	const UWorld* World = GetWorld();
+	const AWTACharacter* Character = Player();
+	if (World == nullptr || Actor == nullptr || Character == nullptr)
+	{
+		return false;
+	}
+	const FBox Box = Actor->GetComponentsBoundingBox(true);
+	if (!Box.IsValid)
+	{
+		return false;
+	}
+	FVector Target = Box.GetCenter();
+	if (Actor->IsA<AWTAStaffNPC>())
+	{
+		Target = Actor->GetActorLocation() + FVector(0.f, 0.f, 40.f);
+	}
+	// Tall things (a ride's tower) are looked at low down, where a visitor would click them.
+	Target.Z = FMath::Min(Target.Z, Box.Min.Z + 250.0);
+	const FVector Extent = Box.GetExtent();
+	const double Reach = FMath::Clamp(FMath::Max(Extent.X, Extent.Y) + 110.0, 140.0, 450.0);
+	const FVector Forward = Actor->GetActorForwardVector().GetSafeNormal2D();
+	const double BaseYaw = Forward.IsNearlyZero() ? 0.0 : FMath::RadiansToDegrees(FMath::Atan2(Forward.Y, Forward.X));
+	FCollisionQueryParams Params(FName(TEXT("WTAPlayAim")), false, Character);
+	int32 NoFloor = 0;
+	int32 NoRoom = 0;
+	int32 SeesNothing = 0;
+	int32 Steep = 0;
+	TMap<FString, int32> Blockers;
+	// Close first, then further out (a hidden token is often seen from across the room; hover reaches 15 m).
+	const double Distances[] = { Reach, Reach + 150.0, Reach + 350.0, Reach + 600.0, 1000.0, 1300.0 };
+	for (const double Distance : Distances)
+	{
+		for (int32 i = 0; i < 24; ++i)
+		{
+			// The actor's forward first, then alternately left and right of it.
+			const int32 Ring = (i + 1) / 2;
+			const double Side = (i % 2 == 1) ? 1.0 : -1.0;
+			const double Yaw = BaseYaw + Side * Ring * 15.0;
+			const FVector Stand = Target + FRotator(0.0, Yaw, 0.0).Vector() * Distance;
+			// The campus is one storey (floors at 0 to 20 cm, a stage platform): search down from 1.2 m, under every
+			// ceiling (a token up on a cabinet would otherwise start the search above the room's ceiling), and stand
+			// only on floor, not on a desk or a shelf.
+			double FloorZ = 0.0;
+			if (!FloorUnder(World, Stand.X, Stand.Y, 120.0, Character, FloorZ) || FloorZ > 50.0)
+			{
+				++NoFloor;
+				continue;
+			}
+			if (!CapsuleFits(World, Stand.X, Stand.Y, FloorZ, Character))
+			{
+				++NoRoom;
+				continue;
+			}
+			const FVector Eye(Stand.X, Stand.Y, FloorZ + Character->EyeHeight);
+			const FRotator Look = (Target - Eye).Rotation();
+			if (FMath::Abs(Look.Pitch) > 75.0)
+			{
+				++Steep;
+				continue;
+			}
+			FHitResult Hit;
+			if (!World->LineTraceSingleByChannel(Hit, Eye, Target, ECC_Visibility, Params))
+			{
+				++SeesNothing;
+				continue;
+			}
+			if (Hit.GetActor() != Actor)
+			{
+				++Blockers.FindOrAdd(GetNameSafe(Hit.GetActor()));
+				continue;
+			}
+			OutView.Location = Eye;
+			OutView.Yaw = static_cast<float>(Look.Yaw);
+			OutView.Pitch = static_cast<float>(Look.Pitch);
+			OutView.bValid = true;
+			return true;
+		}
+	}
+	if (OutWhy != nullptr)
+	{
+		Blockers.ValueSort([](int32 A, int32 B) { return A > B; });
+		FString Blocked;
+		int32 Shown = 0;
+		for (const TPair<FString, int32>& Pair : Blockers)
+		{
+			if (Shown++ < 3)
+			{
+				Blocked += FString::Printf(TEXT("%s%s x%d"), Blocked.IsEmpty() ? TEXT("") : TEXT(", "), *Pair.Key, Pair.Value);
+			}
+		}
+		*OutWhy = FString::Printf(TEXT("of %d spots: %d no floor, %d no room to stand, %d too steep, %d see nothing at its centre (%s), blocked: %s"),
+			static_cast<int32>(UE_ARRAY_COUNT(Distances)) * 24, NoFloor, NoRoom, Steep, SeesNothing, *Target.ToCompactString(), Blocked.IsEmpty() ? TEXT("none") : *Blocked);
+	}
+	return false;
+}
+
+// --- wax -------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddWaxPhase()
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	if (Content == nullptr)
+	{
+		return;
+	}
+	int32 Index = 0;
+	for (const FName& SceneName : Content->GetRowNames(EWTATable::WaxScenes))
+	{
+		const FWTAWaxSceneRow* Row = Content->FindWaxScene(SceneName);
+		if (Row == nullptr)
+		{
+			continue;
+		}
+		// The shot tour's spot: the aisle, 4.2 m in front of the stage, looking at the reenactors.
+		FWTAView View;
+		View.Location = Row->StageLocation + FRotator(0.f, Row->StageYaw, 0.f).Vector() * 420.f;
+		View.Location.Z = 162.f;
+		View.Yaw = Row->StageYaw + 180.f;
+		View.Pitch = -8.f;
+		View.bValid = true;
+		const FName Story = Row->ItemId.IsNone() ? SceneName : Row->ItemId;
+		const FString Name = SceneName.ToString();
+		const int32 I = Index++;
+		Steps.Add({ TEXT("wax ") + Name, [this, View]() -> float
+		{
+			CloseAll();
+			StandAt(View);
+			return 0.8f;
+		} });
+		Steps.Add({ TEXT("wax plaque ") + Name, [this, Name, Story]() -> float
+		{
+			const AWTAPlayerController* Controller = PC();
+			const FName Active = Controller != nullptr ? Controller->GetActiveStageStory() : NAME_None;
+			const bool bHover = Controller != nullptr && Controller->Interaction != nullptr && Controller->Interaction->HasHover();
+			Report(TEXT("wax"), Active == Story ? EResult::Pass : EResult::Fail, Name + TEXT(" plaque when you walk up"),
+				FString::Printf(TEXT("active scene story %s%s"), *Active.ToString(), bHover ? TEXT(", something under the crosshair") : TEXT("")));
+			// What a visitor sees from the aisle, 0.8 s after arriving (the figures' LODs have just changed).
+			Shot(TEXT("wax_stage_") + Name);
+			return 0.1f;
+		} });
+		AddTap(TEXT("wax E ") + Name, EKeys::E, 0.7f);
+		Steps.Add({ TEXT("wax open ") + Name, [this, Name, Story, I]() -> float
+		{
+			const AWTAPlayerController* Controller = PC();
+			const bool bOpen = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen()
+				&& Controller->Panel->GetMode() == EWTAPanelMode::Exhibit && Controller->Panel->GetCurrentId() == Story;
+			Report(TEXT("wax"), bOpen ? EResult::Pass : EResult::Fail, Name + TEXT(" E opens the scene's story"),
+				bOpen ? TEXT("story card open") : TEXT("not open"));
+			if (I < 2 || !bOpen)
+			{
+				Shot(TEXT("wax_story_") + Name);
+			}
+			return 0.2f;
+		} });
+		AddTap(TEXT("wax esc ") + Name, EKeys::Escape, 0.4f);
+	}
+}
+
+// --- ui --------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddUIPhase()
+{
+	const TSharedRef<FVector> Before = MakeShared<FVector>(FVector::ZeroVector);
+	const TSharedRef<int32> Polls = MakeShared<int32>(0);
+	auto StandAtSpawn = [this]()
+	{
+		CloseAll();
+		const UWTASettings* Settings = UWTASettings::Get();
+		if (Settings != nullptr && Settings->SpawnView.bValid)
+		{
+			StandAt(Settings->SpawnView);
+		}
+	};
+
+	// Tour: T starts it and walks to stop 1, T walks to stop 2, Esc ends it.
+	Steps.Add({ TEXT("ui tour stand"), [StandAtSpawn]() -> float
+	{
+		StandAtSpawn();
+		return 0.5f;
+	} });
+	Steps.Add({ TEXT("ui tour before"), [this, Before]() -> float
+	{
+		if (const AWTACharacter* Character = Player())
+		{
+			*Before = Character->GetActorLocation();
+		}
+		return 0.f;
+	} });
+	for (int32 Stop = 0; Stop < 2; ++Stop)
+	{
+		AddTap(FString::Printf(TEXT("ui T %d"), Stop + 1), EKeys::T, 0.4f);
+		Steps.Add({ FString::Printf(TEXT("ui tour stop %d"), Stop + 1), [this, Before, Polls, Stop]() -> float
+		{
+			UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+			const AWTACharacter* Character = Player();
+			if (Tour == nullptr || !Tour->IsTouring())
+			{
+				Report(TEXT("ui"), EResult::Fail, Stop == 0 ? TEXT("T starts the tour") : TEXT("T goes to the next stop"), TEXT("no tour running"));
+				*Polls = 0;
+				return 0.f;
+			}
+			// Let the walk finish (up to 15 s).
+			if (Character != nullptr && Character->IsAutoWalking() && ++*Polls < 60)
+			{
+				return -0.25f;
+			}
+			*Polls = 0;
+			const double Walked = Character != nullptr ? FVector::Dist2D(*Before, Character->GetActorLocation()) : 0.0;
+			FWTATourStopRow Row;
+			Tour->GetCurrentStop(Row);
+			const bool bPass = Tour->GetIndex() == Stop && (Stop == 0 || Walked > 100.0);
+			Report(TEXT("ui"), bPass ? EResult::Pass : EResult::Fail,
+				Stop == 0 ? TEXT("T starts the tour and walks to the first stop") : TEXT("T walks on to the next stop"),
+				FString::Printf(TEXT("stop %d of %d \"%s\", walked %.0f cm"), Tour->GetIndex() + 1, Tour->GetNumStops(), *Row.Title.ToString(), Walked));
+			if (Character != nullptr)
+			{
+				*Before = Character->GetActorLocation();
+			}
+			return 1.0f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("ui tour shot %d"), Stop + 1), [this, Stop]() -> float
+		{
+			Shot(FString::Printf(TEXT("tour_stop%d"), Stop + 1));
+			return 0.3f;
+		} });
+	}
+	AddTap(TEXT("ui tour esc"), EKeys::Escape, 0.4f);
+	Steps.Add({ TEXT("ui tour end"), [this]() -> float
+	{
+		const UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+		const bool bTouring = Tour != nullptr && Tour->IsTouring();
+		Report(TEXT("ui"), bTouring ? EResult::Fail : EResult::Pass, TEXT("Esc ends the tour"), bTouring ? TEXT("still touring") : TEXT("ended"));
+		CloseAll();
+		return 0.3f;
+	} });
+
+	// Enter: the chat with the room's staff (Margaret in the lobby); Esc closes it.
+	Steps.Add({ TEXT("ui chat stand"), [this, StandAtSpawn]() -> float
+	{
+		StandAtSpawn();
+		return 0.6f;
+	} });
+	AddTap(TEXT("ui enter"), EKeys::Enter, 0.8f);
+	Steps.Add({ TEXT("ui chat"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->Chat != nullptr && Controller->Chat->IsOpen();
+		Report(TEXT("ui"), bOpen ? EResult::Pass : EResult::Fail, TEXT("Enter opens the chat with the room's staff"),
+			bOpen ? FString::Printf(TEXT("chat with %s"), *Controller->Chat->GetStaffId().ToString()) : FString(TEXT("not open")));
+		Shot(TEXT("chat_enter"));
+		return 0.2f;
+	} });
+	AddTap(TEXT("ui chat esc"), EKeys::Escape, 0.45f);
+	Steps.Add({ TEXT("ui chat closed"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->IsAnyPanelOpen();
+		Report(TEXT("ui"), bOpen ? EResult::Fail : EResult::Pass, TEXT("Esc closes the chat"), bOpen ? TEXT("still open") : TEXT("closed"));
+		CloseAll();
+		return 0.2f;
+	} });
+
+	// Badges.
+	Steps.Add({ TEXT("ui badges"), [this]() -> float
+	{
+		CloseAll();
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->OpenBadges();
+		}
+		return 0.6f;
+	} });
+	Steps.Add({ TEXT("ui badges check"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Badges;
+		Report(TEXT("ui"), bOpen ? EResult::Pass : EResult::Fail, TEXT("badges panel"), bOpen ? TEXT("open") : TEXT("not open"));
+		Shot(TEXT("badges"));
+		return 0.2f;
+	} });
+	AddTap(TEXT("ui badges esc"), EKeys::Escape, 0.4f);
+	Steps.Add({ TEXT("ui badges closed"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->IsAnyPanelOpen();
+		Report(TEXT("ui"), bOpen ? EResult::Fail : EResult::Pass, TEXT("Esc closes the badges panel"), bOpen ? TEXT("still open") : TEXT("closed"));
+		CloseAll();
+		return 0.2f;
+	} });
+}
+
+// --- graphics --------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddGraphicsPhase()
+{
+	Steps.Add({ TEXT("graphics save"), [this]() -> float
+	{
+		UGameUserSettings* Settings = GEngine != nullptr ? GEngine->GetGameUserSettings() : nullptr;
+		if (Settings != nullptr)
+		{
+			SavedQuality[0] = Settings->GetViewDistanceQuality();
+			SavedQuality[1] = Settings->GetAntiAliasingQuality();
+			SavedQuality[2] = Settings->GetShadowQuality();
+			SavedQuality[3] = Settings->GetGlobalIlluminationQuality();
+			SavedQuality[4] = Settings->GetReflectionQuality();
+			SavedQuality[5] = Settings->GetPostProcessingQuality();
+			SavedQuality[6] = Settings->GetTextureQuality();
+			SavedQuality[7] = Settings->GetVisualEffectQuality();
+			SavedQuality[8] = Settings->GetFoliageQuality();
+			SavedQuality[9] = Settings->GetShadingQuality();
+			SavedQuality[10] = Settings->GetLandscapeQuality();
+		}
+		const IConsoleVariable* Resolution = IConsoleManager::Get().FindConsoleVariable(TEXT("sg.ResolutionQuality"));
+		SavedResolutionScale = Resolution != nullptr ? Resolution->GetFloat() : 100.f;
+		Report(TEXT("graphics"), EResult::Info, TEXT("levels at start"), FString::Printf(TEXT("overall %d (%s), shadows %d, resolution %.0f%%"),
+			UWTAGraphicsLibrary::GetQualityPreset(), *UWTAGraphicsLibrary::GetQualityPresetLabel(UWTAGraphicsLibrary::GetQualityPreset()).ToString(),
+			SavedQuality[2], SavedResolutionScale));
+		CloseAll();
+		StandAt(PlaceView(this, TEXT("library")));
+		return 2.f;
+	} });
+	for (const int32 Level : { 1, 3 })
+	{
+		Steps.Add({ TEXT("graphics apply"), [Level]() -> float
+		{
+			// What the menu's preset buttons run.
+			UWTAGraphicsLibrary::ApplyQualityPreset(Level);
+			return 3.f;
+		} });
+		Steps.Add({ TEXT("graphics check"), [this, Level]() -> float
+		{
+			const int32 Now = UWTAGraphicsLibrary::GetQualityPreset();
+			const IConsoleVariable* Shadows = IConsoleManager::Get().FindConsoleVariable(TEXT("sg.ShadowQuality"));
+			const int32 ShadowLevel = Shadows != nullptr ? Shadows->GetInt() : -1;
+			const FString Label = UWTAGraphicsLibrary::GetQualityPresetLabel(Level).ToString();
+			Report(TEXT("graphics"), (Now == Level && ShadowLevel == Level) ? EResult::Pass : EResult::Fail, Label + TEXT(" preset applies"),
+				FString::Printf(TEXT("overall %d, sg.ShadowQuality %d"), Now, ShadowLevel));
+			Shot(TEXT("graphics_") + Label.ToLower());
+			return 0.3f;
+		} });
+	}
+	Steps.Add({ TEXT("graphics restore"), [this]() -> float
+	{
+		UGameUserSettings* Settings = GEngine != nullptr ? GEngine->GetGameUserSettings() : nullptr;
+		if (Settings != nullptr)
+		{
+			Settings->SetViewDistanceQuality(SavedQuality[0]);
+			Settings->SetAntiAliasingQuality(SavedQuality[1]);
+			Settings->SetShadowQuality(SavedQuality[2]);
+			Settings->SetGlobalIlluminationQuality(SavedQuality[3]);
+			Settings->SetReflectionQuality(SavedQuality[4]);
+			Settings->SetPostProcessingQuality(SavedQuality[5]);
+			Settings->SetTextureQuality(SavedQuality[6]);
+			Settings->SetVisualEffectQuality(SavedQuality[7]);
+			Settings->SetFoliageQuality(SavedQuality[8]);
+			Settings->SetShadingQuality(SavedQuality[9]);
+			Settings->SetLandscapeQuality(SavedQuality[10]);
+			Settings->SetResolutionScaleValueEx(SavedResolutionScale);
+			Settings->ApplySettings(false);
+			Settings->SaveSettings();
+		}
+		Report(TEXT("graphics"), EResult::Info, TEXT("levels restored"), FString::Printf(TEXT("overall %d, shadows %d"),
+			UWTAGraphicsLibrary::GetQualityPreset(), Settings != nullptr ? Settings->GetShadowQuality() : -1));
+		return 1.f;
+	} });
+}
+
+// --- fps -------------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddFpsPhase()
+{
+	for (const TCHAR* Place : { TEXT("lobby"), TEXT("library"), TEXT("school"), TEXT("wax"), TEXT("yard") })
+	{
+		const FString Name(Place);
+		Steps.Add({ TEXT("fps ") + Name, [this, Name]() -> float
+		{
+			CloseAll();
+			StandAt(PlaceView(this, *Name));
+			return 2.5f;
+		} });
+		Steps.Add({ TEXT("fps measure ") + Name, [this]() -> float
+		{
+			bMeasuring = true;
+			MeasureSeconds = 0.f;
+			MeasureFrames = 0;
+			WorstFrame = 0.f;
+			return 3.f;
+		} });
+		Steps.Add({ TEXT("fps report ") + Name, [this, Name]() -> float
+		{
+			bMeasuring = false;
+			const float Average = MeasureSeconds > 0.f ? MeasureFrames / MeasureSeconds : 0.f;
+			Report(TEXT("fps"), Average >= 30.f ? EResult::Pass : EResult::Fail, Name,
+				FString::Printf(TEXT("%.0f fps average, worst frame %.1f ms, %d frames"), Average, WorstFrame * 1000.f, MeasureFrames));
+			return 0.f;
+		} });
+	}
+}
+
+// --- adapt -----------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddAdaptPhase()
+{
+	// Walking (or travelling) in from the sunny yard: the camera's auto exposure has to come down from an outdoor
+	// level to an indoor one. Shots (no HUD) 0.5, 2, 5 and 8 s after arriving show how long a room looks dark.
+	for (const TCHAR* Place : { TEXT("studio"), TEXT("lab"), TEXT("wax"), TEXT("library") })
+	{
+		const FString Name(Place);
+		Steps.Add({ TEXT("adapt yard ") + Name, [this]() -> float
+		{
+			CloseAll();
+			StandAt(PlaceView(this, TEXT("yard")));
+			return 5.f;
+		} });
+		Steps.Add({ TEXT("adapt go ") + Name, [this, Name]() -> float
+		{
+			StandAt(PlaceView(this, *Name));
+			return 0.5f;
+		} });
+		float Elapsed = 0.5f;
+		for (const float At : { 0.5f, 2.f, 5.f, 8.f })
+		{
+			const float Wait = At - Elapsed;
+			Elapsed = At;
+			Steps.Add({ FString::Printf(TEXT("adapt shot %s %.1f"), *Name, At), [this, Name, At, Wait]() -> float
+			{
+				// The wait before this shot: zero for the first one.
+				if (Wait > 0.f && !bAdaptWaited)
+				{
+					bAdaptWaited = true;
+					return -Wait;
+				}
+				bAdaptWaited = false;
+				Shot(FString::Printf(TEXT("adapt_%s_%04.1fs"), *Name, At), false);
+				return 0.05f;
+			} });
+		}
+	}
+	// On foot: from the yard through the school's back door (3400, -300) into its hall, the way a visitor comes in.
+	Steps.Add({ TEXT("adapt walk start"), [this]() -> float
+	{
+		CloseAll();
+		FWTAView View;
+		View.Location = FVector(3800.f, -300.f, 162.f);
+		View.Yaw = 180.f;
+		View.Pitch = -3.f;
+		View.bValid = true;
+		StandAt(View);
+		return 5.f;
+	} });
+	Steps.Add({ TEXT("adapt walk go"), [this]() -> float { KeyDown(EKeys::W); return 2.5f; } });
+	Steps.Add({ TEXT("adapt walk stop"), [this]() -> float
+	{
+		KeyUp(EKeys::W);
+		const AWTACharacter* Character = Player();
+		Report(TEXT("adapt"), EResult::Info, TEXT("walked in from the yard"), Character != nullptr ? Character->GetActorLocation().ToCompactString() : TEXT("no player"));
+		Shot(TEXT("adapt_walkin_00.0s"), false);
+		return 1.5f;
+	} });
+	Steps.Add({ TEXT("adapt walk 1.5"), [this]() -> float { Shot(TEXT("adapt_walkin_01.5s"), false); return 2.f; } });
+	Steps.Add({ TEXT("adapt walk 3.5"), [this]() -> float { Shot(TEXT("adapt_walkin_03.5s"), false); return 2.5f; } });
+	Steps.Add({ TEXT("adapt walk 6"), [this]() -> float { Shot(TEXT("adapt_walkin_06.0s"), false); return 0.1f; } });
+	Steps.Add({ TEXT("adapt done"), [this]() -> float
+	{
+		Report(TEXT("adapt"), EResult::Info, TEXT("eye adaptation shots"), TEXT("yard to studio, lab, wax hall and library at 0.5, 2, 5 and 8 s; walked in at 0 to 6 s"));
+		return 0.f;
+	} });
+}
+
+// --- people ----------------------------------------------------------------------------------
+
+void UWTAPlayTest::FindPeople(TArray<TPair<FString, TWeakObjectPtr<AActor>>>& Out) const
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	auto Keep = [this](const FString& Name)
+	{
+		if (PeopleFilter.Num() == 0)
+		{
+			return true;
+		}
+		for (const FString& Part : PeopleFilter)
+		{
+			if (Name.Contains(Part))
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+	for (TActorIterator<AWTAStaffNPC> It(World); It; ++It)
+	{
+		AActor* Child = It->MetaHumanChild != nullptr ? It->MetaHumanChild->GetChildActor() : nullptr;
+		const FString Name = TEXT("staff_") + It->StaffId.ToString();
+		if (Child != nullptr && Keep(Name))
+		{
+			Out.Emplace(Name, Child);
+		}
+	}
+	for (TActorIterator<AWTAWaxStageActor> It(World); It; ++It)
+	{
+		for (int32 i = 0; i < It->Figures.Num(); ++i)
+		{
+			AActor* Figure = It->Figures[i];
+			if (!IsValid(Figure))
+			{
+				continue;
+			}
+			// BP_<person>_C -> <person>
+			FString Person = Figure->GetClass()->GetName();
+			Person.RemoveFromStart(TEXT("BP_"));
+			Person.RemoveFromEnd(TEXT("_C"));
+			const FString Name = FString::Printf(TEXT("%s_%d_%s"), *It->SceneId.ToString(), i + 1, *Person);
+			if (Keep(Name))
+			{
+				Out.Emplace(Name, Figure);
+			}
+		}
+	}
+}
+
+void UWTAPlayTest::AddPeoplePhase()
+{
+	struct FSample
+	{
+		FString Name;
+		TWeakObjectPtr<AActor> Person;
+		FVector Hand = FVector::ZeroVector;
+	};
+	const TSharedRef<TArray<FSample>> Samples = MakeShared<TArray<FSample>>();
+	Steps.Add({ TEXT("people sample"), [this, Samples]() -> float
+	{
+		TArray<TPair<FString, TWeakObjectPtr<AActor>>> People;
+		FindPeople(People);
+		Samples->Reset();
+		int32 Staff = 0;
+		for (const TPair<FString, TWeakObjectPtr<AActor>>& Person : People)
+		{
+			// Staff only animate while on screen: the faces phase checks them with the camera on them.
+			if (Person.Key.StartsWith(TEXT("staff_")))
+			{
+				++Staff;
+				continue;
+			}
+			FSample Sample;
+			Sample.Name = Person.Key;
+			Sample.Person = Person.Value;
+			Sample.Hand = BoneInComponent(UWTAPeopleLibrary::FindBody(Person.Value.Get()), TEXT("hand_r"));
+			Samples->Add(Sample);
+		}
+		Report(TEXT("people"), Samples->Num() + Staff > 0 ? EResult::Info : EResult::Fail, TEXT("people found"),
+			FString::Printf(TEXT("%d wax figures (checked here), %d staff (checked on screen by the faces phase)"), Samples->Num(), Staff));
+		return 1.5f;
+	} });
+	Steps.Add({ TEXT("people check"), [this, Samples]() -> float
+	{
+		for (const FSample& Sample : *Samples)
+		{
+			AActor* Person = Sample.Person.Get();
+			USkeletalMeshComponent* Body = UWTAPeopleLibrary::FindBody(Person);
+			if (Body == nullptr)
+			{
+				Report(TEXT("people"), EResult::Fail, Sample.Name, TEXT("no body mesh"));
+				continue;
+			}
+			const FVector Hand = BoneInComponent(Body, TEXT("hand_r"));
+			const FVector Thigh = BoneInComponent(Body, TEXT("thigh_r"));
+			const double Moved = FVector::Dist(Hand, Sample.Hand);
+			const double HandToThigh = FVector::Dist(Hand, Thigh);
+			// The face must sit on the body's head; a face left in its reference pose under a posed head sags.
+			float FaceGap = 0.f;
+			const bool bFaceOn = UWTAPeopleLibrary::IsFaceOnBody(Person, FaceGap);
+			// No bone the current LODs draw with may be left at the feet (it drags the jaw and lips, or the fingers,
+			// down to the floor).
+			FString Loose;
+			const int32 Collapsed = UWTAPeopleLibrary::CountCollapsedBones(Body, &Loose)
+				+ UWTAPeopleLibrary::CountCollapsedBones(UWTAPeopleLibrary::FindFace(Person), &Loose);
+			// A wax figure: frozen, in its held pose (hands down by the body, not the bind pose's arms out), face on.
+			const bool bFrozen = Body->bNoSkeletonUpdate;
+			const bool bHeld = HandToThigh < 40.0;
+			Report(TEXT("people"), (bFrozen && bHeld && bFaceOn && Collapsed == 0) ? EResult::Pass : EResult::Fail, Sample.Name + TEXT(" wax pose"),
+				FString::Printf(TEXT("%s, right hand %.0f cm from the thigh (%s), moved %.2f cm; face %.2f cm off the head; %d bones at the feet%s"),
+					bFrozen ? TEXT("frozen") : TEXT("NOT frozen"), HandToThigh, bHeld ? TEXT("held pose") : TEXT("ARMS OUT"), Moved, FaceGap,
+					Collapsed, Collapsed > 0 ? *(TEXT(" (") + Loose + TEXT(")")) : TEXT("")));
+		}
+		return 0.f;
+	} });
+}
+
+// --- faces -----------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddFacesPhase()
+{
+	TArray<TPair<FString, TWeakObjectPtr<AActor>>> People;
+	FindPeople(People);
+	Steps.Add({ TEXT("faces camera"), [this, Count = People.Num()]() -> float
+	{
+		CloseAll();
+		UWorld* World = GetWorld();
+		if (World != nullptr && FaceCamera == nullptr)
+		{
+			FActorSpawnParameters Params;
+			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			FaceCamera = World->SpawnActor<ACameraActor>(FVector::ZeroVector, FRotator::ZeroRotator, Params);
+			if (FaceCamera != nullptr && FaceCamera->GetCameraComponent() != nullptr)
+			{
+				FaceCamera->GetCameraComponent()->SetFieldOfView(40.f);
+				FaceCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
+			}
+		}
+		Report(TEXT("faces"), FaceCamera != nullptr ? EResult::Info : EResult::Fail, TEXT("close-ups"), FString::Printf(TEXT("%d people"), Count));
+		return 0.f;
+	} });
+	for (const TPair<FString, TWeakObjectPtr<AActor>>& Person : People)
+	{
+		const FString Name = Person.Key;
+		const TWeakObjectPtr<AActor> Weak = Person.Value;
+		const TSharedRef<FVector> Hand = MakeShared<FVector>(FVector::ZeroVector);
+		const TSharedRef<bool> bPlaced = MakeShared<bool>(false);
+		Steps.Add({ TEXT("face ") + Name, [this, Name, Weak, bPlaced]() -> float
+		{
+			*bPlaced = false;
+			AActor* Who = Weak.Get();
+			USkeletalMeshComponent* Face = FindFace(Who);
+			AWTAPlayerController* Controller = PC();
+			if (Who == nullptr || Face == nullptr || FaceCamera == nullptr || Controller == nullptr)
+			{
+				Report(TEXT("faces"), EResult::Skip, Name, TEXT("no face mesh"));
+				return 0.f;
+			}
+			// The head joint sits about level with the tip of the nose: 3 cm above it is the middle of the face,
+			// and the 40-degree lens takes in chin to forehead from 75 cm.
+			const FVector Head = Face->GetBoneIndex(TEXT("head")) != INDEX_NONE ? Face->GetSocketLocation(TEXT("head")) : Face->Bounds.Origin;
+			const FVector Centre = Head + FVector(0.f, 0.f, 3.f);
+			// MetaHuman Blueprints face their own +Y (the people are spawned turned by -90 to face forward).
+			const FVector Facing = Who->GetActorRightVector().GetSafeNormal2D();
+			FVector CameraAt = Centre + Facing * 75.f + FVector(0.f, 0.f, 2.f);
+			// A prop between the face and the lens (a stage set piece): come in front of it. The person, what they
+			// wear or hold (a headset), a staff member's NPC actor around them (its capsule) and the player are not.
+			FCollisionQueryParams Params(FName(TEXT("WTAPlayFace")), false, Who);
+			Params.AddIgnoredActor(Controller->GetPawn());
+			if (AActor* Holder = Who->GetParentActor())
+			{
+				Params.AddIgnoredActor(Holder);
+			}
+			TArray<AActor*> Worn;
+			Who->GetAttachedActors(Worn, true, true);
+			Params.AddIgnoredActors(Worn);
+			// (From 25 cm out: anything closer to the face than that is worn, like a headset prop.)
+			FHitResult Hit;
+			if (GetWorld()->LineTraceSingleByChannel(Hit, Centre + Facing * 25.f, CameraAt, ECC_Visibility, Params))
+			{
+				const float Distance = FMath::Max(30.f, static_cast<float>(FVector::Dist(Centre, Hit.ImpactPoint)) - 8.f);
+				CameraAt = Centre + Facing * Distance + FVector(0.f, 0.f, 2.f);
+			}
+			FaceCamera->SetActorLocationAndRotation(CameraAt, (Centre - CameraAt).Rotation());
+			Controller->SetViewTargetWithBlend(FaceCamera, 0.f);
+			// Staff turn toward the player: stand the player behind the camera so they look into it.
+			if (Name.StartsWith(TEXT("staff_")))
+			{
+				if (const AWTACharacter* Character = Player())
+				{
+					FWTAView View;
+					View.Location = Centre + Facing * 150.f;
+					View.Location.Z = Centre.Z + 3.f;
+					View.Yaw = static_cast<float>((-Facing).Rotation().Yaw);
+					View.bValid = true;
+					StandAt(View);
+				}
+			}
+			*bPlaced = true;
+			return 1.0f;
+		} });
+		// Staff: where the right hand is now, to see the idle move while the camera is on them.
+		Steps.Add({ TEXT("face idle ") + Name, [this, Weak, Hand, bPlaced]() -> float
+		{
+			if (!*bPlaced)
+			{
+				return 0.f;
+			}
+			*Hand = BoneInComponent(UWTAPeopleLibrary::FindBody(Weak.Get()), TEXT("hand_r"));
+			return 0.8f;
+		} });
+		// The shot, and what it shows: the face on the head, no bone left at the feet (the drooping face), the LODs.
+		Steps.Add({ TEXT("face shot ") + Name, [this, Name, Weak, Hand, bPlaced]() -> float
+		{
+			if (!*bPlaced)
+			{
+				return 0.f;
+			}
+			Shot(Name, false);
+			AActor* Who = Weak.Get();
+			USkeletalMeshComponent* Body = UWTAPeopleLibrary::FindBody(Who);
+			USkeletalMeshComponent* Face = FindFace(Who);
+			if (Who == nullptr || Body == nullptr || Face == nullptr)
+			{
+				Report(TEXT("faces"), EResult::Skip, Name, TEXT("gone"));
+				return 0.35f;
+			}
+			float Gap = 0.f;
+			const bool bFaceOn = UWTAPeopleLibrary::IsFaceOnBody(Who, Gap);
+			FString Loose;
+			const int32 Collapsed = UWTAPeopleLibrary::CountCollapsedBones(Face, &Loose) + UWTAPeopleLibrary::CountCollapsedBones(Body, &Loose);
+			const bool bStaff = Name.StartsWith(TEXT("staff_"));
+			const double Moved = FVector::Dist(*Hand, BoneInComponent(Body, TEXT("hand_r")));
+			const bool bPass = bFaceOn && Collapsed == 0 && (!bStaff || Moved > 0.02);
+			Report(TEXT("faces"), bPass ? EResult::Pass : EResult::Fail, Name + TEXT(" on screen"),
+				FString::Printf(TEXT("face %.2f cm off the head, %d bones at the feet%s%s; %s"), Gap, Collapsed,
+					Collapsed > 0 ? *(TEXT(" (") + Loose + TEXT(")")) : TEXT(""),
+					bStaff ? *FString::Printf(TEXT(", idle: right hand moved %.2f cm in 0.8 s"), Moved) : TEXT(""),
+					*UWTAPeopleLibrary::DescribeMeshes(Who)));
+			return 0.35f;
+		} });
+	}
+	Steps.Add({ TEXT("faces end"), [this]() -> float
+	{
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->SetViewTargetWithBlend(Controller->GetPawn(), 0.f);
+		}
+		if (FaceCamera != nullptr)
+		{
+			FaceCamera->Destroy();
+			FaceCamera = nullptr;
+		}
+		return 0.3f;
+	} });
+}

@@ -20,7 +20,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Lobby."
+  "Directions": "the lobby.",
+  "Say": "the lobby"
  },
  {
   "Name": "g1",
@@ -44,7 +45,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Gallery 1: Headsets in Libraries, straight ahead from the lobby."
+  "Directions": "Gallery 1: Headsets in Libraries, straight ahead from the lobby.",
+  "Say": "Gallery 1: Headsets in Libraries"
  },
  {
   "Name": "g2",
@@ -65,7 +67,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Gallery 2: Learning That Works, straight ahead from the lobby."
+  "Directions": "Gallery 2: Learning That Works, straight ahead from the lobby.",
+  "Say": "Gallery 2: Learning That Works"
  },
  {
   "Name": "g3",
@@ -86,7 +89,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Gallery 3: Stories Worth Saving, straight ahead from the lobby."
+  "Directions": "Gallery 3: Stories Worth Saving, straight ahead from the lobby.",
+  "Say": "Gallery 3: Stories Worth Saving"
  },
  {
   "Name": "library",
@@ -109,7 +113,8 @@
    "Pitch": 4.584,
    "bValid": true
   },
-  "Directions": "The Reading Room, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Reading Room, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Reading Room"
  },
  {
   "Name": "desk",
@@ -131,7 +136,8 @@
    "Pitch": 0.0,
    "bValid": true
   },
-  "Directions": "Reference desk, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the reference desk, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the reference desk"
  },
  {
   "Name": "featured",
@@ -152,7 +158,8 @@
    "Pitch": -18.335,
    "bValid": true
   },
-  "Directions": "Featured books table, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the featured books table, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the featured books table"
  },
  {
   "Name": "freedomBoard",
@@ -172,7 +179,8 @@
    "Pitch": -1.146,
    "bValid": true
   },
-  "Directions": "Freedom to Read display, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Freedom to Read display, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Freedom to Read display"
  },
  {
   "Name": "window",
@@ -191,7 +199,8 @@
    "Pitch": 8.021,
    "bValid": true
   },
-  "Directions": "Library window, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the library window, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the library window"
  },
  {
   "Name": "school",
@@ -214,7 +223,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Workshop School hall, through the doorway on the right side of the lobby and down the hall."
+  "Directions": "the Workshop School hall, through the doorway on the right side of the lobby and down the hall.",
+  "Say": "the Workshop School hall"
  },
  {
   "Name": "studio",
@@ -244,7 +254,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+  "Directions": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
+  "Say": "Room 101: 3D Art Studio"
  },
  {
   "Name": "lab",
@@ -269,7 +280,8 @@
    "Pitch": -3.438,
    "bValid": true
   },
-  "Directions": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+  "Directions": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+  "Say": "Room 102: Science Lab"
  },
  {
   "Name": "sieve",
@@ -295,7 +307,8 @@
    "Pitch": -16.043,
    "bValid": true
   },
-  "Directions": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+  "Directions": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+  "Say": "the sieve shaker"
  },
  {
   "Name": "titration",
@@ -316,7 +329,8 @@
    "Pitch": -8.021,
    "bValid": true
   },
-  "Directions": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+  "Directions": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+  "Say": "the titration station"
  },
  {
   "Name": "pendulum",
@@ -336,7 +350,8 @@
    "Pitch": 5.73,
    "bValid": true
   },
-  "Directions": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left."
+  "Directions": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+  "Say": "the pendulum"
  },
  {
   "Name": "blueprints",
@@ -359,7 +374,8 @@
    "Pitch": 1.719,
    "bValid": true
   },
-  "Directions": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "Room 103: Blueprint Lab"
  },
  {
   "Name": "bp-car",
@@ -371,15 +387,16 @@
   ],
   "View": {
    "Location": {
-    "X": 0,
-    "Y": 0,
-    "Z": 0
+    "X": 1445.0,
+    "Y": 417.0,
+    "Z": 162.0
    },
-   "Yaw": 0.0,
-   "Pitch": 0.0,
-   "bValid": false
+   "Yaw": 90.0,
+   "Pitch": 2.292,
+   "bValid": true
   },
-  "Directions": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the automobile blueprint"
  },
  {
   "Name": "bp-excavator",
@@ -392,15 +409,16 @@
   ],
   "View": {
    "Location": {
-    "X": 0,
-    "Y": 0,
-    "Z": 0
+    "X": 1810.0,
+    "Y": 417.0,
+    "Z": 162.0
    },
-   "Yaw": 0.0,
-   "Pitch": 0.0,
-   "bValid": false
+   "Yaw": 90.0,
+   "Pitch": 2.292,
+   "bValid": true
   },
-  "Directions": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the excavator blueprint"
  },
  {
   "Name": "bp-house",
@@ -412,15 +430,16 @@
   ],
   "View": {
    "Location": {
-    "X": 0,
-    "Y": 0,
-    "Z": 0
+    "X": 1503.0,
+    "Y": 287.5,
+    "Z": 162.0
    },
-   "Yaw": 0.0,
-   "Pitch": 0.0,
-   "bValid": false
+   "Yaw": 180.0,
+   "Pitch": 2.292,
+   "bValid": true
   },
-  "Directions": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the house blueprint"
  },
  {
   "Name": "bp-bridge",
@@ -432,15 +451,16 @@
   ],
   "View": {
    "Location": {
-    "X": 0,
-    "Y": 0,
-    "Z": 0
+    "X": 2175.0,
+    "Y": 417.0,
+    "Z": 162.0
    },
-   "Yaw": 0.0,
-   "Pitch": 0.0,
-   "bValid": false
+   "Yaw": 90.0,
+   "Pitch": 2.292,
+   "bValid": true
   },
-  "Directions": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the bridge blueprint"
  },
  {
   "Name": "bp-computer",
@@ -453,15 +473,16 @@
   ],
   "View": {
    "Location": {
-    "X": 0,
-    "Y": 0,
-    "Z": 0
+    "X": 2116.0,
+    "Y": 287.5,
+    "Z": 162.0
    },
    "Yaw": 0.0,
-   "Pitch": 0.0,
-   "bValid": false
+   "Pitch": 2.292,
+   "bValid": true
   },
-  "Directions": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the computer blueprint"
  },
  {
   "Name": "modelbench",
@@ -482,7 +503,8 @@
    "Pitch": -18.335,
    "bValid": true
   },
-  "Directions": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right."
+  "Directions": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+  "Say": "the model bench"
  },
  {
   "Name": "worldroom",
@@ -505,7 +527,8 @@
    "Pitch": -10.313,
    "bValid": true
   },
-  "Directions": "Room 104: World Builder Studio, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+  "Directions": "Room 104: World Builder Studio, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right.",
+  "Say": "Room 104: World Builder Studio"
  },
  {
   "Name": "diorama",
@@ -525,7 +548,8 @@
    "Pitch": -17.189,
    "bValid": true
   },
-  "Directions": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right."
+  "Directions": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right.",
+  "Say": "the layer table"
  },
  {
   "Name": "sculpture",
@@ -545,7 +569,8 @@
    "Pitch": 6.875,
    "bValid": true
   },
-  "Directions": "Sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left."
+  "Directions": "the sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
+  "Say": "the sample sculpture"
  },
  {
   "Name": "margaret",
@@ -565,7 +590,8 @@
    "Pitch": 0.0,
    "bValid": true
   },
-  "Directions": "Margaret."
+  "Directions": "Margaret.",
+  "Say": "Margaret"
  },
  {
   "Name": "wax",
@@ -591,7 +617,8 @@
    "Pitch": 1.146,
    "bValid": true
   },
-  "Directions": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3."
+  "Directions": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3.",
+  "Say": "the Wax Hall"
  },
  {
   "Name": "yard",
@@ -616,7 +643,8 @@
    "Pitch": 3.438,
    "bValid": true
   },
-  "Directions": "The Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the Recess Yard"
  },
  {
   "Name": "coaster",
@@ -637,7 +665,8 @@
    "Pitch": 11.459,
    "bValid": true
   },
-  "Directions": "Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the Comet Coaster"
  },
  {
   "Name": "drop",
@@ -658,7 +687,8 @@
    "Pitch": 18.335,
    "bValid": true
   },
-  "Directions": "Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the Sky Drop"
  },
  {
   "Name": "dive",
@@ -681,7 +711,8 @@
    "Pitch": 5.73,
    "bValid": true
   },
-  "Directions": "Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the Ocean Dive"
  },
  {
   "Name": "rae",
@@ -702,7 +733,8 @@
    "Pitch": 0.0,
    "bValid": true
   },
-  "Directions": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "Coach Rae"
  },
  {
   "Name": "field",
@@ -728,7 +760,8 @@
    "Pitch": -5.73,
    "bValid": true
   },
-  "Directions": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the soccer goal"
  },
  {
   "Name": "blocks",
@@ -749,7 +782,8 @@
    "Pitch": -4.584,
    "bValid": true
   },
-  "Directions": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall."
+  "Directions": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+  "Say": "the block tower"
  },
  {
   "Name": "sec-basics",
@@ -769,7 +803,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "XR Basics section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the XR Basics section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the XR Basics section"
  },
  {
   "Name": "sec-programs",
@@ -789,7 +824,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Library Programs section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Library Programs section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Library Programs section"
  },
  {
   "Name": "sec-careers",
@@ -809,7 +845,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Careers section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Careers section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Careers section"
  },
  {
   "Name": "sec-story",
@@ -829,7 +866,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Storytelling section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Storytelling section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Storytelling section"
  },
  {
   "Name": "sec-equity",
@@ -849,7 +887,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Lost Stories section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Lost Stories section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Lost Stories section"
  },
  {
   "Name": "sec-environment",
@@ -869,7 +908,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Environment section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Environment section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Environment section"
  },
  {
   "Name": "sec-worlds",
@@ -889,7 +929,8 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Shared Worlds section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Shared Worlds section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Shared Worlds section"
  },
  {
   "Name": "sec-tech",
@@ -909,6 +950,7 @@
    "Pitch": -6.875,
    "bValid": true
   },
-  "Directions": "Technology section, through the doorway on the left side of the lobby and down the hall."
+  "Directions": "the Technology section, through the doorway on the left side of the lobby and down the hall.",
+  "Say": "the Technology section"
  }
 ]

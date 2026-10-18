@@ -656,3 +656,61 @@ def glb_json(glb_path):
     except Exception as exc:
         log.warn("could not parse %s: %s" % (glb_path, exc))
         return None
+
+
+BOOK_COPY_MERGE_CM = 40.0
+
+
+def book_copies():
+    """{book id: [(centre_cm, half_extent_cm), ...]}: one entry per copy of a book in the campus GLBs.
+
+    The exporter merges every copy of a book (the featured table, its section's stack end, Room 104) into one
+    book__<id> mesh with one primitive per cover, so that mesh's bounds span half the library and a pick box
+    built from them catches the crosshair at the wrong stack. Each primitive's POSITION min/max (glTF metres,
+    Y up) bounds one cover; Unreal cm = (100 x, 100 z, 100 y), where the importer puts the campus meshes.
+    Primitives closer than BOOK_COPY_MERGE_CM are one copy (a cover and its spine, say)."""
+    copies = {}
+    for _asset, glb in paths.mesh_assets():
+        data = glb_json(glb) if os.path.isfile(glb) else None
+        if not data:
+            continue
+        nodes = data.get("nodes", [])
+        parents = {c: i for i, nd in enumerate(nodes) for c in nd.get("children", [])}
+        for i, node in enumerate(nodes):
+            name = node.get("name", "")
+            if not name.startswith("book__") or "mesh" not in node:
+                continue
+            offset, moved = [0.0, 0.0, 0.0], False
+            k = i
+            while k is not None:
+                nd = nodes[k]
+                rot, scale = nd.get("rotation", [0, 0, 0, 1]), nd.get("scale", [1, 1, 1])
+                if "matrix" in nd or [round(v, 6) for v in rot] != [0, 0, 0, 1] or [round(v, 6) for v in scale] != [1, 1, 1]:
+                    moved = True
+                t = nd.get("translation", [0.0, 0.0, 0.0])
+                offset = [offset[a] + t[a] for a in range(3)]
+                k = parents.get(k)
+            if moved:
+                log.warn("%s in %s is rotated or scaled; its copies are not split" % (name, os.path.basename(glb)))
+                continue
+            boxes = []
+            for prim in data["meshes"][node["mesh"]].get("primitives", []):
+                acc = data["accessors"][prim["attributes"]["POSITION"]]
+                mn = [100.0 * (acc["min"][a] + offset[a]) for a in range(3)]
+                mx = [100.0 * (acc["max"][a] + offset[a]) for a in range(3)]
+                # glTF (x, y up, z) -> Unreal (x, y = z, z up = y)
+                mn, mx = [mn[0], mn[2], mn[1]], [mx[0], mx[2], mx[1]]
+                for box in boxes:
+                    centre = [(box[0][a] + box[1][a]) / 2.0 for a in range(3)]
+                    here = [(mn[a] + mx[a]) / 2.0 for a in range(3)]
+                    if sum((centre[a] - here[a]) ** 2 for a in range(3)) ** 0.5 < BOOK_COPY_MERGE_CM:
+                        box[0] = [min(box[0][a], mn[a]) for a in range(3)]
+                        box[1] = [max(box[1][a], mx[a]) for a in range(3)]
+                        break
+                else:
+                    boxes.append([mn, mx])
+            book = name[len("book__"):].replace("_", "-")
+            for mn, mx in boxes:
+                copies.setdefault(book, []).append((tuple((mn[a] + mx[a]) / 2.0 for a in range(3)),
+                                                    tuple((mx[a] - mn[a]) / 2.0 for a in range(3))))
+    return copies

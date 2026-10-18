@@ -7,10 +7,14 @@
 //   3. directions      a DT_Places alias contained in the question                -> Directions + GoPlace(place)
 //   4. title match     an exhibit or book title contained in the question         -> Description/Subtitle + OpenItem/OpenBook
 //   5. rules >= 100    as 2
-//   6. search          TF-IDF over Facts, Lessons, exhibit Description/More and book pages; the best sentence of
-//                      the best document (web searchKB/bestSentence)               -> that sentence (+ OpenItem/OpenBook)
+//   6. search          TF-IDF over Facts, Lessons, exhibit Description/More and book pages, weighted by what the
+//                      staff member knows best (web searchAnswer: Margaret items > facts > pages, Rosa pages >
+//                      facts > items, Mr. Hale lessons > facts > pages > items, Coach Rae facts > pages > items);
+//                      the best sentence of the best document (web bestSentence)   -> that sentence, with its
+//                      OpenItem/OpenBook/OpenStation offered as a button (bOffer) unless the question asks to
+//                      go or "show me" (the web's cards)
 //   7. fallback        the staff's Fallback text
-// The chat widget shows Text and the controller runs Action/ActionArg after a short delay.
+// The chat widget shows Text; it runs Action/ActionArg after a short delay, or shows it as a button when bOffer.
 
 #pragma once
 
@@ -33,6 +37,14 @@ struct WALKTHEARCHIVE_API FWTAReply
 
 	UPROPERTY(BlueprintReadOnly, Category = "WTA")
 	FName ActionArg;
+
+	/** Offer Action as a button under the answer instead of running it (search hits are suggestions). */
+	UPROPERTY(BlueprintReadOnly, Category = "WTA")
+	bool bOffer = false;
+
+	/** The offer button's text ("Show me the exhibit", "Open the book", ...). */
+	UPROPERTY(BlueprintReadOnly, Category = "WTA")
+	FText OfferLabel;
 };
 
 /** One searchable document of the keyword index (not reflected). */
@@ -44,6 +56,8 @@ struct FWTASearchDoc
 	int32 NumTerms = 0;
 	FName Action;
 	FName ActionArg;
+	/** item, fact, page or lesson: weighs the document per staff member (the web's searchAnswer order). */
+	FName Kind;
 	/** Sentence appended to a search answer ("That's from "Mission" in Gallery 1."); may be empty. */
 	FString Source;
 };
@@ -84,7 +98,7 @@ protected:
 	bool TryRules(FName StaffId, const FString& Question, int32 MinOrder, int32 MaxOrder, FWTAReply& OutReply) const;
 	bool TryDirections(const FString& Question, FWTAReply& OutReply) const;
 	bool TryTitleMatch(const FString& Question, FWTAReply& OutReply) const;
-	bool TrySearch(const FString& Question, FWTAReply& OutReply);
+	bool TrySearch(FName StaffId, const FString& Question, FWTAReply& OutReply);
 	FWTAReply Fallback(FName StaffId) const;
 
 	/** Lower-case word tokens (letters and digits), stop words removed. */

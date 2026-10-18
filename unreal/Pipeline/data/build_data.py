@@ -194,6 +194,37 @@ def build_rooms(L):
     return rows
 
 
+# The blueprint boards in Room 103 (parts/blueprints.js BP_PLACE: web metres, the wall each hangs on).
+BP_PLACE = {'car': (14.45, 6.97, 'n'), 'excavator': (18.1, 6.97, 'n'), 'bridge': (21.75, 6.97, 'n'),
+            'house': (12.23, 2.875, 'w'), 'computer': (23.96, 2.875, 'e')}
+BP_VIEW_DIST = 2.8   # the web fits the board to the screen between 2.4 and 3.2 m (bpViewFor)
+
+
+def bp_view(board):
+    """The web's bpViewFor(): stand BP_VIEW_DIST in front of the board, facing it, looking slightly up."""
+    x, z, wall = BP_PLACE[board]
+    if wall == 'n':
+        return {'x': x, 'z': z - BP_VIEW_DIST, 'yaw': math.pi, 'pitch': 0.04}
+    if wall == 'w':
+        return {'x': x + BP_VIEW_DIST, 'z': z, 'yaw': math.pi / 2, 'pitch': 0.04}
+    return {'x': x - BP_VIEW_DIST, 'z': z, 'yaw': -math.pi / 2, 'pitch': 0.04}
+
+
+# How the staff name a place mid-sentence ("Follow me to the Reading Room.") where the web gave no 'say'.
+UE_SAY = {'lobby': 'the lobby', 'library': 'the Reading Room', 'desk': 'the reference desk', 'featured': 'the featured books table',
+          'freedomBoard': 'the Freedom to Read display', 'window': 'the library window', 'school': 'the Workshop School hall',
+          'sculpture': 'the sample sculpture', 'yard': 'the Recess Yard', 'coaster': 'the Comet Coaster', 'drop': 'the Sky Drop',
+          'dive': 'the Ocean Dive'}
+
+
+def place_say(p):
+    if p.get('say'):
+        return p['say']
+    if p['id'].startswith('sec-'):
+        return 'the ' + p['label']
+    return UE_SAY.get(p['id'], p['label'])
+
+
 def build_places(L):
     dirs = {d['placeId']: d['text'] for d in load('staff_answers.json')['directions']}
     stations = {s['id']: s for s in L['stations']}
@@ -208,10 +239,17 @@ def build_places(L):
             v = view_from_layout(stations[p['viewRef'][9:]]['view'])
         elif p.get('viewRef', '') and p['viewRef'].startswith('@shelf:') and p['viewRef'][7:] in stacks:
             v = view_from_layout(stacks[p['viewRef'][7:]]['shelf_view'])
+        elif p.get('viewRef', '').startswith('@blueprint:') and p['viewRef'][11:] in BP_PLACE:
+            v = view_from_web(bp_view(p['viewRef'][11:]))
         else:
-            v = no_view()   # blueprint boards: the editor setup fills these from the bp__ meshes
+            v = no_view()
+        say = place_say(p)
+        directions = txt(dirs.get(p['id']))
+        if directions.startswith(p['label']):
+            # the web's directions() opened with the label where it had no 'say' ("The Reading Room, through ...")
+            directions = say + directions[len(p['label']):]
         rows.append({'Name': p['id'], 'Label': txt(p['label']), 'Aliases': [txt(n) for n in (p.get('names') or [])],
-                     'View': v, 'Directions': txt(dirs.get(p['id']))})
+                     'View': v, 'Directions': directions, 'Say': txt(say)})
     return rows
 
 
@@ -281,34 +319,234 @@ def built_metahuman(person):
     return '/Game/WTA/Characters/%s/BP_%s.BP_%s_C' % (person, person, person) if os.path.isfile(asset) else ''
 
 
-SIMPLE = re.compile(r"^RX\.(\w+)\.test\(s\)(?:\s*&&\s*words\s*<=\s*(\d+))?(?:\s*&&\s*!travel)?$")
-LITERAL = re.compile(r"^/(.+)/\.test\(s\)$")
+SIMPLE = re.compile(r"^RX\.(\w+)\.test\(s\)(?:\s*&&\s*words\s*<=\s*(\d+))?(\s*&&\s*!travel)?$")
 RULE_ACTIONS = {'paint': ('GoPlace', 'studio'), 'paintBlank': ('GoPlace', 'studio'), 'station:bench': ('OpenStation', 'bench')}
+# Web branches the C++ answers itself: the greeting (TryGreeting) and the directions (TryDirections).
+CPP_BRANCHES = {1: 'greeting', 31: 'directions'}
+# Mirror WantsToGo / AsksWhere in WTADialogueSubsystem.cpp (the web's RX.go / RX.wh plus a few more ways to ask).
+UE_GO = r"\b(take|bring|walk|lead) me\b|\bgo to\b|\bshow me the way\b|\bhow do i get to\b|\blets? go\b|\blet's go\b"
+UE_WH = r"\bwhere('?s| is| are| can i find| do i find)\b|\bwhich way\b|\bhow do i (get|find)\b|\bdirections?\b"
+PLACEHOLDER = re.compile(r'\{(\w+)(?::([\w-]+))?\}')
+STAFF_KEYS = ('name', 'role', 'help')
+ACTION_TABLES = {'GoPlace': 'FWTAPlaceRow', 'OpenItem': 'FWTAExhibitRow', 'OpenBook': 'FWTABookRow',
+                 'OpenStation': 'FWTAStationRow', 'OpenRide': 'FWTARideRow', 'StartTour': None, 'OpenBadges': None}
 
 
-def build_staff_rules():
+def rule_row(name, order, pattern, answer, max_words=0, staff_only=(), staff_not=(), action='None', arg='None',
+             offer=False, offer_label=''):
+    return {'Name': name, 'Order': int(order), 'Pattern': pattern, 'MaxWords': int(max_words), 'StaffOnly': list(staff_only),
+            'StaffNot': list(staff_not), 'Answer': answer, 'Action': action or 'None', 'ActionArg': arg or 'None',
+            'bOffer': bool(offer), 'OfferLabel': offer_label}
+
+
+def compose(all_, not_):
+    """One ICU regex: every pattern of all_ somewhere in the question and none of not_ anywhere."""
+    if len(all_) == 1 and not not_:
+        return all_[0]
+    return '^' + ''.join('(?!.*(?:%s))' % p for p in not_) + ''.join('(?=.*?(?:%s))' % p for p in all_)
+
+
+def english_list(names):
+    return names[0] if len(names) == 1 else ', '.join(names[:-1]) + ' and ' + names[-1]
+
+
+def year_answer(year, wax, ex):
+    """The web's "From <year>, the campus shows ..." line (presetAnswer's year branch), word for word."""
+    items = wax or ex
+    n = len(items)
+    names = ['“' + it['Title'] + (',”' if (i < n - 2 or (i == n - 1 and wax)) else '”')
+             for i, it in enumerate(items)]
+    joined = ' '.join(names[:-1]) + ' and ' + names[-1] if n > 1 else names[0]
+    tail = (' each acted out in the Wax Hall.' if n > 1 else ' acted out in the Wax Hall.') if wax else ' in the museum.'
+    return 'From %d, the campus shows %s%s' % (year, joined, tail)
+
+
+def rule_context(tables, rx):
+    """What the placeholders in staff_rules_ue.py can name, from the tables built before the rules."""
+    gallery = [e for e in tables['FWTAExhibitRow'] if e['Gallery'] in (1, 2, 3)]
+    dated = [e for e in gallery if e['Year']]
+    oldest = min(dated, key=lambda e: e['Year'])   # min/max keep the first of equals, like the web's stable sort
+    newest = max(dated, key=lambda e: e['Year'])
+    when = lambda e: '“%s,” from %d' % (e['Title'], e['Year'])
+    coaster = '(?:%s)' % rx['coaster']
+    drop = r'(?:%s|\bdrop\b)' % rx['dropq']
+    dive = r'(?:%s|\b(?:ocean|fish|reef|turtle|shark)\b)' % rx['diveq']
+    return {
+        'rx': rx,
+        'fact': {f['Name']: f['Body'] for f in tables['FWTAFactRow']},
+        'source': {s['Name']: s['Label'] for s in tables['FWTASourceRow']},
+        'book': {b['Name']: b['Title'] for b in tables['FWTABookRow']},
+        'ride_stats': {r['Name']: r['Stats'] for r in tables['FWTARideRow']},
+        'n': {'tokens': len(tables['FWTATokenRow']), 'badges': len(tables['FWTABadgeRow']), 'books': len(tables['FWTABookRow']),
+              'gallery_items': len(gallery), 'wax_scenes': len(tables['FWTAWaxSceneRow'])},
+        'travel': '(?:%s|%s)' % (UE_GO, UE_WH), 'go': '(?:%s)' % UE_GO,
+        'coaster': coaster, 'drop': drop, 'dive': dive, 'anyride': '(?:%s|%s|%s)' % (coaster, drop, dive),
+        'subjects': english_list([s['DisplayName'] for s in tables['FWTASubjectRow']]),
+        'galleries': english_list([g['DisplayName'] for g in tables['FWTAGalleryRow'] if g['Index'] in (1, 2, 3)]),
+        'oldest': when(oldest), 'oldest_id': oldest['Name'], 'newest': when(newest), 'newest_id': newest['Name'],
+    }
+
+
+def fill(text, ctx, staff=None):
+    """Replace the placeholders staff_rules_ue.py documents; anything else in braces (a regex {n}) is left alone."""
+    def one(m):
+        key, arg = m.group(1), m.group(2)
+        if key in STAFF_KEYS and arg is None:
+            assert staff is not None, '{%s} outside a PerStaff rule' % key
+            return staff[key]
+        if key not in ctx:
+            return m.group(0)
+        val = ctx[key]
+        if isinstance(val, dict):
+            assert arg in val, 'unknown placeholder {%s:%s}' % (key, arg)
+            return str(val[arg])
+        assert arg is None, 'placeholder {%s} takes no id' % key
+        return str(val)
+    return PLACEHOLDER.sub(one, text)
+
+
+# The web's STOP words and the two-letter words it keeps (engine.js toks; WTADialogueSubsystem.cpp StopWords).
+STOP = set(('a an the and or but if of to in on at by for with from into onto over under about as is are was were be been being am do '
+            'does did doing done have has had having i me my mine you your yours he him his she her hers it its we us our they them '
+            'their this that these those there here what which who whom whose when where why how can could would should will shall '
+            'may might must not no please tell show give get got find let lets like just some any much many more most very really '
+            'also too so than then such thing things something anything stuff kind sort want wanted need know think say said go '
+            'going went come came see look looking one ones ok okay hey hi hello whats wheres hows thats im youre theres does dont '
+            'can cant').split())
+KEEP2 = {'vr', 'ar', 'xr', 'ai', 'mr', '3d', 'it'}
+# Title and subtitle words too general to name a topic ("a good book", "a starter guide").
+TOPIC_SKIP = {'book', 'books', 'read', 'reading', 'recommend', 'suggest', 'good', 'around', 'first', 'using', 'every', 'others',
+              'anyone', 'before', 'keeping', 'finding', 'getting', 'guide', 'starter', 'look', 'open', 'double', 'check', 'stand',
+              'place', 'try', 'train', 'make', 'campus'}
+
+
+def web_toks(text):
+    """The web's toks(): lower case, no apostrophes, words of 3+ letters (or vr/ar/xr/ai/mr/3d, or numbers), no STOP words."""
+    text = re.sub(r"[\u2019']", '', text.lower())
+    return [w for w in re.sub(r'[^a-z0-9\s]', ' ', text).split()
+            if w not in STOP and (len(w) > 2 or w in KEEP2 or w.isdigit())]
+
+
+def same_rx(word):
+    """A regex for the question words the web's same() pairs with word: equal, or one a prefix of the other when both have
+    at least 4 letters and their lengths differ by at most 3."""
+    if len(word) < 4:
+        return r'\b%s\b' % re.escape(word)
+    alts = [word[:k] for k in range(max(4, len(word) - 3), len(word))] + [re.escape(word) + r'\w{0,3}']
+    return r'\b(?:%s)\b' % '|'.join(alts)
+
+
+def book_topic_rules(r, tables):
+    """The web's recommend(): a book whose title, subtitle or section the question names; the first on the shelves wins."""
+    subjects = {s['Name']: s['DisplayName'] for s in tables['FWTASubjectRow']}
+    for i, b in enumerate(tables['FWTABookRow'], 1):
+        words = [w for w in dict.fromkeys(web_toks(b['Title'] + ' ' + b['Subtitle'])) if w not in TOPIC_SKIP]
+        section = subjects[b['Subject']]
+        assert re.match(r'^[a-z0-9 ]+$', section.lower()), 'section name %r needs escaping' % section
+        topic = '|'.join([same_rx(w) for w in words] + [r'\b%s\b' % section.lower()])
+        title = b['Title']
+        yield dict(r, Name='%s-%02d-%s' % (r['Name'], i, b['Name']),
+                   Answer='Try \u201c%s%s\u201d in the library\u2019s %s section.' % (title, '' if title[-1] in '?!' else ',', section),
+                   All=[r['All'][0], topic], Action='OpenBook', ActionArg=b['Name'], bOffer=True,
+                   OfferLabel='Open \u201c%s\u201d' % title)
+
+
+def year_rules(r, exhibits):
+    """One rule per year of the wax scenes and dated gallery exhibits (the web's year branch, 2010 to 2029)."""
+    wax_items = [e for e in exhibits if e['bWax']]
+    gallery = [e for e in exhibits if e['Gallery'] in (1, 2, 3) and e['Year']]
+    for y in sorted({e['Year'] for e in wax_items + gallery if 2010 <= e['Year'] <= 2029}):
+        wax = [e for e in wax_items if str(y) in str(e['Year'])]
+        ex = [e for e in gallery if e['Year'] == y]
+        items = wax or ex
+        yield dict(r, Name='%s-%d' % (r['Name'], y), Answer=year_answer(y, wax, ex),
+                   All=[r'\b%d\b' % y, r'\bhappen|\bwhat\b|\b(in|during) %d\b' % y], Not=['{travel}', '{anyride}'],
+                   Action='OpenItem', ActionArg=items[0]['Name'], bOffer=True,
+                   OfferLabel='Show me the scene' if wax else 'Show me the exhibit')
+
+
+def make_rule(r, ctx, staff=None):
+    f = lambda s: fill(s, ctx, staff)
+    return rule_row(r['Name'], r['Order'], compose([f(p) for p in r['All']], [f(p) for p in r.get('Not') or []]),
+                    f(r['Answer']), r.get('MaxWords', 0), r.get('StaffOnly') or [], r.get('StaffNot') or [],
+                    f(r.get('Action', 'None')), f(r.get('ActionArg', 'None')), r.get('bOffer', False), f(r.get('OfferLabel', '')))
+
+
+def ue_rules(tables, rx):
+    """staff_rules_ue.RULES as DT_StaffRules rows, and the web branches they stand for."""
+    sys.path.insert(0, HERE)
+    import staff_rules_ue
+    ctx = rule_context(tables, rx)
+    staff = [{'id': s['Name'], 'name': s['DisplayName'], 'role': s['Role'].lower(), 'help': s['Help']}
+             for s in tables['FWTAStaffRow']]
+    rows, webs = [], set()
+    for r in staff_rules_ue.RULES:
+        if r.get('Web') is not None:
+            webs.add(int(r['Web']))
+        if r.get('Generate') == 'years':
+            rows.extend(make_rule(spec, ctx) for spec in year_rules(r, tables['FWTAExhibitRow']))
+        elif r.get('Generate') == 'book_topics':
+            rows.extend(make_rule(spec, ctx) for spec in book_topic_rules(r, tables))
+        elif r.get('PerStaff'):
+            for s in staff:
+                if s['id'] not in (r.get('StaffNot') or []):
+                    rows.append(make_rule(dict(r, Name='%s-%s' % (r['Name'], s['id']), StaffOnly=[s['id']], StaffNot=[]), ctx, s))
+        else:
+            rows.append(make_rule(r, ctx))
+    return rows, webs
+
+
+def check_rules(rows, tables):
+    """Every pattern compiles, every placeholder is filled, every action names a real row."""
+    staff = {s['Name'] for s in tables['FWTAStaffRow']}
+    leftover = re.compile(r'\{(?:%s)(?::[\w-]+)?\}' % '|'.join(['rx', 'fact', 'source', 'book', 'n', 'ride_stats', 'travel', 'go',
+                                                              'coaster', 'drop', 'dive', 'anyride', 'subjects', 'galleries',
+                                                              'oldest', 'newest', 'oldest_id', 'newest_id'] + list(STAFF_KEYS)))
+    for r in rows:
+        where = 'StaffRules[%s]' % r['Name']
+        try:
+            re.compile(r['Pattern'], re.IGNORECASE)
+        except re.error as exc:
+            raise AssertionError('%s: bad regex (%s)' % (where, exc))
+        left = leftover.search(' '.join([r['Pattern'], r['Answer'], r['ActionArg'], r['OfferLabel']]))
+        assert not left, '%s: unfilled placeholder %s' % (where, left.group(0))
+        assert r['Answer'], '%s: no answer' % where
+        assert set(r['StaffOnly']) | set(r['StaffNot']) <= staff, '%s: unknown staff id' % where
+        if r['Action'] != 'None':
+            assert r['Action'] in ACTION_TABLES, '%s: unknown action %s' % (where, r['Action'])
+            table = ACTION_TABLES[r['Action']]
+            if table:
+                assert r['ActionArg'].split('#')[0] in {x['Name'] for x in tables[table]}, \
+                    '%s: %s has no row %s' % (where, table, r['ActionArg'])
+        assert not r['bOffer'] or r['Action'] != 'None', '%s: offers no action' % where
+
+
+def build_staff_rules(tables):
+    """DT_StaffRules: the web's simple fixed-text branches, then staff_rules_ue.py (which replaces rows of the same Name).
+    Returns (rows, names replaced by staff_rules_ue.py, web branch orders with no rule)."""
     sa = load('staff_answers.json')
     rx = {r['id']: r['pattern'] for r in sa['rules']}
-    rows, skipped = [], []
+    rows, covered = [], set()
     for b in sa['presetBranches']:
-        if not b.get('staticText'):
+        m = SIMPLE.match((b.get('conditionSrc') or '').strip())
+        if not b.get('staticText') or not (m and m.group(1) in rx):
             continue
-        cond = (b.get('conditionSrc') or '').strip()
-        m, lit = SIMPLE.match(cond), LITERAL.match(cond)
-        if m and m.group(1) in rx:
-            pattern, maxw = rx[m.group(1)], int(m.group(2) or 0)
-        elif lit:
-            # bare word tests (/ride/, /scene|wax|figure/) were last-resort branches in the web; keep them late (Order >= 100)
-            pattern, maxw = lit.group(1), 0
-            b = dict(b, order=100 + int(b['order']))
-        else:
-            skipped.append(cond)
-            continue
+        pattern = rx[m.group(1)]
+        if m.group(3):
+            # "&& !travel": not when the player asks the way or to be taken there (the directions answer that)
+            pattern = compose([pattern], ['(?:%s|%s)' % (UE_GO, UE_WH)])
         act, arg = RULE_ACTIONS.get(b.get('action') or '', ('', 'None'))
-        rows.append({'Name': 'R%03d' % b['order'], 'Order': int(b['order']), 'Pattern': pattern, 'MaxWords': maxw,
-                     'StaffOnly': list(b.get('staffOnly') or []), 'StaffNot': list(b.get('staffNot') or []), 'Answer': txt(b['staticText']),
-                     'Action': act or 'None', 'ActionArg': arg})
-    return rows, skipped
+        rows.append(rule_row('R%03d' % b['order'], b['order'], pattern, txt(b['staticText']), int(m.group(2) or 0),
+                             b.get('staffOnly') or [], b.get('staffNot') or [], act, arg))
+        covered.add(int(b['order']))
+    ue, ue_webs = ue_rules(tables, rx)
+    by_name = {r['Name']: r for r in rows}
+    replaced = sorted(set(by_name) & {r['Name'] for r in ue})
+    by_name.update((r['Name'], r) for r in ue)
+    out = sorted(by_name.values(), key=lambda r: (r['Order'], r['Name']))
+    check_rules(out, tables)
+    branches = {int(b['order']) for b in sa['presetBranches']}
+    return out, replaced, sorted(branches - covered - ue_webs - set(CPP_BRANCHES))
 
 
 def build_facts():
@@ -368,7 +606,9 @@ def build_stations(L):
         ls, card = lay[s['id']], s.get('card') or {}
         rows.append({'Name': s['id'], 'Room': s['room'], 'Kicker': txt(s.get('kick') or card.get('k')), 'Title': txt(card.get('t')),
                      'Subtitle': txt(card.get('m')), 'GoLabel': txt(card.get('go')), 'Steps': [txt(x) for x in s.get('stepTitles') or []],
-                     'Panel': [txt(p['text']) for p in (s.get('panelTexts') or []) if p.get('kind') == 'stp'][:6],
+                     # the panel's paragraphs, without the live status lines of a running test ("Swinging… The photogate ...")
+                     'Panel': [txt(p['text']) for p in (s.get('panelTexts') or [])
+                               if p.get('kind') == 'stp' and not re.match('^\\w+…', p['text'])][:6],
                      'bUsesHands': bool(s.get('usesHands')), 'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
     if 'easel' in lay and not any(r['Name'] == 'easel' for r in rows):
         ls = lay['easel']
@@ -387,8 +627,10 @@ def build_rides(L):
     rows = []
     for ride in r['rides']:
         f = at[ride['id']]['ue_location_cm']
+        # The web's note ends with how to look around while riding ("Drag to look around ..."); riding is not in this build.
+        note = re.sub(r'\s*Drag to look around[^.]*\.', '', txt(ride.get('cardNote'))).strip()
         rows.append({'Name': ride['id'], 'DisplayName': txt(ride['name']), 'Kicker': txt(ride.get('kick')), 'CardText': txt(ride.get('cardText')),
-                     'CardNote': txt(ride.get('cardNote')), 'About': txt(ride.get('staffAbout')), 'Stats': txt(ride.get('staffStats')),
+                     'CardNote': note, 'About': txt(ride.get('staffAbout')), 'Stats': txt(ride.get('staffStats')),
                      'Safety': txt(ride.get('staffSafety')), 'BadgeId': ride.get('badge') or 'None', 'Location': vec(f[0], f[1], f[2] + 120.0),
                      'ExitView': view_from_web(ride.get('exitView'))})
     return rows
@@ -433,15 +675,16 @@ def main():
         structs = json.load(f)['structs']
     with open(LAYOUT, encoding='utf-8') as f:
         L = json.load(f)
-    rules, skipped = build_staff_rules()
     tables = {
         'FWTASourceRow': build_sources(), 'FWTAGalleryRow': build_galleries(), 'FWTAExhibitRow': build_exhibits(L),
         'FWTASubjectRow': build_subjects(L), 'FWTABookRow': build_books(), 'FWTARoomRow': build_rooms(L),
         'FWTAPlaceRow': build_places(L), 'FWTATourStopRow': build_tour(L), 'FWTAStaffRow': build_staff(L),
-        'FWTAStaffRuleRow': rules, 'FWTAFactRow': build_facts(), 'FWTALessonRow': build_lessons(),
+        'FWTAStaffRuleRow': None, 'FWTAFactRow': build_facts(), 'FWTALessonRow': build_lessons(),
         'FWTABadgeRow': build_badges(), 'FWTATokenRow': build_tokens(L), 'FWTAWaxSceneRow': build_wax(L),
         'FWTAStationRow': build_stations(L), 'FWTARideRow': build_rides(L),
     }
+    # The staff rules come last: their placeholders read the other tables.
+    tables['FWTAStaffRuleRow'], replaced, unruled = build_staff_rules(tables)
     missing = [s for s, d in structs.items() if d['row'] and s not in tables]
     assert not missing, 'no builder for %s' % missing
     os.makedirs(OUT, exist_ok=True)
@@ -454,8 +697,9 @@ def main():
         with open(os.path.join(OUT, fn), 'w', encoding='utf-8') as f:
             json.dump(rows, f, indent=1, ensure_ascii=False)
         print('%-20s %-18s %3d rows' % (fn, structs[sname]['table'], len(rows)))
-    if skipped:
-        print('staff answers kept for C++ (not fixed text or not a simple rule): %d' % len(skipped))
+    print('staff rules: %d; staff_rules_ue.py rewrites %s for this build' % (len(tables['FWTAStaffRuleRow']), ', '.join(replaced)))
+    if unruled:
+        print('web staff branches with no rule (the search answers them): %s' % ', '.join(map(str, unruled)))
     print('ALL TABLES MATCH THE CONTRACT')
 
 

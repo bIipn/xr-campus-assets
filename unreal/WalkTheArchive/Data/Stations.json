@@ -87,8 +87,7 @@
   "Panel": [
    "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
    "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
-   "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back).",
-   "Swinging… The photogate times each pass. Let it finish 10 full swings."
+   "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back)."
   ],
   "bUsesHands": true,
   "Location": {

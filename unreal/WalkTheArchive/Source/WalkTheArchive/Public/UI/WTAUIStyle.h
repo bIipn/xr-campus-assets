@@ -109,6 +109,9 @@ namespace WTAStyle
 	/** Dark brass for small text on the cream cards. */
 	inline FLinearColor BrassDark() { return FromHex(0x8a6d2f); }
 
+	/** Dim brass for thin edges on small dark plates (web --brass-dim). */
+	inline FLinearColor BrassDim() { return FromHex(0x7d6840); }
+
 	/** Button style: Fill at rest, a little lighter hovered, a little darker pressed. */
 	inline FButtonStyle ButtonStyle(const FLinearColor& Fill, const FLinearColor& Hovered, const FLinearColor& Pressed)
 	{

@@ -108,6 +108,7 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> RoomNameText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> RoomSubText;
 	UPROPERTY(Transient) TObjectPtr<UBorder> CrosshairDot;
+	UPROPERTY(Transient) TObjectPtr<UBorder> HoverPlate;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> HoverLabelText;
 	UPROPERTY(Transient) TObjectPtr<UBorder> ToastPlate;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> ToastText;

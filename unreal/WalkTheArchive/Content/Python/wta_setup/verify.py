@@ -30,10 +30,15 @@ VIEWPOINTS = [("lobby", ["lobby"]), ("reading_room", ["library", "lib", "window"
 
 
 def expected_books():
-    """Books whose book__<id> mesh exists (the actors step skips the others)."""
+    """One actor per copy of each book (util.book_copies), or one per book__<id> mesh the GLBs do not split (the
+    actors step skips books with neither)."""
     folders = [paths.campus_asset_path("LibraryShell"), paths.campus_asset_path("School"), paths.CAMPUS_PATH]
+    copies = util.book_copies()
     count = 0
     for row in util.data_rows("Books.json"):
+        if copies.get(row["Name"]):
+            count += len(copies[row["Name"]])
+            continue
         _p, mesh = util.find_tagged_mesh("book", row["Name"], folders)
         if mesh is not None:
             count += 1

@@ -5,7 +5,9 @@
 // (the long Greeting the first time, GreetingShort after) and shows the staff's Chips. Send(Question) adds the
 // player's line, asks UWTADialogueSubsystem, adds the reply, notes the question for the "curious" badge, and
 // after ActionDelay seconds runs the reply's Action through AWTAPlayerController::RunAction (so the panel it opens
-// appears after the answer, as on the web). Enter in the text box sends.
+// appears after the answer, as on the web). An offered action (FWTAReply::bOffer: what the web showed as a card, such
+// as a search hit, a named exhibit or book, or directions to a place) becomes a button under the answer instead and
+// runs only when clicked. Enter in the text box sends.
 
 #pragma once
 
@@ -57,6 +59,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void Send(const FString& Question);
 
+	/** Forget the current conversation (messages, offers, a pending action); the next Open starts with a greeting. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ClearConversation();
+
+	/** Run offer button Index (0 = the first offered this conversation) as if it were clicked; false if there is none. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	bool ClickOffer(int32 Index);
+
 	/** Keyboard focus to the text box (Enter key while open). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void FocusInput();
@@ -68,12 +78,21 @@ public:
 protected:
 	virtual void NativeOnInitialized() override;
 
+	/** Finishes RequestScrollToEnd once the new bubbles have their size. */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	/** Scroll the messages to the newest one, now and again over the next frames (Slate sizes new widgets a frame late). */
+	void RequestScrollToEnd();
+
 	/** While the text box has focus, key presses (other than Escape) stop here so T/M/WASD do not reach the game. */
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
-	/** Buttons: "Send", "Close", "Chip" (Index into the current chips). */
+	/** Buttons: "Send", "Close", "Chip" (Index into the current chips), "Offer" (Index into Offers). */
 	UFUNCTION()
 	void HandleAction(FName Action, FName Arg, int32 Index);
+
+	/** A button under the last answer that runs Action/Arg through the controller when clicked. */
+	void AddOffer(const FText& Label, FName Action, FName Arg);
 
 	/** Enter in the text box. */
 	UFUNCTION()
@@ -97,7 +116,11 @@ protected:
 	bool bOpen = false;
 	TSet<FName> Greeted;
 	TArray<FText> CurrentChips;
+	/** Offered actions (Action, Arg) of the current conversation, by button index. */
+	TArray<TPair<FName, FName>> Offers;
 	FTimerHandle ActionTimer;
 	FName PendingAction;
 	FName PendingArg;
+	/** Frames left in which NativeTick scrolls the messages to the end again. */
+	int32 ScrollToEndFrames = 0;
 };

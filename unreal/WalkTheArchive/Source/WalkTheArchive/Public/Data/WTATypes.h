@@ -316,8 +316,13 @@ struct WALKTHEARCHIVE_API FWTAPlaceRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FWTAView View;
 
+	/** The answer to "where is it?", after "That's " ("the Wax Hall, straight ahead from the lobby ..."). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FText Directions;
+
+	/** How staff name the place mid-sentence ("Follow me to the Wax Hall."); empty = Label. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Say;
 };
 
 /**
@@ -421,7 +426,9 @@ struct WALKTHEARCHIVE_API FWTAStaffRow : public FTableRowBase
 /**
  * DT_StaffRules: preset answers. Pattern is an ICU regex (case-insensitive) tested against the question.
  * Order = priority (lower first; < 100 runs before directions and title matches, >= 100 after).
- * StaffOnly/StaffNot filter by staff id. Action: None | GoPlace | OpenItem | OpenBook | OpenStation | StartTour | OpenBadges.
+ * StaffOnly/StaffNot filter by staff id. Ties in Order are broken by row name. Action: None | GoPlace | OpenItem | OpenBook
+ * | OpenStation | OpenRide | StartTour | OpenBadges. bOffer = the action waits for a button under the answer (labelled
+ * OfferLabel, or a default for the action) instead of running on its own.
  */
 USTRUCT(BlueprintType)
 struct WALKTHEARCHIVE_API FWTAStaffRuleRow : public FTableRowBase
@@ -451,6 +458,14 @@ struct WALKTHEARCHIVE_API FWTAStaffRuleRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FName ActionArg;
+
+	/** true = Action is offered as a button under the answer (the web showed a card); false = it runs on its own. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	bool bOffer = false;
+
+	/** The offer button's label; empty = the default for the action ("Take me there", "Open the book", ...). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText OfferLabel;
 };
 
 /** DT_Facts: a short fact about XRLibraries with its sources (feeds staff answers). */
@@ -645,7 +660,7 @@ namespace WTAAction
 	inline FName GoPlace()     { static const FName N(TEXT("GoPlace"));     return N; }
 	/** Open an exhibit card; arg = DT_Exhibits row. */
 	inline FName OpenItem()    { static const FName N(TEXT("OpenItem"));    return N; }
-	/** Open the book reader; arg = DT_Books row. */
+	/** Open the book reader; arg = DT_Books row (on its cover), or "<row>#<page index>" to open at that page. */
 	inline FName OpenBook()    { static const FName N(TEXT("OpenBook"));    return N; }
 	/** Open a station panel; arg = DT_Stations row. */
 	inline FName OpenStation() { static const FName N(TEXT("OpenStation")); return N; }

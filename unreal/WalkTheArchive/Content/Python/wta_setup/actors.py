@@ -2,7 +2,8 @@
 
   AWTARoomVolume     one per Rooms.json row, centre and half extent from BoundsMin/Max
   AWTAExhibitActor   one per Exhibits.json row at Location/Yaw, PickExtent (8, w/2, h/2)
-  AWTABookActor      one per Books.json row at the book__<id> mesh bounds (skipped with a warning if absent)
+  AWTABookActor      one per copy of each Books.json book (featured table, stack end, Room 104) at that cover
+                     (util.book_copies); the whole book__<id> mesh bounds if the GLBs list none; skipped if absent
   AWTAStationActor   one per Stations.json row, extent 80
   AWTARideActor      one per Rides.json row, extent 300
   AWTATokenActor     one per Tokens.json row at the token__<id> mesh centre, else Location
@@ -69,23 +70,30 @@ def spawn_exhibits(report):
 
 
 def spawn_books(report):
+    """One AWTABookActor per copy of each book (util.book_copies: the featured table, the stack end, Room 104),
+    each picking only its own cover; a book with no copies in the GLBs falls back to its whole mesh's bounds."""
     failed_props, count, skipped = [], 0, []
+    copies = util.book_copies()
     folders = [paths.campus_asset_path("LibraryShell"), paths.campus_asset_path("School"), paths.CAMPUS_PATH]
     for row in util.data_rows("Books.json"):
-        _path, mesh = util.find_tagged_mesh("book", row["Name"], folders)
-        bounds = util.mesh_bounds(mesh) if mesh is not None else None
-        if bounds is None:
-            skipped.append(row["Name"])
-            log.warn("book mesh book__%s not found; AWTABookActor %s skipped" % (row["Name"].replace("-", "_"), row["Name"]))
-            continue
-        centre, ext = bounds
-        pick = [max(e + 6.0, 12.0) for e in ext]
-        _a, failed = spawn_wta("WTABookActor", centre, 0.0, "Book_%s" % row["Name"], "Books", {
-            "book_id": row["Name"],
-            "pick_extent": half_extent(*pick),
-        })
-        failed_props += failed
-        count += 1
+        spots = copies.get(row["Name"])
+        if not spots:
+            _path, mesh = util.find_tagged_mesh("book", row["Name"], folders)
+            bounds = util.mesh_bounds(mesh) if mesh is not None else None
+            if bounds is None:
+                skipped.append(row["Name"])
+                log.warn("book mesh book__%s not found; AWTABookActor %s skipped" % (row["Name"].replace("-", "_"), row["Name"]))
+                continue
+            spots = [bounds]
+        for n, (centre, ext) in enumerate(spots, 1):
+            pick = [max(e + 6.0, 12.0) for e in ext]
+            label = "Book_%s" % row["Name"] if len(spots) == 1 else "Book_%s_%d" % (row["Name"], n)
+            _a, failed = spawn_wta("WTABookActor", centre, 0.0, label, "Books", {
+                "book_id": row["Name"],
+                "pick_extent": half_extent(*pick),
+            })
+            failed_props += failed
+            count += 1
     report["books"] = count
     report["books_skipped"] = skipped
     return failed_props

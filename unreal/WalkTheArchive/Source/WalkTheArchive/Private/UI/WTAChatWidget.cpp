@@ -35,6 +35,7 @@ namespace
 	const FName NAME_ChatSend(TEXT("Send"));
 	const FName NAME_ChatClose(TEXT("Close"));
 	const FName NAME_ChatChip(TEXT("Chip"));
+	const FName NAME_ChatOffer(TEXT("Offer"));
 
 	/** Let the staff NPC in the world know it is speaking (jaw/gesture hook for later phases). */
 	void ChatTalkAs(UWorld* World, FName StaffId, const FText& Text)
@@ -133,8 +134,9 @@ void UWTAChatWidget::NativeOnInitialized()
 
 	// Messages.
 	{
+		// Tall enough for a question, a long answer and its offer button without scrolling.
 		USizeBox* ScrollHeight = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
-		ScrollHeight->SetHeightOverride(340.f);
+		ScrollHeight->SetHeightOverride(420.f);
 		Column->AddChildToVerticalBox(ScrollHeight);
 
 		MessageScroll = Tree->ConstructWidget<UScrollBox>(UScrollBox::StaticClass());
@@ -211,6 +213,7 @@ void UWTAChatWidget::Open(FName InStaffId)
 		{
 			MessageList->ClearChildren();
 		}
+		Offers.Reset();
 		const bool bShort = Greeted.Contains(StaffId);
 		FText Greeting;
 		if (Dialogue != nullptr)
@@ -255,6 +258,21 @@ void UWTAChatWidget::Close()
 	SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void UWTAChatWidget::ClearConversation()
+{
+	if (MessageList != nullptr)
+	{
+		MessageList->ClearChildren();
+	}
+	Offers.Reset();
+	PendingAction = NAME_None;
+	PendingArg = NAME_None;
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(ActionTimer);
+	}
+}
+
 void UWTAChatWidget::AddMessage(const FText& Text, bool bFromPlayer)
 {
 	if (MessageList == nullptr || WidgetTree == nullptr || Text.IsEmpty())
@@ -274,11 +292,7 @@ void UWTAChatWidget::AddMessage(const FText& Text, bool bFromPlayer)
 	UVerticalBoxSlot* BubbleSlot = MessageList->AddChildToVerticalBox(Bubble);
 	BubbleSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
 	BubbleSlot->SetHorizontalAlignment(bFromPlayer ? HAlign_Right : HAlign_Left);
-
-	if (MessageScroll != nullptr)
-	{
-		MessageScroll->ScrollToEnd();
-	}
+	RequestScrollToEnd();
 }
 
 void UWTAChatWidget::SetChips(const TArray<FText>& Chips)
@@ -334,8 +348,12 @@ void UWTAChatWidget::Send(const FString& Question)
 		Progress->NoteQuestionAsked();
 	}
 
-	// The reply's action runs a beat later so the panel it opens appears after the answer.
-	if (!Reply.Action.IsNone())
+	// An offered action waits for its button; any other runs a beat later so its panel appears after the answer.
+	if (!Reply.Action.IsNone() && Reply.bOffer)
+	{
+		AddOffer(Reply.OfferLabel, Reply.Action, Reply.ActionArg);
+	}
+	else if (!Reply.Action.IsNone())
 	{
 		PendingAction = Reply.Action;
 		PendingArg = Reply.ActionArg;
@@ -387,6 +405,61 @@ void UWTAChatWidget::HandleAction(FName Action, FName Arg, int32 Index)
 			Send(CurrentChips[Index].ToString());
 		}
 		FocusInput();
+	}
+	else if (Action == NAME_ChatOffer)
+	{
+		ClickOffer(Index);
+	}
+}
+
+bool UWTAChatWidget::ClickOffer(int32 Index)
+{
+	if (!Offers.IsValidIndex(Index))
+	{
+		return false;
+	}
+	PendingAction = Offers[Index].Key;
+	PendingArg = Offers[Index].Value;
+	RunPendingAction();
+	return true;
+}
+
+void UWTAChatWidget::AddOffer(const FText& Label, FName Action, FName Arg)
+{
+	if (MessageList == nullptr || WidgetTree == nullptr || Action.IsNone())
+	{
+		return;
+	}
+	const int32 Index = Offers.Emplace(Action, Arg);
+	UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, Label.IsEmpty() ? FText::FromString(TEXT("Show me")) : Label,
+		NAME_ChatOffer, NAME_None, Index, WTAStyle::SecondaryButton(), WTAStyle::Font(12), WTAStyle::Bone());
+	Button->OnAction.AddDynamic(this, &UWTAChatWidget::HandleAction);
+	UVerticalBoxSlot* ButtonSlot = MessageList->AddChildToVerticalBox(Button);
+	ButtonSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
+	ButtonSlot->SetHorizontalAlignment(HAlign_Left);
+	RequestScrollToEnd();
+}
+
+void UWTAChatWidget::RequestScrollToEnd()
+{
+	if (MessageScroll != nullptr)
+	{
+		MessageScroll->ScrollToEnd();
+	}
+	// A new bubble has no size until Slate's next layout pass, so scroll again over the next few frames.
+	ScrollToEndFrames = 3;
+}
+
+void UWTAChatWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	if (ScrollToEndFrames > 0)
+	{
+		--ScrollToEndFrames;
+		if (MessageScroll != nullptr)
+		{
+			MessageScroll->ScrollToEnd();
+		}
 	}
 }
 

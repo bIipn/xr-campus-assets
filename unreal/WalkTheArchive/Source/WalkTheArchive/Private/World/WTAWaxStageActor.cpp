@@ -3,6 +3,8 @@
 #include "World/WTAWaxStageActor.h"
 #include "Animation/AnimSequence.h"
 #include "Components/BoxComponent.h"
+#include "Components/LODSyncComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Engine/EngineTypes.h"
@@ -76,7 +78,7 @@ void AWTAWaxStageActor::BeginPlay()
 
 void AWTAWaxStageActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	GetWorldTimerManager().ClearTimer(FreezeTimer);
+	FigureBones.Reset();
 	for (AActor* Figure : Figures)
 	{
 		if (IsValid(Figure))
@@ -128,19 +130,110 @@ void AWTAWaxStageActor::SpawnFigures()
 	{
 		UE_LOG(LogWTA, Log, TEXT("%s: %d of %d reenactors not built yet"), *GetName(), NotBuilt, Scene.Figures.Num());
 	}
-	if (Figures.Num() > 0)
+	// Let the held pose evaluate (body, then the face, clothes and grooms that follow it; PlayPose makes that happen
+	// even off screen), then freeze the bones (UpdateFigureBones, every frame from now on).
+	SpawnFrame = GFrameCounter;
+	SpawnSeconds = World->GetTimeSeconds();
+	FigureBones.Reset();
+	for (AActor* Person : Figures)
 	{
-		// Let the held pose evaluate (body, then face, clothes and grooms that follow it; PlayPose makes that
-		// happen at LOD0 even off screen), then freeze the bones.
-		GetWorldTimerManager().SetTimer(FreezeTimer, this, &AWTAWaxStageActor::FreezeFigures, 1.5f, false);
+		FFigureBones& Bones = FigureBones.AddDefaulted_GetRef();
+		Bones.Figure = Person;
+		TInlineComponentArray<USkeletalMeshComponent*> Meshes;
+		Person->GetComponents(Meshes);
+		for (USkeletalMeshComponent* Mesh : Meshes)
+		{
+			if (Mesh != nullptr)
+			{
+				Bones.Meshes.Add(Mesh);
+				Bones.PosedLOD.Add(INDEX_NONE);
+				// This stage decides each frame whether the mesh evaluates, so it ticks before the mesh...
+				Mesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
+			}
+		}
+		// ...and after the figure's LOD sync, which picks the frame's LOD for every mesh it syncs.
+		if (ULODSyncComponent* Sync = Person->FindComponentByClass<ULODSyncComponent>())
+		{
+			PrimaryActorTick.AddPrerequisite(Sync, Sync->PrimaryComponentTick);
+		}
 	}
 }
 
-void AWTAWaxStageActor::FreezeFigures()
+void AWTAWaxStageActor::UpdateFigureBones()
 {
-	for (AActor* Figure : Figures)
+	const UWorld* World = GetWorld();
+	if (World == nullptr || FigureBones.Num() == 0)
 	{
+		return;
+	}
+	// A slow start (first launch: shaders compiling, meshes streaming) can fit only a frame or two into the settle
+	// time; a face frozen before it copied the body's head and neck keeps its reference pose under a posed head and
+	// sags. So a new figure freezes after SettleSeconds and MinFramesBeforeFreeze frames, once its face sits on its
+	// body, or after MaxSecondsBeforeFreeze whatever the face says.
+	const double Age = World->GetTimeSeconds() - SpawnSeconds;
+	const bool bSettleTimeOver = Age >= SettleSeconds && GFrameCounter - SpawnFrame >= static_cast<uint64>(MinFramesBeforeFreeze);
+	const bool bOutOfTime = Age > MaxSecondsBeforeFreeze;
+	for (FFigureBones& Bones : FigureBones)
+	{
+		AActor* Figure = Bones.Figure.Get();
+		if (!IsValid(Figure))
+		{
+			continue;
+		}
+		if (Bones.bFrozen)
+		{
+			// About to be drawn at a LOD its bones were not evaluated at: evaluate this frame (the meshes tick after
+			// this stage), and a couple more, then freeze again.
+			bool bLODChange = false;
+			for (int32 i = 0; i < Bones.Meshes.Num() && !bLODChange; ++i)
+			{
+				const USkeletalMeshComponent* Mesh = Bones.Meshes[i].Get();
+				bLODChange = Mesh != nullptr && UWTAPeopleLibrary::NextLOD(Mesh) != Bones.PosedLOD[i];
+			}
+			if (bLODChange)
+			{
+				UWTAPeopleLibrary::Thaw(Figure);
+				Bones.bFrozen = false;
+				Bones.EvalFrames = 0;
+				++NumReposes;
+			}
+			continue;
+		}
+
+		// Evaluating: the frame before this one posed every mesh at its LOD of that frame (GetPredictedLODLevel,
+		// which this frame's tick has not updated yet).
+		++Bones.EvalFrames;
+		float Gap = 0.f;
+		const bool bFaceOn = UWTAPeopleLibrary::IsFaceOnBody(Figure, Gap);
+		const bool bReady = Bones.bEverFrozen ? (Bones.EvalFrames >= 2 && (bFaceOn || Bones.EvalFrames > 30))
+			: ((bSettleTimeOver && bFaceOn) || bOutOfTime);
+		if (!bReady)
+		{
+			continue;
+		}
+		// Freeze only when this frame keeps every mesh at the LOD it was just posed at.
+		bool bSteady = true;
+		for (int32 i = 0; i < Bones.Meshes.Num() && bSteady; ++i)
+		{
+			const USkeletalMeshComponent* Mesh = Bones.Meshes[i].Get();
+			bSteady = Mesh == nullptr || UWTAPeopleLibrary::NextLOD(Mesh) == Mesh->GetPredictedLODLevel();
+		}
+		if (!bSteady)
+		{
+			continue;
+		}
+		for (int32 i = 0; i < Bones.Meshes.Num(); ++i)
+		{
+			const USkeletalMeshComponent* Mesh = Bones.Meshes[i].Get();
+			Bones.PosedLOD[i] = Mesh != nullptr ? Mesh->GetPredictedLODLevel() : INDEX_NONE;
+		}
+		if (!bFaceOn)
+		{
+			UE_LOG(LogWTA, Warning, TEXT("%s: %s froze with its face %.1f cm off its head"), *GetName(), *Figure->GetName(), Gap);
+		}
 		UWTAPeopleLibrary::Freeze(Figure);
+		Bones.bFrozen = true;
+		Bones.bEverFrozen = true;
 	}
 }
 
@@ -196,6 +289,8 @@ void AWTAWaxStageActor::NotifyActorEndOverlap(AActor* OtherActor)
 void AWTAWaxStageActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	UpdateFigureBones();
 
 	if (!bPlayerInside || !bHasScene)
 	{

@@ -22,7 +22,8 @@ Units and exposure, decided here and consistent with docs/reference/render.md se
   * Self-lit surfaces (the web's glows and unlit pictures) are calibrated by emissive.py: physical
     luminance for light fixtures, display referred for windows, screens and labels.
   * One SpotLight per gallery exhibit (600 lm, 30 degree cone) 180 cm out from the wall and 100 cm above
-    the art, aimed at the art, and one per Wax Hall stage. These picture lights carry most of the realism.
+    the art, aimed at the art, and two per Wax Hall stage: a steep one over the rope onto the set and a face
+    light from the aisle ceiling onto the reenactors' faces. These picture lights carry most of the realism.
 All lights are movable, tagged WTA_Setup / WTA_lighting, and live in Outliner folders Lighting/<wing>.
 """
 import re
@@ -44,6 +45,11 @@ ART_SPOT_LUMENS = 600.0
 ART_SPOT_CONE = 30.0
 STAGE_SPOT_LUMENS = 1500.0
 STAGE_SPOT_CONE = 45.0
+# Front key light on the Wax Hall reenactors' faces: aisle ceiling, 3.8 m out from the stage line.
+FACE_LIGHT_LUMENS = 1600.0
+FACE_LIGHT_CONE = 30.0
+FACE_LIGHT_OUT = 380.0
+FACE_LIGHT_HEIGHT = 300.0
 
 # Ceiling panels (layout.json emissive_fixtures ids): a 1.2 x 0.5 m LED troffer gives about 3000-4000 lm.
 PANEL_FIXTURES = ("school-hall-troffers", "studio-troffers", "lab-panels", "blueprint-panels", "world-panels")
@@ -440,7 +446,12 @@ def build_stage_lights(report):
         light_pos = (stage[0] + 150.0 * fwd[0], stage[1] + 150.0 * fwd[1], stage[2] + 330.0)
         target = (stage[0] - 150.0 * fwd[0], stage[1] - 150.0 * fwd[1], stage[2] + 90.0)
         aimed_spot("StageLight_%s" % row["Name"], "wax", light_pos, target, STAGE_SPOT_LUMENS, STAGE_SPOT_CONE)
-        count += 1
+        # The face light: from the aisle ceiling, at a museum diorama's 30-degree key angle, onto the reenactors'
+        # faces. The steep stage spot alone left eye sockets and chins in shadow, which read as tired, sagging faces.
+        face_pos = (stage[0] + FACE_LIGHT_OUT * fwd[0], stage[1] + FACE_LIGHT_OUT * fwd[1], stage[2] + FACE_LIGHT_HEIGHT)
+        face_target = (stage[0] - 180.0 * fwd[0], stage[1] - 180.0 * fwd[1], stage[2] + 150.0)
+        aimed_spot("StageFaceLight_%s" % row["Name"], "wax", face_pos, face_target, FACE_LIGHT_LUMENS, FACE_LIGHT_CONE)
+        count += 2
     report["stage_spots"] = count
 
 

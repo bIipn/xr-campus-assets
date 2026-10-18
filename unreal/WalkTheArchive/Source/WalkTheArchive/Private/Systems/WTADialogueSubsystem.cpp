@@ -422,6 +422,76 @@ namespace
 	{
 		return GameInstance ? GameInstance->GetSubsystem<UWTAContentSubsystem>() : nullptr;
 	}
+
+	const FName KindItem(TEXT("item"));
+	const FName KindFact(TEXT("fact"));
+	const FName KindPage(TEXT("page"));
+	const FName KindLesson(TEXT("lesson"));
+	const FName KindPart(TEXT("part"));
+
+	/** The web's searchAnswer bias: each staff member prefers some kinds of document (x1.5, x1.25, x1, ...); others x0.8. */
+	float KindBias(FName StaffId, FName Kind)
+	{
+		TArray<FName> Order;
+		if (StaffId == FName(TEXT("rosa")))
+		{
+			Order = { KindPage, KindFact, KindItem };
+		}
+		else if (StaffId == FName(TEXT("hale")))
+		{
+			Order = { KindLesson, KindPart, KindFact, KindPage, KindItem };
+		}
+		else if (StaffId == FName(TEXT("rae")))
+		{
+			Order = { KindFact, KindPage, KindItem };
+		}
+		else
+		{
+			Order = { KindItem, KindFact, KindPage };
+		}
+		const int32 Index = Order.IndexOfByKey(Kind);
+		return Index == INDEX_NONE ? 0.8f : 1.f + 0.25f * static_cast<float>(2 - Index);
+	}
+
+	/** The default label of the button under an answer that offers its action. */
+	FText OfferLabel(FName Action)
+	{
+		if (Action == WTAAction::OpenItem())
+		{
+			return FText::FromString(TEXT("Show me the exhibit"));
+		}
+		if (Action == WTAAction::OpenBook())
+		{
+			return FText::FromString(TEXT("Open the book"));
+		}
+		if (Action == WTAAction::OpenStation())
+		{
+			return FText::FromString(TEXT("Take me to the station"));
+		}
+		if (Action == WTAAction::OpenRide())
+		{
+			return FText::FromString(TEXT("Show me the ride"));
+		}
+		if (Action == WTAAction::OpenBadges())
+		{
+			return FText::FromString(TEXT("Show me the badges"));
+		}
+		if (Action == WTAAction::GoPlace())
+		{
+			return FText::FromString(TEXT("Take me there"));
+		}
+		if (Action == WTAAction::StartTour())
+		{
+			return FText::FromString(TEXT("Start the tour"));
+		}
+		return FText::FromString(TEXT("Show me"));
+	}
+
+	/** The player asked to be shown or taken somewhere now, so an answer's action runs instead of waiting for its button. */
+	bool WantsItNow(const FString& Question)
+	{
+		return WantsToGo(Question) || RegexMatch(TEXT("\\bshow me\\b"), Question);
+	}
 }
 
 // --- Subsystem -----------------------------------------------------------------
@@ -477,7 +547,7 @@ FWTAReply UWTADialogueSubsystem::Ask(FName StaffId, const FString& Question)
 	{
 		return Reply;
 	}
-	if (TrySearch(Q, Reply))
+	if (TrySearch(StaffId, Q, Reply))
 	{
 		return Reply;
 	}
@@ -549,6 +619,7 @@ void UWTADialogueSubsystem::RebuildIndex()
 				Body += TEXT(" Partners: ") + TextOf(Row->Partners) + TEXT(".");
 			}
 			AddDoc(TextOf(Row->Title), Body, WTAAction::OpenItem(), Pair.Key);
+			Docs.Last().Kind = KindItem;
 			Docs.Last().Source = FString::Printf(TEXT("That\u2019s from \u201C%s\u201D %s."), *TextOf(Row->Title), *ExhibitWhere(*Row));
 		}
 	}
@@ -565,6 +636,7 @@ void UWTADialogueSubsystem::RebuildIndex()
 			}
 			const FString Title = Pair.Key == FName(TEXT("what")) ? FString(TEXT("XRLibraries")) : Pair.Key.ToString();
 			AddDoc(Title, TextOf(Row->Body), NAME_None, NAME_None);
+			Docs.Last().Kind = KindFact;
 			if (Row->Sources.Num() > 0)
 			{
 				if (const FWTASourceRow* Source = Content->FindSource(Row->Sources[0]))
@@ -588,7 +660,10 @@ void UWTADialogueSubsystem::RebuildIndex()
 			for (int32 PageIndex = 0; PageIndex < Row->Pages.Num(); ++PageIndex)
 			{
 				const FWTABookPage& Page = Row->Pages[PageIndex];
-				AddDoc(TextOf(Row->Title) + TEXT(" ") + TextOf(Page.Heading), PageText(Page), WTAAction::OpenBook(), Pair.Key);
+				// The answer names the page, so its button opens the book at that page ("<book>#<page index>").
+				const FName PageArg(*FString::Printf(TEXT("%s#%d"), *Pair.Key.ToString(), PageIndex));
+				AddDoc(TextOf(Row->Title) + TEXT(" ") + TextOf(Page.Heading), PageText(Page), WTAAction::OpenBook(), PageArg);
+				Docs.Last().Kind = KindPage;
 				Docs.Last().Source = FString::Printf(TEXT("That\u2019s in \u201C%s,\u201D page %d."), *TextOf(Row->Title), PageIndex + 1);
 			}
 		}
@@ -605,6 +680,7 @@ void UWTADialogueSubsystem::RebuildIndex()
 				continue;
 			}
 			AddDoc(TextOf(Row->Title), TextOf(Row->Body), Row->Station.IsNone() ? NAME_None : WTAAction::OpenStation(), Row->Station);
+			Docs.Last().Kind = KindLesson;
 		}
 	}
 
@@ -635,21 +711,26 @@ bool UWTADialogueSubsystem::TryRules(FName StaffId, const FString& Question, int
 	{
 		return false;
 	}
-	TArray<const FWTAStaffRuleRow*> Sorted;
+	// By Order, then by row name, so variants of one web branch (R132, R132a, R132b) run in a fixed order.
+	TArray<TPair<FString, const FWTAStaffRuleRow*>> Sorted;
 	for (const TPair<FName, uint8*>& Pair : Rules->GetRowMap())
 	{
 		const FWTAStaffRuleRow* Row = reinterpret_cast<const FWTAStaffRuleRow*>(Pair.Value);
 		if (Row != nullptr && Row->Order >= MinOrder && Row->Order <= MaxOrder)
 		{
-			Sorted.Add(Row);
+			Sorted.Emplace(Pair.Key.ToString(), Row);
 		}
 	}
-	Sorted.Sort([](const FWTAStaffRuleRow& A, const FWTAStaffRuleRow& B) { return A.Order < B.Order; });
+	Sorted.Sort([](const TPair<FString, const FWTAStaffRuleRow*>& A, const TPair<FString, const FWTAStaffRuleRow*>& B)
+	{
+		return A.Value->Order != B.Value->Order ? A.Value->Order < B.Value->Order : A.Key < B.Key;
+	});
 
 	TArray<FString> Tokens;
 	Tokenize(Question, Tokens);
-	for (const FWTAStaffRuleRow* Rule : Sorted)
+	for (const TPair<FString, const FWTAStaffRuleRow*>& Entry : Sorted)
 	{
+		const FWTAStaffRuleRow* Rule = Entry.Value;
 		if (Rule->StaffOnly.Num() > 0 && !Rule->StaffOnly.Contains(StaffId))
 		{
 			continue;
@@ -668,6 +749,9 @@ bool UWTADialogueSubsystem::TryRules(FName StaffId, const FString& Question, int
 			OutReply.Text = Rule->Answer;
 			OutReply.Action = Rule->Action;
 			OutReply.ActionArg = Rule->ActionArg;
+			OutReply.bOffer = Rule->bOffer && !Rule->Action.IsNone();
+			OutReply.OfferLabel = !OutReply.bOffer ? FText::GetEmpty()
+				: (Rule->OfferLabel.IsEmpty() ? OfferLabel(Rule->Action) : Rule->OfferLabel);
 			return true;
 		}
 	}
@@ -717,7 +801,7 @@ bool UWTADialogueSubsystem::TryDirections(const FString& Question, FWTAReply& Ou
 	}
 	if (bGo || Best->Directions.IsEmpty())
 	{
-		OutReply.Text = FText::FromString(FString::Printf(TEXT("Follow me to %s."), *TextOf(Best->Label)));
+		OutReply.Text = FText::FromString(FString::Printf(TEXT("Follow me to %s."), *TextOf(Best->Say.IsEmpty() ? Best->Label : Best->Say)));
 	}
 	else
 	{
@@ -725,6 +809,9 @@ bool UWTADialogueSubsystem::TryDirections(const FString& Question, FWTAReply& Ou
 	}
 	OutReply.Action = WTAAction::GoPlace();
 	OutReply.ActionArg = BestId;
+	// "Take me to ..." walks now; "Where is ...?" gets the directions and a button to walk there (the web's place card).
+	OutReply.bOffer = !bGo && !Best->Directions.IsEmpty();
+	OutReply.OfferLabel = OutReply.bOffer ? OfferLabel(WTAAction::GoPlace()) : FText::GetEmpty();
 	return true;
 }
 
@@ -781,10 +868,16 @@ bool UWTADialogueSubsystem::TryTitleMatch(const FString& Question, FWTAReply& Ou
 			}
 		}
 	}
+	if (bFound)
+	{
+		// Naming an exhibit or a book answers with it and offers it (the web's card); "show me ..." opens it now.
+		OutReply.bOffer = !WantsItNow(Question);
+		OutReply.OfferLabel = OutReply.bOffer ? OfferLabel(OutReply.Action) : FText::GetEmpty();
+	}
 	return bFound;
 }
 
-bool UWTADialogueSubsystem::TrySearch(const FString& Question, FWTAReply& OutReply)
+bool UWTADialogueSubsystem::TrySearch(FName StaffId, const FString& Question, FWTAReply& OutReply)
 {
 	if (!bIndexBuilt)
 	{
@@ -833,7 +926,7 @@ bool UWTADialogueSubsystem::TrySearch(const FString& Question, FWTAReply& OutRep
 		Idf.Add(FMath::Loge(1.f + static_cast<float>(N) / (static_cast<float>(Df) + 0.5f)));
 	}
 
-	// Score every document (the web's searchKB).
+	// Score every document (the web's searchKB), weighted by what this staff member knows best (searchAnswer).
 	int32 BestDoc = INDEX_NONE;
 	float BestScore = 0.f;
 	for (int32 D = 0; D < Docs.Num(); ++D)
@@ -860,6 +953,7 @@ bool UWTADialogueSubsystem::TrySearch(const FString& Question, FWTAReply& OutRep
 				}
 			}
 		}
+		Score *= KindBias(StaffId, Doc.Kind);
 		if (Score > BestScore)
 		{
 			BestScore = Score;
@@ -919,6 +1013,9 @@ bool UWTADialogueSubsystem::TrySearch(const FString& Question, FWTAReply& OutRep
 	OutReply.Text = FText::FromString(Answer);
 	OutReply.Action = Doc.Action;
 	OutReply.ActionArg = Doc.ActionArg;
+	// A keyword match is a suggestion: offer it as a button (the web's card) unless the player asked to be shown.
+	OutReply.bOffer = !Doc.Action.IsNone() && !WantsItNow(Question);
+	OutReply.OfferLabel = OutReply.bOffer ? OfferLabel(Doc.Action) : FText::GetEmpty();
 	return true;
 }
 

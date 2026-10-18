@@ -111,11 +111,19 @@ void UWTAHudWidget::NativeOnInitialized()
 		DotSlot->SetSize(FVector2D(6.f, 6.f));
 	}
 
-	HoverLabelText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14, true), WTAStyle::Bone(), false);
-	HoverLabelText->SetShadowOffset(FVector2D(1.f, 1.f));
-	HoverLabelText->SetShadowColorAndOpacity(FLinearColor(0.f, 0.f, 0.f, 0.8f));
-	HoverLabelText->SetVisibility(ESlateVisibility::Collapsed);
-	HudPlace(Canvas, HoverLabelText, FAnchors(0.5f, 0.5f), FVector2D(0.5f, 0.f), FVector2D(0.f, 22.f));
+	// The label sits on a small dark plate with a thin dim-brass edge (the web's .tag), so it reads on white walls,
+	// pale book covers and white hair alike.
+	HoverPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	{
+		FLinearColor Fill = WTAStyle::Panel();
+		Fill.A = 0.92f;
+		HoverPlate->SetBrush(WTAStyle::EdgedBrush(Fill, 6.f, WTAStyle::BrassDim(), 1.f));
+	}
+	HoverPlate->SetPadding(FMargin(10.f, 5.f, 10.f, 6.f));
+	HoverPlate->SetVisibility(ESlateVisibility::Collapsed);
+	HoverLabelText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(13, true), WTAStyle::Bone(), false);
+	HoverPlate->SetContent(HoverLabelText);
+	HudPlace(Canvas, HoverPlate, FAnchors(0.5f, 0.5f), FVector2D(0.5f, 0.f), FVector2D(0.f, 22.f));
 
 	// --- Toast, top-centre ----------------------------------------------------------
 	ToastPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
@@ -149,7 +157,12 @@ void UWTAHudWidget::NativeOnInitialized()
 
 	// --- Story plaque, right side: the museum label that appears when you walk up to an exhibit or scene ---
 	StoryPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
-	StoryPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Plate(), 10.f, WTAStyle::Brass()));
+	{
+		// Nearly solid, like a printed museum label: a see-through plate let the busy stage behind it show through.
+		FLinearColor Fill = WTAStyle::Panel();
+		Fill.A = 0.95f;
+		StoryPlate->SetBrush(WTAStyle::EdgedBrush(Fill, 10.f, WTAStyle::Brass()));
+	}
 	StoryPlate->SetPadding(FMargin(26.f, 22.f, 26.f, 20.f));
 	StoryPlate->SetVisibility(ESlateVisibility::Collapsed);
 	{
@@ -264,9 +277,9 @@ void UWTAHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	}
 
 	// With the crosshair hidden (free cursor) the hover label follows the mouse instead.
-	if (HoverLabelText != nullptr && CrosshairDot != nullptr && HoverLabelText->GetVisibility() != ESlateVisibility::Collapsed)
+	if (HoverPlate != nullptr && CrosshairDot != nullptr && HoverPlate->GetVisibility() != ESlateVisibility::Collapsed)
 	{
-		if (UCanvasPanelSlot* LabelSlot = Cast<UCanvasPanelSlot>(HoverLabelText->Slot))
+		if (UCanvasPanelSlot* LabelSlot = Cast<UCanvasPanelSlot>(HoverPlate->Slot))
 		{
 			if (CrosshairDot->GetVisibility() == ESlateVisibility::Collapsed)
 			{
@@ -307,12 +320,12 @@ void UWTAHudWidget::SetRoom(const FText& Kicker, const FText& Name, const FText&
 
 void UWTAHudWidget::SetHoverLabel(const FText& Label)
 {
-	if (HoverLabelText == nullptr)
+	if (HoverLabelText == nullptr || HoverPlate == nullptr)
 	{
 		return;
 	}
 	HoverLabelText->SetText(Label);
-	HoverLabelText->SetVisibility(Label.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	HoverPlate->SetVisibility(Label.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 }
 
 void UWTAHudWidget::ShowToast(const FText& Text, float Seconds)

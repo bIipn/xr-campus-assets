@@ -8,7 +8,9 @@
   "StaffNot": [],
   "Answer": "You’re welcome! Ask me anything else about the campus.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R003",
@@ -19,7 +21,129 @@
   "StaffNot": [],
   "Answer": "Come back anytime. The campus never closes.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R004-hale",
+  "Order": 4,
+  "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "I’m Mr. Hale, the workshop teacher here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R004-margaret",
+  "Order": 4,
+  "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "margaret"
+  ],
+  "StaffNot": [],
+  "Answer": "I’m Margaret, the museum guide here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R004-rae",
+  "Order": 4,
+  "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rae"
+  ],
+  "StaffNot": [],
+  "Answer": "I’m Coach Rae, the recess coach here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R004-rosa",
+  "Order": 4,
+  "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rosa"
+  ],
+  "StaffNot": [],
+  "Answer": "I’m Rosa, the reference librarian here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R005-hale",
+  "Order": 5,
+  "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "I teach in all four workshop rooms. Say “start painting” or “give me a blank canvas,” “start the sieve test,” “open the car blueprint” or “build a model car,” or ask me how anything in the school works.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R005-margaret",
+  "Order": 5,
+  "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "margaret"
+  ],
+  "StaffNot": [],
+  "Answer": "Ask me about XRLibraries, any exhibit, or a year, and I’ll show you where to find it. I can walk you to the Wax Hall, where wax figures act out XRLibraries’ story, or to the library, the Workshop School and the Recess Yard.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R005-rae",
+  "Order": 5,
+  "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rae"
+  ],
+  "StaffNot": [],
+  "Answer": "I run the Recess Yard. Ask me about the Comet Coaster, the Sky Drop or the Ocean Dive, or about the XR tokens hidden around the campus and the badges you can earn.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R005-rosa",
+  "Order": 5,
+  "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rosa"
+  ],
+  "StaffNot": [],
+  "Answer": "Ask me a question and I’ll find the answer in our books, or name a topic and I’ll recommend something. I can also walk you to any section.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R006",
@@ -30,7 +154,22 @@
   "StaffNot": [],
   "Answer": "This campus is an unofficial concept that Ev Holt made with Walk the Archive for XRLibraries. It is not an official XRLibraries site. The facts come from public sources like xrlibraries.com.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R007",
+  "Order": 7,
+  "Pattern": "walk the archive",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Walk the Archive is Ev Holt’s tool for turning a library’s, museum’s or tribe’s collection into a place you can walk through in a web browser, on a phone, a laptop or a library computer.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R008",
@@ -39,9 +178,71 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four hands-on rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard.",
+  "Answer": "You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R009-hale",
+  "Order": 9,
+  "Pattern": "\\bjoke\\b|make me laugh|something funny",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "Why did the engineer bring a ladder to the Blueprint Lab? To take the design to the next level.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R009-margaret",
+  "Order": 9,
+  "Pattern": "\\bjoke\\b|make me laugh|something funny",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "margaret"
+  ],
+  "StaffNot": [],
+  "Answer": "Why do VR headsets make great museum guides? They always help you see the big picture.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R009-rae",
+  "Order": 9,
+  "Pattern": "\\bjoke\\b|make me laugh|something funny",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rae"
+  ],
+  "StaffNot": [],
+  "Answer": "Why did the roller coaster get good grades? It always stayed on track.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R009-rosa",
+  "Order": 9,
+  "Pattern": "\\bjoke\\b|make me laugh|something funny",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rosa"
+  ],
+  "StaffNot": [],
+  "Answer": "Why was the library so tall? It had a lot of stories.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R010",
@@ -52,18 +253,35 @@
   "StaffNot": [],
   "Answer": "Good news: nobody needs a restroom in a virtual campus. Anything else I can help with?",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R011",
   "Order": 11,
-  "Pattern": "\\b(hours|open|close|closing)\\b.*\\b(when|what time|hours)\\b|\\bwhat time\\b.*\\b(open|close)\\b",
+  "Pattern": "\\b(hours|open|close|closing)\\b.*\\b(when|what time|hours)\\b|\\bwhat time\\b.*\\b(open|close)\\b|\\bwhen (do|does|is|are) (you|it|the campus|campus|this place)\\b.*\\b(open|close|closing)\\b|\\bare you open\\b",
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "The campus never closes. It’s open whenever you are, on a phone, a laptop or a library computer.",
+  "Answer": "The campus never closes. It’s open whenever you are.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R012",
+  "Order": 12,
+  "Pattern": "how do i (move|walk|look|turn|get around)|controls",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Walk with W, A, S and D and look around with the mouse. Hold Shift to run and press Space to jump. Press E or click to open anything that looks interesting, and press Tab to free the cursor so you can click the floor to walk there. M lists every place on the campus, and T starts the guided tour.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R013",
@@ -72,9 +290,11 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "Let’s paint! I’ll take you to the easel. Drag to paint in the air, then walk around your work.",
-  "Action": "GoPlace",
-  "ActionArg": "studio"
+  "Answer": "Let’s paint! I’ll take you to the easel in Room 101. Painting in the air comes in a later build, so for now its card shows how it works.",
+  "Action": "OpenStation",
+  "ActionArg": "easel",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R014",
@@ -83,9 +303,115 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "Here’s a blank canvas: the room disappears and it’s just you and your art. Switch to Night for a starry sky, or back to Room any time.",
+  "Answer": "A blank canvas is part of painting in the air, which comes in a later build. I’ll take you to the easel in Room 101 so you can see how it works.",
+  "Action": "OpenStation",
+  "ActionArg": "easel",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R015",
+  "Order": 15,
+  "Pattern": "^(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))(?=.*?(?:titration))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Here’s the titration station in Room 102. Its card walks through finding how concentrated the mystery acid is; running it yourself comes in a later build.",
+  "Action": "OpenStation",
+  "ActionArg": "titration",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R015a",
+  "Order": 15,
+  "Pattern": "^(?!.*(?:titration))(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))(?=.*?(?:pendulum))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Here’s the pendulum in Room 102. Its card explains how timing ten swings measures gravity; running it yourself comes in a later build.",
+  "Action": "OpenStation",
+  "ActionArg": "pendulum",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R015b",
+  "Order": 15,
+  "Pattern": "^(?!.*(?:titration))(?!.*(?:pendulum))(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Here’s the sieve analysis station in Room 102. Its card walks through testing a sand sample, step by step; running it yourself comes in a later build.",
+  "Action": "OpenStation",
+  "ActionArg": "sieve",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R016",
+  "Order": 16,
+  "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(car|automobile)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Follow me to the automobile blueprint in Room 103.",
   "Action": "GoPlace",
-  "ActionArg": "studio"
+  "ActionArg": "bp-car",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R016a",
+  "Order": 16,
+  "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(excavator|digger|heavy equipment)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Follow me to the excavator blueprint in Room 103.",
+  "Action": "GoPlace",
+  "ActionArg": "bp-excavator",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R016b",
+  "Order": 16,
+  "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(house|building)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Follow me to the house blueprint in Room 103.",
+  "Action": "GoPlace",
+  "ActionArg": "bp-house",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R016c",
+  "Order": 16,
+  "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\bbridge\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Follow me to the bridge blueprint in Room 103.",
+  "Action": "GoPlace",
+  "ActionArg": "bp-bridge",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R016d",
+  "Order": 16,
+  "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(computer|pc)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Follow me to the computer blueprint in Room 103.",
+  "Action": "GoPlace",
+  "ActionArg": "bp-computer",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R017",
@@ -94,9 +420,11 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "Head to the model bench in Room 103. You can build a rubber-band car or a two-story building with cross-bracing, one step at a time, then test it.",
+  "Answer": "Here’s the model bench in Room 103, where you’ll put together a rubber-band car or a two-story building with cross-bracing and then test it. That hands-on part comes in a later build.",
   "Action": "OpenStation",
-  "ActionArg": "bench"
+  "ActionArg": "bench",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R018",
@@ -107,39 +435,967 @@
   "StaffNot": [],
   "Answer": "All four workshop rooms are open. Room 101 is the 3D Art Studio, Room 102 is the Science Lab, Room 103 is the Blueprint Lab and Room 104 is the World Builder Studio.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R019",
   "Order": 19,
-  "Pattern": "\\b(world builder|room 104|build (a|my own|your own|a whole) (world|game)|make (a|my own|your own) (world|game|3d world)|game design|how (was|is|did) (this|the campus|you) (made|built|make|build)|how (do|can) (i|you) (make|build) (a world|a game|something like this|this))\\b",
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(world builder|room 104|build (a|my own|your own|a whole) (world|game)|make (a|my own|your own) (world|game|3d world)|game design|how (was|is|did) (this|the campus|you) (made|built|make|build)|how (do|can) (i|you) (make|build) (a world|a game|something like this|this))\\b))",
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "Room 104, the World Builder Studio, shows how a world like this campus gets made. Build a mini world on the layer table one layer at a time, from a sketch to a live website, then read the World Builder’s Handbook to start your own.",
+  "Answer": "Room 104, the World Builder Studio, shows how a world like this campus gets made. The World Builder’s Handbook there tells you how to start your own, and the layer table, where you build a mini world one layer at a time, comes in a later build.",
+  "Action": "OpenBook",
+  "ActionArg": "world-builder",
+  "bOffer": true,
+  "OfferLabel": "Open the Handbook"
+ },
+ {
+  "Name": "R020",
+  "Order": 20,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:\\b(sieve|psd|titrat|pendulum)))(?=.*?(?:\\b(science lab|room 102|lab work|experiments?|labs)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Science Lab in Room 102 has three lab stations: a sieve analysis that measures the grain sizes in sand, an acid–base titration that finds the concentration of a mystery acid, and a pendulum that measures gravity. Each station’s card walks through how it works.",
+  "Action": "GoPlace",
+  "ActionArg": "lab",
+  "bOffer": true,
+  "OfferLabel": "Take me to the lab"
+ },
+ {
+  "Name": "R021",
+  "Order": 21,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bblueprints?\\b|\\broom 103\\b))",
+  "MaxWords": 4,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "A blueprint is a technical drawing of a design, with every part labeled. The Blueprint Lab, Room 103, has five on its walls (a car, an excavator, a house, a bridge and a computer), plus a model bench.",
+  "Action": "GoPlace",
+  "ActionArg": "blueprints",
+  "bOffer": true,
+  "OfferLabel": "Take me to the Blueprint Lab"
+ },
+ {
+  "Name": "R022",
+  "Order": 22,
+  "Pattern": "\\b(paint|draw|tilt brush|brush|sculpt)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "In the 3D Art Studio, Room 101, you’ll paint in the air with brushes like Neon, Ribbon, Chrome and Rainbow, stamp 3D shapes like stars, hearts and cubes, and spin your work on a turntable. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured. Painting itself comes in a later build.",
+  "Action": "OpenStation",
+  "ActionArg": "easel",
+  "bOffer": true,
+  "OfferLabel": "Take me to the easel"
+ },
+ {
+  "Name": "R022a",
+  "Order": 22,
+  "Pattern": "^(?=.*?(?:\\b(paint|draw|tilt brush|brush|sculpt)\\b))(?=.*?(?:\\b(3d|air|studio|tilt)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "In the 3D Art Studio, Room 101, you’ll paint in the air with brushes like Neon, Ribbon, Chrome and Rainbow, stamp 3D shapes like stars, hearts and cubes, and spin your work on a turntable. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured. Painting itself comes in a later build.",
+  "Action": "OpenStation",
+  "ActionArg": "easel",
+  "bOffer": true,
+  "OfferLabel": "Take me to the easel"
+ },
+ {
+  "Name": "R023",
+  "Order": 23,
+  "Pattern": "what (is|are|does) xr ?libraries|tell me about xr ?libraries|^\\s*xr ?libraries\\??\\s*$|what do they do",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "XRLibraries brings virtual, augmented and mixed reality into libraries and schools. Its stated goal is equitable access to immersive technology for all communities. It began in 2016 and is based in Novato, in Marin County, California. Its website is xrlibraries.com.",
+  "Action": "OpenItem",
+  "ActionArg": "ca-200",
+  "bOffer": true,
+  "OfferLabel": "Show me where it began"
+ },
+ {
+  "Name": "R024",
+  "Order": 24,
+  "Pattern": "^(?=.*?(?:\\b(director|who runs|who leads|in charge|founder|ceo)\\b))(?=.*?(?:xr|librar|run|lead|charge|director))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "John MacLeod is the executive director of XRLibraries. He works with state and local libraries on plans for virtual reality, augmented reality and 360 video, and he is building a national clearinghouse where libraries can share XR best practices. (Source: SJSU School of Information.)",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R025",
+  "Order": 25,
+  "Pattern": "^(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Riding the Comet Coaster comes in a later build. Here’s its sign for now.",
+  "Action": "OpenRide",
+  "ActionArg": "coaster",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R025a",
+  "Order": 25,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Riding the Sky Drop comes in a later build. Here’s its sign for now.",
+  "Action": "OpenRide",
+  "ActionArg": "drop",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R025b",
+  "Order": 25,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Ocean Dive comes in a later build. Here’s its sign for now.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R026",
+  "Order": 26,
+  "Pattern": "\\b(tokens?|easter eggs?|secrets?|collectibles?)\\b|\\bhidden (things|stuff|items|gems)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "There are 11 glowing XR tokens hidden around the campus: in the museum, the library, the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding opens in a later build. Look at a token and press E or click to collect it.",
+  "Action": "OpenBadges",
+  "ActionArg": "None",
+  "bOffer": true,
+  "OfferLabel": "Show me the hints"
+ },
+ {
+  "Name": "R027",
+  "Order": 27,
+  "Pattern": "\\b(badges?|achievements?|rewards?|prizes?|trophies|trophy)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "There are 15 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away and Living Historian; the workshop, ride, soccer and token badges arrive with those features in later builds.",
+  "Action": "OpenBadges",
+  "ActionArg": "None",
+  "bOffer": true,
+  "OfferLabel": "Show me the badges"
+ },
+ {
+  "Name": "R028",
+  "Order": 28,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bwax\\b|living history|re-?enact\\w*))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The museum’s Wax Hall, through the doorway at the end of Gallery 3, is a living-history wing. Twelve scenes of wax figures act out XRLibraries’ story in date order, from the first VR stations in Marin County’s libraries in 2016 to the Pollinators booth at the 2025 Marin County Fair. Each scene comes to life when you walk up to it. The figures are reenactors made for this concept, not likenesses of real people.",
+  "Action": "GoPlace",
+  "ActionArg": "wax",
+  "bOffer": true,
+  "OfferLabel": "Take me to the Wax Hall"
+ },
+ {
+  "Name": "R029-2016",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2016\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2016\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2016, the campus shows “The First Headsets,” acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2016",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2017",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2017\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2017\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2017, the campus shows “VR Goes Statewide” and “Story Time in 3D,” each acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2017a",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2018",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2018\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2018\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2018, the campus shows “Nevada Opens Its Stations,” acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2018a",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2019",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2019\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2019\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2019, the campus shows “VR on the Road,” “VR in the World’s Catalog” and “XR Marin and the XR Stars,” each acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2019a",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2020",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2020\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2020\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2020, the campus shows “Project SANDI,” acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2020",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2022",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2022\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2022\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2022, the campus shows “360° Stories in Washington” and “Lost Stories,” each acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2022a",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2024",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2024\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2024\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2024, the campus shows “Children Draw War, Not Flowers,” acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2024",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R029-2025",
+  "Order": 29,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2025\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2025\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "From 2025, the campus shows “Pollinators at the Fair,” acted out in the Wax Hall.",
+  "Action": "OpenItem",
+  "ActionArg": "wax-2025",
+  "bOffer": true,
+  "OfferLabel": "Show me the scene"
+ },
+ {
+  "Name": "R030",
+  "Order": 30,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:\\bwax\\b|living history|re-?enact\\w*))(?=.*?(?:\\b(history|timeline)\\b|\\bwhen did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bhow did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bfrom the (very )?beginning\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "XRLibraries began in 2016 as the coordinator of the California Virtual Reality Experience, which piloted VR stations in Marin County’s libraries. In 2017 the project spread to more than 90 California libraries, and a pilot in Nevada followed. Later milestones include Nevada’s first VR records in WorldCat in 2019, Project SANDI in 2020, 360-degree storytelling training in Washington in 2022 and the Pollinators AR booth at the 2025 Marin County Fair. The Wax Hall acts it all out, scene by scene.",
+  "Action": "GoPlace",
+  "ActionArg": "wax",
+  "bOffer": true,
+  "OfferLabel": "Take me to the Wax Hall"
+ },
+ {
+  "Name": "R132",
+  "Order": 132,
+  "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "Follow me. The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016.",
+  "Action": "OpenItem",
+  "ActionArg": "ca-200",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132a",
+  "Order": 132,
+  "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "Follow me. The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025.",
+  "Action": "OpenItem",
+  "ActionArg": "pollinators",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132b",
+  "Order": 132,
+  "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016.",
+  "Action": "OpenItem",
+  "ActionArg": "ca-200",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132c",
+  "Order": 132,
+  "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025.",
+  "Action": "OpenItem",
+  "ActionArg": "pollinators",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132d",
+  "Order": 132,
+  "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "Follow me. The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016.",
+  "Action": "OpenItem",
+  "ActionArg": "ca-200",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132e",
+  "Order": 132,
+  "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "Follow me. The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025.",
+  "Action": "OpenItem",
+  "ActionArg": "pollinators",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132f",
+  "Order": 132,
+  "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016.",
+  "Action": "OpenItem",
+  "ActionArg": "ca-200",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R132g",
+  "Order": 132,
+  "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025.",
+  "Action": "OpenItem",
+  "ActionArg": "pollinators",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R133",
+  "Order": 133,
+  "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:book))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Thousands of books line the shelves, and 15 of them are open to read right now, on the featured table and on the ends of the stacks.",
+  "Action": "GoPlace",
+  "ActionArg": "featured",
+  "bOffer": true,
+  "OfferLabel": "Take me to the featured table"
+ },
+ {
+  "Name": "R134",
+  "Order": 134,
+  "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:section|categor))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The library has eight sections: XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
  },
  {
   "Name": "R135",
   "Order": 135,
-  "Pattern": "ride",
+  "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:ride))",
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
   "Answer": "The Recess Yard has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive.",
-  "Action": "None",
-  "ActionArg": "None"
+  "Action": "GoPlace",
+  "ActionArg": "yard",
+  "bOffer": true,
+  "OfferLabel": "Take me to the yard"
  },
  {
   "Name": "R136",
   "Order": 136,
-  "Pattern": "scene|wax|figure",
+  "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:scene|wax|figure))",
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
   "Answer": "The Wax Hall has 12 living-history scenes, from 2016 to 2025, with wax figures that act each one out.",
+  "Action": "GoPlace",
+  "ActionArg": "wax",
+  "bOffer": true,
+  "OfferLabel": "Take me to the Wax Hall"
+ },
+ {
+  "Name": "R137",
+  "Order": 137,
+  "Pattern": "how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The museum has 15 exhibits in three galleries: Headsets in Libraries, Learning That Works and Stories Worth Saving.",
+  "Action": "GoPlace",
+  "ActionArg": "g1",
+  "bOffer": true,
+  "OfferLabel": "Take me to Gallery 1"
+ },
+ {
+  "Name": "R138",
+  "Order": 138,
+  "Pattern": "\\b(sections|subjects|categories)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rosa"
+  ],
+  "StaffNot": [],
+  "Answer": "Our eight sections are XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology. Each stack has its featured books on the end facing the aisle.",
   "Action": "None",
-  "ActionArg": "None"
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R138a",
+  "Order": 138,
+  "Pattern": "\\b(sections|subjects|categories)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "rosa"
+  ],
+  "Answer": "The library has eight sections: XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology. Rosa, the reference librarian, can recommend a book from any of them.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R139-01-what-is-xr",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bxr\\b|\\b(?:virt|virtu|virtua|virtual\\w{0,3})\\b|\\b(?:augmen|augment|augmente|augmented\\w{0,3})\\b|\\b(?:mixe|mixed\\w{0,3})\\b|\\b(?:real|reali|realit|reality\\w{0,3})\\b|\\bxr basics\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “What Is XR?” in the library’s XR Basics section.",
+  "Action": "OpenBook",
+  "ActionArg": "what-is-xr",
+  "bOffer": true,
+  "OfferLabel": "Open “What Is XR?”"
+ },
+ {
+  "Name": "R139-02-ar-around-town",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bar\\b|\\b(?:town\\w{0,3})\\b|\\b(?:scaven|scaveng|scavenge|scavenger\\w{0,3})\\b|\\b(?:hunt|hunts\\w{0,3})\\b|\\b(?:fair|fairs\\w{0,3})\\b|\\bpop\\b|\\bxr basics\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “AR Around Town,” in the library’s XR Basics section.",
+  "Action": "OpenBook",
+  "ActionArg": "ar-around-town",
+  "bOffer": true,
+  "OfferLabel": "Open “AR Around Town”"
+ },
+ {
+  "Name": "R139-03-vr-program",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:runn|runni|runnin|running\\w{0,3})\\b|\\bvr\\b|\\b(?:prog|progr|progra|program\\w{0,3})\\b|\\b(?:librar|librari|librarie|libraries\\w{0,3})\\b|\\blibrary programs\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Running a VR Program,” in the library’s Library Programs section.",
+  "Action": "OpenBook",
+  "ActionArg": "vr-program",
+  "bOffer": true,
+  "OfferLabel": "Open “Running a VR Program”"
+ },
+ {
+  "Name": "R139-04-xr-careers",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bxr\\b|\\b(?:care|caree|career|careers\\w{0,3})\\b|\\bjob\\b|\\bcareers\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “XR for Careers,” in the library’s Careers section.",
+  "Action": "OpenBook",
+  "ActionArg": "xr-careers",
+  "bOffer": true,
+  "OfferLabel": "Open “XR for Careers”"
+ },
+ {
+  "Name": "R139-05-first-job",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bjob\\b|\\bcareers\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Your First Job,” in the library’s Careers section.",
+  "Action": "OpenBook",
+  "ActionArg": "first-job",
+  "bOffer": true,
+  "OfferLabel": "Open “Your First Job”"
+ },
+ {
+  "Name": "R139-06-making-360",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:maki|makin|making\\w{0,3})\\b|\\b360\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\b(?:film\\w{0,3})\\b|\\bstorytelling\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Making 360 Stories,” in the library’s Storytelling section.",
+  "Action": "OpenBook",
+  "ActionArg": "making-360",
+  "bOffer": true,
+  "OfferLabel": "Open “Making 360 Stories”"
+ },
+ {
+  "Name": "R139-07-oral-history",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:record|recordi|recordin|recording\\w{0,3})\\b|\\b(?:oral\\w{0,3})\\b|\\b(?:hist|histo|histor|history\\w{0,3})\\b|\\b(?:save\\w{0,3})\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\b(?:elde|elder|elders\\w{0,3})\\b|\\bstorytelling\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Recording an Oral History,” in the library’s Storytelling section.",
+  "Action": "OpenBook",
+  "ActionArg": "oral-history",
+  "bOffer": true,
+  "OfferLabel": "Open “Recording an Oral History”"
+ },
+ {
+  "Name": "R139-08-lost-stories",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:lost\\w{0,3})\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\bxr\\b|\\b(?:brin|bring\\w{0,3})\\b|\\b(?:hidd|hidde|hidden\\w{0,3})\\b|\\b(?:hist|histo|histor|history\\w{0,3})\\b|\\b(?:back\\w{0,3})\\b|\\blost stories\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Lost Stories,” in the library’s Lost Stories section.",
+  "Action": "OpenBook",
+  "ActionArg": "lost-stories",
+  "bOffer": true,
+  "OfferLabel": "Open “Lost Stories”"
+ },
+ {
+  "Name": "R139-09-reading-past",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:past\\w{0,3})\\b|\\buse\\b|\\b(?:prim|prima|primar|primary\\w{0,3})\\b|\\b(?:sour|sourc|source|sources\\w{0,3})\\b|\\blost stories\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Reading the Past,” in the library’s Lost Stories section.",
+  "Action": "OpenBook",
+  "ActionArg": "reading-past",
+  "bOffer": true,
+  "OfferLabel": "Open “Reading the Past”"
+ },
+ {
+  "Name": "R139-10-oceans-vr",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:ocea|ocean|oceans\\w{0,3})\\b|\\bvr\\b|\\b(?:reef|reefs\\w{0,3})\\b|\\b(?:bleach|bleachi|bleachin|bleaching\\w{0,3})\\b|\\b(?:acid\\w{0,3})\\b|\\b(?:seas\\w{0,3})\\b|\\benvironment\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Oceans in VR,” in the library’s Environment section.",
+  "Action": "OpenBook",
+  "ActionArg": "oceans-vr",
+  "bOffer": true,
+  "OfferLabel": "Open “Oceans in VR”"
+ },
+ {
+  "Name": "R139-11-water-cycle",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:wate|water\\w{0,3})\\b|\\b(?:cycl|cycle\\w{0,3})\\b|\\b(?:drop\\w{0,3})\\b|\\benvironment\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “The Water Cycle,” in the library’s Environment section.",
+  "Action": "OpenBook",
+  "ActionArg": "water-cycle",
+  "bOffer": true,
+  "OfferLabel": "Open “The Water Cycle”"
+ },
+ {
+  "Name": "R139-12-worlds-browser",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:worl|world|worlds\\w{0,3})\\b|\\b(?:brow|brows|browse|browser\\w{0,3})\\b|\\b(?:shar|share|shared\\w{0,3})\\b|\\b3d\\b|\\b(?:spac|space|spaces\\w{0,3})\\b|\\bshared worlds\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “Worlds in the Browser,” in the library’s Shared Worlds section.",
+  "Action": "OpenBook",
+  "ActionArg": "worlds-browser",
+  "bOffer": true,
+  "OfferLabel": "Open “Worlds in the Browser”"
+ },
+ {
+  "Name": "R139-13-code",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:comput|compute|computer|computers\\w{0,3})\\b|\\b(?:foll|follo|follow\\w{0,3})\\b|\\b(?:instructi|instructio|instruction|instructions\\w{0,3})\\b|\\b(?:code\\w{0,3})\\b|\\btechnology\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “How Computers Follow Instructions,” in the library’s Technology section.",
+  "Action": "OpenBook",
+  "ActionArg": "code",
+  "bOffer": true,
+  "OfferLabel": "Open “How Computers Follow Instructions”"
+ },
+ {
+  "Name": "R139-14-ai",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bai\\b|\\b(?:work|works\\w{0,3})\\b|\\btechnology\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “How AI Works,” in the library’s Technology section.",
+  "Action": "OpenBook",
+  "ActionArg": "ai",
+  "bOffer": true,
+  "OfferLabel": "Open “How AI Works”"
+ },
+ {
+  "Name": "R139-15-world-builder",
+  "Order": 139,
+  "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:worl|world\\w{0,3})\\b|\\b(?:build|builde|builder|builders\\w{0,3})\\b|\\b(?:handb|handbo|handboo|handbook\\w{0,3})\\b|\\b3d\\b|\\b(?:worl|world|worlds\\w{0,3})\\b|\\b(?:game|games\\w{0,3})\\b|\\bshared worlds\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Try “World Builder’s Handbook,” in the library’s Shared Worlds section.",
+  "Action": "OpenBook",
+  "ActionArg": "world-builder",
+  "bOffer": true,
+  "OfferLabel": "Open “World Builder’s Handbook”"
+ },
+ {
+  "Name": "R139a",
+  "Order": 139,
+  "Pattern": "recommend|suggest a book|what should i read|good book|something to read",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Three good ones to start with are “Running a VR Program,” “Your First Job” and “What Is XR?”",
+  "Action": "OpenBook",
+  "ActionArg": "what-is-xr",
+  "bOffer": true,
+  "OfferLabel": "Open “What Is XR?”"
+ },
+ {
+  "Name": "R139b",
+  "Order": 139,
+  "Pattern": "\\bbooks? (about|on)\\b|do you have (a |any )?books?",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Three good ones to start with are “Running a VR Program,” “Your First Job” and “What Is XR?”",
+  "Action": "OpenBook",
+  "ActionArg": "what-is-xr",
+  "bOffer": true,
+  "OfferLabel": "Open “What Is XR?”"
+ },
+ {
+  "Name": "R140",
+  "Order": 140,
+  "Pattern": "^(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?!.*(?:\\b(bearing|pendulum|swing time)\\b))(?=.*?(?:\\b(balls?|kick\\w*|soccer|football|foam blocks?|block tower|blocks|physics|swings?|swinging|merry[- ]?go[- ]?round|spinner)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "hale"
+  ],
+  "Answer": "Out in the Recess Yard there’s a soccer goal with a shootout scoreboard, a foam-block tower and balls on the grass. Kicking the balls and knocking the tower down come in a later build.",
+  "Action": "GoPlace",
+  "ActionArg": "field",
+  "bOffer": true,
+  "OfferLabel": "Take me to the soccer goal"
+ },
+ {
+  "Name": "R140a",
+  "Order": 140,
+  "Pattern": "\\b(soccer|football|kick\\w*|foam blocks?|block tower|merry[- ]?go[- ]?round)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "hale"
+  ],
+  "StaffNot": [],
+  "Answer": "Out in the Recess Yard there’s a soccer goal with a shootout scoreboard, a foam-block tower and balls on the grass. Kicking the balls and knocking the tower down come in a later build.",
+  "Action": "GoPlace",
+  "ActionArg": "field",
+  "bOffer": true,
+  "OfferLabel": "Take me to the soccer goal"
+ },
+ {
+  "Name": "R141",
+  "Order": 141,
+  "Pattern": "^(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "It’s a virtual ride, so you’re safe, but it’s made to feel fast. When riding opens in a later build, Gentle ride will take it at half speed.",
+  "Action": "OpenRide",
+  "ActionArg": "coaster",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R141a",
+  "Order": 141,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "It’s a virtual ride, so you’re safe, but it’s a big drop. When riding opens in a later build, Gentle ride will lower you slowly.",
+  "Action": "OpenRide",
+  "ActionArg": "drop",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R141b",
+  "Order": 141,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Ocean Dive is calm and slow, and nothing down there will hurt you. The dive itself comes in a later build.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R142",
+  "Order": 142,
+  "Pattern": "^(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The lift hill is about 19 meters tall, the loop is about 10 meters tall, and the top speed is about 62 km/h (39 mph). The track is about 170 meters long.",
+  "Action": "OpenRide",
+  "ActionArg": "coaster",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R142a",
+  "Order": 142,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Sky Drop tower is about 34 meters tall. The seats ride up to about 30 meters, then free-fall at up to about 68 km/h before the brakes kick in.",
+  "Action": "OpenRide",
+  "ActionArg": "drop",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R142b",
+  "Order": 142,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The dive goes down to about 12 meters deep and takes about a minute. It’s a calm, slow swim.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R143",
+  "Order": 143,
+  "Pattern": "\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rae"
+  ],
+  "StaffNot": [],
+  "Answer": "The rides are virtual, so nothing can hurt you, and the Ocean Dive is the calmest of the three. When riding opens in a later build, every ride will have a Gentle mode that moves slower.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": true,
+  "OfferLabel": "Show me the Ocean Dive"
+ },
+ {
+  "Name": "R143a",
+  "Order": 143,
+  "Pattern": "^(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))(?=.*?(?:\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "rae"
+  ],
+  "Answer": "The rides are virtual, so nothing can hurt you, and the Ocean Dive is the calmest of the three. When riding opens in a later build, every ride will have a Gentle mode that moves slower.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": true,
+  "OfferLabel": "Show me the Ocean Dive"
+ },
+ {
+  "Name": "R144",
+  "Order": 144,
+  "Pattern": "(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Comet Coaster climbs a 19-meter lift hill, drops toward the grass at up to 62 km/h, then flips you through a loop. Riding it opens in a later build.",
+  "Action": "OpenRide",
+  "ActionArg": "coaster",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R144a",
+  "Order": 144,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Sky Drop lifts you about 30 meters up, high enough to see the whole campus, then drops you back down. Riding it opens in a later build.",
+  "Action": "OpenRide",
+  "ActionArg": "drop",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R144b",
+  "Order": 144,
+  "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The Ocean Dive is a guided swim past a coral reef and a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish. It’s inspired by ocean VR like Hydrous, a partner listed by XRLibraries. The dive itself opens in a later build.",
+  "Action": "OpenRide",
+  "ActionArg": "dive",
+  "bOffer": true,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R145",
+  "Order": 145,
+  "Pattern": "\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b",
+  "MaxWords": 0,
+  "StaffOnly": [
+   "rae"
+  ],
+  "StaffNot": [],
+  "Answer": "Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive, which open in a later build. There’s also a soccer goal, a foam-block tower and hidden XR tokens to find.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R145a",
+  "Order": 145,
+  "Pattern": "^(?=.*?(?:\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b))(?=.*?(?:recess|playground|rides?\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [
+   "rae"
+  ],
+  "Answer": "Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive, which open in a later build. There’s also a soccer goal, a foam-block tower and hidden XR tokens to find.",
+  "Action": "None",
+  "ActionArg": "None",
+  "bOffer": false,
+  "OfferLabel": ""
+ },
+ {
+  "Name": "R150",
+  "Order": 150,
+  "Pattern": "^(?=.*?(?:\\b(difference|differences|different|differ|compare|comparison|versus|vs)\\b))(?=.*?(?:\\bvr\\b|virtual reality))(?=.*?(?:\\bar\\b|augmented))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "VR replaces everything you see with a computer-made world, so you feel you’re somewhere else. AR adds digital things to your view of the real world, usually through a phone camera, so you stay where you are. “What Is XR?” explains both, and mixed reality too.",
+  "Action": "OpenBook",
+  "ActionArg": "what-is-xr#1",
+  "bOffer": true,
+  "OfferLabel": "Open “What Is XR?”"
+ },
+ {
+  "Name": "R151",
+  "Order": 151,
+  "Pattern": "^(?=.*?(?:\\b(make|making|film|filming|shoot|shooting|record|recording|create|creating)\\b))(?=.*?(?:\\b360\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "“Making 360 Stories” walks you through it: plan a story with the people who know it best, film from a tripod at eye level, record clear sound, keep each scene short, then stitch the footage and share it.",
+  "Action": "OpenBook",
+  "ActionArg": "making-360",
+  "bOffer": true,
+  "OfferLabel": "Open “Making 360 Stories”"
  }
 ]
