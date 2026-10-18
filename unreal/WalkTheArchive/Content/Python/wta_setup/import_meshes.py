@@ -2,12 +2,11 @@
 
 Interchange handles glTF; one AssetImportTask per file (automated, replace existing, save). After the import
 every StaticMesh gets Nanite (opaque meshes only; glass and other blended or masked materials stay
-non-Nanite) and complex-as-simple collision so the player can walk on the architecture. Assets that
-already exist are skipped unless WTA_FORCE=1.
+non-Nanite) and double-sided complex-as-simple collision so the player walks on the architecture and
+cannot pass through the one-sided wall planes from behind. Assets that already exist are not imported
+again unless WTA_FORCE=1, but their Nanite and collision settings are still applied.
 """
-import json
 import os
-import struct
 
 import unreal
 
@@ -19,16 +18,9 @@ STEP = "import_meshes"
 
 
 def glb_non_opaque_meshes(glb_path):
-    """Names of meshes in a GLB that use a BLEND or MASK material (stdlib parse of the JSON chunk)."""
-    try:
-        with open(glb_path, "rb") as fh:
-            magic, _version, _length = struct.unpack("<III", fh.read(12))
-            if magic != 0x46546C67:
-                return set()
-            chunk_len, _chunk_type = struct.unpack("<II", fh.read(8))
-            doc = json.loads(fh.read(chunk_len).decode("utf-8"))
-    except Exception as exc:
-        log.warn("could not parse %s: %s" % (glb_path, exc))
+    """Names of meshes in a GLB that use a BLEND or MASK material."""
+    doc = util.glb_json(glb_path)
+    if doc is None:
         return set()
     mats = doc.get("materials", [])
     non_opaque = set(i for i, m in enumerate(mats) if m.get("alphaMode", "OPAQUE") != "OPAQUE")
@@ -125,15 +117,21 @@ def set_nanite(mesh, enabled):
 
 
 def set_complex_collision(mesh):
+    """Complex-as-simple, double-sided collision.
+
+    The web campus builds most walls as one-sided planes. One-sided triangle collision only blocks from the front,
+    so without double-sided geometry the player walks through a wall from its back side.
+    """
     flag = util.enum_value("CollisionTraceFlag", "CTF_USE_COMPLEX_AS_SIMPLE")
     body = util.get_prop(mesh, "body_setup")
     if body is None or flag is None:
         return False
     try:
         body.set_editor_property("collision_trace_flag", flag)
+        body.set_editor_property("double_sided_geometry", True)
         return True
     except Exception as exc:
-        log.warn("collision_trace_flag not settable on %s: %s" % (util.object_name(mesh), exc))
+        log.warn("collision settings not settable on %s: %s" % (util.object_name(mesh), exc))
         return False
 
 
