@@ -35,6 +35,8 @@
 #include "Engine/Engine.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/PostProcessVolume.h"
+#include "Engine/SkinnedAsset.h"
+#include "ReferenceSkeleton.h"
 #include "Engine/World.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
@@ -90,6 +92,29 @@ namespace
 			return FVector::ZeroVector;
 		}
 		return Mesh->GetSocketTransform(Bone, RTS_Component).GetLocation();
+	}
+
+	/** Where the bone sits in component space in the skeleton's reference (bind) pose. */
+	FVector BoneInRefPose(const USkeletalMeshComponent* Mesh, FName Bone)
+	{
+		const USkinnedAsset* Asset = Mesh != nullptr ? Mesh->GetSkinnedAsset() : nullptr;
+		if (Asset == nullptr)
+		{
+			return FVector::ZeroVector;
+		}
+		const FReferenceSkeleton& Ref = Asset->GetRefSkeleton();
+		int32 Index = Ref.FindBoneIndex(Bone);
+		if (Index == INDEX_NONE)
+		{
+			return FVector::ZeroVector;
+		}
+		FTransform T = FTransform::Identity;
+		while (Index != INDEX_NONE)
+		{
+			T = T * Ref.GetRefBonePose()[Index];
+			Index = Ref.GetParentIndex(Index);
+		}
+		return T.GetLocation();
 	}
 
 	/** The MetaHuman face mesh: the skeletal mesh component named Face, else one whose mesh asset says Face. */
@@ -524,10 +549,14 @@ void UWTAPlayTest::AddMenuPhase()
 		}
 		const FName Room = Rooms != nullptr ? Rooms->GetCurrentRoom() : NAME_None;
 		const float Yaw = static_cast<float>(Controller->GetControlRotation().Yaw);
-		// The galleries run along -Y from the lobby: facing them is a yaw of -90.
+		// The galleries run along -Y from the lobby: facing them is a yaw of -90. The start is the forecourt
+		// (the settings' SpawnView, on the path facing the portico) unless the settings put it back in the lobby.
 		const float Off = FMath::Abs(FMath::FindDeltaAngleDegrees(Yaw, -90.f));
-		const bool bOk = Room == FName(TEXT("lobby")) && Off < 35.f && !Controller->IsAnyPanelOpen();
-		Report(TEXT("menu"), bOk ? EResult::Pass : EResult::Fail, TEXT("Enter starts in the lobby facing the galleries"),
+		const UWTASettings* Settings = UWTASettings::Get();
+		const bool bOutside = Settings != nullptr && Settings->SpawnView.bValid && Settings->SpawnView.Location.Y > 1000.f;
+		const FName Expected(bOutside ? TEXT("forecourt") : TEXT("lobby"));
+		const bool bOk = Room == Expected && Off < 35.f && !Controller->IsAnyPanelOpen();
+		Report(TEXT("menu"), bOk ? EResult::Pass : EResult::Fail, bOutside ? TEXT("Enter starts on the forecourt facing the museum") : TEXT("Enter starts in the lobby facing the galleries"),
 			FString::Printf(TEXT("room %s, yaw %.0f (%.0f off), at %s, panels %s"), *Room.ToString(), Yaw, Off,
 				*Character->GetActorLocation().ToCompactString(), Controller->IsAnyPanelOpen() ? TEXT("open") : TEXT("closed")));
 		Shot(TEXT("start_view"));
@@ -2200,12 +2229,14 @@ void UWTAPlayTest::AddPeoplePhase()
 			FString Loose;
 			const int32 Collapsed = UWTAPeopleLibrary::CountCollapsedBones(Body, &Loose)
 				+ UWTAPeopleLibrary::CountCollapsedBones(UWTAPeopleLibrary::FindFace(Person), &Loose);
-			// A wax figure: frozen, in its held pose (hands down by the body, not the bind pose's arms out), face on.
+			// A wax figure: frozen, in a held pose - any pose but the bind pose (the reenactors freeze wherever
+			// their scene stood when the visitor walked away, arms up included) - face on.
 			const bool bFrozen = Body->bNoSkeletonUpdate;
-			const bool bHeld = HandToThigh < 40.0;
+			const double OffBind = FVector::Dist(Hand, BoneInRefPose(Body, TEXT("hand_r")));
+			const bool bHeld = OffBind > 8.0;
 			Report(TEXT("people"), (bFrozen && bHeld && bFaceOn && Collapsed == 0) ? EResult::Pass : EResult::Fail, Sample.Name + TEXT(" wax pose"),
-				FString::Printf(TEXT("%s, right hand %.0f cm from the thigh (%s), moved %.2f cm; face %.2f cm off the head; %d bones at the feet%s"),
-					bFrozen ? TEXT("frozen") : TEXT("NOT frozen"), HandToThigh, bHeld ? TEXT("held pose") : TEXT("ARMS OUT"), Moved, FaceGap,
+				FString::Printf(TEXT("%s, right hand %.0f cm from the thigh, %.0f cm off the bind pose (%s), moved %.2f cm; face %.2f cm off the head; %d bones at the feet%s"),
+					bFrozen ? TEXT("frozen") : TEXT("NOT frozen"), HandToThigh, OffBind, bHeld ? TEXT("held pose") : TEXT("BIND POSE"), Moved, FaceGap,
 					Collapsed, Collapsed > 0 ? *(TEXT(" (") + Loose + TEXT(")")) : TEXT("")));
 		}
 		return 0.f;
