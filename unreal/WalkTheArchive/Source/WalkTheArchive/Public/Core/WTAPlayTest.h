@@ -102,6 +102,7 @@ private:
 	/** Only when named: five viewpoints through the Reading Room, and the two second-storey checks -
 	 *  that the gallery deck holds you up and that the spiral stair can be walked. */
 	void AddLibraryPhase();
+	void AddMuseumPhase();
 	void AddUIPhase();
 	void AddGraphicsPhase();
 	void AddFpsPhase();

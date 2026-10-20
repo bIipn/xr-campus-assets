@@ -427,6 +427,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddLibraryPhase();
 	}
+	if (Wanted.Contains(TEXT("museum")))
+	{
+		AddMuseumPhase();
+	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
 		CloseAll();
@@ -1475,6 +1479,140 @@ void UWTAPlayTest::AddLibraryPhase()
 		Report(TEXT("library"), EResult::Info, TEXT("navmesh path up the stair"),
 			FString::Printf(TEXT("%s, %.0f cm - walk-to-view cannot route to the gallery until a nav link is added"),
 				bOk ? TEXT("found") : TEXT("not found"), Path != nullptr ? Path->GetPathLength() : 0.f));
+		return 0.1f;
+	} });
+}
+
+// --- museum ----------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddMuseumPhase()
+{
+	// Ten viewpoints from the forecourt path to the end of gallery 3 through the rebuilt museum (bl/museum.py:
+	// portico, rotunda, lobby, vaulted galleries), then the walk a visitor makes: from the path, up the steps,
+	// across the portico, through the front doors and the rotunda into the lobby, holding W. The forecourt
+	// lies 0.75 m below the floors, so the eyes out there are at 0.87 m.
+	struct FSpot { const TCHAR* Name; FVector Eye; FVector Look; };
+	const FSpot Spots[] = {
+		{ TEXT("approach"), CampusToUE( 0.0f, 0.87f,  40.0f), CampusToUE( 0.0f,  8.0f,  10.0f) },
+		{ TEXT("steps"),    CampusToUE( 0.0f, 0.87f,  19.5f), CampusToUE( 0.0f,  5.0f,  12.0f) },
+		{ TEXT("portico"),  CampusToUE( 0.0f, 1.62f,  14.8f), CampusToUE( 0.0f,  3.0f,   5.0f) },
+		{ TEXT("rotunda"),  CampusToUE( 0.0f, 1.62f,   9.6f), CampusToUE( 0.0f,  4.5f,   0.0f) },
+		{ TEXT("dome"),     CampusToUE( 0.0f, 1.62f,   5.8f), CampusToUE( 0.3f, 14.0f,   5.6f) },
+		{ TEXT("lobby"),    CampusToUE( 0.0f, 1.62f,  -1.2f), CampusToUE( 0.0f,  2.8f, -12.0f) },
+		{ TEXT("gallery"),  CampusToUE( 0.0f, 1.62f,  -7.0f), CampusToUE( 0.0f,  3.2f, -20.0f) },
+		{ TEXT("bay"),      CampusToUE(-1.2f, 1.62f, -12.5f), CampusToUE(-6.0f,  2.2f,  -9.0f) },
+		{ TEXT("vault"),    CampusToUE(-3.0f, 1.62f,  -8.0f), CampusToUE( 2.0f,  7.8f, -15.0f) },
+		{ TEXT("end"),      CampusToUE( 0.0f, 1.62f, -31.0f), CampusToUE( 0.0f,  2.5f, -42.0f) },
+	};
+	for (const FSpot& S : Spots)
+	{
+		const FString Name = S.Name;
+		const FWTAView View = LookFrom(S.Eye, S.Look);
+		Steps.Add({ TEXT("museum at ") + Name, [this, View]() -> float
+		{
+			CloseAll();
+			StandAt(View);
+			return 1.5f;
+		} });
+		Steps.Add({ TEXT("museum shot ") + Name, [this, Name]() -> float
+		{
+			Shot(TEXT("museum_") + Name, false);
+			return 0.1f;
+		} });
+	}
+	// Does the floor hold where the new building meets the old: the stylobate, the door passage, the rotunda,
+	// the lobby arch, the halls' thresholds? Drop in a little above each spot and read the resting height.
+	struct FFloor { const TCHAR* Name; FVector On; };
+	const FFloor Floors[] = {
+		{ TEXT("forecourt path"), CampusToUE(0.0f, -0.75f, 24.0f) },
+		{ TEXT("third step"),     CampusToUE(0.0f, -0.45f, 17.35f) },
+		{ TEXT("stylobate"),      CampusToUE(0.0f,  0.00f, 14.8f) },
+		{ TEXT("front door"),     CampusToUE(0.0f,  0.00f, 11.8f) },
+		{ TEXT("rotunda floor"),  CampusToUE(0.0f,  0.00f,  5.8f) },
+		{ TEXT("lobby arch"),     CampusToUE(0.0f,  0.00f,  0.4f) },
+		{ TEXT("hall threshold"), CampusToUE(-6.1f, 0.00f, -3.0f) },
+	};
+	for (const FFloor& F : Floors)
+	{
+		const FString Name = F.Name;
+		const FVector On = F.On;
+		Steps.Add({ TEXT("museum drop ") + Name, [this, On]() -> float
+		{
+			FWTAView V;
+			V.Location = On + FVector(0.f, 0.f, 200.f);
+			V.Yaw = -90.f; V.Pitch = 0.f; V.bValid = true;
+			CloseAll();
+			StandAt(V);
+			return 0.8f;
+		} });
+		Steps.Add({ TEXT("museum rests ") + Name, [this, On, Name]() -> float
+		{
+			const AWTACharacter* Me = Player();
+			const float Z = Me != nullptr ? Me->GetActorLocation().Z : -1.f;
+			const float Above = Z - On.Z;
+			// resting = floor + the capsule's half height (90); 70..110 allows a step edge either way
+			Report(TEXT("museum"), Above > 70.f && Above < 110.f ? EResult::Pass : EResult::Fail,
+				FString::Printf(TEXT("the floor holds at the %s"), *Name),
+				FString::Printf(TEXT("floor %.0f cm, resting at %.0f (%.0f above)"), On.Z, Z, Above));
+			return 0.1f;
+		} });
+	}
+	// The walk in: from the path, straight north with W held for 14 s (3 m/s: plenty for the 30 m to the lobby).
+	{
+		TSharedRef<int32> Polls = MakeShared<int32>(0);
+		const FVector Start = CampusToUE(0.0f, 0.87f, 26.0f);
+		Steps.Add({ TEXT("museum walk-in start"), [this, Start]() -> float
+		{
+			CloseAll();
+			FWTAView V;
+			V.Location = Start; V.Yaw = -90.f; V.Pitch = 0.f; V.bValid = true;
+			StandAt(V);
+			return 1.0f;
+		} });
+		Steps.Add({ TEXT("museum walk-in go"), [this, Polls]() -> float
+		{
+			*Polls = 0;
+			KeyDown(EKeys::W);
+			return 0.1f;
+		} });
+		Steps.Add({ TEXT("museum walk-in"), [this, Polls]() -> float
+		{
+			AWTACharacter* Me = Player();
+			AWTAPlayerController* C = PC();
+			if (C != nullptr)
+			{
+				C->SetControlRotation(FRotator(0.f, -90.f, 0.f));
+			}
+			if (Me != nullptr && *Polls % 20 == 0)
+			{
+				const FVector P = Me->GetActorLocation();
+				UE_LOG(LogWTA, Display, TEXT("WTA_PLAY museum INFO walk-in %.1f s: campus z %.1f m, Z %.0f cm"), *Polls * 0.1f, P.Y / 100.f, P.Z);
+				if (*Polls == 40 || *Polls == 80)
+				{
+					Shot(FString::Printf(TEXT("museum_walkin_%02ds"), *Polls / 10), false);
+				}
+			}
+			if (++(*Polls) < 140)
+			{
+				return -0.1f;
+			}
+			KeyUp(EKeys::W);
+			const FVector End = Me != nullptr ? Me->GetActorLocation() : FVector(-1.f);
+			Report(TEXT("museum"), End.Y < -100.f ? EResult::Pass : EResult::Fail, TEXT("you can walk in from the path to the lobby"),
+				FString::Printf(TEXT("after 14 s walking north from the path: campus (%.1f, %.1f), Z %.0f cm - the lobby arch is at z 0"),
+					End.X / 100.f, End.Y / 100.f, End.Z));
+			return 0.3f;
+		} });
+	}
+	// The navmesh (walk-to-view) from the path to the lobby.
+	Steps.Add({ TEXT("museum navmesh"), [this]() -> float
+	{
+		UNavigationSystemV1* Nav = UNavigationSystemV1::GetCurrent(GetWorld());
+		const FVector A = CampusToUE(0.0f, -0.75f, 24.0f), B = CampusToUE(0.0f, 0.0f, -3.0f);
+		const UNavigationPath* Path = Nav ? Nav->FindPathToLocationSynchronously(GetWorld(), A, B) : nullptr;
+		const bool bOk = Path != nullptr && Path->IsValid() && !Path->IsPartial();
+		Report(TEXT("museum"), bOk ? EResult::Pass : EResult::Info, TEXT("navmesh path from the forecourt to the lobby"),
+			FString::Printf(TEXT("%s, %.0f cm"), bOk ? TEXT("found") : TEXT("not found"), Path != nullptr ? Path->GetPathLength() : 0.f));
 		return 0.1f;
 	} });
 }
