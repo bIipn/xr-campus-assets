@@ -146,16 +146,21 @@ def triangle_count(mesh):
 
 def run():
     force = util.env_flag("WTA_FORCE")
+    # WTA_ASSETS narrows the step to named wings, so one rebuilt wing can be re-imported on its own
+    # instead of forcing all nine through Interchange again.
+    only = set(s.strip() for s in os.environ.get("WTA_ASSETS", "").replace(";", ",").split(",") if s.strip())
     util.wait_for_asset_registry()
     assets = util.assets()
     report = {"assets": {}, "imported": 0, "skipped": 0, "meshes": 0, "nanite": 0, "collision": 0,
-              "non_nanite": [], "errors": []}
+              "non_nanite": [], "errors": [], "only": sorted(only)}
     if not os.path.isdir(paths.MESH_DIR):
         report["ok"] = False
         report["error"] = "mesh folder missing: " + paths.MESH_DIR
         return report
 
     for asset, glb in paths.mesh_assets():
+        if only and asset not in only:
+            continue
         dest = paths.campus_asset_path(asset)
         entry = {"glb": glb, "dest": dest}
         report["assets"][asset] = entry

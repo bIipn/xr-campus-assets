@@ -34,6 +34,8 @@
 #include "Engine/Engine.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/World.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "EngineUtils.h"
 #include "Framework/Application/SlateApplication.h"
 #include "GameFramework/GameUserSettings.h"
@@ -418,6 +420,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Wanted.Contains(TEXT("attract")))
 	{
 		AddAttractPhase();
+	}
+	if (Wanted.Contains(TEXT("library")))
+	{
+		AddLibraryPhase();
 	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
@@ -1275,6 +1281,114 @@ void UWTAPlayTest::AddActingPhase()
 			return 0.2f;
 		} });
 	}
+}
+
+// --- library ---------------------------------------------------------------------------------
+
+/** Campus metres (x right, y up, z toward the viewer) -> Unreal cm: the mapping the whole project uses. */
+static FVector CampusToUE(float cx, float cy, float cz)
+{
+	return FVector(cx * 100.f, cz * 100.f, cy * 100.f);
+}
+
+static FWTAView LookFrom(const FVector& Eye, const FVector& Target)
+{
+	FWTAView V;
+	V.Location = Eye;
+	const FVector D = Target - Eye;
+	V.Yaw = FMath::RadiansToDegrees(FMath::Atan2(D.Y, D.X));
+	V.Pitch = FMath::RadiansToDegrees(FMath::Atan2(D.Z, FVector2D(D.X, D.Y).Size()));
+	V.bValid = true;
+	return V;
+}
+
+void UWTAPlayTest::AddLibraryPhase()
+{
+	// Five viewpoints through the rebuilt Reading Room, plus the two checks that matter now there is a
+	// second storey: that the gallery deck holds the player up, and that the navmesh can actually walk
+	// them up the spiral stair to reach it.
+	struct FSpot { const TCHAR* Name; FVector Eye; FVector Look; };
+	const FVector GalleryStand = CampusToUE(-13.1f, 4.61f, -9.6f);   // on the east gallery, by the stair head
+	const FVector StairFoot = CampusToUE(-16.9f, 0.90f, -9.6f);      // on the floor, just off the bottom tread
+	const FSpot Spots[] = {
+		{ TEXT("hall"),    CampusToUE(-12.7f, 1.62f, -3.0f), CampusToUE(-31.0f, 2.60f, -3.0f) },
+		{ TEXT("window"),  CampusToUE(-22.0f, 1.62f, -3.0f), CampusToUE(-32.0f, 2.80f, -3.0f) },
+		{ TEXT("stair"),   CampusToUE(-18.4f, 1.62f, -5.2f), CampusToUE(-15.1f, 2.30f, -9.6f) },
+		{ TEXT("piano"),   CampusToUE(-18.9f, 1.55f,  0.9f), CampusToUE(-15.4f, 1.05f,  3.3f) },
+		{ TEXT("gallery"), CampusToUE(-13.1f, 4.61f, -4.0f), CampusToUE(-26.0f, 1.60f, -3.0f) },
+	};
+	for (const FSpot& S : Spots)
+	{
+		const FString Name = S.Name;
+		const FWTAView View = LookFrom(S.Eye, S.Look);
+		Steps.Add({ TEXT("library at ") + Name, [this, View]() -> float
+		{
+			CloseAll();
+			StandAt(View);
+			return 1.5f;
+		} });
+		Steps.Add({ TEXT("library shot ") + Name, [this, Name]() -> float
+		{
+			Shot(TEXT("library_") + Name, false);
+			return 0.1f;
+		} });
+	}
+	// The gallery is the last spot, so the player is standing on it: did the deck hold them, or did they
+	// drop through to the floor 3.7 m below?
+	Steps.Add({ TEXT("library gallery holds"), [this, GalleryStand]() -> float
+	{
+		const AWTACharacter* Me = Player();
+		const float Z = Me != nullptr ? Me->GetActorLocation().Z : -1.f;
+		Report(TEXT("library"), Z > 300.f ? EResult::Pass : EResult::Fail, TEXT("the gallery deck holds you up"),
+			FString::Printf(TEXT("standing at Z %.0f cm, deck is 371"), Z));
+		return 0.1f;
+	} });
+	// Can you climb it? The player walks on collision, not on the navmesh, so the honest test is whether
+	// every tread holds them: drop them a little above each one in turn and see where they come to rest.
+	// A tread that does not hold drops them to the floor, which shows up as a Z far below the tread.
+	const int32 N = 20;
+	const float Rise = 3.71f / N;
+	for (int32 i = 1; i < N; ++i)
+	{
+		const float Ang = FMath::DegreesToRadians((i - N) * (300.f / N));
+		const float Ty = i * Rise;
+		// 0.75 m out from the newel: the middle of the tread, where a foot actually lands.
+		const FVector On = CampusToUE(-15.1f + 0.75f * FMath::Cos(Ang), Ty, -9.6f + 0.75f * FMath::Sin(Ang));
+		Steps.Add({ FString::Printf(TEXT("library tread %d"), i), [this, On]() -> float
+		{
+			FWTAView V;
+			V.Location = On + FVector(0.f, 0.f, 130.f);   // drop in from above, clear of the tread
+			V.Yaw = 0.f; V.Pitch = 0.f; V.bValid = true;
+			CloseAll();
+			StandAt(V);
+			return 0.6f;                                  // long enough to fall the 130 cm and settle
+		} });
+		Steps.Add({ FString::Printf(TEXT("library tread %d rests"), i), [this, On, i, Ty]() -> float
+		{
+			const AWTACharacter* Me = Player();
+			const float Z = Me != nullptr ? Me->GetActorLocation().Z : -1.f;
+			const float Above = Z - On.Z;
+			// Resting on the tread puts the capsule's centre roughly its half-height above it. Falling
+			// through instead leaves them near the floor, hundreds of cm below.
+			Report(TEXT("library"), Above > 40.f && Above < 200.f ? EResult::Pass : EResult::Fail,
+				FString::Printf(TEXT("tread %d holds your weight"), i),
+				FString::Printf(TEXT("tread top %.0f cm, resting at %.0f (%.0f above)"), On.Z, Z, Above));
+			return 0.1f;
+		} });
+	}
+	// The navmesh is a separate question and only affects walk-to-view, not the player's own feet: Recast
+	// erodes a spiral this tight away entirely (each tread is ~19 cm across at the walking line, narrower
+	// than the agent). Reported, not failed.
+	Steps.Add({ TEXT("library stair navmesh"), [this, StairFoot, GalleryStand]() -> float
+	{
+		UNavigationSystemV1* Nav = UNavigationSystemV1::GetCurrent(GetWorld());
+		const UNavigationPath* Path = Nav ? Nav->FindPathToLocationSynchronously(GetWorld(), StairFoot, GalleryStand) : nullptr;
+		const bool bOk = Path != nullptr && Path->IsValid() && !Path->IsPartial();
+		Report(TEXT("library"), EResult::Info, TEXT("navmesh path up the stair"),
+			FString::Printf(TEXT("%s, %.0f cm - walk-to-view cannot route to the gallery until a nav link is added"),
+				bOk ? TEXT("found") : TEXT("not found"), Path != nullptr ? Path->GetPathLength() : 0.f));
+		return 0.1f;
+	} });
 }
 
 // --- attract ---------------------------------------------------------------------------------

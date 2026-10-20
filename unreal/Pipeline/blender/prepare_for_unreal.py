@@ -20,6 +20,7 @@ Writes unreal/Pipeline/out/ue/<Name>.glb and unreal/Pipeline/out/ue/manifest.jso
 import json
 import os
 import re
+import sys
 
 import bpy
 
@@ -120,16 +121,42 @@ def process(name, rel):
             'triangles': tris, 'bytes': os.path.getsize(fp)}
 
 
+UNITS = ('metres in glTF (Y up); Unreal import maps glTF (x, y, z) m -> UE (X=x, Y=z, Z=y) cm. '
+         'Every mesh is baked in world space: spawn at UE (0,0,0), rotation 0, scale 1.')
+
+
 def main():
+    """Name assets on the command line to re-prepare just those, e.g.
+
+        blender -b --python unreal/Pipeline/blender/prepare_for_unreal.py -- ReadingRoom
+
+    The exported wings under out/campus are too big to keep in the repo, so after a fresh clone only the
+    prepared out/ue copies exist. Naming one asset lets it be rebuilt on its own; the manifest is merged
+    rather than replaced, and a source that is not on disk is reported and skipped instead of failing."""
     os.makedirs(OUT, exist_ok=True)
-    man = {'units': 'metres in glTF (Y up); Unreal import maps glTF (x, y, z) m -> UE (X=x, Y=z, Z=y) cm. Every mesh is baked in world space: spawn at UE (0,0,0), rotation 0, scale 1.',
-           'assets': {}}
+    argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
+    wanted = {a for a in argv if not a.startswith('-')}
+    man_path = os.path.join(OUT, 'manifest.json')
+    man = {'units': UNITS, 'assets': {}}
+    if os.path.exists(man_path):
+        with open(man_path) as f:
+            man = json.load(f)
+        man.setdefault('units', UNITS)
+        man.setdefault('assets', {})
+    done = 0
     for name, rel in SOURCES:
+        if wanted and name not in wanted:
+            continue
+        if not os.path.exists(os.path.join(REPO, rel.replace('/', os.sep))):
+            print('skip', name, '- no', rel)
+            continue
         man['assets'][name] = process(name, rel)
         a = man['assets'][name]
         print(name, a['meshes'], 'meshes', a['triangles'], 'tris', a['bytes'], 'bytes')
-    with open(os.path.join(OUT, 'manifest.json'), 'w') as f:
+        done += 1
+    with open(man_path, 'w') as f:
         json.dump(man, f, indent=1)
+    print('prepared', done, 'of', len(wanted) if wanted else len(SOURCES))
 
 
 if __name__ == '__main__':

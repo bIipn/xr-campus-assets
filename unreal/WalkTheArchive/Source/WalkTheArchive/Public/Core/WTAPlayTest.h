@@ -99,6 +99,9 @@ private:
 	/** Only when named: walks up to a spread of exhibits and checks each one's light rises as you arrive
 	 *  and that a distant one stays dark. */
 	void AddAttractPhase();
+	/** Only when named: five viewpoints through the Reading Room, and the two second-storey checks -
+	 *  that the gallery deck holds you up and that the spiral stair can be walked. */
+	void AddLibraryPhase();
 	void AddUIPhase();
 	void AddGraphicsPhase();
 	void AddFpsPhase();

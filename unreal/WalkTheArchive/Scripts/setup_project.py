@@ -9,6 +9,8 @@ Environment:
               probe, import_meshes, import_art, data_tables, build_level, lighting, actors, navmesh,
               project_settings, verify
   WTA_FORCE   1 = re-import meshes and art that already exist
+  WTA_ASSETS  comma list of wings for import_meshes, default all (e.g. ReadingRoom), so one rebuilt
+              wing can be re-imported on its own
   WTA_SHOTS   0 = skip the verify screenshots
 
 Every step prints one line 'WTA_RESULT {json}'. If any step failed this script raises at the end, which
