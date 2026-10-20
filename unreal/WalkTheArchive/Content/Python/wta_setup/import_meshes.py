@@ -175,6 +175,17 @@ def run():
             report["skipped"] += 1
             meshes = existing
         else:
+            # A forced re-import replaces the WING, not just same-named assets: Interchange's replace_existing
+            # leaves any mesh whose name is not in the new GLB untouched, so a wing whose meshes were re-split
+            # (per material one time, per object the next) ends up placed twice, the stale copy on top of the
+            # new one. Clear the folder's meshes first.
+            if existing:
+                cleared = 0
+                for path, _mesh in existing:
+                    if assets.delete(path):
+                        cleared += 1
+                entry["cleared_stale"] = cleared
+                util.clear_asset_cache()
             try:
                 objects = import_glb(glb, dest)
             except Exception as exc:

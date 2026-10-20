@@ -29,9 +29,11 @@
 #include "Camera/CameraComponent.h"
 #include "CollisionQueryParams.h"
 #include "CollisionShape.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/Engine.h"
+#include "Engine/OverlapResult.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/World.h"
 #include "NavigationPath.h"
@@ -1368,12 +1370,98 @@ void UWTAPlayTest::AddLibraryPhase()
 			const AWTACharacter* Me = Player();
 			const float Z = Me != nullptr ? Me->GetActorLocation().Z : -1.f;
 			const float Above = Z - On.Z;
-			// Resting on the tread puts the capsule's centre roughly its half-height above it. Falling
-			// through instead leaves them near the floor, hundreds of cm below.
-			Report(TEXT("library"), Above > 40.f && Above < 200.f ? EResult::Pass : EResult::Fail,
+			// A capsule dropped on to a tread always gets stepped up on to the next one (its sides reach it),
+			// so standing reads as tread + 109: the half-height plus one riser. Anything well off that is
+			// the capsule coming to rest somewhere else - a tread or two down, or the landing - which is
+			// exactly what a landing built over the top treads produced, so the band is kept tight.
+			Report(TEXT("library"), Above > 85.f && Above < 125.f ? EResult::Pass : EResult::Fail,
 				FString::Printf(TEXT("tread %d holds your weight"), i),
 				FString::Printf(TEXT("tread top %.0f cm, resting at %.0f (%.0f above)"), On.Z, Z, Above));
 			return 0.1f;
+		} });
+	}
+	// Now walk it for real, the way a visitor does: from the floor at the stair's entry, hold W and steer along
+	// the helix - each tick the heading is set to the tangent of the walking line at the player's own position
+	// (climbing is increasing angle about the newel). Nine seconds is three times what the climb takes; by then
+	// they are on the landing (Z 461) or they are not. This is the test the drops above are only a proxy for.
+	{
+		TSharedRef<int32> Polls = MakeShared<int32>(0);
+		// Entry: on the floor before tread 1 (which sits at 75 degrees about the newel), at the walking radius,
+		// far enough back (40 cm of arc) that the capsule does not land overlapping the tread's edge.
+		// (A view's Location is the eye, 1.62 m up: lower and the capsule is teleported into the floor.)
+		const float EntryDeg = 45.f;
+		const FVector Entry = CampusToUE(-15.1f + 0.95f * FMath::Cos(FMath::DegreesToRadians(EntryDeg)), 1.62f,
+		                                 -9.6f + 0.95f * FMath::Sin(FMath::DegreesToRadians(EntryDeg)));
+		Steps.Add({ TEXT("library climb start"), [this, Entry, EntryDeg]() -> float
+		{
+			CloseAll();
+			FWTAView V;
+			V.Location = Entry;
+			V.Yaw = FMath::RadiansToDegrees(FMath::Atan2(FMath::Cos(FMath::DegreesToRadians(EntryDeg)), -FMath::Sin(FMath::DegreesToRadians(EntryDeg))));
+			V.Pitch = -10.f;
+			V.bValid = true;
+			StandAt(V);
+			return 1.0f;      // let the teleport settle before any input, as the walk-in test does
+		} });
+		Steps.Add({ TEXT("library climb go"), [this, Polls]() -> float
+		{
+			*Polls = 0;
+			KeyDown(EKeys::W);
+			return 0.1f;
+		} });
+		Steps.Add({ TEXT("library climb"), [this, Polls]() -> float
+		{
+			AWTACharacter* Me = Player();
+			AWTAPlayerController* C = PC();
+			if (Me != nullptr && C != nullptr)
+			{
+				const FVector P = Me->GetActorLocation();
+				const FVector2D Out(P.X + 1510.f, P.Y + 960.f);                  // from the newel (campus -15.1, -9.6)
+				const float R = Out.Size();
+				const float A = FMath::Atan2(Out.Y, Out.X);
+				// Steer along the helix's tangent, bending in or out to hold the walking line at 80 cm from the
+				// newel - what a visitor does by eye, and well inside the balustrade for a 60 cm capsule.
+				FVector2D Dir = FVector2D(-FMath::Sin(A), FMath::Cos(A)) + (Out / FMath::Max(R, 1.f)) * ((80.f - R) / 40.f);
+				Dir.Normalize();
+				C->SetControlRotation(FRotator(-10.f, FMath::RadiansToDegrees(FMath::Atan2(Dir.Y, Dir.X)), 0.f));
+				if (*Polls % 10 == 0)
+				{
+					UE_LOG(LogWTA, Display, TEXT("WTA_PLAY library INFO climb %.1f s: %.0f deg, %.0f cm out, Z %.0f"),
+						*Polls * 0.1f, FMath::RadiansToDegrees(A), R, P.Z);
+				}
+			}
+			if (++(*Polls) < 90)
+			{
+				return -0.1f;
+			}
+			KeyUp(EKeys::W);
+			const FVector End = Me != nullptr ? Me->GetActorLocation() : FVector(-1.f);
+			const float Ang = FMath::RadiansToDegrees(FMath::Atan2(End.Y + 960.f, End.X + 1510.f));
+			// What is the capsule actually touching, and what stops it going forward? Ask the physics scene.
+			if (Me != nullptr && GetWorld() != nullptr)
+			{
+				const UCapsuleComponent* Cap = Me->GetCapsuleComponent();
+				const float Rad = Cap->GetScaledCapsuleRadius(), Half = Cap->GetScaledCapsuleHalfHeight();
+				FCollisionQueryParams Q(FName(TEXT("WTAClimbProbe")), true, Me);
+				TArray<FOverlapResult> Touch;
+				GetWorld()->OverlapMultiByChannel(Touch, End, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeCapsule(Rad + 2.f, Half + 2.f), Q);
+				FString Names;
+				for (const FOverlapResult& O : Touch)
+				{
+					Names += FString::Printf(TEXT("%s/%s "), O.GetActor() ? *O.GetActor()->GetActorLabel() : TEXT("?"), O.GetComponent() ? *O.GetComponent()->GetName() : TEXT("?"));
+				}
+				const FVector Fwd = C != nullptr ? C->GetControlRotation().Vector().GetSafeNormal2D() : FVector::ForwardVector;
+				FHitResult Sweep;
+				const bool bBlocked = GetWorld()->SweepSingleByChannel(Sweep, End, End + Fwd * 30.f, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeCapsule(Rad, Half), Q);
+				UE_LOG(LogWTA, Display, TEXT("WTA_PLAY library INFO climb touching: %s| forward 30 cm: %s %s at %s normal %s"),
+					*Names, bBlocked ? TEXT("blocked by") : TEXT("clear"),
+					bBlocked && Sweep.GetActor() ? *Sweep.GetActor()->GetActorLabel() : TEXT(""),
+					bBlocked ? *Sweep.ImpactPoint.ToCompactString() : TEXT("-"), bBlocked ? *Sweep.ImpactNormal.ToCompactString() : TEXT("-"));
+			}
+			Report(TEXT("library"), End.Z > 440.f ? EResult::Pass : EResult::Fail, TEXT("you can walk up the stair to the gallery"),
+				FString::Printf(TEXT("after 9 s of climbing, at %s - Z %.0f cm, %.0f deg round the newel, %.0f cm out; the landing puts you at 461"),
+					*End.ToCompactString(), End.Z, Ang, FVector2D(End.X + 1510.f, End.Y + 960.f).Size()));
+			return 0.3f;
 		} });
 	}
 	// The navmesh is a separate question and only affects walk-to-view, not the player's own feet: Recast

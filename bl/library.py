@@ -546,7 +546,10 @@ def build_bookcases():
 # ---------------------------------------------------------------- furniture and lights
 PARAPET_H = 0.95     # gallery deck to the top of the cap rail
 PARAPET_T = 0.11
-SGAP = (STAIR[1] - 0.85, STAIR[1] + 0.85)   # the opening left in the east parapet for the stair to arrive through
+# The landing sits in the sector just PAST the top tread (south of the newel's centre line), never over the
+# treads that climb to it: centred on the newel it would roof the last three treads with 15 cm to spare.
+# Its north edge is the arrival, left open; the south and west edges are drops and get parapets.
+SGAP = (STAIR[1] + 0.05, STAIR[1] + 1.60)   # the landing's z extent, and the opening in the east parapet
 
 def _pbox(b, axis, s, y, c, la, sy, t, seg=None):
     """One box on a parapet run: s along the run, y up, c across it; la long, sy tall, t thick."""
@@ -588,9 +591,11 @@ def build_rails():
     parapet_run(wd, br, 'z', -0.4, Z1 - d, X0 + d, +1)          # west, south of it
     parapet_run(wd, br, 'z', Z0 + d, SGAP[0], gx, -1)           # east, up to the stair opening
     parapet_run(wd, br, 'z', SGAP[1], Z1 - d, gx, -1)           # east, on from it
-    parapet_run(wd, br, 'x', cx, gx, SGAP[0], -1)               # the landing's two open sides
-    parapet_run(wd, br, 'x', cx, gx, SGAP[1], +1)
-    for z in SGAP: turned(wd, gx - 0.07, DECK, z, PARAPET_H + 0.1, 0.13, n=8)   # newels at the opening's corners
+    # the landing: north edge open (the top tread arrives through it), south and west edges railed
+    parapet_run(wd, br, 'x', cx, gx, SGAP[1], +1)               # south edge
+    parapet_run(wd, br, 'z', SGAP[0], SGAP[1], cx, -1)          # west edge, from the stair newel to the corner
+    for (nx, nz) in ((gx - 0.07, SGAP[0]), (gx - 0.07, SGAP[1]), (cx, SGAP[1])):   # the three free corners
+        turned(wd, nx, DECK, nz, PARAPET_H + 0.1, 0.13, n=8)
     wd.finish(); br.finish()
 
 def tread(b, cx, cz, y, a0, a1, r0, r1, th, steps=3):
@@ -622,11 +627,14 @@ def build_stair(lights):
     for i in range(1, N):            # the last riser is on to the landing, so there is no tread for it
         a = (i - N) * w; y = i * rise
         tread(tw, cx, cz, y, a - w / 2, a + w / 2, 0.14, R, 0.055)
-        bx, bz = cx + (R - 0.16) * math.cos(a), cz + (R - 0.16) * math.sin(a)
-        turned(tw, bx, y, bz, 0.86, 0.118, n=8)
+        # Balusters right out at the nosing. Further in they pinch the walking line: a visitor is a 60 cm capsule,
+        # and at the natural line (85 cm from the newel) its rim reaches 1.15 m, which the swells and the handrail
+        # must stay outside of. At R - 0.07 the swell's inner face is at 1.21 and the rail's at 1.25.
+        bx, bz = cx + (R - 0.07) * math.cos(a), cz + (R - 0.07) * math.sin(a)
+        turned(tw, bx, y, bz, 0.86, 0.10, n=8)
         tops.append((bx, y + 0.86, bz))
-    # landing: flush with the gallery deck and butted to its edge, boxed in by the parapet runs around it
-    tw.box((cx + gx) / 2, DECK - 0.11, cz, gx - cx, 0.22, SGAP[1] - SGAP[0], seg=0.6)
+    # landing: flush with the gallery deck and butted to its edge, in the sector past the top tread (SGAP)
+    tw.box((cx + gx) / 2, DECK - 0.11, (SGAP[0] + SGAP[1]) / 2, gx - cx, 0.22, SGAP[1] - SGAP[0], seg=0.6)
     # newel, in segments so the vertex-colour bake has something to work with up its length
     y = 0.0
     while y < DECK + 1.0 - 1e-6:
@@ -636,7 +644,7 @@ def build_stair(lights):
     prism(br, cx, DECK + 1.0, cz, 0.078, 0.13, n=12, r_top=0.028)            # finial
     for a, c in zip(tops, tops[1:]): bar(br, a, c, 0.055)                    # the climbing handrail
     last = tops[-1]
-    bar(br, last, (gx - 0.07, DECK + PARAPET_H - 0.05, last[2]), 0.055)      # and out on to the gallery newel
+    bar(br, last, (gx - 0.07, DECK + PARAPET_H - 0.05, SGAP[0]), 0.055)      # and on to the newel at the gallery's corner
     # the stair stands in a corner the chandeliers do not reach, so it gets light of its own
     lights.append(('point', (cx - 0.1, 2.30, cz), (1.0, 0.86, 0.66), 45))
     lights.append(('point', (cx + 0.9, DECK + 1.10, cz), (1.0, 0.86, 0.66), 40))

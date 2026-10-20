@@ -140,8 +140,8 @@
    "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
    "meshes": 21,
    "tagged": [],
-   "triangles": 196274,
-   "bytes": 63552368
+   "triangles": 196418,
+   "bytes": 63575264
   }
  }
 }
