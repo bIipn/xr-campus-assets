@@ -3,7 +3,7 @@
  "assets": {
   "Museum": {
    "file": "Museum.glb",
-   "source": "unreal/Pipeline/out/campus/museum.glb",
+   "source": "unreal/Pipeline/out/museum/Museum.glb",
    "meshes": 64,
    "tagged": [
     "item__ca_200",
@@ -23,8 +23,8 @@
     "item__way_out",
     "token__t_museum"
    ],
-   "triangles": 3116,
-   "bytes": 12269964
+   "triangles": 177183,
+   "bytes": 55765440
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -104,11 +104,11 @@
   },
   "Outside": {
    "file": "Outside.glb",
-   "source": "unreal/Pipeline/out/campus/outside.glb",
-   "meshes": 25,
+   "source": "unreal/Pipeline/out/exterior/Outside.glb",
+   "meshes": 26,
    "tagged": [],
-   "triangles": 90578,
-   "bytes": 9014372
+   "triangles": 140184,
+   "bytes": 32894048
   },
   "Yard": {
    "file": "Yard.glb",

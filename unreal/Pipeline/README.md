@@ -10,9 +10,19 @@ parts/*.js ──► content/extract_content.mjs ──► content/*.json ──
              layout/layout.json (campus layout, Unreal coords) ──┘
 test/harness.py + web/export_campus.py ──► out/campus/*.glb, art/*.png, lights.json
 bl/library.py --ue ──► assets/lib_ue/library.blend ──► blender/export_reading_room.py ──► out/reading_room/ReadingRoom.glb, lights.json
-out/campus/*.glb + ReadingRoom.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
-out/ue/Outside.glb ──► blender/cull_indoor_trees.py (in place: drops the 2 web trees that grow inside the Wax Hall)
+bl/museum.py ──► out/museum/Museum.glb, lights.json      (the neoclassical museum: galleries, lobby, halls, rotunda, portico)
+bl/exterior.py ──► out/exterior/Outside.glb, lights.json  (the grounds: terrain, path, fountain, trees, the other shells)
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
+
+The Museum and Outside assets are no longer the web export: `bl/museum.py` rebuilds the museum in Blender (marble floors,
+Corinthian columns, coffered vaults with glazed laylights, a domed rotunda and a six-column portico with steps down to
+the grounds) around the web's own exhibits, signs and panels, which `blender/extract_museum_pieces.py` saved once into
+`out/museum/web_pieces.glb` and `out/exterior/web_pieces.glb` (the school facade pieces). `bl/exterior.py` builds the
+grounds and the other buildings' stone shells. Both share the plan constants in `bl/museum.py`, and `bl/neo.py` holds
+the architectural vocabulary (columns, capitals, entablatures, vaults, domes, urns, trees). The textures come from
+`bl/textures.py` (`limestone museum_marbles grass flagstone trees banners frieze`) and are committed under `assets/tex`.
+`blender/cull_indoor_trees.py` only applies to the old web export.
 
 ## Coordinates
 
@@ -39,8 +49,9 @@ pip install playwright==1.56.0                                   # once; plus th
 python3 unreal/Pipeline/web/export_campus.py                     # boots the web campus headless, exports every wing
 python bl/library.py --ue                                        # Reading Room for Unreal (real books, thick walls)
 python unreal/Pipeline/blender/export_reading_room.py
-python unreal/Pipeline/blender/prepare_for_unreal.py            # -> out/ue/*.glb
-python unreal/Pipeline/blender/cull_indoor_trees.py             # stdlib only; removes trees standing inside indoor rooms
+python bl/museum.py [--render]                                   # the museum -> out/museum/Museum.glb (+ preview renders)
+python bl/exterior.py [--render]                                 # the grounds -> out/exterior/Outside.glb
+python unreal/Pipeline/blender/prepare_for_unreal.py [-- Museum Outside]   # -> out/ue/*.glb
 ```
 
 The web test harness needs `three@0.170.0` and the `@fontsource` packages in `test/node_modules`, plus
@@ -50,13 +61,13 @@ The web test harness needs `three@0.170.0` and the `@fontsource` packages in `te
 
 | Asset | Meshes | Triangles | Notes |
 |---|---|---|---|
-| Museum | 64 | 3k | Lobby + 3 galleries; `item__<id>` = exhibits |
+| Museum | 64 | 177k | Blender: rotunda, lobby, 3 vaulted galleries, halls, portico and steps; `item__<id>` = the web's exhibits |
 | WaxIntro | 4 | <1k | Intro wall at the Wax Hall door |
 | WaxHall | 167 | 54k | 12 stages (figures come later as MetaHumans) |
 | LibraryShell | 31 | 1k | Interactive bits of the Reading Room: book covers (`book__<id>`), signs, Freedom board |
 | ReadingRoom | 16 | 187k | The Blender-modelled room: real books on every shelf, thick walls, PBR textures |
 | School | 311 | 43k | Hall + rooms 101–104; `bp__<id>` = blueprint boards |
-| Outside | 25 | 91k | Building shells, ground, trees, horizon |
+| Outside | 26 | 140k | Blender: terrain with the forecourt meadow, flagstone path, fountain, trees, lamp posts, the other buildings' shells, horizon |
 | Yard | 104 | 73k | Coaster, Sky Drop, dive dome, playground; `ride__` / `token__` tags |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 

@@ -69,12 +69,12 @@
    "nav_cell_m": 0.25,
    "nav_wall_pad_m": 0.45,
    "nav_bounds_m": {
-    "x0": -33,
+    "x0": -45,
     "x1": 93,
     "z0": -82,
-    "z1": 27
+    "z1": 72
    },
-   "src": "parts/nav.js:77-79,158-166, parts/world.js:10"
+   "src": "parts/nav.js:77-79,158-166, parts/world.js:10; nav z1 and x0 widened by hand for the forecourt (bl/museum.py, bl/exterior.py)"
   },
   "heights_m": {
    "H_ROOM(museum)": 4.4,
@@ -216,7 +216,7 @@
   {
    "id": "g1",
    "display_name": "Headsets in Libraries",
-   "kicker": "Gallery 1 of 3 · 2016 to 2022",
+   "kicker": "Gallery 1 of 3 \u00b7 2016 to 2022",
    "bounds_m": {
     "x0": -6,
     "x1": 6,
@@ -250,7 +250,7 @@
   {
    "id": "g2",
    "display_name": "Learning That Works",
-   "kicker": "Gallery 2 of 3 · Careers and resources",
+   "kicker": "Gallery 2 of 3 \u00b7 Careers and resources",
    "bounds_m": {
     "x0": -6,
     "x1": 6,
@@ -284,7 +284,7 @@
   {
    "id": "g3",
    "display_name": "Stories Worth Saving",
-   "kicker": "Gallery 3 of 3 · Equity, worlds, nature",
+   "kicker": "Gallery 3 of 3 \u00b7 Equity, worlds, nature",
    "bounds_m": {
     "x0": -6,
     "x1": 6,
@@ -319,7 +319,7 @@
   {
    "id": "wax",
    "display_name": "The Wax Hall",
-   "kicker": "Museum · Living History",
+   "kicker": "Museum \u00b7 Living History",
    "bounds_m": {
     "x0": -8.5,
     "x1": 8.5,
@@ -719,7 +719,7 @@
    "furniture": [
     "layer table DIO 2.6x1.7 at (29.0,0.79,2.9), model origin (29.0,0.87,2.9) ry pi (parts/worldroom.js:5)",
     "desk 6.8x0.72 at (29.0,0.75,6.58) with 3 monitors (x 25.7,29,32.3); chairs at x 26.6,29,31.4 z 5.75",
-    "toolkit shelves 0.44x4.6 on the west wall at (24.24,·,3.0); bean bags at (33.2,-0.4) and (32.3,-0.6)",
+    "toolkit shelves 0.44x4.6 on the west wall at (24.24,\u00b7,3.0); bean bags at (33.2,-0.4) and (32.3,-0.6)",
     "stats screen 2.08x1.17 on east wall at (33.925,1.75,2.1); frosted window z 4.9..6.3"
    ]
   },
@@ -782,7 +782,7 @@
     "w": 3.2,
     "band": 0.6
    },
-   "notes": "partition is two faces at z=-5.85/-6.15 (0.3 thick) with a wood frame 0.1x3.15 posts at x ±1.65 and a 3.4x0.1 lintel at y 3.15; door sign 3.1x0.53 at y 3.76"
+   "notes": "partition is two faces at z=-5.85/-6.15 (0.3 thick) with a wood frame 0.1x3.15 posts at x \u00b11.65 and a 3.4x0.1 lintel at y 3.15; door sign 3.1x0.53 at y 3.76"
   },
   {
    "id": "g1-g2",
@@ -857,7 +857,7 @@
     "w": 3.2,
     "band": 0.75
    },
-   "notes": "double-sided: museum end wall at z=-42 and Wax Hall south wall at z=-42.3 both have the 3.2x3.1 opening; velvet curtains tied back at x ±1.85 on the wax side, valance 4.2x0.36 at y 3.3"
+   "notes": "double-sided: museum end wall at z=-42 and Wax Hall south wall at z=-42.3 both have the 3.2x3.1 opening; velvet curtains tied back at x \u00b11.85 on the wax side, valance 4.2x0.36 at y 3.3"
   },
   {
    "id": "lobby-hallL",
@@ -2796,7 +2796,7 @@
   },
   {
    "id": "wax-stage-spot-cans",
-   "shape": "2 per stage at local x ±0.28*L, y 3.48, z -3.48 on the header beam, lens r0.075 aimed down-forward",
+   "shape": "2 per stage at local x \u00b10.28*L, y 3.48, z -3.48 on the header beam, lens r0.075 aimed down-forward",
    "color": "#fff1d6",
    "src": "parts/waxhall.js:321-325"
   },
@@ -3218,7 +3218,7 @@
     "id": "wax-2019b",
     "n": 6,
     "year": "2019",
-    "title": "VR in the World’s Catalog",
+    "title": "VR in the World\u2019s Catalog",
     "backdrop": "catalog",
     "floor": "office",
     "bay": {
@@ -3404,7 +3404,7 @@
     "id": "wax-2022a",
     "n": 9,
     "year": "2022",
-    "title": "360° Stories in Washington",
+    "title": "360\u00b0 Stories in Washington",
     "backdrop": "forest360",
     "floor": "meeting",
     "bay": {
@@ -3838,7 +3838,7 @@
    "z0": -77.1,
    "z1": -41.1
   },
-  "track_lights": "two 0.06 black rails at x ±3.6, y 4.85, from z -45.3 to -79",
+  "track_lights": "two 0.06 black rails at x \u00b13.6, y 4.85, from z -45.3 to -79",
   "src": "parts/waxhall.js:7-23,256-372"
  },
  "library": {
@@ -4206,7 +4206,7 @@
      5.4,
      -3
     ],
-    "size": "3.2x0.87 facing ±x, hung on brass rods from the ceiling"
+    "size": "3.2x0.87 facing \u00b1x, hung on brass rods from the ceiling"
    },
    {
     "id": "extra-obstacle",
@@ -4849,7 +4849,7 @@
       -11.5
      ]
     ],
-    "track": "closed CatmullRom (centripetal), rails 0.055 r at ±0.5, spine 0.15 r at -0.42; stats height 19 m, loop ~10 m, length ~170 m, top ~62 km/h",
+    "track": "closed CatmullRom (centripetal), rails 0.055 r at \u00b10.5, spine 0.15 r at -0.42; stats height 19 m, loop ~10 m, length ~170 m, top ~62 km/h",
     "station": {
      "ground": "16x5.2 at (50.9,-11.0)",
      "platform": "13.6x0.85x1.85 at (50.9,0.425,-9.8)",
@@ -4994,7 +4994,7 @@
      0.0
     ],
     "src": "parts/outdoor.js:449,681-693",
-    "frame": "A-frame legs at x ±2.5 (z ±0.475, 0.33 rad splay) 2.85 tall red, top bar r0.06 x 5.2 at y 2.7",
+    "frame": "A-frame legs at x \u00b12.5 (z \u00b10.475, 0.33 rad splay) 2.85 tall red, top bar r0.06 x 5.2 at y 2.7",
     "seats": "3 at dx -1.4/0/1.4, chains 2.1 m, seat 0.52x0.05x0.22 at y 0.56"
    },
    {
@@ -5011,7 +5011,7 @@
      0.0
     ],
     "src": "parts/outdoor.js:450,694-707",
-    "platform": "1.3x1.3 at y 1.6 on 4 posts (±0.6), ladder on the -x side at x 40.45",
+    "platform": "1.3x1.3 at y 1.6 on 4 posts (\u00b10.6), ladder on the -x side at x 40.45",
     "chute": "3.3 long teal, from (42.02,1.62) sloping -0.52 rad toward +x, landing pad at x 45.0"
    },
    {
@@ -5103,7 +5103,7 @@
      "PLAY",
      "LAB",
      "XR",
-     "★"
+     "\u2605"
     ],
     "view": {
      "three": {
@@ -6730,30 +6730,31 @@
  "spawn": {
   "three": {
    "x": 0,
-   "z": -0.7,
+   "z": 24.0,
+   "y": -0.75,
    "yaw_rad": 0,
-   "pitch_rad": 0.02,
-   "eye_y": 1.62
+   "pitch_rad": 0.08,
+   "eye_y": 0.87
   },
   "ue": {
    "location_cm": [
     0.0,
-    -70.0,
-    0.0
+    2400.0,
+    -75.0
    ],
    "camera_cm": [
     0.0,
-    -70.0,
-    162.0
+    2400.0,
+    87.0
    ],
    "rotation_deg": {
-    "pitch": 1.146,
+    "pitch": 4.584,
     "yaw": -90.0,
     "roll": 0
    }
   },
-  "notes": "lobby, 0.7 m in from the back (title) wall, facing north down the galleries; yaw reset to 0 on 'Enter' (parts/ui.js:45); attract mode sways yaw ±0.32 rad while the intro card is open (parts/ui.js:778)",
-  "src": "parts/world.js:11"
+  "notes": "the forecourt, on the stone path 6 m short of the steps, facing the portico (by hand: the Blender museum added a front entrance; the web lobby spawn is places.lobby)",
+  "src": "bl/museum.py (FORECOURT_Y, STY_Z1), parts/world.js:11 for the old lobby spawn"
  },
  "tour_stops": [
   {
@@ -7647,7 +7648,7 @@
    "outdoor_stroke": "rgba(150,196,128,0.6)",
    "round_fill": "rgba(242,193,78,0.22)",
    "label_font": "7-8px Courier Prime",
-   "player": "dot r2.6 #efe7d5 with a view cone r11 ±0.55 rad rgba(205,169,97,0.55)"
+   "player": "dot r2.6 #efe7d5 with a view cone r11 \u00b10.55 rad rgba(205,169,97,0.55)"
   },
   "click": "nearest room rect (within 4 m) -> MAP_GO[id] -> PLACES[id].view(); keyboard activation cycles lobby,g1,g2,g3,wax,library,studio,lab,blueprints,worldroom,yard",
   "map_go": {

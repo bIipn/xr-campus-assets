@@ -213,6 +213,14 @@ def build_rooms(L):
         rows.append({'Name': r['id'], 'Kicker': txt(info.get('k')), 'DisplayName': txt(info.get('n')), 'Sub': txt(info.get('y')),
                      'Wing': lr.get('wing') or 'None', 'BoundsMin': vec(*mn), 'BoundsMax': vec(*mx), 'bOutdoor': r['id'] == 'yard',
                      'StaffId': sid, 'MapLabel': txt(m.get('label')), 'GoPlace': m.get('goPlace') or 'None'})
+    # extra_rooms.json is written by hand for the rooms the Blender museum added (the rotunda, the forecourt);
+    # their boxes are given in campus metres there.
+    for r in load('extra_rooms.json'):
+        info = r.get('info') or {}
+        mn = ue_pos(r['x0'], r.get('y0', 0.0), r['z0']); mx = ue_pos(r['x1'], r.get('y1', 4.4), r['z1'])
+        rows.append({'Name': r['id'], 'Kicker': txt(info.get('k')), 'DisplayName': txt(info.get('n')), 'Sub': txt(info.get('y')),
+                     'Wing': r.get('wing') or 'None', 'BoundsMin': vec(mn['X'], mn['Y'], mn['Z']), 'BoundsMax': vec(mx['X'], mx['Y'], mx['Z']),
+                     'bOutdoor': bool(r.get('outdoor')), 'StaffId': 'None', 'MapLabel': txt(r.get('label')), 'GoPlace': r.get('goPlace') or 'None'})
     return rows
 
 
@@ -272,6 +280,12 @@ def build_places(L):
             directions = say + directions[len(p['label']):]
         rows.append({'Name': p['id'], 'Label': txt(p['label']), 'Aliases': [txt(n) for n in (p.get('names') or [])],
                      'View': v, 'Directions': directions, 'Say': txt(say)})
+    for r in load('extra_rooms.json'):
+        p = r.get('place')
+        if not p:
+            continue
+        rows.append({'Name': r['goPlace'], 'Label': txt(p['label']), 'Aliases': [txt(n) for n in (p.get('names') or [])],
+                     'View': view_from_web(p['view']), 'Directions': txt(p.get('directions')), 'Say': txt(p.get('say'))})
     return rows
 
 

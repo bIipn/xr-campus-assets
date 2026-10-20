@@ -320,13 +320,182 @@ def make_shelfrow():
     a = a * shade[..., None]
     Image.fromarray((a * 255).astype(np.uint8), 'RGB').save(os.path.join(OUT, 'shelfrow_col.png'), optimize=True)
 
+# ---------------------------------------------------------------- the museum and the grounds (bl/museum.py, bl/exterior.py)
+FONT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts', 'Cinzel.ttf')   # OFL, see fonts/OFL.txt
+
+def font(size, weight='Bold'):
+    f = ImageFont.truetype(FONT, size)
+    try: f.set_variation_by_name(weight)
+    except Exception: pass
+    return f
+
+def make_limestone():
+    """Pale limestone, two ways: 'lime' is a plain dressed surface (interior walls, vault, columns) and 'ashlar'
+    adds the block joints of a coursed facade (blocks 1.2 x 0.6 m on a 2.4 m tile)."""
+    n = 1024
+    f = fnoise(n, 2.2, 1, 1, seed=201); g = fnoise(n, 1.0, 1, 1, seed=202); s = fnoise(n, 3.2, 1, 1, seed=203)
+    base = np.array([0.76, 0.70, 0.58])
+    shell = np.clip(fnoise(n, 0.8, 1, 1, seed=204), 0, 3) * 0.03          # fossil speckle
+    col = np.clip(base[None, None, :] * (1 + 0.05 * f + 0.03 * g + 0.02 * s)[..., None] * (1 - shell)[..., None], 0, 1)
+    save_rgb('lime_col.png', col); save_gray('lime_rgh.png', 0.72 + 0.06 * g)
+    normal_from_height(0.5 + 0.10 * f + 0.05 * g + 0.08 * shell, 0.45).save(os.path.join(OUT, 'lime_nrm.png'), optimize=True)
+    # coursed blocks: 2 wide x 4 high per tile, every other course offset by half a block
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    course = np.floor(yy * 4); u = (xx * 2 + 0.5 * (course % 2)) % 1.0; v = (yy * 4) % 1.0
+    jw = 0.018
+    joint = np.clip(np.minimum(np.minimum(u, 1 - u) / jw, np.minimum(v, 1 - v) / (jw * 2)), 0, 1)
+    joint = joint ** 0.6
+    # each block its own tint
+    bid = (np.floor(xx * 2 + 0.5 * (course % 2)) + 7 * course).astype(int)
+    r = np.random.default_rng(205); tint = 1 + 0.06 * (r.random(64)[bid % 64] - 0.5)
+    acol = np.clip(col * (0.55 + 0.45 * joint)[..., None] * tint[..., None], 0, 1)
+    save_rgb('ashlar_col.png', acol); save_gray('ashlar_rgh.png', np.clip(0.72 + 0.06 * g + 0.2 * (1 - joint), 0, 1))
+    normal_from_height(0.5 + 0.10 * f + 0.05 * g - 0.6 * (1 - joint), 0.9).save(os.path.join(OUT, 'ashlar_nrm.png'), optimize=True)
+
+def make_museum_marbles():
+    marble_stone('verde', (0.040, 0.095, 0.070), (0.58, 0.66, 0.56), seed=151, freq=1.5, wid=0.13, fine=0.18, rough=0.12)   # Verde Alpi
+    marble_stone('rosso', (0.34, 0.11, 0.09), (0.86, 0.78, 0.70), seed=161, freq=2.8, wid=0.14, fine=0.30, rough=0.13)      # Rosso Verona
+    marble_stone('giallo', (0.70, 0.55, 0.30), (0.42, 0.29, 0.15), seed=171, freq=2.2, wid=0.16, fine=0.30, rough=0.15)     # Giallo Siena
+
+def make_grass():
+    """A mown lawn ('grass') and a meadow with flowers ('meadow'), tiling every 3 m."""
+    n = 1024
+    f = fnoise(n, 1.6, 1, 1, seed=301); g = fnoise(n, 2.6, 1, 1, seed=302); h = fnoise(n, 0.9, 1, 1, seed=303)
+    blades = fnoise(n, 0.5, 1, 1, seed=304)
+    base = np.array([0.16, 0.30, 0.09]); dry = np.array([0.33, 0.33, 0.12])
+    t = np.clip(0.5 + 0.25 * f + 0.2 * h, 0, 1)
+    col = lerp3(base, dry, t) * (1 + 0.10 * g + 0.12 * blades)[..., None]
+    save_rgb('grass_col.png', np.clip(col, 0, 1)); save_gray('grass_rgh.png', 0.85 + 0.05 * g)
+    normal_from_height(0.5 + 0.12 * blades + 0.06 * g, 0.7).save(os.path.join(OUT, 'grass_nrm.png'), optimize=True)
+    # meadow: taller, patchier grass with scattered flowers
+    m = lerp3(np.array([0.14, 0.26, 0.07]), np.array([0.36, 0.34, 0.14]), np.clip(0.5 + 0.35 * f + 0.25 * h, 0, 1)) * (1 + 0.12 * g + 0.15 * blades)[..., None]
+    img = Image.fromarray((srgb(np.clip(m, 0, 1)) * 255 + 0.5).astype(np.uint8), 'RGB')
+    d = ImageDraw.Draw(img); r = np.random.default_rng(305)
+    for i in range(260):
+        x, y = int(r.random() * n), int(r.random() * n); s_ = int(2 + 5 * r.random() ** 2)
+        c = [(250, 240, 230), (255, 214, 60), (236, 120, 160), (170, 150, 240), (255, 250, 250)][int(r.random() * 5)]
+        for dx in (0, n, -n):
+            for dy in (0, n, -n): d.ellipse([x + dx - s_, y + dy - s_, x + dx + s_, y + dy + s_], fill=c)
+    img = img.filter(ImageFilter.GaussianBlur(0.6))
+    img.save(os.path.join(OUT, 'meadow_col.png'), optimize=True)
+    save_gray('meadow_rgh.png', 0.9 + 0.05 * g)
+    normal_from_height(0.5 + 0.16 * blades + 0.08 * g, 0.8).save(os.path.join(OUT, 'meadow_nrm.png'), optimize=True)
+
+def make_flagstone():
+    """Irregular stone paving on a 2.4 m tile: a jittered grid of stones with sand joints."""
+    n = 1024; k = 6
+    r = np.random.default_rng(401)
+    sites = []
+    for j in range(k):
+        for i in range(k):
+            sites.append(((i + 0.5 + 0.36 * (r.random() - 0.5)) / k, (j + 0.5 + 0.36 * (r.random() - 0.5)) / k))
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    d1 = np.full((n, n), 9.0); d2 = np.full((n, n), 9.0); idx = np.zeros((n, n), int)
+    for si, (sx, sy) in enumerate(sites):
+        for ox in (-1, 0, 1):
+            for oy in (-1, 0, 1):
+                dx = xx - (sx + ox); dy = yy - (sy + oy)
+                d = np.sqrt(dx * dx + dy * dy) * (1 + 0.08 * fnoise(n, 2.0, 1, 1, seed=402 + si))
+                closer = d < d1
+                d2 = np.where(closer, d1, np.minimum(d2, d)); d1 = np.where(closer, d, d1); idx = np.where(closer, si, idx)
+    edge = np.clip((d2 - d1) / 0.022, 0, 1) ** 0.7
+    tint = 1 + 0.18 * (r.random(len(sites))[idx] - 0.5)
+    f = fnoise(n, 2.0, 1, 1, seed=403); g = fnoise(n, 3.0, 1, 1, seed=404)
+    stone = np.array([0.46, 0.42, 0.36]); sand = np.array([0.30, 0.26, 0.20])
+    e = edge[..., None]
+    col = (sand[None, None, :] * (1 - e) + stone[None, None, :] * tint[..., None] * e) * (1 + 0.08 * f + 0.05 * g)[..., None]
+    save_rgb('flag_col.png', np.clip(col, 0, 1)); save_gray('flag_rgh.png', np.clip(0.8 - 0.1 * edge + 0.05 * g, 0, 1))
+    normal_from_height(0.5 + 0.5 * edge + 0.05 * f + 0.03 * g, 1.6).save(os.path.join(OUT, 'flag_nrm.png'), optimize=True)
+
+def make_tree_textures():
+    n = 512
+    f = fnoise(n, 1.4, 1.0, 6.0, seed=501); g = fnoise(n, 2.4, 1, 1, seed=502)
+    base = np.array([0.22, 0.16, 0.11]); dark = np.array([0.10, 0.07, 0.05])
+    ridges = np.clip(0.5 + 0.5 * np.sign(f) * np.abs(f) ** 0.5, 0, 1)
+    col = lerp3(dark, base, ridges) * (1 + 0.06 * g)[..., None]
+    save_rgb('bark_col.png', np.clip(col, 0, 1)); save_gray('bark_rgh.png', 0.85 + 0.05 * g)
+    normal_from_height(0.5 + 0.35 * ridges + 0.05 * g, 1.8).save(os.path.join(OUT, 'bark_nrm.png'), optimize=True)
+    # foliage: clumps of leaves, light where they face up (the clump meshes carry the shape; this adds the leafiness)
+    L = fnoise(n, 0.7, 1, 1, seed=511); M = fnoise(n, 1.6, 1, 1, seed=512)
+    cells = np.clip(np.abs(L), 0, 1.5) / 1.5
+    leaf = lerp3(np.array([0.05, 0.12, 0.03]), np.array([0.22, 0.40, 0.10]), np.clip(0.5 + 0.5 * M - 0.3 * cells, 0, 1))
+    save_rgb('leaf_col.png', np.clip(leaf, 0, 1)); save_gray('leaf_rgh.png', np.full((n, n), 0.78))
+    normal_from_height(0.5 + 0.3 * cells + 0.1 * M, 1.6).save(os.path.join(OUT, 'leaf_nrm.png'), optimize=True)
+
+BANNERS = [('main', 'XRLIBRARIES', 'CAMPUS', 'WALK THE ARCHIVE'),
+           ('g1', 'GALLERY I', 'HEADSETS IN LIBRARIES', '2016 TO 2022'),
+           ('g2', 'GALLERY II', 'LEARNING THAT WORKS', 'CAREERS AND RESOURCES'),
+           ('g3', 'GALLERY III', 'STORIES WORTH SAVING', 'EQUITY, WORLDS, NATURE')]
+
+def make_banners():
+    """The orange exhibition banners (1024 x 2560, one per gallery plus the campus banner): a deep orange field,
+    gold rule and lettering in Cinzel, a laurel ring, and a fringe at the hem."""
+    W, H = 1024, 2560
+    orange = (214, 98, 26); gold = (232, 190, 92); dark = (120, 48, 12)
+    for key, top, name, sub in BANNERS:
+        img = Image.new('RGB', (W, H), orange)
+        d = ImageDraw.Draw(img)
+        d.rectangle([44, 44, W - 45, H - 45], outline=gold, width=10)
+        d.rectangle([64, 64, W - 65, H - 65], outline=gold, width=3)
+        # laurel ring
+        cx, cy, R = W // 2, 760, 250
+        d.ellipse([cx - R, cy - R, cx + R, cy + R], outline=gold, width=8)
+        for a in range(0, 360, 12):
+            t = math.radians(a); rr = R - 28
+            x, y = cx + rr * math.cos(t), cy + rr * math.sin(t)
+            d.ellipse([x - 14, y - 26, x + 14, y + 26], fill=gold)
+        # XR mark in the ring
+        f0 = font(190)
+        d.text((cx, cy), 'XR', font=f0, fill=gold, anchor='mm')
+        def line(y, text, size, fill=gold):
+            f = font(size)
+            while d.textlength(text, font=f) > W - 180 and size > 40: size -= 4; f = font(size)
+            d.text((W // 2, y), text, font=f, fill=fill, anchor='mm')
+        line(1200, top, 96)
+        d.line([200, 1290, W - 200, 1290], fill=gold, width=4)
+        # the name wraps onto two lines when long
+        words = name.split(); lines = [name]
+        if d.textlength(name, font=font(110)) > W - 180 and len(words) > 1:
+            k = len(words) // 2 + (len(words) % 2); lines = [' '.join(words[:k]), ' '.join(words[k:])]
+        for i, t in enumerate(lines): line(1420 + i * 130, t, 110, fill=(255, 236, 200))
+        line(1700 + (len(lines) - 1) * 130, sub, 64)
+        d.rectangle([44, H - 140, W - 45, H - 45], fill=dark)
+        for x in range(60, W - 60, 24): d.rectangle([x, H - 140, x + 10, H - 45], fill=gold)
+        a = np.array(img).astype(np.float32) / 255.0
+        lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
+        weave = fnoise(1024, 0.6, 1, 1, seed=601); weave = np.concatenate([weave, weave, weave[:512]], axis=0)
+        lin = np.clip(lin * (1 + 0.07 * weave)[..., None], 0, 1)
+        save_rgb('banner_%s_col.png' % key, lin)
+    save_gray('banner_rgh.png', np.full((512, 512), 0.92))
+    normal_from_height(0.5 + 0.2 * fnoise(512, 0.6, 1, 1, seed=602), 0.6).save(os.path.join(OUT, 'banner_nrm.png'), optimize=True)
+
+def make_frieze():
+    """Lettering for the portico frieze and the gallery lintels, on the same limestone as the walls (opaque, no alpha)."""
+    n = 1024
+    f = fnoise(n, 2.2, 1, 1, seed=201); g = fnoise(n, 1.0, 1, 1, seed=202)
+    base = np.array([0.76, 0.70, 0.58])
+    def strip(name, text, W, H, size):
+        col = np.clip(base[None, None, :] * (1 + 0.05 * f[:H, :n] + 0.03 * g[:H, :n])[..., None], 0, 1)
+        col = np.concatenate([col] * (W // n + 1), axis=1)[:, :W]
+        img = Image.fromarray((srgb(col) * 255 + 0.5).astype(np.uint8), 'RGB')
+        d = ImageDraw.Draw(img); fnt = font(size)
+        while d.textlength(text, font=fnt) > W * 0.92 and size > 40: size -= 6; fnt = font(size)
+        # cut letters: a dark core with a lit lower-right edge, as incised stone reads under a high sun
+        d.text((W // 2 + 3, H // 2 + 3), text, font=fnt, fill=(232, 220, 196), anchor='mm')
+        d.text((W // 2, H // 2), text, font=fnt, fill=(74, 62, 48), anchor='mm')
+        img.save(os.path.join(OUT, name), optimize=True)
+    strip('frieze_portico.png', 'XRLIBRARIES  ·  WALK THE ARCHIVE', 4096, 512, 340)
+    strip('frieze_rotunda.png', 'SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS', 4096, 320, 220)
+
 
 if __name__ == '__main__':
     import sys
     which = sys.argv[1:] or ['all']
     jobs = { 'oak_floor':make_oak_floor, 'walnut':make_walnut, 'oak':make_oak_light, 'plaster':make_plaster, 'green':make_plaster_green,
              'leather':make_leather, 'rug':make_rug, 'books':make_books, 'brass':make_brass, 'marble':make_marble,
-             'marble_floor':make_marble_floor, 'window':make_window_view, 'shelfrow':make_shelfrow }
+             'marble_floor':make_marble_floor, 'window':make_window_view, 'shelfrow':make_shelfrow,
+             'limestone':make_limestone, 'museum_marbles':make_museum_marbles, 'grass':make_grass, 'flagstone':make_flagstone,
+             'trees':make_tree_textures, 'banners':make_banners, 'frieze':make_frieze }
     for k, fn in jobs.items():
         if 'all' in which or k in which:
             fn(); print('made', k, flush=True)

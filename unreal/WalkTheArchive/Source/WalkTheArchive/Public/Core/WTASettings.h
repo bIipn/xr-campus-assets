@@ -84,7 +84,7 @@ public:
 
 	// --- Player ------------------------------------------------------------
 
-	/** Where the player stands when the game starts: the web's lobby spawn (0, -70, 162), looking into the museum. */
+	/** Where the player stands when the game starts: the forecourt (0, 2400, 87), facing the museum's portico. */
 	UPROPERTY(Config, EditAnywhere, Category = "Player")
 	FWTAView SpawnView;
 

@@ -952,5 +952,53 @@
   },
   "Directions": "the Technology section, through the doorway on the left side of the lobby and down the hall.",
   "Say": "the Technology section"
+ },
+ {
+  "Name": "rotunda",
+  "Label": "Rotunda",
+  "Aliases": [
+   "rotunda",
+   "dome",
+   "front hall",
+   "vestibule"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": 980.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 3.438,
+   "bValid": true
+  },
+  "Directions": "the domed hall just behind the front doors, before the lobby.",
+  "Say": "the rotunda"
+ },
+ {
+  "Name": "forecourt",
+  "Label": "The Forecourt",
+  "Aliases": [
+   "forecourt",
+   "outside",
+   "grounds",
+   "front steps",
+   "portico",
+   "colonnade",
+   "fountain",
+   "meadow"
+  ],
+  "View": {
+   "Location": {
+    "X": 0.0,
+    "Y": 2400.0,
+    "Z": 87.0
+   },
+   "Yaw": -90.0,
+   "Pitch": 4.584,
+   "bValid": true
+  },
+  "Directions": "out through the rotunda and the front doors, down the steps.",
+  "Say": "the forecourt"
  }
 ]

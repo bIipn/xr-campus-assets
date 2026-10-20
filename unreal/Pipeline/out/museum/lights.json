@@ -1,0 +1,916 @@
+{
+ "source": "bl/museum.py",
+ "units": "metres, three.js campus axes (y up)",
+ "lights": [
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -14.276
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -12.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -9.724
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -17.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -12.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -6.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -17.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -12.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -6.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -26.276
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -21.724
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.656
+   ]
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -29.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -18.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -29.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -18.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -38.381
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.686
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -36.075
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.686
+   ]
+  },
+  {
+   "name": "laylight",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    8.81,
+    -33.769
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 900,
+   "color_linear": [
+    0.93,
+    0.95,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.2,
+    1.686
+   ]
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -41.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -36.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    -5.22,
+    3.62,
+    -30.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -41.45
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -36.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    5.22,
+    3.62,
+    -30.55
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "chandelier",
+   "type": "POINT",
+   "campus_pos_m": [
+    -3.0,
+    4.55,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 1500,
+   "color_linear": [
+    1.0,
+    0.86,
+    0.68
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "chandelier",
+   "type": "POINT",
+   "campus_pos_m": [
+    3.0,
+    4.55,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 1500,
+   "color_linear": [
+    1.0,
+    0.86,
+    0.68
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "hall",
+   "type": "POINT",
+   "campus_pos_m": [
+    -10.5,
+    3.05,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 300,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "hall",
+   "type": "POINT",
+   "campus_pos_m": [
+    -7.5,
+    3.05,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 300,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "hall",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.5,
+    3.05,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 300,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "hall",
+   "type": "POINT",
+   "campus_pos_m": [
+    10.5,
+    3.05,
+    -3.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 300,
+   "color_linear": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "torchere",
+   "type": "POINT",
+   "campus_pos_m": [
+    -1.82,
+    2.45,
+    2.126
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 400,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "torchere",
+   "type": "POINT",
+   "campus_pos_m": [
+    1.82,
+    2.45,
+    2.126
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 400,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "torchere",
+   "type": "POINT",
+   "campus_pos_m": [
+    1.82,
+    2.45,
+    9.474
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 400,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "torchere",
+   "type": "POINT",
+   "campus_pos_m": [
+    -1.82,
+    2.45,
+    9.474
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 400,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "oculus",
+   "type": "AREA",
+   "campus_pos_m": [
+    0.0,
+    14.38,
+    5.8
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 9000,
+   "color_linear": [
+    0.8,
+    0.88,
+    1.0
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    2.588,
+    2.588
+   ]
+  },
+  {
+   "name": "lantern",
+   "type": "POINT",
+   "campus_pos_m": [
+    -2.35,
+    2.95,
+    12.85
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 200,
+   "color_linear": [
+    1.0,
+    0.8,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "lantern",
+   "type": "POINT",
+   "campus_pos_m": [
+    2.35,
+    2.95,
+    12.85
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 200,
+   "color_linear": [
+    1.0,
+    0.8,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  }
+ ]
+}

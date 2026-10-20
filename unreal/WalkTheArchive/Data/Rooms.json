@@ -313,5 +313,47 @@
   "StaffId": "rae",
   "MapLabel": "RECESS YARD",
   "GoPlace": "yard"
+ },
+ {
+  "Name": "rotunda",
+  "Kicker": "Rotunda",
+  "DisplayName": "XRLibraries Campus",
+  "Sub": "Through the arch to the museum",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": -500.0,
+   "Y": 0.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 500.0,
+   "Y": 1260.0,
+   "Z": 1480.0
+  },
+  "bOutdoor": false,
+  "StaffId": "None",
+  "MapLabel": "R",
+  "GoPlace": "rotunda"
+ },
+ {
+  "Name": "forecourt",
+  "Kicker": "The Grounds",
+  "DisplayName": "The Forecourt",
+  "Sub": "Up the steps and through the colonnade",
+  "Wing": "outside",
+  "BoundsMin": {
+   "X": -4000.0,
+   "Y": 1260.0,
+   "Z": -100.0
+  },
+  "BoundsMax": {
+   "X": 4000.0,
+   "Y": 7000.0,
+   "Z": 2000.0
+  },
+  "bOutdoor": true,
+  "StaffId": "None",
+  "MapLabel": "F",
+  "GoPlace": "forecourt"
  }
 ]

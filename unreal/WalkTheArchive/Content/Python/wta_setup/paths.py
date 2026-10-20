@@ -38,6 +38,8 @@ MESH_MANIFEST = os.path.join(MESH_DIR, "manifest.json")
 ART_DIR = os.path.join(OUT_DIR, "campus", "art")                             # <id>.png
 CAMPUS_LIGHTS_JSON = os.path.join(OUT_DIR, "campus", "lights.json")
 READING_ROOM_LIGHTS_JSON = os.path.join(OUT_DIR, "reading_room", "lights.json")
+MUSEUM_LIGHTS_JSON = os.path.join(OUT_DIR, "museum", "lights.json")          # bl/museum.py (the neoclassical museum)
+EXTERIOR_LIGHTS_JSON = os.path.join(OUT_DIR, "exterior", "lights.json")      # bl/exterior.py (lamp posts on the grounds)
 LAYOUT_JSON = os.path.join(PIPELINE_DIR, "layout", "layout.json")
 STRUCTS_JSON = os.path.join(UNREAL_DIR, "contract", "structs.json")
 

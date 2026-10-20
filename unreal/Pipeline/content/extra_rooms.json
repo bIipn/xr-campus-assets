@@ -1,0 +1,25 @@
+[
+  {
+    "id": "rotunda",
+    "wing": "museum",
+    "x0": -5.0, "x1": 5.0, "z0": 0.0, "z1": 12.6, "y0": 0.0, "y1": 14.8,
+    "outdoor": false,
+    "info": {"k": "Rotunda", "n": "XRLibraries Campus", "y": "Through the arch to the museum"},
+    "label": "R",
+    "goPlace": "rotunda",
+    "place": {"label": "Rotunda", "names": ["rotunda", "dome", "front hall", "vestibule"], "view": {"x": 0, "z": 9.8, "yaw": 0, "pitch": 0.06},
+              "say": "the rotunda", "directions": "the domed hall just behind the front doors, before the lobby."}
+  },
+  {
+    "id": "forecourt",
+    "wing": "outside",
+    "x0": -40.0, "x1": 40.0, "z0": 12.6, "z1": 70.0, "y0": -1.0, "y1": 20.0,
+    "outdoor": true,
+    "info": {"k": "The Grounds", "n": "The Forecourt", "y": "Up the steps and through the colonnade"},
+    "label": "F",
+    "goPlace": "forecourt",
+    "place": {"label": "The Forecourt", "names": ["forecourt", "outside", "grounds", "front steps", "portico", "colonnade", "fountain", "meadow"],
+              "view": {"x": 0, "z": 24.0, "y": -0.75, "yaw": 0, "pitch": 0.08},
+              "say": "the forecourt", "directions": "out through the rotunda and the front doors, down the steps."}
+  }
+]

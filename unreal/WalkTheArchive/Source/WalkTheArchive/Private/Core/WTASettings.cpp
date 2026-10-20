@@ -35,9 +35,10 @@ UWTASettings::UWTASettings()
 	Stations   = TableRef(TEXT("Stations"));
 	Rides      = TableRef(TEXT("Rides"));
 
-	// The web lobby spawn: (0, -0.7) m looking into the museum (web yaw 0 = UE yaw -90), pitch 0.02 rad.
-	SpawnView.Location = FVector(0.f, -70.f, 162.f);
+	// The forecourt: on the stone path 6 m short of the museum's steps (the grounds lie 0.75 m below the floors),
+	// looking north at the portico (web yaw 0 = UE yaw -90). DefaultGame.ini can override it.
+	SpawnView.Location = FVector(0.f, 2400.f, 87.f);
 	SpawnView.Yaw = -90.f;
-	SpawnView.Pitch = 1.146f;
+	SpawnView.Pitch = 4.584f;
 	SpawnView.bValid = true;
 }

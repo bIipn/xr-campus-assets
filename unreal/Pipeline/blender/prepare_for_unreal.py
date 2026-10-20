@@ -14,7 +14,8 @@ when you import meshes as assets). So before Unreal sees them, this pass:
 
 Run from the repo root with Blender 5.2 (or bpy 5.2.2):
     python unreal/Pipeline/blender/prepare_for_unreal.py
-Reads  unreal/Pipeline/out/campus/<wing>.glb and unreal/Pipeline/out/reading_room/ReadingRoom.glb
+Reads  unreal/Pipeline/out/campus/<wing>.glb, unreal/Pipeline/out/reading_room/ReadingRoom.glb, and the Blender-built
+       museum and grounds (out/museum/Museum.glb, out/exterior/Outside.glb)
 Writes unreal/Pipeline/out/ue/<Name>.glb and unreal/Pipeline/out/ue/manifest.json
 """
 import json
@@ -27,12 +28,12 @@ import bpy
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
 OUT = os.path.join(REPO, 'unreal', 'Pipeline', 'out', 'ue')
 SOURCES = [
-    ('Museum', 'unreal/Pipeline/out/campus/museum.glb'),
+    ('Museum', 'unreal/Pipeline/out/museum/Museum.glb'),        # bl/museum.py (was out/campus/museum.glb, the web export)
     ('WaxIntro', 'unreal/Pipeline/out/campus/waxIntro.glb'),
     ('WaxHall', 'unreal/Pipeline/out/campus/wax.glb'),
     ('LibraryShell', 'unreal/Pipeline/out/campus/lib.glb'),
     ('School', 'unreal/Pipeline/out/campus/school.glb'),
-    ('Outside', 'unreal/Pipeline/out/campus/outside.glb'),
+    ('Outside', 'unreal/Pipeline/out/exterior/Outside.glb'),    # bl/exterior.py (was out/campus/outside.glb)
     ('Yard', 'unreal/Pipeline/out/campus/play.glb'),
     ('OceanDive', 'unreal/Pipeline/out/campus/dive.glb'),
     ('ReadingRoom', 'unreal/Pipeline/out/reading_room/ReadingRoom.glb'),

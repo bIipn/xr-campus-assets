@@ -21,6 +21,11 @@ Units and exposure, decided here and consistent with docs/reference/render.md se
     museum's ceiling discs become real downlights too (DOWNLIGHT_LUMENS each, a wide SpotLight).
   * Self-lit surfaces (the web's glows and unlit pictures) are calibrated by emissive.py: physical
     luminance for light fixtures, display referred for windows, screens and labels.
+  * The Blender-built museum (bl/museum.py) brings its own fixtures in Pipeline/out/museum/lights.json: sconces
+    on the columns, torcheres, the lobby chandeliers, the hall lamps, the lanterns at the front door, plus
+    RectLights under the vaults' glazed laylights and the rotunda's oculus (BLENDER_LUMENS by fixture name). When
+    that file exists the web's museum lamps and ceiling-disc downlights are skipped; the grounds' lamp posts come
+    from Pipeline/out/exterior/lights.json the same way.
   * One SpotLight per gallery exhibit (600 lm, 30 degree cone) 180 cm out from the wall and 100 cm above
     the art, aimed at the art, and two per Wax Hall stage: a steep one over the rope onto the set and a face
     light from the aisle ceiling onto the reenactors' faces. These picture lights carry most of the realism.
@@ -69,6 +74,20 @@ WING_PPV_BLEND_CM = 150.0
 BRUSH_SIZE = 200.0          # a volume spawned from its class has the default 200 cm cube brush
 
 # Lumens per fixture family (see the module docstring).
+# Fixtures of the Blender-built museum and grounds, by the light's name in their lights.json (lumens, radius cm,
+# source radius cm); AREA lights become RectLights with the panel's own size.
+BLENDER_LUMENS = {
+    "sconce": (700.0, 900.0, 3.0),
+    "torchere": (900.0, 900.0, 4.0),
+    "chandelier": (9000.0, 1500.0, 8.0),
+    "hall": (1500.0, 800.0, 4.0),
+    "lantern": (700.0, 900.0, 3.0),
+    "post": (1400.0, 1400.0, 5.0),
+    "laylight": (14000.0, 1800.0, None),
+    "oculus": (40000.0, 2500.0, None),
+}
+BLENDER_WINGS = {"post": "outside", "lantern": "outside"}
+
 LUMENS = {
     "museum": 8000.0,
     "wax": 6000.0,
@@ -289,9 +308,41 @@ def reading_room_lamps():
     return out
 
 
+def blender_fixtures():
+    """Lights of the Blender-built museum and grounds (their lights.json files), with lumens by fixture name.
+    Returns (point lamps, area panels); empty when neither file exists (the web's museum lamps are used then)."""
+    points, areas = [], []
+    for path, default_wing in ((paths.MUSEUM_LIGHTS_JSON, "museum"), (paths.EXTERIOR_LIGHTS_JSON, "outside")):
+        try:
+            doc = paths.read_json(path)
+        except Exception:
+            continue
+        for i, light in enumerate(doc.get("lights", [])):
+            kind = str(light.get("name", "")).split(".")[0]
+            lumens, radius, source = BLENDER_LUMENS.get(kind, (800.0, 900.0, 3.0))
+            x, y, z = light.get("campus_pos_m", [0, 0, 0])
+            col = light.get("color_linear", [1.0, 0.85, 0.65])
+            entry = {
+                "label": "%s_%02d" % (kind.capitalize() or "Lamp", i),
+                "wing": BLENDER_WINGS.get(kind, default_wing),
+                "loc": (100.0 * x, 100.0 * z, 100.0 * y),
+                "rgb": (col[0] ** (1 / 2.2), col[1] ** (1 / 2.2), col[2] ** (1 / 2.2)),
+                "lumens": lumens, "radius": radius, "source_radius": source or 3.0,
+            }
+            if light.get("type") == "AREA" and light.get("area_size_m"):
+                entry["size"] = light["area_size_m"]
+                areas.append(entry)
+            else:
+                points.append(entry)
+    return points, areas
+
+
 def build_point_lights(report, skip_wings=()):
     count, skipped = 0, 0
-    for lamp in campus_lamps() + reading_room_lamps():
+    b_points, b_areas = blender_fixtures()
+    # the Blender museum replaces the web's museum lamps (its fixtures light the hall now)
+    web = [lamp for lamp in campus_lamps() if not (b_points and lamp["wing"] == "museum")]
+    for lamp in web + reading_room_lamps() + b_points:
         if lamp["wing"] in skip_wings:
             skipped += 1
             continue
@@ -299,8 +350,18 @@ def build_point_lights(report, skip_wings=()):
         set_lumens(comp, lamp["lumens"], lamp["radius"], lamp["source_radius"])
         set_light_color(comp, lamp["rgb"])
         count += 1
+    for panel in b_areas:
+        # a RectLight pointing down, as wide as the glazing (pitch -90: local Y along world Y, local Z along world X)
+        _actor, comp = spawn_light("RectLight", panel["loc"], (-90.0, 0.0, 0.0), panel["label"], panel["wing"])
+        set_lumens(comp, panel["lumens"], panel["radius"], None)
+        w, d = panel["size"]
+        util.set_props(comp, {"source_width": 100.0 * d, "source_height": 100.0 * w, "barn_door_angle": 80.0}, label=panel["label"])
+        set_light_color(comp, panel["rgb"])
+        count += 1
     report["point_lights"] = count
     report["point_lights_replaced_by_panels"] = skipped
+    report["blender_fixtures"] = len(b_points) + len(b_areas)
+    return len(b_points) + len(b_areas)
 
 
 def layout_fixtures(ids):
@@ -462,8 +523,11 @@ def run():
     build_sky(report)
     build_post_process(report)
     panels = build_panel_lights(report)
-    build_point_lights(report, skip_wings=PANEL_WINGS if panels else ())
-    build_downlights(report)
+    blender = build_point_lights(report, skip_wings=PANEL_WINGS if panels else ())
+    if not blender:
+        build_downlights(report)      # the web museum's ceiling discs; the Blender museum has no discs
+    else:
+        report["downlights"] = 0
     build_laylight(report)
     build_art_lights(report)
     build_stage_lights(report)

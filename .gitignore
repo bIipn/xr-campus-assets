@@ -3,6 +3,10 @@
 # Reinstall with: python3.13 -m venv bl && bl/bin/pip install bpy==5.2.2
 bl/*
 !bl/*.py
+!bl/fonts/
+# Blender builds of the museum and grounds: the .blend files rebuild in seconds (bl/museum.py, bl/exterior.py); the previews stay
+assets/museum/*.blend*
+assets/exterior/*.blend*
 # Installed tools and download caches (reinstall / redownload)
 node_modules/
 ktx/
@@ -11,3 +15,7 @@ __pycache__/
 # Local-run copies (see README)
 deploy/h/
 deploy/lib/
+
+# Blender builds of the museum and grounds (bl/museum.py, bl/exterior.py): rebuilt in seconds; only the prepared out/ue copies are kept
+unreal/Pipeline/out/museum/Museum.glb
+unreal/Pipeline/out/exterior/Outside.glb
