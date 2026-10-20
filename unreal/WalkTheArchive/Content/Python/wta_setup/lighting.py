@@ -52,8 +52,8 @@ ART_SPOT_LUMENS = 600.0
 ART_SPOT_CONE = 30.0
 STAGE_SPOT_LUMENS = 1500.0
 STAGE_SPOT_CONE = 45.0
-STATUE_SPOT_LUMENS = 1200.0
-STATUE_SPOT_CONE = 34.0
+STATUE_SPOT_LUMENS = 12000.0     # the windows behind them are sunlit stone at thousands of nits
+STATUE_SPOT_CONE = 30.0
 # Front key light on the Wax Hall reenactors' faces: aisle ceiling, 3.8 m out from the stage line.
 FACE_LIGHT_LUMENS = 1600.0
 FACE_LIGHT_CONE = 30.0
