@@ -41,6 +41,8 @@ READING_ROOM_LIGHTS_JSON = os.path.join(OUT_DIR, "reading_room", "lights.json")
 MUSEUM_LIGHTS_JSON = os.path.join(OUT_DIR, "museum", "lights.json")          # bl/museum.py (the neoclassical museum)
 EXTERIOR_LIGHTS_JSON = os.path.join(OUT_DIR, "exterior", "lights.json")      # bl/exterior.py (lamp posts on the grounds)
 LAYOUT_JSON = os.path.join(PIPELINE_DIR, "layout", "layout.json")
+STATUES_JSON = os.path.join(PIPELINE_DIR, "content", "statues.json")       # the marble statues (hand-authored)
+MARBLE_MATERIAL = "/Game/WTA/Materials/M_WTA_Marble"
 STRUCTS_JSON = os.path.join(UNREAL_DIR, "contract", "structs.json")
 
 # Content paths (contract section 3). Created by the setup, never committed.

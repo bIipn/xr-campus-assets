@@ -1,0 +1,9 @@
+{
+  "_doc": "Marble statues (AWTAStatueActor, spawned by the actors step): the campus's own people carved in stone. Feet at pos_m (campus metres: x east, y up, z south); ue_yaw: the direction the figure faces in Unreal degrees (0 east, 90 south, 180 west, -90 north); person: a MetaHuman id; action: a Wax Hall mocap clip (wax_acting.json actions) held at phase (0..1) of its length. The two outside stand on the cheek blocks of the museum's steps, the two inside on pedestals before the rotunda's east and west windows (bl/museum.py).",
+  "statues": [
+    {"id": "steps-west",   "pos_m": [-8.65, 0.30, 17.2], "ue_yaw": 90,  "person": "wax-2019a-grandpa", "action": "think",       "phase": 0.45},
+    {"id": "steps-east",   "pos_m": [ 8.65, 0.30, 17.2], "ue_yaw": 90,  "person": "wax-2017a-lib",     "action": "present",     "phase": 0.40},
+    {"id": "rotunda-west", "pos_m": [-3.9,  0.90,  5.8], "ue_yaw": 0,   "person": "wax-2020-nurse",    "action": "reach",       "phase": 0.35},
+    {"id": "rotunda-east", "pos_m": [ 3.9,  0.90,  5.8], "ue_yaw": 180, "person": "wax-2025-dad",      "action": "look_around", "phase": 0.30}
+  ]
+}

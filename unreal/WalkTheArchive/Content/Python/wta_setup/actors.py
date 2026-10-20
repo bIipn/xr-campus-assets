@@ -9,6 +9,8 @@
   AWTATokenActor     one per Tokens.json row at the token__<id> mesh centre, else Location
   AWTAStaffNPC       one per Staff.json row, capsule centre = floor + 90
   AWTAWaxStageActor  one per WaxScenes.json row, trigger (280, 200, 200) in front of the stage
+  AWTAStatueActor    one per Pipeline/content/statues.json entry (the marble statues: a MetaHuman held in a mocap
+                     pose, every surface in M_WTA_Marble, which this step builds when missing)
 Properties are set with set_editor_property using the snake_case names from the contract. Every actor is
 tagged WTA_Setup / WTA_actors and filed under WTA/<Kind>.
 """
@@ -176,13 +178,91 @@ def spawn_wax_stages(report):
     return failed_props
 
 
+def build_marble_material():
+    """M_WTA_Marble: white statuary marble - a warm off-white with the museum's own marble veining when its texture
+    is in the project, subsurface shading so edges glow a little in the light, roughness of polished stone."""
+    mel = unreal.MaterialEditingLibrary
+    assets = util.assets()
+    path = paths.MARBLE_MATERIAL
+    if assets.exists(path):
+        return assets.load(path)
+    folder, name = path.rsplit("/", 1)
+    if not assets.directory_exists(folder):
+        assets.make_directory(folder)
+    mat = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, folder, unreal.Material, unreal.MaterialFactoryNew())
+    util.set_props(mat, {"shading_model": util.enum_value("MaterialShadingModel", "MSM_SUBSURFACE")}, label=name)
+    tint = mel.create_material_expression(mat, unreal.MaterialExpressionVectorParameter, -700, -200)
+    tint.set_editor_property("parameter_name", "Tint")
+    tint.set_editor_property("default_value", unreal.LinearColor(0.86, 0.84, 0.80, 1.0))
+    colour = tint
+    veins = next((ad.get_asset() for ad in unreal.AssetRegistryHelpers.get_asset_registry().get_assets_by_path(paths.CAMPUS_PATH, True)
+                  if str(ad.asset_name).endswith("marble_w_0") and str(ad.asset_class_path.asset_name) == "Texture2D"), None)
+    if veins is not None:
+        sample = mel.create_material_expression(mat, unreal.MaterialExpressionTextureSample, -1000, 0)
+        sample.set_editor_property("texture", veins)
+        coords = mel.create_material_expression(mat, unreal.MaterialExpressionTextureCoordinate, -1250, 0)
+        coords.set_editor_property("u_tiling", 2.0)
+        coords.set_editor_property("v_tiling", 2.0)
+        mel.connect_material_expressions(coords, "", sample, "UVs")
+        mul = mel.create_material_expression(mat, unreal.MaterialExpressionMultiply, -450, -100)
+        mel.connect_material_expressions(sample, "RGB", mul, "A")
+        mel.connect_material_expressions(tint, "", mul, "B")
+        colour = mul
+    mel.connect_material_property(colour, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    rough = mel.create_material_expression(mat, unreal.MaterialExpressionScalarParameter, -700, 150)
+    rough.set_editor_property("parameter_name", "Roughness")
+    rough.set_editor_property("default_value", 0.38)
+    mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    sss = mel.create_material_expression(mat, unreal.MaterialExpressionVectorParameter, -700, 350)
+    sss.set_editor_property("parameter_name", "SubsurfaceColor")
+    sss.set_editor_property("default_value", unreal.LinearColor(0.93, 0.88, 0.82, 1.0))
+    mel.connect_material_property(sss, "", unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+    opacity = mel.create_material_expression(mat, unreal.MaterialExpressionScalarParameter, -700, 500)
+    opacity.set_editor_property("parameter_name", "Opacity")
+    opacity.set_editor_property("default_value", 0.7)
+    mel.connect_material_property(opacity, "", unreal.MaterialProperty.MP_OPACITY)
+    for usage in ("MATUSAGE_SKELETAL_MESH", "MATUSAGE_MORPH_TARGETS", "MATUSAGE_CLOTHING"):
+        try:
+            setter = getattr(mel, "set_base_material_usage", None) or getattr(mel, "set_material_usage", None)
+            setter(mat, getattr(unreal.MaterialUsage, usage))
+        except Exception as exc:
+            log.warn("marble usage %s: %s" % (usage, exc))
+    mel.recompile_material(mat)
+    assets.save(mat)
+    return mat
+
+
+def spawn_statues(report):
+    """One AWTAStatueActor per statues.json entry, feet at pos_m, facing ue_yaw."""
+    failed_props, count = [], 0
+    try:
+        doc = paths.read_json(paths.STATUES_JSON)
+    except Exception as exc:
+        log.warn("statues.json unreadable: %s" % exc)
+        report["statues"] = 0
+        return failed_props
+    build_marble_material()
+    for row in doc.get("statues", []):
+        x, y, z = row.get("pos_m", [0, 0, 0])
+        loc = (100.0 * x, 100.0 * z, 100.0 * y)
+        _a, failed = spawn_wta("WTAStatueActor", loc, row.get("ue_yaw", 0.0), "Statue_%s" % row["id"], "Statues", {
+            "person": row["person"],
+            "action": row.get("action", "think"),
+            "phase": float(row.get("phase", 0.3)),
+        })
+        failed_props += failed
+        count += 1
+    report["statues"] = count
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
-               spawn_staff, spawn_wax_stages):
+               spawn_staff, spawn_wax_stages, spawn_statues):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

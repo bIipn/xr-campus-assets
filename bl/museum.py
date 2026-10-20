@@ -489,6 +489,9 @@ def rotunda():
         px, pz = cx + (RI + 0.1) * math.cos(phi), cz + (RI + 0.1) * math.sin(phi)
         pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), px, pz, 0.8, 0.9)
         urn(builder('urns', 'stone', tile=2.0), px, pz, 0.9, h=1.3, s=1.0)
+    # pedestals before the east and west windows for the two marble statues (Pipeline/content/statues.json)
+    for px in (-3.9, 3.9):
+        pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), cx + px, cz, 0.9, 0.9)
     for phi in (-math.pi / 2 - 0.46, -math.pi / 2 + 0.46, math.pi / 2 - 0.46, math.pi / 2 + 0.46):
         tx, tz = cx + (RI - 0.9) * math.cos(phi), cz + (RI - 0.9) * math.sin(phi)
         torchere(builder('bronze', 'bronze'), builder('lamps', 'lamp_e'), tx, tz, h=2.3)

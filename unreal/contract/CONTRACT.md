@@ -85,6 +85,7 @@ The pick volume is a `UBoxComponent` named `PickBox` (root), collision preset th
 | `AWTAStaffNPC` (parent `ACharacter`) | `FName StaffId` | open the staff chat. Placeholder body = capsule + `/Engine/BasicShapes/Cylinder` until `DT_Staff.MetaHuman` is set; then spawns that Blueprint as a child actor that loops the standing idle in game |
 | `AWTARoomVolume` (not interactable) | `FName RoomId`, `FVector Extent` (half size cm) | on player overlap → `UWTARoomSubsystem::EnterRoom(RoomId)` |
 | `AWTAWaxStageActor` (not interactable) | `FName SceneId`, `FVector TriggerExtent` | at BeginPlay spawns the row's built `Figures` (MetaHuman reenactors, posed and frozen like wax figures); while the player is inside: plays the scene's captions (`Lines`) on the HUD in a loop; later plays `Sequence` |
+| `AWTAStatueActor` (not interactable) | `FName Person`, `FName Action`, `float Phase` | at BeginPlay spawns the person's MetaHuman held in the clip's pose, every surface in `M_WTA_Marble`, hair hidden: a marble statue (rows in `Pipeline/content/statues.json`, not a DataTable) |
 
 ### 4.6 Systems (`Systems/`)
 | Class | Parent | Must have |
