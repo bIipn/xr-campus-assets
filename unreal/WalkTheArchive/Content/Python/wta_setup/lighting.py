@@ -77,14 +77,16 @@ BRUSH_SIZE = 200.0          # a volume spawned from its class has the default 20
 # Fixtures of the Blender-built museum and grounds, by the light's name in their lights.json (lumens, radius cm,
 # source radius cm); AREA lights become RectLights with the panel's own size.
 BLENDER_LUMENS = {
-    "sconce": (700.0, 900.0, 3.0),
-    "torchere": (900.0, 900.0, 4.0),
+    "sconce": (1000.0, 900.0, 3.0),
+    "torchere": (1500.0, 1000.0, 4.0),
     "chandelier": (9000.0, 1500.0, 8.0),
     "hall": (1500.0, 800.0, 4.0),
     "lantern": (700.0, 900.0, 3.0),
     "post": (1400.0, 1400.0, 5.0),
-    "laylight": (14000.0, 1800.0, None),
-    "oculus": (40000.0, 2500.0, None),
+    # daylight through glass: a 2 x 2 m laylight at 10 000 cd/m2 passes about 130 000 lm; kept lower so the
+    # sconce-lit walls still read, and the oculus (a 2.6 m disc of sky 14 m up) brighter so the rotunda floor is lit
+    "laylight": (40000.0, 2000.0, None),
+    "oculus": (120000.0, 3000.0, None),
 }
 BLENDER_WINGS = {"post": "outside", "lantern": "outside"}
 

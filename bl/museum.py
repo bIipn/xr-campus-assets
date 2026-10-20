@@ -475,7 +475,8 @@ def rotunda():
     archivolt((cx, cz + RI), (0, -1), FRONT_ARCH[0], FRONT_ARCH[1], builder('aedicule', 'stone', tile=2.0), gold, depth=0.42)
     # the frieze band carries the founding line in cut letters: a strip of faces on the frieze, uv along the ring
     fz = builder('frieze_rotunda', 'frieze_rotunda')
-    y0, y1 = H_COL + 0.49, H_COL + 0.78; rr = RI - 0.125
+    # 3 cm proud of the frieze boxes: they stand on chords, whose middles reach 1 cm further in than their ends
+    y0, y1 = H_COL + 0.49, H_COL + 0.78; rr = RI - 0.15
     for k in range(n):
         a0 = 2 * math.pi * k / n; a1 = 2 * math.pi * (k + 1) / n
         u0, u1 = k / n * 4.0, (k + 1) / n * 4.0
