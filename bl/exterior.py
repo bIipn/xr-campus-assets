@@ -86,6 +86,16 @@ def setup_materials():
     material('water', color=(0.55, 0.72, 0.78, 1), roughness=0.03, metallic=0.1)
     material('hills', color=(0.30, 0.42, 0.24, 1), roughness=0.95)
     material('farleaf', color=(0.16, 0.30, 0.12, 1), roughness=0.9)
+    # leaf cards: alpha-masked (the Greater Than node is what the glTF exporter turns into alphaMode MASK)
+    m = bpy.data.materials.new('leafcard'); m.use_nodes = True
+    nt = m.node_tree; bsdf = nt.nodes['Principled BSDF']
+    tex = nt.nodes.new('ShaderNodeTexImage'); tex.image = L.image('leafcard_col'); tex.location = (-500, 0)
+    nt.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    gt = nt.nodes.new('ShaderNodeMath'); gt.operation = 'GREATER_THAN'; gt.inputs[1].default_value = 0.5; gt.location = (-250, -200)
+    nt.links.new(tex.outputs['Alpha'], gt.inputs[0]); nt.links.new(gt.outputs[0], bsdf.inputs['Alpha'])
+    bsdf.inputs['Roughness'].default_value = 0.75
+    m.surface_render_method = 'DITHERED'
+    MATS['leafcard'] = m
 
 
 B = {}
@@ -219,11 +229,11 @@ def build_shells():
 
 # ---------------------------------------------------------------- planting, lamps, horizon
 def build_trees():
-    bt = builder('trunks', 'bark', tile=1.0); bl = builder('leaves', 'leaf', tile=1.5)
+    bt = builder('trunks', 'bark', tile=1.0); bl = builder('leaves', 'leaf', tile=1.5); bc = builder('leafcards', 'leafcard')
     k = 0
     for (x, z) in CAMPUS_TREES + YARD_TREES + PATH_TREES:
         s = 1.05 + 0.5 * rnd.random()
-        tree(bt, bl, x, z, s=s, seed=k, ground=gh(x, z) - 0.02); k += 1
+        tree(bt, bl, x, z, s=s, seed=k, ground=gh(x, z) - 0.02, bc=bc); k += 1
     # far trees: cheaper, bigger, scattered beyond the campus box (the web's rule, re-seeded)
     ft = builder('far_trunks', 'bark', tile=1.0); fl = builder('far_leaves', 'farleaf')
     r = random.Random(99)

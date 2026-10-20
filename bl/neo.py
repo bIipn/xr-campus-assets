@@ -474,9 +474,10 @@ def lantern(bb, bg, x, y, z, s=1.0):
 
 
 # ---------------------------------------------------------------- trees (for the grounds)
-def tree(bt, bl, x, z, s=1.0, seed=0, ground=0.0):
+def tree(bt, bl, x, z, s=1.0, seed=0, ground=0.0, bc=None):
     """A broadleaf tree: a tapered trunk that leans a little, three or four limbs, and a crown of lumpy leaf clumps.
-    bt: bark builder, bl: leaf builder."""
+    bt: bark builder, bl: leaf builder; bc (optional): a builder for alpha-masked leaf cards crossed over each clump,
+    which turn the clumps from topiary into foliage."""
     import random
     r = random.Random(seed)
     lean = r.uniform(-0.06, 0.06); lean_a = r.uniform(0, 2 * math.pi)
@@ -499,7 +500,22 @@ def tree(bt, bl, x, z, s=1.0, seed=0, ground=0.0):
         a = r.uniform(0, 2 * math.pi); rr = s * r.uniform(0.6, 1.3)
         clumps.append((x + rr * math.cos(a), ground + h + s * r.uniform(-0.2, 1.1), z + rr * math.sin(a), s * r.uniform(0.8, 1.1)))
     for ci, (cx, cy, cz, cr) in enumerate(clumps):
-        blob(bl, cx, cy, cz, cr, r.random() * 1000 + ci, squash=0.82, n=14, rings=7)
+        blob(bl, cx, cy, cz, cr * (0.82 if bc else 1.0), r.random() * 1000 + ci, squash=0.82, n=14, rings=7)
+        if bc:
+            for k in range(11):
+                leaf_card(bc, (cx + r.uniform(-0.6, 0.6) * cr, cy + r.uniform(-0.45, 0.45) * cr, cz + r.uniform(-0.6, 0.6) * cr), cr * 1.15, r)
+
+
+def leaf_card(bc, centre, size, r):
+    """One square card, randomly tilted and spun, both faces uv 0..1."""
+    n = Vector((r.uniform(-1, 1), r.uniform(-1, 1), r.uniform(-0.6, 0.6))).normalized()      # Blender axes: Z up
+    helper = Vector((0, 0, 1)) if abs(n.z) < 0.9 else Vector((1, 0, 0))
+    u = n.cross(helper).normalized(); v = n.cross(u)
+    spin = r.uniform(0, 2 * math.pi)
+    u, v = u * math.cos(spin) + v * math.sin(spin), -u * math.sin(spin) + v * math.cos(spin)
+    C = P(*centre); h = size / 2
+    pts = [C - u * h - v * h, C + u * h - v * h, C + u * h + v * h, C - u * h + v * h]
+    bc.face(pts, n, uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
 def blob(b, cx, cy, cz, r, seed, squash=1.0, n=10, rings=5):

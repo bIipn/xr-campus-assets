@@ -422,6 +422,32 @@ def make_tree_textures():
     save_rgb('leaf_col.png', np.clip(leaf, 0, 1)); save_gray('leaf_rgh.png', np.full((n, n), 0.78))
     normal_from_height(0.5 + 0.3 * cells + 0.1 * M, 1.6).save(os.path.join(OUT, 'leaf_nrm.png'), optimize=True)
 
+def make_leaf_cards():
+    """A cluster of leaves on a transparent card (RGBA, 1024 square): the trees' crowns are built from a few
+    dozen of these crossed over each clump, which reads as foliage where a solid blob reads as topiary."""
+    n = 1024
+    img = Image.new('RGBA', (n, n), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    r = np.random.default_rng(777)
+    greens = [(44, 92, 28), (60, 118, 36), (74, 136, 44), (38, 80, 26), (92, 150, 54), (52, 104, 34)]
+    for i in range(170):
+        cx, cy = n * (0.5 + 0.34 * (r.random() - 0.5) * 2), n * (0.5 + 0.34 * (r.random() - 0.5) * 2)
+        if math.hypot(cx - n / 2, cy - n / 2) > n * 0.42: continue
+        L = n * (0.055 + 0.05 * r.random()); W = L * (0.42 + 0.2 * r.random()); a = r.random() * math.pi
+        pts = []
+        for k in range(14):
+            t = 2 * math.pi * k / 14
+            # a pointed leaf outline: an ellipse sharpened at both ends
+            u = L * math.cos(t); v = W * math.sin(t) * (1 - 0.35 * abs(math.cos(t)))
+            pts.append((cx + u * math.cos(a) - v * math.sin(a), cy + u * math.sin(a) + v * math.cos(a)))
+        g = greens[int(r.random() * len(greens))]
+        shade = 0.75 + 0.45 * r.random()
+        d.polygon(pts, fill=(int(g[0] * shade), int(g[1] * shade), int(g[2] * shade), 255))
+        # a midrib
+        d.line([(cx - L * 0.8 * math.cos(a), cy - L * 0.8 * math.sin(a)), (cx + L * 0.8 * math.cos(a), cy + L * 0.8 * math.sin(a))],
+               fill=(int(g[0] * shade * 0.7), int(g[1] * shade * 0.7), int(g[2] * shade * 0.7), 255), width=3)
+    img.save(os.path.join(OUT, 'leafcard_col.png'), optimize=True)
+
 BANNERS = [('main', 'XRLIBRARIES', 'CAMPUS', 'WALK THE ARCHIVE'),
            ('g1', 'GALLERY I', 'HEADSETS IN LIBRARIES', '2016 TO 2022'),
            ('g2', 'GALLERY II', 'LEARNING THAT WORKS', 'CAREERS AND RESOURCES'),
@@ -496,7 +522,7 @@ if __name__ == '__main__':
              'leather':make_leather, 'rug':make_rug, 'books':make_books, 'brass':make_brass, 'marble':make_marble,
              'marble_floor':make_marble_floor, 'window':make_window_view, 'shelfrow':make_shelfrow,
              'limestone':make_limestone, 'museum_marbles':make_museum_marbles, 'grass':make_grass, 'flagstone':make_flagstone,
-             'trees':make_tree_textures, 'banners':make_banners, 'frieze':make_frieze }
+             'trees':make_tree_textures, 'leafcards':make_leaf_cards, 'banners':make_banners, 'frieze':make_frieze }
     for k, fn in jobs.items():
         if 'all' in which or k in which:
             fn(); print('made', k, flush=True)

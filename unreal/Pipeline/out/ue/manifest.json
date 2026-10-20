@@ -105,10 +105,10 @@
   "Outside": {
    "file": "Outside.glb",
    "source": "unreal/Pipeline/out/exterior/Outside.glb",
-   "meshes": 26,
+   "meshes": 27,
    "tagged": [],
-   "triangles": 140184,
-   "bytes": 32894048
+   "triangles": 149424,
+   "bytes": 33914852
   },
   "Yard": {
    "file": "Yard.glb",
