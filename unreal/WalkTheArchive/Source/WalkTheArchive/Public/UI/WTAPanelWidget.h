@@ -150,6 +150,13 @@ protected:
 
 	void SetOpen(bool bNewOpen);
 
+	/** The card's narration clip: "exhibit"/"station"/"ride" and CurrentId, or none when it cannot be read. */
+	FName VoiceKind() const;
+
+	/** Shows the Listen button when this card has a clip, labelled for whether it is being read. */
+	UFUNCTION()
+	void RefreshListenButton();
+
 	UPROPERTY(Transient) TObjectPtr<UBorder> Scrim;
 	UPROPERTY(Transient) TObjectPtr<UBorder> Card;
 	/** Card width: wide reading cards for exhibits and books, compact for the rest. */
@@ -163,6 +170,7 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> Footer;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> PrevButton;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> NextButton;
+	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> ListenButton;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> CloseButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> PageText;
 

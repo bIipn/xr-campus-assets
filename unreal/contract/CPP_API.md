@@ -137,6 +137,12 @@ Acting: `UP float WakeDistance = 1600` and `UP float SleepDistanceSlack = 250` â
 Wax: the stage ticks after each figure's `ULODSyncComponent` and before its meshes (tick prerequisites) and runs `UpdateFigureBones` every frame, which does nothing while acting; otherwise a figure freezes (`UWTAPeopleLibrary::Freeze`) after `UP SettleSeconds = 1.5` and `UP MinFramesBeforeFreeze = 10` once `IsFaceOnBody` (or after `UP MaxSecondsBeforeFreeze = 15`, with a warning), only on a frame whose LODs match the frame it last evaluated; a frozen figure whose mesh is about to change LOD (`NextLOD` differs from the LOD it was posed at) thaws, evaluates at the new LOD in the frame it is first drawn, and freezes again two frames later; `BPpure int32 GetReposeCount() const` counts those re-poses (QA); `EndPlay` destroys the figures.
 
 ## Systems
+### `UWTAVoiceSubsystem : UGameInstanceSubsystem` (`Systems/WTAVoiceSubsystem.h`)
+The museum reads a card aloud. One clip per card at `/Game/WTA/Audio/VO_<kind>_<id>` (the id's hyphens as underscores, since an asset name cannot hold one), imported by `Content/Python/wta_voice` from WAVs spoken by Kokoro-82M (Apache 2.0) outside the editor, from the words on the card itself. Kinds: `exhibit`, `wax`, `station`, `ride`, `fact`, `badge`.
+- `static UWTAVoiceSubsystem* Get(const UObject*)` (BPpure, WorldContext); `BPpure static FString ClipPath(FName Kind, FName Id)`.
+- `BP bool HasClip(FName Kind, FName Id)` (loads once and remembers, a card with no clip included, so a Listen button can ask every time it opens); `BP bool Read(FName Kind, FName Id)` (stops whatever was being read, then plays 2D at `UP float Volume = 1`); `BP void Stop()`; `BPpure bool IsReading() const`, `BPpure bool IsReadingCard(FName Kind, FName Id) const`.
+- `BlueprintAssignable FWTAVoiceChanged OnVoiceChanged` fires when the voice starts, stops, or a clip ends on its own (the component's `OnAudioFinished`), so a Listen button relabels itself.
+
 ### `UWTAContentSubsystem : UGameInstanceSubsystem` (`Systems/WTAContentSubsystem.h`)
 `UENUM EWTATable { Exhibits, Books, Sources, Galleries, Subjects, Rooms, Places, Tour, Staff, StaffRules, Facts, Lessons, Badges, Tokens, WaxScenes, Stations, Rides }`.
 - `static UWTAContentSubsystem* Get(const UObject* WorldContextObject)` (BPpure, WorldContext); `Initialize` loads every table (`LoadSynchronous`); `BP void ReloadTables()`.

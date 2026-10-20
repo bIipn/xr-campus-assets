@@ -12,6 +12,7 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
+#include "Systems/WTAVoiceSubsystem.h"
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
@@ -1328,6 +1329,29 @@ void UWTAPlayTest::AddWaxPhase()
 				Shot(TEXT("wax_story_") + Name);
 			}
 			return 0.2f;
+		} });
+		// The museum reads the card aloud: the clip exists, starts and is still playing a moment later.
+		Steps.Add({ TEXT("wax listen ") + Name, [this, Name, Story]() -> float
+		{
+			UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
+			static const FName Exhibit(TEXT("exhibit"));
+			if (Voice == nullptr || !Voice->HasClip(Exhibit, Story))
+			{
+				Report(TEXT("wax"), EResult::Fail, Name + TEXT(" has a narration clip"),
+					FString::Printf(TEXT("no %s"), *UWTAVoiceSubsystem::ClipPath(Exhibit, Story)));
+				return 0.f;
+			}
+			Voice->Read(Exhibit, Story);
+			return 0.4f;
+		} });
+		Steps.Add({ TEXT("wax reading ") + Name, [this, Name, Story]() -> float
+		{
+			const UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
+			static const FName Exhibit(TEXT("exhibit"));
+			const bool bReading = Voice != nullptr && Voice->IsReadingCard(Exhibit, Story);
+			Report(TEXT("wax"), bReading ? EResult::Pass : EResult::Fail, Name + TEXT(" reads its card aloud"),
+				bReading ? TEXT("reading") : TEXT("not reading"));
+			return 0.1f;
 		} });
 		AddTap(TEXT("wax esc ") + Name, EKeys::Escape, 0.4f);
 	}

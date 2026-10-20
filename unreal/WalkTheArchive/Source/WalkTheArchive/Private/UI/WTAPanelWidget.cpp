@@ -28,6 +28,7 @@
 #include "Styling/SlateBrush.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "Systems/WTAVoiceSubsystem.h"
 #include "UI/WTAActionButton.h"
 #include "UI/WTAUIStyle.h"
 #if WITH_EDITOR
@@ -42,6 +43,10 @@ namespace
 	const FName NAME_PanelPage(TEXT("Page"));
 	const FName NAME_PanelLink(TEXT("Link"));
 	const FName NAME_PanelReset(TEXT("Reset"));
+	const FName NAME_PanelListen(TEXT("Listen"));
+	const FName NAME_VoiceExhibit(TEXT("exhibit"));
+	const FName NAME_VoiceStation(TEXT("station"));
+	const FName NAME_VoiceRide(TEXT("ride"));
 
 	const FName NAME_PanelBlockPara(TEXT("Para"));
 	const FName NAME_PanelBlockList(TEXT("List"));
@@ -207,6 +212,14 @@ void UWTAPanelWidget::NativeOnInitialized()
 		UHorizontalBoxSlot* NextSlot = Footer->AddChildToHorizontalBox(NextButton);
 		NextSlot->SetVerticalAlignment(VAlign_Center);
 		NextSlot->SetPadding(FMargin(0.f, 0.f, 12.f, 0.f));
+
+		// Listen: the museum reads the card aloud, for anyone who would rather not read it themselves.
+		ListenButton = WTAWidgets::MakeButton(Tree, PanelText(TEXT("Listen")), NAME_PanelListen, NAME_None, -1,
+			WTAStyle::CardButton(), WTAStyle::Font(15, true), WTAStyle::CardInk());
+		ListenButton->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
+		UHorizontalBoxSlot* ListenSlot = Footer->AddChildToHorizontalBox(ListenButton);
+		ListenSlot->SetVerticalAlignment(VAlign_Center);
+		ListenSlot->SetPadding(FMargin(0.f, 0.f, 12.f, 0.f));
 
 		CloseButton = WTAWidgets::MakeButton(Tree, PanelText(TEXT("Close")), NAME_PanelClose, NAME_None, -1,
 			WTAStyle::PrimaryButton(), WTAStyle::Font(15, true), WTAStyle::Ink());
@@ -562,6 +575,11 @@ void UWTAPanelWidget::ShowPlaces()
 
 void UWTAPanelWidget::Close()
 {
+	// Closing the card stops the voice: nothing should still be read once the card is gone.
+	if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+	{
+		Voice->Stop();
+	}
 	SetOpen(false);
 	Mode = EWTAPanelMode::None;
 	CurrentId = NAME_None;
@@ -586,6 +604,24 @@ void UWTAPanelWidget::HandleAction(FName Action, FName Arg, int32 Index)
 		else
 		{
 			Close();
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelListen)
+	{
+		if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+		{
+			const FName Kind = VoiceKind();
+			if (Voice->IsReadingCard(Kind, CurrentId))
+			{
+				Voice->Stop();
+			}
+			else
+			{
+				Voice->Read(Kind, CurrentId);
+			}
+			RefreshListenButton();
 		}
 		return;
 	}
@@ -749,7 +785,39 @@ void UWTAPanelWidget::EndCard(bool bShowPrev, bool bShowNext, const FText& PageL
 	{
 		PageText->SetText(PageLabel);
 	}
+	RefreshListenButton();
 	SetOpen(true);
+}
+
+FName UWTAPanelWidget::VoiceKind() const
+{
+	switch (Mode)
+	{
+	case EWTAPanelMode::Exhibit: return NAME_VoiceExhibit;
+	case EWTAPanelMode::Station: return NAME_VoiceStation;
+	case EWTAPanelMode::Ride:    return NAME_VoiceRide;
+	default:                     return NAME_None;
+	}
+}
+
+void UWTAPanelWidget::RefreshListenButton()
+{
+	if (ListenButton == nullptr)
+	{
+		return;
+	}
+	UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
+	const FName Kind = VoiceKind();
+	const bool bCanRead = Voice != nullptr && !Kind.IsNone() && Voice->HasClip(Kind, CurrentId);
+	ListenButton->SetVisibility(bCanRead ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	if (bCanRead)
+	{
+		const bool bReading = Voice->IsReadingCard(Kind, CurrentId);
+		WTAWidgets::SetButtonLabel(ListenButton, PanelText(bReading ? TEXT("Stop") : TEXT("Listen")));
+		// One listener, however many cards open: the voice relabels this button when a clip ends.
+		Voice->OnVoiceChanged.RemoveDynamic(this, &UWTAPanelWidget::RefreshListenButton);
+		Voice->OnVoiceChanged.AddDynamic(this, &UWTAPanelWidget::RefreshListenButton);
+	}
 }
 
 UTextBlock* UWTAPanelWidget::AddText(const FText& Text, const FSlateFontInfo& Font, const FLinearColor& Color)
