@@ -246,6 +246,28 @@ def make_marble():
     save_rgb('marble_col.png', np.clip(col, 0, 1)); save_gray('marble_rgh.png', 0.22 + 0.05 * np.abs(w))
     normal_from_height(0.5 + 0.03 * w, 0.4).save(os.path.join(OUT, 'marble_nrm.png'), optimize=True)
 
+def marble_stone(name, field, vein, seed, freq=2.4, wid=0.18, fine=0.30, rough=0.14, nrm=0.35, flow=0.72):
+    """A quarried stone: a flat field cut by branching veins. The veins are the soft iso-lines of a smooth noise
+    field warped by a second one, so they wander and branch the way real stone does, instead of reading as grain.
+    freq sets how many veins, wid how wide, fine the weight of a second finer layer, flow squashes the spectrum
+    so the veining runs in a direction (as a sawn slab does)."""
+    n = 1024
+    def lines(sd, f, w_):
+        v = fnoise(n, 3.6, 1.0, flow, seed=sd); g = fnoise(n, 3.6, 1.0, flow, seed=sd + 1)
+        return np.exp(-(np.abs(np.sin(f * (v + 0.35 * g))) / w_) ** 2), g
+    m, g = lines(seed, freq, wid)
+    m2, _ = lines(seed + 11, freq * 2.2, wid * 0.55)
+    m = np.clip(m + fine * m2, 0, 1)
+    save_rgb(name + '_col.png', np.clip(lerp3(field, vein, m) * (1 + 0.02 * g)[..., None], 0, 1))
+    save_gray(name + '_rgh.png', rough + 0.05 * np.abs(g) - 0.04 * m)      # the veins take a slightly higher polish
+    normal_from_height(0.5 + 0.02 * g + 0.012 * m, nrm).save(os.path.join(OUT, name + '_nrm.png'), optimize=True)
+
+def make_marble_floor():
+    """The two stones of the checkered hall floor. They are laid as alternating slabs rather than painted into one
+    checker texture, so every square carries its own veining the way a real floor does."""
+    marble_stone('marblew', (0.80, 0.77, 0.70), (0.97, 0.96, 0.93), seed=131, freq=2.4, wid=0.18, fine=0.30)   # cream Botticino
+    marble_stone('marbleb', (0.045, 0.043, 0.050), (0.86, 0.84, 0.80), seed=141, freq=1.7, wid=0.15, fine=0.22, rough=0.11)  # Nero Marquina
+
 def make_window_view():
     """What you see through the arched window: late-afternoon sky, soft sun glow, far hills and trees (emissive backdrop)."""
     W, H = 2048, 2048
@@ -303,7 +325,8 @@ if __name__ == '__main__':
     import sys
     which = sys.argv[1:] or ['all']
     jobs = { 'oak_floor':make_oak_floor, 'walnut':make_walnut, 'oak':make_oak_light, 'plaster':make_plaster, 'green':make_plaster_green,
-             'leather':make_leather, 'rug':make_rug, 'books':make_books, 'brass':make_brass, 'marble':make_marble, 'window':make_window_view, 'shelfrow':make_shelfrow }
+             'leather':make_leather, 'rug':make_rug, 'books':make_books, 'brass':make_brass, 'marble':make_marble,
+             'marble_floor':make_marble_floor, 'window':make_window_view, 'shelfrow':make_shelfrow }
     for k, fn in jobs.items():
         if 'all' in which or k in which:
             fn(); print('made', k, flush=True)

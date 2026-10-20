@@ -12,7 +12,17 @@ shelf tier (no textured strips) and 0.45 m thick walls, floor and ceiling so Lum
 """
 import bpy, bmesh, math, os, sys, time, json, random
 from mathutils import Vector, Matrix
-import numpy as np
+try:
+    import numpy as np            # Blender's bundled numpy
+except ImportError:               # some machines block its DLLs (Windows Application Control); only baking needs it
+    np = None
+
+def frange(a, b, step):
+    """numpy-free arange: a, a+step, ... while below b."""
+    out, x = [], a
+    while x < b - 1e-9:
+        out.append(x); x += step
+    return out
 
 SP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEX = os.path.join(SP, 'assets', 'tex')
@@ -30,6 +40,84 @@ rnd = random.Random(4242)
 
 # campus -> blender
 def P(x, y, z): return Vector((x, -z, y))
+def D(dx, dy, dz): return Vector((dx, -dz, dy))   # the same mapping for a direction (no translation)
+
+# ---------------------------------------------------------------- geometry helpers
+# Builder.box covers anything axis-aligned with a yaw. These four cover what it cannot:
+# bars that lean or spiral, round posts, turned balusters and curved outlines like a piano case.
+def bar(b, a, c, w, h=None, caps=True):
+    """A rectangular-section bar between two campus points a and c (x, y, z), section w x (h or w).
+    The section stays upright (campus +y) except where the bar itself is near vertical."""
+    A, C = P(*a), P(*c)
+    ax = C - A; L = ax.length
+    if L < 1e-7: return
+    ax = ax / L
+    up = Vector((0.0, 0.0, 1.0))
+    if abs(ax.dot(up)) > 0.98: up = Vector((0.0, 1.0, 0.0))
+    side = ax.cross(up).normalized(); sup = side.cross(ax).normalized()
+    hw, hh = w / 2, (h if h is not None else w) / 2
+    sec = [(-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh)]
+    r0 = [A + side * u + sup * v for (u, v) in sec]
+    r1 = [C + side * u + sup * v for (u, v) in sec]
+    for i in range(4):
+        j = (i + 1) % 4
+        n = side * (sec[i][0] + sec[j][0]) + sup * (sec[i][1] + sec[j][1])
+        b.face([r0[i], r0[j], r1[j], r1[i]], n.normalized())
+    if caps:
+        b.face([r0[3], r0[2], r0[1], r0[0]], -ax)
+        b.face([r1[0], r1[1], r1[2], r1[3]], ax)
+
+def prism(b, cx, cy, cz, r, h, n=12, r_top=None, cap_top=True, cap_bot=True, a0=0.0):
+    """An n-sided prism standing on y = cy: a round post, or a cone/vase segment when r_top differs."""
+    rt = r if r_top is None else r_top
+    ring = [a0 + 2 * math.pi * i / n for i in range(n)]
+    low = [P(cx + r * math.cos(a), cy, cz + r * math.sin(a)) for a in ring]
+    top = [P(cx + rt * math.cos(a), cy + h, cz + rt * math.sin(a)) for a in ring]
+    for i in range(n):
+        j = (i + 1) % n; am = (ring[i] + ring[j]) / 2
+        b.face([low[i], low[j], top[j], top[i]], D(math.cos(am), 0, math.sin(am)))
+    if cap_top:
+        cen = P(cx, cy + h, cz)
+        for i in range(n): b.face([cen, top[i], top[(i + 1) % n]], D(0, 1, 0))
+    if cap_bot:
+        cen = P(cx, cy, cz)
+        for i in range(n): b.face([cen, low[(i + 1) % n], low[i]], D(0, -1, 0))
+
+# a turned baluster's radius profile: (height fraction, width fraction) - square base, swell, neck, cap
+BALUSTER = [(0.00, 1.00), (0.10, 1.00), (0.14, 0.74), (0.34, 1.00), (0.58, 0.64), (0.78, 0.76), (0.90, 0.60), (1.00, 0.88)]
+def turned(b, cx, cy, cz, h, w, n=6, prof=None):
+    """A turned baluster h tall and w across at its widest, as a stack of prism segments."""
+    prof = prof or BALUSTER
+    for (t0, s0), (t1, s1) in zip(prof, prof[1:]):
+        if t1 <= t0: continue
+        prism(b, cx, cy + h * t0, cz, w * s0 / 2, h * (t1 - t0), n=n, r_top=w * s1 / 2, cap_top=False, cap_bot=False)
+
+def poly_prism(b, pts, cx, cy, cz, h, ry=0.0, top=True, bot=True, side=True):
+    """Extrude a closed plan outline (list of (u, v) offsets, counter-clockwise) from y = cy up by h.
+    Fan-triangulated from the centroid, so a concave outline such as a grand piano case is safe."""
+    cr, sr = math.cos(ry), math.sin(ry)
+    def W(u, v, y):
+        x = u * cr + v * sr; z = -u * sr + v * cr
+        return P(cx + x, y, cz + z)
+    cu = sum(p[0] for p in pts) / len(pts); cv = sum(p[1] for p in pts) / len(pts)
+    n = len(pts)
+    for i in range(n):
+        j = (i + 1) % n
+        if top: b.face([W(cu, cv, cy + h), W(pts[i][0], pts[i][1], cy + h), W(pts[j][0], pts[j][1], cy + h)], D(0, 1, 0))
+        if bot: b.face([W(cu, cv, cy), W(pts[j][0], pts[j][1], cy), W(pts[i][0], pts[i][1], cy)], D(0, -1, 0))
+        if side:
+            du, dv = pts[j][0] - pts[i][0], pts[j][1] - pts[i][1]
+            nx = dv * cr - du * sr; nz = -dv * sr - du * cr
+            b.face([W(pts[i][0], pts[i][1], cy), W(pts[j][0], pts[j][1], cy),
+                    W(pts[j][0], pts[j][1], cy + h), W(pts[i][0], pts[i][1], cy + h)], D(nx, 0, nz))
+
+def bezier(p0, c, p1, n):
+    """n+1 points along a quadratic bezier, for the piano case and the stair's curved nosing."""
+    out = []
+    for i in range(n + 1):
+        t = i / n; k = 1 - t
+        out.append((k * k * p0[0] + 2 * t * k * c[0] + t * t * p1[0], k * k * p0[1] + 2 * t * k * c[1] + t * t * p1[1]))
+    return out
 
 # ---------------------------------------------------------------- scene
 def reset():
@@ -105,6 +193,11 @@ def setup_materials():
     material('shelfrow_v', 'shelfrow_col', roughness=0.8)
     material('rug', 'rug_col', 'rug_rgh', 'rug_nrm', roughness=0.95)
     material('marble', 'marble_col', 'marble_rgh', 'marble_nrm', roughness=0.25)
+    material('marble_w', 'marblew_col', 'marblew_rgh', 'marblew_nrm', roughness=0.14)   # the hall floor's two stones
+    material('marble_b', 'marbleb_col', 'marbleb_rgh', 'marbleb_nrm', roughness=0.12)
+    material('stone_v', 'marblew_col', 'marblew_rgh', 'marblew_nrm', roughness=0.2)     # busts and plinths (vertex-lit)
+    material('lacquer_v', color=(0.013, 0.013, 0.015, 1), roughness=0.07)               # the piano's polished case
+    material('ivory_v', color=(0.86, 0.84, 0.77, 1), roughness=0.28)                    # its keys
     material('glass', color=(0.9, 0.95, 1.0, 1), roughness=0.05, alpha=0.12)
     material('shade_e', color=(0.06, 0.3, 0.14, 1), roughness=0.3, emission=(0.25, 0.9, 0.4, 1), emission_strength=2.5)
     material('bulb_e', color=(1, 1, 1, 1), emission=(1.0, 0.85, 0.6, 1), emission_strength=25.0)
@@ -197,14 +290,36 @@ class Builder:
 
 # ---------------------------------------------------------------- room pieces
 X0, X1, Z0, Z1, H = -32.0, -12.0, -13.0, 7.0, 7.6
-MEZZ = 3.6   # slab centre height (0.22 thick)
+MEZZ = 3.6          # gallery slab centre height (0.22 thick)
+MEZZ_D = 1.75       # how far the gallery juts from the wall: wide enough to walk once the upper cases are on it
+DECK = MEZZ + 0.11  # the gallery's walking surface
+HALL = (-7.0, 1.0)          # the checkered marble band: the entrance hall, running door to window past the stacks
+STAIR = (-15.1, -9.6, 1.35) # spiral stair: centre x, z and outer radius; the radius meets the east gallery's edge
+PIANO = (-15.4, 3.3)        # the grand piano, in the open south-east corner, keyboard turned to the room
 
 def build_shell():
     """Floor, ceiling, walls with door and arched window, mezzanine slabs, coffers, crown. Lightmapped."""
-    # floor (subdivided a little for the UV packer's sake; the lightmap carries the detail)
+    # floor: oak boards under the stacks and reading bays, and a checkered marble hall down the entrance aisle,
+    # which is how these rooms are actually paved - the stone where the public walks, wood where people sit and read.
+    HZ0, HZ1 = HALL
     fl = Builder('floor', 'floor', tile=2.0, lightmap=True, vcol=False)
-    fl.grid(P(X0, 0, Z1), P(X1, 0, Z1) - P(X0, 0, Z1), P(X0, 0, Z0) - P(X0, 0, Z1), Vector((0, 0, 1)), 4, 4)
+    for (az, bz) in [(Z0, HZ0), (HZ1, Z1)]:
+        fl.grid(P(X0, 0, bz), P(X1, 0, bz) - P(X0, 0, bz), P(X0, 0, az) - P(X0, 0, bz), Vector((0, 0, 1)), 4, 2)
     fl.finish()
+    # the hall: a dark border band each side, then squares laid alternately in the two stones. Laying them as
+    # separate quads (rather than painting a checker into one texture) gives every square its own veining.
+    BORD = 0.55
+    fb = Builder('floor_dark', 'marble_b', tile=2.4, lightmap=True, vcol=False)
+    fw = Builder('floor_light', 'marble_w', tile=2.4, lightmap=True, vcol=False)
+    def slab(b, ax, bx, az, bz, nu=1, nv=1):
+        b.grid(P(ax, 0, bz), P(bx, 0, bz) - P(ax, 0, bz), P(ax, 0, az) - P(ax, 0, bz), Vector((0, 0, 1)), nu, nv)
+    for (az, bz) in [(HZ0, HZ0 + BORD), (HZ1 - BORD, HZ1)]: slab(fb, X0, X1, az, bz, 10, 1)
+    NX, NZ = 21, 7
+    sx = (X1 - X0) / NX; sz = (HZ1 - BORD - HZ0 - BORD) / NZ
+    for i in range(NX):
+        for j in range(NZ):
+            slab(fw if (i + j) % 2 == 0 else fb, X0 + i * sx, X0 + (i + 1) * sx, HZ0 + BORD + j * sz, HZ0 + BORD + (j + 1) * sz)
+    fb.finish(); fw.finish()
     # ceiling plane with laylight hole (two strips + two end pieces)
     ce = Builder('ceiling', 'plaster', tile=3.0, lightmap=True, vcol=False)
     LX0, LX1, LZ0, LZ1 = -30.0, -14.0, -3.9, -2.1   # laylight opening
@@ -219,7 +334,7 @@ def build_shell():
     lf.box((LX0 + LX1) / 2, H + 0.15, LZ0 - 0.1, LX1 - LX0 + 0.4, 0.3, 0.2); lf.box((LX0 + LX1) / 2, H + 0.15, LZ1 + 0.1, LX1 - LX0 + 0.4, 0.3, 0.2)
     lf.box(LX0 - 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0); lf.box(LX1 + 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0)
     # mullions across the laylight
-    for x in np.arange(LX0 + 2.0, LX1 - 0.5, 2.0): lf.box(x, H + 0.15, (LZ0 + LZ1) / 2, 0.08, 0.3, LZ1 - LZ0)
+    for x in frange(LX0 + 2.0, LX1 - 0.5, 2.0): lf.box(x, H + 0.15, (LZ0 + LZ1) / 2, 0.08, 0.3, LZ1 - LZ0)
     lf.finish()
     # walls (inside faces), with openings cut by leaving them out of the grid: built from rectangles
     wl = Builder('walls', 'green', tile=3.0, lightmap=True, vcol=False)
@@ -255,9 +370,10 @@ def build_shell():
     rv.box(X1 + T / 2, DH, (DZ0 + DZ1) / 2, T, 0.02, DZ1 - DZ0, faces='y')
     rv.box(X0 - T / 2, (WY0 + WY1) / 2, WZ0, T, WY1 - WY0, 0.02, faces='Z'); rv.box(X0 - T / 2, (WY0 + WY1) / 2, WZ1, T, WY1 - WY0, 0.02, faces='z')
     rv.finish()
-    # mezzanine slabs (top faces + inner edge faces), 0.95 deep, centre height MEZZ, 0.22 thick
+    # gallery slabs (top faces + inner edge faces), MEZZ_D deep, centre height MEZZ, 0.22 thick; the west run
+    # breaks at the window bay (z -5.6 .. -0.4) so the arched window is open to the room full height
     sl = Builder('mezz', 'plaster', tile=3.0, lightmap=True, vcol=False)
-    d = 0.95
+    d = MEZZ_D
     for (ax, bx, az, bz) in [(X0, X1, Z0, Z0 + d), (X0, X1, Z1 - d, Z1), (X0, X0 + d, Z0 + d, -5.6), (X0, X0 + d, -0.4, Z1 - d), (X1 - d, X1, Z0 + d, Z1 - d)]:
         sl.box((ax + bx) / 2, MEZZ, (az + bz) / 2, bx - ax, 0.22, bz - az, faces='Yy' + ('Z' if bz < 0 else '') + ('z' if az > 0 else ''), seg=1.0)
     sl.finish()
@@ -271,10 +387,10 @@ def build_shell():
     tr.finish()
     # ceiling coffer beams (plaster), every 2.5 m, and crown moulding
     cf = Builder('coffers', 'plaster_v', tile=3.0, lightmap=False, vcol=True, seg=1.0)
-    for x in np.arange(X0 + 2.5, X1 - 1.0, 2.5):
+    for x in frange(X0 + 2.5, X1 - 1.0, 2.5):
         for (az, bz) in [(Z0, LZ0 - 0.1), (LZ1 + 0.1, Z1)]:
             cf.box(x, H - 0.17, (az + bz) / 2, 0.28, 0.34, bz - az, faces='xXy')
-    for z in np.arange(Z0 + 2.5, Z1 - 1.0, 2.5):
+    for z in frange(Z0 + 2.5, Z1 - 1.0, 2.5):
         if LZ0 - 0.3 < z < LZ1 + 0.3: continue
         cf.box((X0 + X1) / 2, H - 0.17, z, X1 - X0, 0.34, 0.28, faces='zZy')
     cf.box((X0 + X1) / 2, H - 0.2, Z0 + 0.14, X1 - X0, 0.4, 0.28, faces='Zy'); cf.box((X0 + X1) / 2, H - 0.2, Z1 - 0.14, X1 - X0, 0.4, 0.28, faces='zy')
@@ -312,10 +428,11 @@ def build_shell():
     # backdrop 2.5 m out, big enough to fill the window from any angle, uv 0..1
     bd.face([P(X0 - 2.5, -1.0, zc + 7), P(X0 - 2.5, -1.0, zc - 7), P(X0 - 2.5, 8.6, zc - 7), P(X0 - 2.5, 8.6, zc + 7)], Vector((1, 0, 0)), uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
     bdo = bd.finish(); bdo.visible_shadow = False; bdo.visible_diffuse = False; bdo.visible_glossy = True
-    # rugs: three 4.8 x 2.4 rugs down the centre aisle (uv 0..1 each)
+    # a red runner down the centre of the marble hall, laid as four rugs end to end (each gets uv 0..1, so the
+    # border art stays the right way round instead of tiling through itself) with the stone showing either side
     rg = Builder('rugs', 'rug', tile=1.0, lightmap=True, vcol=False)
-    for cx in (-27.0, -21.8, -16.6):
-        rg.face([P(cx - 2.4, 0.012, -1.8), P(cx + 2.4, 0.012, -1.8), P(cx + 2.4, 0.012, -4.2), P(cx - 2.4, 0.012, -4.2)], Vector((0, 0, 1)), uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
+    for cx in (-14.8, -19.5, -24.2, -28.9):
+        rg.face([P(cx - 2.3, 0.012, -2.05), P(cx + 2.3, 0.012, -2.05), P(cx + 2.3, 0.012, -3.95), P(cx - 2.3, 0.012, -3.95)], Vector((0, 0, 1)), uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
     rg.finish()
     return dict(LZ=(LZ0, LZ1), LX=(LX0, LX1), door=(DZ0, DZ1, DH), win=(WZ0, WZ1, WY0, WY1, R, zc))
 
@@ -427,20 +544,103 @@ def build_bookcases():
     cases.finish(); books.finish(); imp.finish(); ends.finish()
 
 # ---------------------------------------------------------------- furniture and lights
+PARAPET_H = 0.95     # gallery deck to the top of the cap rail
+PARAPET_T = 0.11
+SGAP = (STAIR[1] - 0.85, STAIR[1] + 0.85)   # the opening left in the east parapet for the stair to arrive through
+
+def _pbox(b, axis, s, y, c, la, sy, t, seg=None):
+    """One box on a parapet run: s along the run, y up, c across it; la long, sy tall, t thick."""
+    if axis == 'x': b.box(s, y, c, la, sy, t, seg=seg)
+    else:           b.box(c, y, s, t, sy, la, seg=seg)
+
+def parapet_run(wd, br, axis, a0, a1, c, out):
+    """One straight length of the gallery front: plinth, panelled body, brass bead, moulded cap rail.
+    axis is the run's direction, a0..a1 its extent, c the fixed coordinate across it, and out (+1/-1) the side
+    the room is on, where the applied panel moulding goes. The bays divide themselves to suit the run's length."""
+    y0, L, mid, T = DECK, a1 - a0, (a0 + a1) / 2, PARAPET_T
+    if L <= 0.01: return
+    _pbox(wd, axis, mid, y0 + 0.055, c, L, 0.11, T + 0.05, seg=1.0)                 # plinth
+    _pbox(wd, axis, mid, y0 + PARAPET_H / 2, c, L, PARAPET_H, T, seg=1.0)           # panelled body
+    _pbox(br, axis, mid, y0 + PARAPET_H - 0.13, c, L, 0.025, T + 0.045, seg=1.0)    # brass bead under the cap
+    _pbox(wd, axis, mid, y0 + PARAPET_H - 0.045, c, L, 0.09, T + 0.08, seg=1.0)     # moulded cap rail
+    f = c + out * (T / 2 + 0.013)
+    n = max(1, int(round(L / 1.5))); bw = L / n
+    pw, ph = bw - 0.36, PARAPET_H - 0.50
+    cy = y0 + 0.17 + ph / 2
+    if pw < 0.2: return
+    for k in range(n):
+        s = a0 + (k + 0.5) * bw
+        for dy in (-ph / 2, ph / 2): _pbox(wd, axis, s, cy + dy, f, pw, 0.038, 0.026, seg=0)
+        for ds in (-pw / 2, pw / 2): _pbox(wd, axis, s + ds, cy, f, 0.038, ph, 0.026, seg=0)
+
 def build_rails():
-    r = Builder('rails', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.8)
-    d = 0.95
-    def railX(x0, x1, z):
-        r.box((x0 + x1) / 2, 4.62, z, x1 - x0, 0.05, 0.06); r.box((x0 + x1) / 2, 3.78, z, x1 - x0, 0.03, 0.04)
-        x = x0
-        while x <= x1 + 1e-6: r.box(x, 4.2, z, 0.025, 0.8, 0.025, seg=0); x += 0.15
-    def railZ(z0, z1, x):
-        r.box(x, 4.62, (z0 + z1) / 2, 0.06, 0.05, z1 - z0); r.box(x, 3.78, (z0 + z1) / 2, 0.04, 0.03, z1 - z0)
-        z = z0
-        while z <= z1 + 1e-6: r.box(x, 4.2, z, 0.025, 0.8, 0.025, seg=0); z += 0.15
-    railX(X0 + d, X1 - d, Z0 + d); railX(X0 + d, X1 - d, Z1 - d)
-    railZ(Z0 + d, -5.6, X0 + d); railZ(-0.4, Z1 - d, X0 + d); railZ(Z0 + d, Z1 - d, X1 - d)
-    r.finish()
+    """The gallery front. A panelled walnut parapet rather than an open rail: that is how the reading rooms this
+    is drawn from are built, and it reads far better across a room than a row of thin posts. The east run breaks
+    where the spiral stair arrives, and the stair's landing carries its own two short runs."""
+    wd = Builder('parapet', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=1.0)
+    br = Builder('parapet_brass', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=1.0)
+    d = MEZZ_D
+    cx, cz, R = STAIR
+    gx = X1 - d
+    parapet_run(wd, br, 'x', X0 + d, X1 - d, Z0 + d, +1)        # north gallery
+    parapet_run(wd, br, 'x', X0 + d, X1 - d, Z1 - d, -1)        # south gallery
+    parapet_run(wd, br, 'z', Z0 + d, -5.6, X0 + d, +1)          # west, north of the window bay
+    parapet_run(wd, br, 'z', -0.4, Z1 - d, X0 + d, +1)          # west, south of it
+    parapet_run(wd, br, 'z', Z0 + d, SGAP[0], gx, -1)           # east, up to the stair opening
+    parapet_run(wd, br, 'z', SGAP[1], Z1 - d, gx, -1)           # east, on from it
+    parapet_run(wd, br, 'x', cx, gx, SGAP[0], -1)               # the landing's two open sides
+    parapet_run(wd, br, 'x', cx, gx, SGAP[1], +1)
+    for z in SGAP: turned(wd, gx - 0.07, DECK, z, PARAPET_H + 0.1, 0.13, n=8)   # newels at the opening's corners
+    wd.finish(); br.finish()
+
+def tread(b, cx, cz, y, a0, a1, r0, r1, th, steps=3):
+    """One wedge tread of the spiral: top, soffit, the outer arc band and the two radial edges."""
+    def pt(a, r, yy): return P(cx + r * math.cos(a), yy, cz + r * math.sin(a))
+    angs = [a0 + (a1 - a0) * i / steps for i in range(steps + 1)]
+    for i in range(steps):
+        p, q = angs[i], angs[i + 1]; am = (p + q) / 2
+        b.face([pt(p, r0, y), pt(q, r0, y), pt(q, r1, y), pt(p, r1, y)], D(0, 1, 0))
+        b.face([pt(p, r0, y - th), pt(p, r1, y - th), pt(q, r1, y - th), pt(q, r0, y - th)], D(0, -1, 0))
+        b.face([pt(p, r1, y - th), pt(q, r1, y - th), pt(q, r1, y), pt(p, r1, y)], D(math.cos(am), 0, math.sin(am)))
+    for (a, sgn) in ((a0, -1.0), (a1, 1.0)):
+        b.face([pt(a, r0, y - th), pt(a, r1, y - th), pt(a, r1, y), pt(a, r0, y)],
+               D(-math.sin(a) * sgn, 0, math.cos(a) * sgn))
+
+def build_stair(lights):
+    """The spiral stair to the gallery: wedge treads winding round a brass newel, a turned baluster on every
+    tread, and a handrail that climbs with them. The last riser is on to a square landing that meets the east
+    gallery flush, which is how a spiral is actually finished - the arc alone would leave a crescent to fall down."""
+    cx, cz, R = STAIR
+    gx = X1 - MEZZ_D
+    tw = Builder('stair', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.6)
+    br = Builder('stair_brass', 'brass_v', tile=0.35, lightmap=False, vcol=True, seg=0.6)   # fine grain on thin posts
+    N = 20                           # risers to the gallery deck
+    rise = DECK / N                  # 0.186 m rise against a 0.26 m going on the walking line: 2R + G = 0.63
+    sweep = math.radians(300.0)      # just under a full turn, so no tread ever passes over another
+    w = sweep / N
+    tops = []
+    for i in range(1, N):            # the last riser is on to the landing, so there is no tread for it
+        a = (i - N) * w; y = i * rise
+        tread(tw, cx, cz, y, a - w / 2, a + w / 2, 0.14, R, 0.055)
+        bx, bz = cx + (R - 0.16) * math.cos(a), cz + (R - 0.16) * math.sin(a)
+        turned(tw, bx, y, bz, 0.86, 0.118, n=8)
+        tops.append((bx, y + 0.86, bz))
+    # landing: flush with the gallery deck and butted to its edge, boxed in by the parapet runs around it
+    tw.box((cx + gx) / 2, DECK - 0.11, cz, gx - cx, 0.22, SGAP[1] - SGAP[0], seg=0.6)
+    # newel, in segments so the vertex-colour bake has something to work with up its length
+    y = 0.0
+    while y < DECK + 1.0 - 1e-6:
+        h = min(0.5, DECK + 1.0 - y)
+        prism(br, cx, y, cz, 0.078, h, n=12, cap_top=False, cap_bot=(y < 1e-9)); y += h
+    prism(br, cx, -0.012, cz, 0.26, 0.06, n=16)                              # base plate
+    prism(br, cx, DECK + 1.0, cz, 0.078, 0.13, n=12, r_top=0.028)            # finial
+    for a, c in zip(tops, tops[1:]): bar(br, a, c, 0.055)                    # the climbing handrail
+    last = tops[-1]
+    bar(br, last, (gx - 0.07, DECK + PARAPET_H - 0.05, last[2]), 0.055)      # and out on to the gallery newel
+    # the stair stands in a corner the chandeliers do not reach, so it gets light of its own
+    lights.append(('point', (cx - 0.1, 2.30, cz), (1.0, 0.86, 0.66), 45))
+    lights.append(('point', (cx + 0.9, DECK + 1.10, cz), (1.0, 0.86, 0.66), 40))
+    tw.finish(); br.finish()
 
 def lamp(brass, shade, bulb, x, y, z, ry=0.0):
     brass.box(x, y + 0.01, z, 0.16, 0.02, 0.11, ry); brass.box(x, y + 0.17, z, 0.016, 0.3, 0.016, ry, seg=0)
@@ -455,18 +655,21 @@ def build_furniture(lights):
     brass = Builder('lamp_brass', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.5)
     shade = Builder('lamp_shades', 'shade_e', tile=1.0, lightmap=False, vcol=False)
     bulb = Builder('lamp_bulbs', 'bulb_e', tile=1.0, lightmap=False, vcol=False)
+    # The desk and the two reading tables sit a little west of where they used to, which leaves the east end of
+    # the room clear for the spiral stair and the piano. RDX and TX are the only numbers that moved.
+    RDX, TX = -18.6, -19.5
     # reference desk
-    walnut.box(-17.2, 0.5, -6.9, 3.0, 1.0, 0.8); tops.box(-17.2, 1.025, -6.9, 3.12, 0.05, 0.92, faces='YxXzZ')
-    walnut.box(-17.2, 0.52, -6.9 + 0.41, 3.0, 0.08, 0.03)
-    lamp(brass, shade, bulb, -18.3, 1.05, -7.0); lights.append(('point', (-18.3, 1.35, -7.0), (1.0, 0.75, 0.45), 18))
-    for i in range(3): walnut.box(-16.0, 1.075 + i * 0.05, -6.95, 0.22, 0.05, 0.3, 0.1 * i)
+    walnut.box(RDX, 0.5, -6.9, 3.0, 1.0, 0.8); tops.box(RDX, 1.025, -6.9, 3.12, 0.05, 0.92, faces='YxXzZ')
+    walnut.box(RDX, 0.52, -6.9 + 0.41, 3.0, 0.08, 0.03)
+    lamp(brass, shade, bulb, RDX - 1.1, 1.05, -7.0); lights.append(('point', (RDX - 1.1, 1.35, -7.0), (1.0, 0.75, 0.45), 18))
+    for i in range(3): walnut.box(RDX + 1.2, 1.075 + i * 0.05, -6.95, 0.22, 0.05, 0.3, 0.1 * i)
     # reading tables with lamps and chairs
     for tz in (-10.8, 4.6):
-        tops.box(-17.5, 0.76, tz, 3.6, 0.06, 1.1, faces='YxXzZ'); walnut.box(-17.5, 0.72, tz, 3.4, 0.05, 1.0)
+        tops.box(TX, 0.76, tz, 3.6, 0.06, 1.1, faces='YxXzZ'); walnut.box(TX, 0.72, tz, 3.4, 0.05, 1.0)
         for lx in (-1.7, 1.7):
-            for lz in (-0.47, 0.47): walnut.box(-17.5 + lx, 0.365, tz + lz, 0.08, 0.73, 0.08)
-        walnut.box(-17.5, 0.12, tz, 3.4, 0.05, 0.08)
-        for lx in (-18.7, -17.5, -16.3):
+            for lz in (-0.47, 0.47): walnut.box(TX + lx, 0.365, tz + lz, 0.08, 0.73, 0.08)
+        walnut.box(TX, 0.12, tz, 3.4, 0.05, 0.08)
+        for lx in (TX - 1.2, TX, TX + 1.2):
             lamp(brass, shade, bulb, lx, 0.79, tz); lights.append(('point', (lx, 1.09, tz), (1.0, 0.75, 0.45), 18))
             for s in (-1, 1):
                 cz = tz + s * 0.85
@@ -491,17 +694,99 @@ def build_furniture(lights):
     gm = material('globe_v', color=(0.16, 0.35, 0.48, 1), roughness=0.45); g.data.materials.append(gm)
     g.data.color_attributes.new(name='light', type='FLOAT_COLOR', domain='CORNER'); g['vc'] = 1
     for p in g.data.polygons: p.use_smooth = True
-    # pendant chandeliers: brass ring + bulbs, hung on a rod
+    # chandeliers, four of them, one to a quadrant and all clear of the laylight down the middle of the ceiling
     pd = Builder('pendants', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.3)
     pb = Builder('pendant_bulbs', 'bulb_e', tile=1.0, lightmap=False, vcol=False)
-    for (px, pz) in [(-27.5, -9.5), (-16.5, -9.5), (-27.5, 3.5), (-16.5, 3.5)]:
-        pd.box(px, (H + 5.4) / 2, pz, 0.03, H - 5.4, 0.03, seg=0)
-        for k in range(8):
-            a = 2 * math.pi * k / 8
-            pd.box(px + 0.45 * math.cos(a), 5.4, pz + 0.45 * math.sin(a), 0.36, 0.03, 0.03, -a)
-            pb.box(px + 0.62 * math.cos(a), 5.47, pz + 0.62 * math.sin(a), 0.07, 0.11, 0.07)
-        lights.append(('point', (px, 5.45, pz), (1.0, 0.88, 0.72), 200))
+    for (px, pz) in [(-27.5, -9.0), (-18.0, -9.0), (-27.5, 3.2), (-18.0, 3.2)]:
+        chandelier(pd, pb, px, pz)
+        lights.append(('point', (px, 5.60, pz), (1.0, 0.88, 0.72), 200))
     pd.finish(); pb.finish()
+
+HANG = 5.30   # the height the chandeliers' bodies hang at
+
+def chandelier(pd, pb, px, pz):
+    """A two-tier brass chandelier: a stem down from a ceiling rose, a turned body, six arms above and ten below,
+    each sweeping out and up to a candle, and a hoop linking the lower ring. Replaces the plain ring of bulbs,
+    which read as a hoop of dots from across the room rather than as a light fitting."""
+    prism(pd, px, H - 0.10, pz, 0.27, 0.10, n=12, r_top=0.20)        # ceiling rose
+    y = HANG + 0.66
+    while y < H - 0.10 - 1e-6:                                       # stem, in segments for the vertex-colour bake
+        h = min(0.5, H - 0.10 - y); prism(pd, px, y, pz, 0.035, h, n=8, cap_top=False, cap_bot=False); y += h
+    turned(pd, px, HANG, pz, 0.66, 0.30, n=12)                       # the body
+    prism(pd, px, HANG - 0.19, pz, 0.13, 0.19, n=12, r_top=0.03)     # the drop finial below it
+    for (n, r, a_off, root_y, knee_y, cup_y, hoop) in ((6, 0.48, 0.0, 0.50, 0.34, 0.60, False),
+                                                       (10, 0.78, 0.31, 0.16, -0.04, 0.22, True)):
+        for k in range(n):
+            a = 2 * math.pi * k / n + a_off
+            ca, sa = math.cos(a), math.sin(a)
+            root = (px + 0.13 * ca, HANG + root_y, pz + 0.13 * sa)
+            knee = (px + r * 0.66 * ca, HANG + knee_y, pz + r * 0.66 * sa)
+            tip = (px + r * ca, HANG + cup_y, pz + r * sa)
+            bar(pd, root, knee, 0.038); bar(pd, knee, tip, 0.034)
+            prism(pd, px + r * ca, HANG + cup_y, pz + r * sa, 0.055, 0.05, n=8, r_top=0.034)
+            pb.box(px + r * ca, HANG + cup_y + 0.13, pz + r * sa, 0.05, 0.16, 0.05)
+        if hoop:
+            for k in range(n):
+                a0 = 2 * math.pi * k / n + a_off; a1 = 2 * math.pi * (k + 1) / n + a_off
+                bar(pd, (px + r * math.cos(a0), HANG + cup_y - 0.08, pz + r * math.sin(a0)),
+                        (px + r * math.cos(a1), HANG + cup_y - 0.08, pz + r * math.sin(a1)), 0.028)
+
+def build_piano(lights):
+    """A grand piano in the open south-east corner: a curved case taken from a real plan outline, a lid propped
+    open on its stick, three tapered legs, a full keyboard, a music desk and a stool."""
+    px, pz = PIANO
+    lac = Builder('piano', 'lacquer_v', tile=1.0, lightmap=False, vcol=True, seg=0.5)
+    key = Builder('piano_keys', 'ivory_v', tile=1.0, lightmap=False, vcol=True)
+    drk = Builder('piano_dark', 'dark_v', tile=1.0, lightmap=False, vcol=True, seg=0.4)
+    br = Builder('piano_brass', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.4)
+    ry = math.radians(45.0)                        # tail into the corner, keyboard turned out to the room
+    cr, sr = math.cos(ry), math.sin(ry)
+    def C3(u, y, v): return (px + u * cr + v * sr, y, pz - u * sr + v * cr)   # piano-local -> campus
+    BW, BL, CY, CT = 1.50, 2.26, 0.62, 0.27        # case width, length, underside height, thickness
+    out = [(-BW / 2, 0.0), (BW / 2, 0.0), (BW / 2, 0.42)]
+    out += bezier((BW / 2, 0.42), (BW / 2 + 0.09, 1.52), (0.17, BL), 7)[1:]   # the treble side curving away
+    out += [(-BW / 2, BL)]
+    poly_prism(lac, out, px, CY, pz, CT, ry)
+    # the lid, hinged along the bass side and propped open: the one silhouette that says 'grand piano'
+    phi = math.radians(29.0); hy = CY + CT + 0.012   # the angle a real prop stick holds the lid at
+    def LC(u, v, n=0.0):
+        du = u + BW / 2
+        return C3(-BW / 2 + du * math.cos(phi) + n * math.sin(phi), hy + du * math.sin(phi) - n * math.cos(phi), v)
+    def L3(u, v, n=0.0): return P(*LC(u, v, n))
+    cu = sum(p[0] for p in out) / len(out); cv = sum(p[1] for p in out) / len(out)
+    lid_up = (L3(cu, cv) - L3(cu, cv, 1.0)).normalized()      # the lid's own up, since it is tilted
+    lid_mid = L3(cu, cv, 0.012)
+    for i in range(len(out)):
+        a, b = out[i], out[(i + 1) % len(out)]
+        lac.face([L3(cu, cv), L3(a[0], a[1]), L3(b[0], b[1])], lid_up)
+        lac.face([L3(cu, cv, 0.024), L3(b[0], b[1], 0.024), L3(a[0], a[1], 0.024)], -lid_up)
+        # the edge band faces out of the lid, not up: hinting it with +y let half the band flip and stripe
+        edge = L3((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0.012) - lid_mid
+        lac.face([L3(a[0], a[1]), L3(b[0], b[1]), L3(b[0], b[1], 0.024), L3(a[0], a[1], 0.024)],
+                 edge.normalized() if edge.length > 1e-6 else lid_up)
+    bar(br, C3(BW / 2 - 0.14, CY + CT, 1.00), LC(0.58, 1.00, 0.03), 0.022)    # the prop stick
+    # legs, taper to the floor
+    for (lu, lv) in ((-BW / 2 + 0.24, 0.26), (BW / 2 - 0.24, 0.26), (0.12, BL - 0.28)):
+        p = C3(lu, 0.0, lv); prism(lac, p[0], 0.0, p[2], 0.075, CY, n=8, r_top=0.055)
+        drk.box(p[0], 0.012, p[2], 0.17, 0.024, 0.17)                         # castor plate
+    # keyboard: white keys across the full compass, black keys in the usual pattern, under a fallboard
+    KW, NW = 0.0234, 52
+    for i in range(NW):
+        u = -(NW * KW) / 2 + (i + 0.5) * KW
+        p = C3(u, 0, 0.115); key.box(p[0], CY + CT - 0.025, p[2], KW - 0.0022, 0.016, 0.145, ry)
+        if i % 7 in (0, 1, 3, 4, 5) and i < NW - 1:
+            q = C3(u + KW / 2, 0, 0.085); drk.box(q[0], CY + CT - 0.008, q[2], KW * 0.56, 0.018, 0.092, ry)
+    p = C3(0, 0, 0.255); lac.box(p[0], CY + CT + 0.035, p[2], BW - 0.07, 0.10, 0.14, ry)        # fallboard
+    p = C3(0, 0, 0.022); lac.box(p[0], CY + CT - 0.03, p[2], BW - 0.07, 0.05, 0.05, ry)         # key slip
+    p = C3(0, 0, 0.40); lac.box(p[0], CY + CT + 0.22, p[2], BW - 0.42, 0.30, 0.02, ry)          # music desk
+    # stool
+    p = C3(0, 0, -0.66)
+    lac.box(p[0], 0.56, p[2], 0.62, 0.05, 0.34, ry)
+    for (du, dv) in ((-0.26, -0.12), (0.26, -0.12), (-0.26, 0.12), (0.26, 0.12)):
+        q = C3(du, 0, -0.66 + dv); lac.box(q[0], 0.27, q[2], 0.045, 0.54, 0.045, ry)
+    # this corner sits outside every chandelier's throw, so the piano is lit for itself
+    lights.append(('point', (px - 0.3, 2.45, pz - 0.6), (1.0, 0.84, 0.62), 60))
+    lac.finish(); key.finish(); drk.finish(); br.finish()
 
 def add_lights(lights):
     for kind, (x, y, z), col, watts in lights:
@@ -564,6 +849,9 @@ def bake_lightmap(obs):
         for n in [n for n in nt.nodes if n.name.startswith('LM_BAKE')]: nt.nodes.remove(n)
 
 def bake_vertex_colors(obs):
+    if np is None:
+        raise RuntimeError('vertex-colour baking needs numpy; Blender\'s copy failed to import (see the note at the top). '
+                           'Build with --ue/--nobake, or unblock Blender\'s numpy DLLs.')
     sc = bpy.context.scene
     sc.cycles.samples = SAMPLES_VC
     sc.cycles.bake_type = 'DIFFUSE'
@@ -614,6 +902,13 @@ def render_preview(name, x, y, z, yaw, pitch, fov=70):
     sc.render.filepath = os.path.join(OUT, 'preview_%s.jpg' % name)
     t = time.time(); bpy.ops.render.render(write_still=True); print('preview', name, 'in %.0f s' % (time.time() - t), flush=True)
 
+def render_look(name, eye, target, fov=70):
+    """render_preview, but aimed at a point instead of by yaw and pitch: easier to keep honest when the thing
+    you want in shot has a known position."""
+    dx, dy, dz = target[0] - eye[0], target[1] - eye[1], target[2] - eye[2]
+    flat = math.hypot(dx, dz)
+    render_preview(name, eye[0], eye[1], eye[2], math.atan2(-dx, -dz), math.atan2(dy, flat), fov)
+
 def export(path):
     sc = bpy.context.scene
     # glass and emissive panels: keep; lights/cameras: not exported
@@ -633,13 +928,15 @@ def main():
     info = build_shell()
     build_bookcases()
     build_rails()
+    build_stair(lights)
     build_furniture(lights)
+    build_piano(lights)
     add_lights(lights)
     obs = [o for o in sc.objects if o.type == 'MESH']
     if UE:
         # Unreal: give the shell real thickness (outward), so Lumen and distance fields see a closed volume
         for o in obs:
-            if o.name in ('walls', 'floor', 'ceiling'):
+            if o.name in ('walls', 'floor', 'floor_dark', 'floor_light', 'ceiling'):
                 m = o.modifiers.new('ue_thickness', 'SOLIDIFY'); m.thickness = 0.45; m.offset = -1.0; m.use_even_offset = True
     lm = [o for o in obs if o.get('lm')]; vc = [o for o in obs if o.get('vc')]
     print('objects', len(obs), 'lightmapped', [o.name for o in lm], 'vertex-lit', len(vc), 'tris', sum(len(o.data.polygons) * 2 for o in obs), 'built in %.0f s' % (time.time() - t0), flush=True)
@@ -648,6 +945,10 @@ def main():
     if RENDER:
         render_preview('window', -13.4, 1.62, -3, math.pi / 2, 0.08)
         render_preview('stacks', -22.0, 1.62, -2.0, math.pi * 0.75, -0.05)
+        render_look('hall', (-12.7, 1.62, -3.0), (-31.0, 2.6, -3.0), fov=76)
+        render_look('stair', (-18.4, 1.62, -5.2), (-15.1, 2.3, -9.6), fov=72)
+        render_look('piano', (-18.9, 1.55, 0.9), (-15.4, 1.05, 3.3), fov=68)
+        render_look('gallery', (-13.1, 5.30, -10.2), (-25.0, 2.2, -0.5), fov=80)
     if not NOBAKE:
         bake_lightmap(lm)
         bake_vertex_colors(vc)
