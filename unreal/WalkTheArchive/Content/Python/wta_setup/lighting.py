@@ -29,6 +29,8 @@ Units and exposure, decided here and consistent with docs/reference/render.md se
   * One SpotLight per gallery exhibit (600 lm, 30 degree cone) 180 cm out from the wall and 100 cm above
     the art, aimed at the art, and two per Wax Hall stage: a steep one over the rope onto the set and a face
     light from the aisle ceiling onto the reenactors' faces. These picture lights carry most of the realism.
+  * One warm SpotLight on each indoor statue (Pipeline/content/statues.json; STATUE_SPOT_LUMENS), from 2.6 m
+    up and 1.6 m toward where the figure faces, so the rotunda's statues are not silhouettes against the windows.
 All lights are movable, tagged WTA_Setup / WTA_lighting, and live in Outliner folders Lighting/<wing>.
 """
 import re
@@ -50,6 +52,8 @@ ART_SPOT_LUMENS = 600.0
 ART_SPOT_CONE = 30.0
 STAGE_SPOT_LUMENS = 1500.0
 STAGE_SPOT_CONE = 45.0
+STATUE_SPOT_LUMENS = 1200.0
+STATUE_SPOT_CONE = 34.0
 # Front key light on the Wax Hall reenactors' faces: aisle ceiling, 3.8 m out from the stage line.
 FACE_LIGHT_LUMENS = 1600.0
 FACE_LIGHT_CONE = 30.0
@@ -518,6 +522,28 @@ def build_stage_lights(report):
     report["stage_spots"] = count
 
 
+def build_statue_lights(report):
+    """A warm spot on each indoor statue (Pipeline/content/statues.json): the rotunda ones stand before the
+    windows and would otherwise be silhouettes. From 2.6 m up and 1.6 m toward where the figure faces,
+    aimed at the chest; the ones outside stand in the sun."""
+    count = 0
+    try:
+        rows = paths.read_json(paths.STATUES_JSON).get("statues", [])
+    except Exception:
+        rows = []
+    for row in rows:
+        x, y, z = [float(v) for v in row.get("pos_m", (0, 0, 0))]
+        if z > 12.0:                     # beyond the front door: outdoors
+            continue
+        feet = (100.0 * x, 100.0 * z, 100.0 * y)
+        fwd = util.forward_from_yaw(float(row.get("ue_yaw", 0.0)))
+        light_pos = (feet[0] + 160.0 * fwd[0], feet[1] + 160.0 * fwd[1], feet[2] + 260.0)
+        target = (feet[0], feet[1], feet[2] + 120.0)
+        aimed_spot("StatueLight_%s" % row.get("id", count), "museum", light_pos, target, STATUE_SPOT_LUMENS, STATUE_SPOT_CONE)
+        count += 1
+    report["statue_spots"] = count
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
@@ -533,6 +559,7 @@ def run():
     build_laylight(report)
     build_art_lights(report)
     build_stage_lights(report)
+    build_statue_lights(report)
     build_wing_exposure(report)
     errors = emissive.run(report)
     report["lights_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

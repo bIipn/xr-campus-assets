@@ -107,8 +107,8 @@
    "source": "unreal/Pipeline/out/exterior/Outside.glb",
    "meshes": 27,
    "tagged": [],
-   "triangles": 149424,
-   "bytes": 33914852
+   "triangles": 149980,
+   "bytes": 33955048
   },
   "Yard": {
    "file": "Yard.glb",

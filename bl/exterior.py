@@ -50,11 +50,13 @@ FOUNTAIN = (0.0, 34.0)
 
 # the other buildings' shells (campus metres, from the web layout), each with its own parapet height
 SHELLS = {
-    'wax':     dict(x0=-8.7, x1=8.7, z0=-81.3, z1=-42.0, h=5.4),
-    'library': dict(x0=-32.2, x1=-11.8, z0=-13.2, z1=7.2, h=7.9),
+    # each 15 cm outside the web building's own outer faces (WaxHall x +-8.70; the Reading Room's green
+    # walls x -32.45..-11.55, z -13.45..7.45; the School z -13.40), so the ashlar reads and never z-fights
+    'wax':     dict(x0=-8.85, x1=8.85, z0=-81.3, z1=-42.0, h=5.4),
+    'library': dict(x0=-32.6, x1=-11.4, z0=-13.6, z1=7.6, h=7.9),
     'hallL':   dict(x0=-11.8, x1=-6.2, z0=-4.8, z1=-1.2, h=3.65),
     'hallR':   dict(x0=6.2, x1=11.8, z0=-4.8, z1=-1.2, h=3.65),
-    'school':  dict(x0=11.8, x1=34.2, z0=-13.2, z1=7.2, h=4.3),
+    'school':  dict(x0=11.8, x1=34.2, z0=-13.6, z1=7.2, h=4.3),
 }
 # openings in those shells: (shell, wall, u0, u1, h) - 'E' east wall x1, 'W' west wall x0 (u along z)
 OPENINGS = [('library', 'E', -4.8, -1.2, 3.65), ('school', 'W', -4.8, -1.2, 3.65), ('school', 'E', -4.6, -1.4, 3.0),
