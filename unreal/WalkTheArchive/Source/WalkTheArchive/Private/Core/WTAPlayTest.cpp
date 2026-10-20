@@ -23,6 +23,7 @@
 #include "World/WTARideActor.h"
 #include "World/WTAStaffNPC.h"
 #include "World/WTAStationActor.h"
+#include "World/WTAStatueActor.h"
 #include "World/WTATokenActor.h"
 #include "World/WTAWaxStageActor.h"
 #include "Camera/CameraActor.h"
@@ -38,6 +39,7 @@
 #include "Engine/SkinnedAsset.h"
 #include "ReferenceSkeleton.h"
 #include "Engine/World.h"
+#include "Materials/MaterialInterface.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "EngineUtils.h"
@@ -1532,6 +1534,9 @@ void UWTAPlayTest::AddMuseumPhase()
 		{ TEXT("bay"),      CampusToUE(-1.2f, 1.62f, -12.5f), CampusToUE(-6.0f,  2.2f,  -9.0f) },
 		{ TEXT("vault"),    CampusToUE(-3.0f, 1.62f,  -8.0f), CampusToUE( 2.0f,  7.8f, -15.0f) },
 		{ TEXT("end"),      CampusToUE( 0.0f, 1.62f, -31.0f), CampusToUE( 0.0f,  2.5f, -42.0f) },
+		// the marble statues: on the west cheek block of the steps, and before the rotunda's west window
+		{ TEXT("statue_steps"),   CampusToUE(-6.3f, 0.87f,  21.2f), CampusToUE(-8.65f, 1.25f, 17.2f) },
+		{ TEXT("statue_rotunda"), CampusToUE( 1.2f, 1.62f,   5.8f), CampusToUE(-3.9f,  1.75f,  5.8f) },
 	};
 	for (const FSpot& S : Spots)
 	{
@@ -1549,6 +1554,37 @@ void UWTAPlayTest::AddMuseumPhase()
 			return 0.1f;
 		} });
 	}
+	// The statues: every one placed (Pipeline/content/statues.json) has its figure built and carved in marble.
+	Steps.Add({ TEXT("museum statues"), [this]() -> float
+	{
+		int32 Placed = 0, Built = 0, Marble = 0;
+		FString Notes;
+		for (TActorIterator<AWTAStatueActor> It(GetWorld()); It; ++It)
+		{
+			++Placed;
+			AWTAStatueActor* Statue = *It;
+			if (Statue->Figure == nullptr)
+			{
+				Notes += Statue->Describe() + TEXT("; ");
+				continue;
+			}
+			++Built;
+			const USkeletalMeshComponent* Body = UWTAPeopleLibrary::FindBody(Statue->Figure);
+			const UMaterialInterface* Skin = Body != nullptr && Body->GetNumMaterials() > 0 ? Body->GetMaterial(0) : nullptr;
+			if (Skin != nullptr && Skin->GetName().Contains(TEXT("Marble")))
+			{
+				++Marble;
+			}
+			else
+			{
+				Notes += Statue->Describe() + FString::Printf(TEXT(" wears %s; "), Skin != nullptr ? *Skin->GetName() : TEXT("nothing"));
+			}
+		}
+		const bool bOk = Placed > 0 && Built == Placed && Marble == Placed;
+		Report(TEXT("museum"), bOk ? EResult::Pass : (Placed == 0 ? EResult::Skip : EResult::Fail), TEXT("the statues stand in marble"),
+			FString::Printf(TEXT("%d placed, %d built, %d in marble%s%s"), Placed, Built, Marble, Notes.IsEmpty() ? TEXT("") : TEXT(": "), *Notes));
+		return 0.1f;
+	} });
 	// Does the floor hold where the new building meets the old: the stylobate, the door passage, the rotunda,
 	// the lobby arch, the halls' thresholds? Drop in a little above each spot and read the resting height.
 	struct FFloor { const TCHAR* Name; FVector On; };
