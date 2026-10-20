@@ -184,8 +184,9 @@ def gallery_walls():
     gold = builder('gilt_trim', 'gilt')
     # long walls x = +-6 from the end wall to the lobby's back wall, above the dado
     for (x, out) in ((X0, (1, 0)), (X1, (-1, 0))):
-        wall_face(wl, (x, ZW), (x, 0.0), out, DADO_H - 0.02, H_COL, nu=8, nv=2)
-        dado_run((x, ZW), (x, 0.0), out)
+        # from the end wall to the lobby partition; lobby() builds the lobby's own side walls, with the hall doors
+        wall_face(wl, (x, ZW), (x, -6.0), out, DADO_H - 0.02, H_COL, nu=8, nv=2)
+        dado_run((x, ZW), (x, -6.0), out)
         entablature(ent, den, (x, ZW), (x, 0.0), out, H_COL)
         # engaged columns: one each side of every partition and one at mid-gallery
         for (za, zb) in GALS:
@@ -400,12 +401,15 @@ def radial_cutter(b, cx, cz, phi, w, y0, y1, r_in, r_out, arch=False, spring=Non
         extrude_profile(b, [(0, 0), (w, 0), (w, y1 - y0), (0, y1 - y0)], origin, U, V, N, r_out - r_in)
 
 
-def boolean_cut(wall, cutter):
-    bpy.ops.object.select_all(action='DESELECT')
-    wall.select_set(True); bpy.context.view_layer.objects.active = wall
-    m = wall.modifiers.new('cut', 'BOOLEAN'); m.operation = 'DIFFERENCE'; m.object = cutter; m.solver = 'EXACT'
-    bpy.ops.object.modifier_apply(modifier='cut')
-    bpy.data.objects.remove(cutter, do_unlink=True)
+def boolean_cut(wall, cutters):
+    """Subtract each cutter object from the wall in turn (one operand per boolean is far more reliable than one
+    joined operand with many parts), triangulate, and re-project the UVs."""
+    for cutter in cutters:
+        bpy.ops.object.select_all(action='DESELECT')
+        wall.select_set(True); bpy.context.view_layer.objects.active = wall
+        m = wall.modifiers.new('cut', 'BOOLEAN'); m.operation = 'DIFFERENCE'; m.object = cutter; m.solver = 'EXACT'
+        bpy.ops.object.modifier_apply(modifier='cut')
+        bpy.data.objects.remove(cutter, do_unlink=True)
     import bmesh
     bm = bmesh.new(); bm.from_mesh(wall.data)
     bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method='BEAUTY', ngon_method='BEAUTY')
@@ -431,20 +435,21 @@ def rotunda():
     ent = builder('entablature', 'lime', tile=3.0); den = builder('dentils', 'lime', tile=3.0); gold = builder('gilt_trim', 'gilt')
     # the ring wall, floor to the drum's top, then openings cut through it
     wall = cylinder_shell('rotunda_wall', 'lime', cx, cz, RI, RO, 0.0, R_DRUM1, n=96)
-    cut = Builder('cutters', 'lime')
+    cutters = []
+    def cutter(phi, w, y0, y1, r_in, r_out, spring):
+        b = Builder('cutter', 'lime')
+        radial_cutter(b, cx, cz, phi, w, y0, y1, r_in, r_out, arch=True, spring=spring)
+        cutters.append(b.finish())
     phi_n, phi_s = -math.pi / 2, math.pi / 2
-    radial_cutter(cut, cx, cz, phi_n, LOBBY_ARCH[0], 0.0, LOBBY_ARCH[1] + LOBBY_ARCH[0] / 2, RI - 0.5, RO + 0.5, arch=True, spring=LOBBY_ARCH[1])
-    radial_cutter(cut, cx, cz, phi_s, FRONT_ARCH[0], 0.0, FRONT_ARCH[1] + FRONT_ARCH[0] / 2, RI - 0.5, RO + 0.5, arch=True, spring=FRONT_ARCH[1])
+    cutter(phi_n, LOBBY_ARCH[0], 0.0, LOBBY_ARCH[1] + LOBBY_ARCH[0] / 2, RI - 0.5, RO + 0.5, LOBBY_ARCH[1])
+    cutter(phi_s, FRONT_ARCH[0], 0.0, FRONT_ARCH[1] + FRONT_ARCH[0] / 2, RI - 0.5, RO + 0.5, FRONT_ARCH[1])
     for phi in (0.0, math.pi):                                                   # east and west windows
-        radial_cutter(cut, cx, cz, phi, 2.4, 1.0, 4.0 + 1.2, RI - 0.5, RO + 0.5, arch=True, spring=4.0)
+        cutter(phi, 2.4, 1.0, 4.0 + 1.2, RI - 0.5, RO + 0.5, 4.0)
     for k in range(4):                                                           # diagonal niches, half the wall deep
-        phi = math.pi / 4 + k * math.pi / 2
-        radial_cutter(cut, cx, cz, phi, 1.5, 0.9, 3.4 + 0.75, RI - 0.5, RI + 0.5, arch=True, spring=3.4)
+        cutter(math.pi / 4 + k * math.pi / 2, 1.5, 0.9, 3.4 + 0.75, RI - 0.5, RI + 0.5, 3.4)
     for k in range(8):                                                           # the clerestory
-        phi = math.pi / 8 + k * math.pi / 4
-        radial_cutter(cut, cx, cz, phi, 1.3, R_DRUM0 + 0.3, R_DRUM0 + 1.3 + 0.65, RI - 0.5, RO + 0.5, arch=True, spring=R_DRUM0 + 1.3)
-    cutter = cut.finish()
-    boolean_cut(wall, cutter)
+        cutter(math.pi / 8 + k * math.pi / 4, 1.3, R_DRUM0 + 0.3, R_DRUM0 + 1.3 + 0.65, RI - 0.5, RO + 0.5, R_DRUM0 + 1.3)
+    boolean_cut(wall, cutters)
     wall.data.materials.append(MATS['ashlar'])
     for poly in wall.data.polygons:
         c = poly.center; radial = Vector((c.x - cx, c.y + cz, 0.0)).normalized()
@@ -596,10 +601,18 @@ def exterior_shell():
     cx, cz = RC
     XO0, XO1, ZO = X0 - 0.2, X1 + 0.2, ZW - 0.2
     H = ROOF_Y
-    # the four outer walls of the gallery block, from below grade to the roof
+    # the four outer walls of the gallery block, from below grade to the roof; the long walls open where the
+    # halls pass through them (z -4.8..-1.2, 3.65 high), and the plinth course stops either side of that
     for (a, c, out) in (((XO0, 0.2), (XO0, ZO), (-1, 0)), ((XO1, ZO), (XO1, 0.2), (1, 0)), ((XO0, ZO), (XO1, ZO), (0, -1))):
-        wall_face(ash, a, c, out, -1.0, H, nu=8, nv=3)
-        run_boxes(ash, a, c, out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)                      # plinth course
+        if out[0] != 0:
+            ux, uz = 0.0, (c[1] - a[1]) / abs(c[1] - a[1])
+            ua, ub = sorted(((-4.8 - a[1]) * uz, (-1.2 - a[1]) * uz))
+            wall_with_door(ash, (a[0], -1.0, a[1]), (0, 0, uz), (0, 1, 0), (out[0], 0, 0), 0.0, abs(c[1] - a[1]), H + 1.0, ua, ub, 3.65 + 1.0, solid=False)
+            for (za, zb) in ((0.2, -1.2), (-4.8, ZO)):
+                run_boxes(ash, (a[0], za), (a[0], zb), out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)
+        else:
+            wall_face(ash, a, c, out, -1.0, H, nu=8, nv=3)
+            run_boxes(ash, a, c, out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)                  # plinth course
         entablature(ent, den, a, c, out, H - ENT_H - 0.9)
         run_boxes(ash, a, c, out, [(H - 0.9, H + 0.6, 0.0 + 0.02)], seg=3.0)                           # parapet face
         # pilasters every 6 m between the windows... the block has no windows: pilasters mark the bays
@@ -626,17 +639,27 @@ def exterior_shell():
     # the rotunda outside: the drum with pilasters, a cornice, stepped rings and the copper dome with a lantern
     drum = builder('exterior', 'ashlar', tile=2.4)
     lathe(drum, cx, cz, [(-1.0, RO), (0.0, RO)], n=96, cap_top=False)      # the drum itself is the rotunda wall's outside
+    # (the drum's north side stands inside the gallery block and its south side inside the pronaos: no mouldings
+    # there, and none across the two doors, where a plinth would be a kerb in the passage)
+    def hidden(x, z): return z < 0.3 or (z > PRO[2] and abs(x) < PRO[1])
     n = 48
     for k in range(n):
         a0 = 2 * math.pi * k / n; a1 = 2 * math.pi * (k + 1) / n; am = (a0 + a1) / 2
         p0 = (cx + RO * math.cos(a0), cz + RO * math.sin(a0)); p1 = (cx + RO * math.cos(a1), cz + RO * math.sin(a1))
         out = (math.cos(am), math.sin(am))
+        mx, mz = cx + RO * math.cos(am), cz + RO * math.sin(am)
+        if hidden(mx, mz): continue
         run_boxes(ash, p0, p1, out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)
         entablature(ent, den, p0, p1, out, R_DRUM1 - 0.5 - ENT_H, dent=(k % 2 == 0))
-        run_boxes(ent, p0, p1, out, [(R_DRUM1 - 0.5, R_DRUM1 - 0.2, 0.30), (R_DRUM1 - 0.2, R_DRUM1 + 0.1, 0.50)], seg=3.0)
+    for k in range(n):      # the cornice under the dome runs all the way round (it clears both blocks)
+        a0 = 2 * math.pi * k / n; a1 = 2 * math.pi * (k + 1) / n; am = (a0 + a1) / 2
+        p0 = (cx + RO * math.cos(a0), cz + RO * math.sin(a0)); p1 = (cx + RO * math.cos(a1), cz + RO * math.sin(a1))
+        run_boxes(ent, p0, p1, (math.cos(am), math.sin(am)), [(R_DRUM1 - 0.5, R_DRUM1 - 0.2, 0.30), (R_DRUM1 - 0.2, R_DRUM1 + 0.1, 0.50)], seg=3.0)
     for k in range(16):
         phi = k * math.pi / 8 + math.pi / 16
-        pilaster(drum, ent, drum, (cx + RO * math.cos(phi), cz + RO * math.sin(phi)), (math.cos(phi), math.sin(phi)), 0.7, R_DRUM1 - 0.5 - ENT_H, depth=0.2)
+        px, pz = cx + RO * math.cos(phi), cz + RO * math.sin(phi)
+        if hidden(px, pz): continue
+        pilaster(drum, ent, drum, (px, pz), (math.cos(phi), math.sin(phi)), 0.7, R_DRUM1 - 0.5 - ENT_H, depth=0.2)
     # stepped rings then the dome: the outer sphere, radius RO about the same centre, from the equator to the lantern
     DY = R_DRUM1 + 0.4
     lathe(drum, cx, cz, [(R_DRUM1, RO + 0.5), (R_DRUM1 + 0.4, RO + 0.5), (R_DRUM1 + 0.4, RO + 0.2), (DY + 0.2, RO + 0.2), (DY + 0.2, RO + 0.0)], n=96, cap_top=False)
