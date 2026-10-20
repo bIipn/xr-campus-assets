@@ -144,6 +144,16 @@ def triangle_count(mesh):
     return -1
 
 
+def clear_folder_assets(folder, class_names):
+    """Delete every asset of these classes under the wing's folder (the re-import makes them again)."""
+    count = 0
+    for cls in class_names:
+        for path, _obj in util.find_assets(folder, cls, recursive=True):
+            if util.assets().delete(path):
+                count += 1
+    return count
+
+
 def run():
     force = util.env_flag("WTA_FORCE")
     # WTA_ASSETS narrows the step to named wings, so one rebuilt wing can be re-imported on its own
@@ -178,13 +188,16 @@ def run():
             # A forced re-import replaces the WING, not just same-named assets: Interchange's replace_existing
             # leaves any mesh whose name is not in the new GLB untouched, so a wing whose meshes were re-split
             # (per material one time, per object the next) ends up placed twice, the stale copy on top of the
-            # new one. Clear the folder's meshes first.
+            # new one. And it keeps a texture or material whose name it already has, even when the GLB carries
+            # a different image under that name (the rotunda's frieze lettering stayed a 320 px strip after the
+            # GLB grew a 512 px one). So clear the wing's whole folder - meshes, materials, textures - first.
             if existing:
                 cleared = 0
                 for path, _mesh in existing:
                     if assets.delete(path):
                         cleared += 1
                 entry["cleared_stale"] = cleared
+                entry["cleared_materials_textures"] = clear_folder_assets(dest, ("MaterialInstanceConstant", "Material", "Texture2D"))
                 util.clear_asset_cache()
             try:
                 objects = import_glb(glb, dest)
