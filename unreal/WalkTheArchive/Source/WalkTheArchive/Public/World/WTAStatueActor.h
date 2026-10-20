@@ -52,7 +52,7 @@ protected:
 
 private:
 	void SpawnFigure();
-	void DressInMarble(AActor* Person);
+	void DressInMarble(AActor* Carved);
 
 	TWeakObjectPtr<UWTAWaxAnimInstance> Anim;
 	int32 FramesHeld = 0;

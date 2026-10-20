@@ -86,7 +86,7 @@ void AWTAStatueActor::SpawnFigure()
 	}
 }
 
-void AWTAStatueActor::DressInMarble(AActor* Person)
+void AWTAStatueActor::DressInMarble(AActor* Carved)
 {
 	UMaterialInterface* Stone = Cast<UMaterialInterface>(Marble.TryLoad());
 	if (Stone == nullptr)
@@ -94,7 +94,7 @@ void AWTAStatueActor::DressInMarble(AActor* Person)
 		UE_LOG(LogWTA, Warning, TEXT("%s: no marble material at %s; the statue keeps its colours"), *GetName(), *Marble.ToString());
 	}
 	TInlineComponentArray<UPrimitiveComponent*> Parts;
-	Person->GetComponents(Parts);
+	Carved->GetComponents(Parts);
 	for (UPrimitiveComponent* Part : Parts)
 	{
 		if (Part == nullptr)
