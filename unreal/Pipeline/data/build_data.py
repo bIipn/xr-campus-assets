@@ -51,9 +51,11 @@ def ue_yaw(yaw_rad):
 
 
 def view_from_web(v):
+    """A web-style view {x, z, yaw, pitch} at eye height; 'y' is the floor the visitor stands on (0 unless the
+    spot is up on the Reading Room gallery)."""
     if not v:
         return no_view()
-    return {'Location': ue_pos(v['x'], EYE_CM / 100.0, v['z']), 'Yaw': ue_yaw(v.get('yaw', 0.0)),
+    return {'Location': ue_pos(v['x'], float(v.get('y', 0.0)) + EYE_CM / 100.0, v['z']), 'Yaw': ue_yaw(v.get('yaw', 0.0)),
             'Pitch': round(math.degrees(v.get('pitch', 0.0)), 3), 'bValid': True}
 
 
@@ -105,7 +107,9 @@ def build_exhibits(L):
     lay = {e['id']: e for e in L['exhibits']}
     stages = {s['id']: s for s in L['wax_hall']['stages']}
     rows = []
-    for e in load('exhibits.json'):
+    # exhibits.json is extracted from the web campus; library_fittings.json is written by hand for the Reading
+    # Room's own furniture and fittings, which the web build never had cards for.
+    for e in load('exhibits.json') + load('library_fittings.json'):
         le = lay.get(e['id'])
         if le:
             loc = vec(*le['ue_location_cm'])
@@ -114,6 +118,24 @@ def build_exhibits(L):
             sz = le.get('size_m') or [0.62, 1.0]
             size = {'X': round(100 * sz[0], 2), 'Y': round(100 * sz[1], 2)}
             view = view_from_layout(le['view'])
+        elif e.get('lib'):
+            # A Reading Room fitting: the 'lib' block gives the object's centre (campus metres), how deep it is
+            # from that centre to the face the visitor sees, the pick slab's width and height, and where to stand.
+            # The slab goes just in front of that face, turned to meet the visitor, because the hover is a plain
+            # Visibility trace and the object's own mesh would catch it first anywhere else.
+            lb = e['lib']
+            ox, oy, oz = lb['loc']
+            sx, sz_ = lb['stand']
+            dx, dz = sx - ox, sz_ - oz
+            run = math.hypot(dx, dz) or 1.0
+            dx, dz = dx / run, dz / run
+            off = float(lb.get('depth', 0.5)) + 0.06
+            loc = ue_pos(ox + dx * off, oy, oz + dz * off)
+            yaw = round(math.degrees(math.atan2(dz, dx)), 3)          # Unreal yaw: the slab's normal points at the visitor
+            wh = lb.get('size') or [0.8, 1.0]
+            size = {'X': round(100.0 * wh[0], 2), 'Y': round(100.0 * wh[1], 2)}
+            view = view_from_web({'x': sx, 'z': sz_, 'y': float(lb.get('stand_y', 0.0)),
+                                  'yaw': math.atan2(-(ox - sx), -(oz - sz_)), 'pitch': float(lb.get('pitch', -0.1))})
         elif e['id'] == 'freedom':
             # Freedom to Read board in the Reading Room: group at (-21.4, 0, 1.0) turned +90 deg, panel 1.3 x 0.975 m
             # 1.35 m up and 3 cm out in front, so it faces +x (east). parts/world.js:456-459

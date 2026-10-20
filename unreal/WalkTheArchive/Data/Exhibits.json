@@ -681,6 +681,326 @@
   }
  },
  {
+  "Name": "lib-globe",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Globe",
+  "Date": "A reading room fixture",
+  "Year": 0,
+  "Description": "A terrestrial globe on a brass stand. Every library kept one long before anyone could look a place up in a second: it is the original way to see where a story is set. The places in the books on these shelves are all on it somewhere.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, north bay",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -2130.0,
+   "Y": -884.0,
+   "Z": 115.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 80.0,
+   "Y": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": -2130.0,
+    "Y": -740.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-desk",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Reference Desk",
+  "Date": "Ask here",
+  "Year": 0,
+  "Description": "Where you ask. Librarians were the first search engine: this is the desk where a question gets answered, a book gets found and a visitor gets pointed the right way. Nobody has ever been turned away from one for not knowing what they were looking for.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, by the hall",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1860.0,
+   "Y": -642.0,
+   "Z": 75.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 310.0,
+   "Y": 110.0
+  },
+  "View": {
+   "Location": {
+    "X": -1860.0,
+    "Y": -520.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -4.584,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-table-north",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The North Reading Table",
+  "Date": "Green lamps, leather chairs",
+  "Year": 0,
+  "Description": "A long oak table under three green-shaded banker's lamps. The lamps throw their light down on to the page and keep it out of your eyes, which is why reading rooms have used them for over a century. Sit anywhere: the chairs are leather and the table is meant to be leaned on.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, north bay",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1950.0,
+   "Y": -1017.0,
+   "Z": 110.0
+  },
+  "Yaw": 90.0,
+  "Size": {
+   "X": 360.0,
+   "Y": 100.0
+  },
+  "View": {
+   "Location": {
+    "X": -1950.0,
+    "Y": -860.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -14.897,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-table-south",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The South Reading Table",
+  "Date": "Green lamps, leather chairs",
+  "Year": 0,
+  "Description": "The second of the room's two reading tables, a mirror of the first across the hall. Rooms like this were built so that anyone could walk in off the street and sit down with a book for nothing, which is the oldest promise a public library makes.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, south bay",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1950.0,
+   "Y": 397.0,
+   "Z": 110.0
+  },
+  "Yaw": -90.0,
+  "Size": {
+   "X": 360.0,
+   "Y": 100.0
+  },
+  "View": {
+   "Location": {
+    "X": -1950.0,
+    "Y": 240.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -14.897,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-piano",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Grand Piano",
+  "Date": "Lid up, bench out",
+  "Year": 0,
+  "Description": "A grand piano with its lid propped open, turned so the keyboard faces the room. Libraries have always been about more than books: lectures, readings, recitals. The lid is up because a grand is meant to be heard across a room this size, and the bench is out because someone was just playing.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, south-east corner",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1544.24,
+   "Y": 325.76,
+   "Z": 115.0
+  },
+  "Yaw": -135.0,
+  "Size": {
+   "X": 170.0,
+   "Y": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": -1653.0,
+    "Y": 217.0,
+    "Z": 162.0
+   },
+   "Yaw": 45.0,
+   "Pitch": -16.043,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-stair",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Spiral Stair",
+  "Date": "Up to the gallery",
+  "Year": 0,
+  "Description": "Nineteen treads winding round a brass newel, up to the gallery that runs right round the room. The upper shelves are up there. Go on up: the handrail climbs with you, and the gallery is wide enough to walk the whole way round and look down on the hall.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, north-east corner",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1648.64,
+   "Y": -934.33,
+   "Z": 190.0
+  },
+  "Yaw": 169.509,
+  "Size": {
+   "X": 280.0,
+   "Y": 320.0
+  },
+  "View": {
+   "Location": {
+    "X": -1780.0,
+    "Y": -910.0,
+    "Z": 162.0
+   },
+   "Yaw": -10.491,
+   "Pitch": 11.459,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-window",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Arched Window",
+  "Date": "West light",
+  "Year": 0,
+  "Description": "The room's one great window, set in the west wall so the afternoon sun comes straight down the hall. Reading rooms were laid out this way before electric light: the tables sit where the daylight falls. Beyond the glass are the hills.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, west wall",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -3194.0,
+   "Y": -300.0,
+   "Z": 290.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 460.0,
+   "Y": 400.0
+  },
+  "View": {
+   "Location": {
+    "X": -2880.0,
+    "Y": -300.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": 20.054,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "lib-gallery",
+  "KindId": "object",
+  "Kind": "Object",
+  "Gallery": 0,
+  "Title": "The Gallery",
+  "Date": "The upper tier",
+  "Year": 0,
+  "Description": "You made it up. The gallery runs round all four walls behind a panelled parapet, with the upper shelves at your shoulder and the whole hall laid out below: the checkered floor, the runner, the chandeliers at eye level. The quietest seat in the building is the one you are standing in.",
+  "More": "",
+  "Quote": "",
+  "QuoteBy": "",
+  "Where": "The Reading Room, up the spiral stair",
+  "Partners": "",
+  "Sources": [],
+  "Hall": "",
+  "bWax": false,
+  "WaxSceneId": "None",
+  "Art": "",
+  "Location": {
+   "X": -1363.5,
+   "Y": -500.0,
+   "Z": 495.0
+  },
+  "Yaw": 0.0,
+  "Size": {
+   "X": 140.0,
+   "Y": 80.0
+  },
+  "View": {
+   "Location": {
+    "X": -1290.0,
+    "Y": -500.0,
+    "Z": 533.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -28.648,
+   "bValid": true
+  }
+ },
+ {
   "Name": "wax-2016",
   "KindId": "reenactment",
   "Kind": "Living History",

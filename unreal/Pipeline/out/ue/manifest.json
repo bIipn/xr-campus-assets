@@ -138,10 +138,10 @@
   "ReadingRoom": {
    "file": "ReadingRoom.glb",
    "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
-   "meshes": 16,
+   "meshes": 21,
    "tagged": [],
-   "triangles": 186704,
-   "bytes": 58501556
+   "triangles": 196274,
+   "bytes": 63552368
   }
  }
 }
