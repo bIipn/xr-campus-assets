@@ -96,6 +96,9 @@ private:
 	void AddWaxPhase();
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
 	void AddActingPhase();
+	/** Only when named: walks up to a spread of exhibits and checks each one's light rises as you arrive
+	 *  and that a distant one stays dark. */
+	void AddAttractPhase();
 	void AddUIPhase();
 	void AddGraphicsPhase();
 	void AddFpsPhase();

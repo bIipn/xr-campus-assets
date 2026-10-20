@@ -16,6 +16,7 @@
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
+#include "World/WTAAttractComponent.h"
 #include "World/WTABookActor.h"
 #include "World/WTAExhibitActor.h"
 #include "World/WTAPeopleLibrary.h"
@@ -413,6 +414,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Wanted.Contains(TEXT("acting")))
 	{
 		AddActingPhase();
+	}
+	if (Wanted.Contains(TEXT("attract")))
+	{
+		AddAttractPhase();
 	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
@@ -1268,6 +1273,82 @@ void UWTAPlayTest::AddActingPhase()
 				FString::Printf(TEXT("%s, %d bones at the feet%s"), Stage->IsActing() ? TEXT("acting") : TEXT("NOT ACTING"),
 					Collapsed, Who.IsEmpty() ? TEXT("") : *(TEXT(" (") + Who + TEXT(")"))));
 			return 0.2f;
+		} });
+	}
+}
+
+// --- attract ---------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddAttractPhase()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	// Every exhibit that knows where you are meant to stand to look at it.
+	TArray<AWTAExhibitActor*> Lit;
+	for (TActorIterator<AWTAExhibitActor> It(World); It; ++It)
+	{
+		FWTAView View;
+		if (It->Attract != nullptr && IWTAInteractable::Execute_GetViewSpot(*It, View) && View.bValid)
+		{
+			Lit.Add(*It);
+		}
+	}
+	if (Lit.Num() < 2)
+	{
+		Report(TEXT("attract"), EResult::Skip, TEXT("exhibits with a view spot"),
+			FString::Printf(TEXT("found %d, need 2"), Lit.Num()));
+		return;
+	}
+	// A spread of six rather than all of them: the behaviour is one component's, not each exhibit's.
+	const int32 Stride = FMath::Max(1, Lit.Num() / 6);
+	for (int32 i = 0; i < Lit.Num(); i += Stride)
+	{
+		AWTAExhibitActor* Near = Lit[i];
+		// The one furthest from it, to prove the light falls off as well as rises.
+		AWTAExhibitActor* Far = nullptr;
+		float Best = 0.f;
+		for (AWTAExhibitActor* Other : Lit)
+		{
+			const float D = FVector::Dist(Other->GetActorLocation(), Near->GetActorLocation());
+			if (D > Best) { Best = D; Far = Other; }
+		}
+		if (Far == nullptr || Best < 3000.f)
+		{
+			continue;
+		}
+		const FString Name = Near->ItemId.ToString();
+		FWTAView View;
+		IWTAInteractable::Execute_GetViewSpot(Near, View);
+		Steps.Add({ TEXT("attract at ") + Name, [this, View]() -> float
+		{
+			CloseAll();
+			StandAt(View);
+			return 1.6f;   // longer than the component's smoothing, so the swell has finished
+		} });
+		Steps.Add({ TEXT("attract shot ") + Name, [this, Name]() -> float
+		{
+			Shot(TEXT("attract_") + Name, false);
+			return 0.1f;
+		} });
+		Steps.Add({ TEXT("attract check ") + Name, [this, Name, Near, Far, Best]() -> float
+		{
+			if (!IsValid(Near) || !IsValid(Far) || Near->Attract == nullptr || Far->Attract == nullptr)
+			{
+				return 0.f;
+			}
+			const float HereA = Near->Attract->GetAttention();
+			const float HereI = Near->Attract->GetIntensity();
+			const float ThereA = Far->Attract->GetAttention();
+			const bool bUp = HereA > 0.5f && HereI > Near->Attract->RestIntensity;
+			const bool bDown = ThereA < 0.1f;
+			Report(TEXT("attract"), bUp && bDown ? EResult::Pass : EResult::Fail,
+				Name + TEXT(" lights up as you reach it"),
+				FString::Printf(TEXT("here %s; %s (%.0f m away) attention %.2f"),
+					*Near->Attract->Describe(), *Far->ItemId.ToString(), Best / 100.f, ThereA));
+			return 0.1f;
 		} });
 	}
 }

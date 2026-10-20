@@ -14,6 +14,7 @@
 #include "WTAPickActor.generated.h"
 
 class UBoxComponent;
+class UWTAAttractComponent;
 
 UCLASS(Abstract, Blueprintable)
 class WALKTHEARCHIVE_API AWTAPickActor : public AActor, public IWTAInteractable
@@ -30,6 +31,15 @@ public:
 	/** Half size of the pick volume in cm (editor Python: pick_extent). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA")
 	FVector PickExtent = FVector(50.f, 50.f, 50.f);
+
+	/** Raises a picture light on this as the player walks toward it (see WTAAttractComponent). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TObjectPtr<UWTAAttractComponent> Attract;
+
+	/** True once the player has opened this one, so it can stop calling them over. Subclasses that have an id
+	    answer from the progress subsystem; the base has nothing to look up and says no. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	virtual bool IsAlreadySeen() const;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 

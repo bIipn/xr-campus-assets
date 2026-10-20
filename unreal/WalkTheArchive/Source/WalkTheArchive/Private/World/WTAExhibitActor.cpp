@@ -4,9 +4,16 @@
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Systems/WTAContentSubsystem.h"
+#include "Systems/WTAProgressSubsystem.h"
 
 AWTAExhibitActor::AWTAExhibitActor()
 {
+}
+
+bool AWTAExhibitActor::IsAlreadySeen() const
+{
+	const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+	return Progress != nullptr && !ItemId.IsNone() && Progress->HasSeenExhibit(ItemId);
 }
 
 void AWTAExhibitActor::ReadRow()

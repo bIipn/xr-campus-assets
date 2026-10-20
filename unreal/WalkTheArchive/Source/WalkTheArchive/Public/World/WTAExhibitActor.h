@@ -22,6 +22,9 @@ public:
 
 	virtual void Interact_Implementation(AWTAPlayerController* Controller) override;
 
+	/** An exhibit stops calling you over once its card has been opened. */
+	virtual bool IsAlreadySeen() const override;
+
 protected:
 	virtual void ReadRow() override;
 };

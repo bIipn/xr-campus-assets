@@ -1,6 +1,7 @@
 // Walk the Archive - shared base of the pick-box actors.
 
 #include "World/WTAPickActor.h"
+#include "World/WTAAttractComponent.h"
 #include "Components/BoxComponent.h"
 #include "Engine/EngineTypes.h"
 
@@ -20,6 +21,14 @@ AWTAPickActor::AWTAPickActor()
 	PickBox->SetCanEverAffectNavigation(false);
 	PickBox->CanCharacterStepUpOn = ECB_No;
 	PickBox->SetHiddenInGame(true);
+
+	Attract = CreateDefaultSubobject<UWTAAttractComponent>(TEXT("Attract"));
+	Attract->SetupAttachment(PickBox);
+}
+
+bool AWTAPickActor::IsAlreadySeen() const
+{
+	return false;
 }
 
 void AWTAPickActor::OnConstruction(const FTransform& Transform)
