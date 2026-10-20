@@ -31,6 +31,15 @@ GLOW_NITS_COLOURED = 100.0
 GLOW_SATURATED = 0.6                    # 1 - min/max of the emissive colour above which a glow is coloured
 OUTDOOR_ASSETS = ("Yard", "Outside")
 GLOW_MARK = "_glow"                     # M_<Asset>_glow[_NNN]_<id>; the meshes are M_glow[_NNN]
+# The Blender-built rooms' self-lit materials (bl/library.py, bl/museum.py, bl/exterior.py: names ending in _e),
+# by the fixture: physical luminance in cd/m2, whatever strength Blender's preview used.
+BLENDER_NITS = {
+    "lamp_e": 3000.0,         # bulb glass in the sconces, torcheres, chandeliers, lanterns and posts
+    "laylight_e": 2500.0,     # the glazing under the museum's laylights and the Reading Room's
+    "oculus_e": 6000.0,       # the sky in the rotunda's oculus
+    "bulb_e": 3000.0,
+    "shade_e": 400.0,
+}
 
 UNLIT_MASTER = paths.MATERIALS_PATH + "/M_WTA_Unlit"
 UNLIT_MASTER_TRANSLUCENT = paths.MATERIALS_PATH + "/M_WTA_UnlitTranslucent"
@@ -88,13 +97,14 @@ def calibrate_glows(mis, facts, report):
     mel = unreal.MaterialEditingLibrary
     done, unmatched, failed = [], [], []
     for name, mi in mis.items():
-        if GLOW_MARK not in name:
+        blender = next((nits for key, nits in BLENDER_NITS.items() if ("_%s_" % key) in name or name.endswith("_" + key)), None)
+        if GLOW_MARK not in name and blender is None:
             continue
         fact = facts.get(name)
         if fact is None or fact["strength"] is None:
             unmatched.append(name)
             continue
-        target = glow_nits(fact["asset"], float(fact["strength"]), fact["emissive"])
+        target = blender if blender is not None else glow_nits(fact["asset"], float(fact["strength"]), fact["emissive"])
         try:
             # The setter returns False in 5.8 even when it applied the value, so read the value back instead.
             mel.set_material_instance_scalar_parameter_value(mi, "EmissiveStrength", target)
