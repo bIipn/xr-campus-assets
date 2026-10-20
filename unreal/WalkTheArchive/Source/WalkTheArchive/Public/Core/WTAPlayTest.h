@@ -94,6 +94,8 @@ private:
 	void AddWalkPhase();
 	void AddInteractPhase();
 	void AddWaxPhase();
+	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
+	void AddActingPhase();
 	void AddUIPhase();
 	void AddGraphicsPhase();
 	void AddFpsPhase();

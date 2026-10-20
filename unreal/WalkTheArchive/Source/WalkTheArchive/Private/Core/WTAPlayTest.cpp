@@ -408,6 +408,11 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddAdaptPhase();
 	}
+	// Only when named: a whole loop of each wax scene, for the acting shots.
+	if (Wanted.Contains(TEXT("acting")))
+	{
+		AddActingPhase();
+	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
 		CloseAll();
@@ -1171,6 +1176,99 @@ bool UWTAPlayTest::FindAimView(AActor* Actor, FWTAView& OutView, FString* OutWhy
 			static_cast<int32>(UE_ARRAY_COUNT(Distances)) * 24, NoFloor, NoRoom, Steep, SeesNothing, *Target.ToCompactString(), Blocked.IsEmpty() ? TEXT("none") : *Blocked);
 	}
 	return false;
+}
+
+// --- acting ----------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddActingPhase()
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	UWorld* World = GetWorld();
+	if (Content == nullptr || World == nullptr)
+	{
+		return;
+	}
+	// Every stage in the hall, by scene id, so a shot can be matched to its row.
+	TMap<FName, AWTAWaxStageActor*> Stages;
+	for (TActorIterator<AWTAWaxStageActor> It(World); It; ++It)
+	{
+		Stages.Add(It->SceneId, *It);
+	}
+	for (const FName& SceneName : Content->GetRowNames(EWTATable::WaxScenes))
+	{
+		const FWTAWaxSceneRow* Row = Content->FindWaxScene(SceneName);
+		AWTAWaxStageActor** Found = Stages.Find(SceneName);
+		if (Row == nullptr || Found == nullptr || *Found == nullptr)
+		{
+			continue;
+		}
+		AWTAWaxStageActor* Stage = *Found;
+		const FString Name = SceneName.ToString();
+		// The aisle, 4.2 m in front of the stage: what a visitor sees walking up.
+		FWTAView View;
+		View.Location = Row->StageLocation + FRotator(0.f, Row->StageYaw, 0.f).Vector() * 420.f;
+		View.Location.Z = 162.f;
+		View.Yaw = Row->StageYaw + 180.f;
+		View.Pitch = -6.f;
+		View.bValid = true;
+		Steps.Add({ TEXT("acting at ") + Name, [this, View]() -> float
+		{
+			CloseAll();
+			StandAt(View);
+			// Long enough for the figures to wake and their LODs to settle before the first shot.
+			return 1.2f;
+		} });
+		// Six shots across the loop: enough to see every beat change and catch a figure stuck or sliding.
+		const float Loop = Row->LoopSeconds > 0.f ? Row->LoopSeconds : 14.f;
+		for (int32 Shot_ = 0; Shot_ < 6; ++Shot_)
+		{
+			const int32 Which = Shot_;
+			Steps.Add({ FString::Printf(TEXT("acting %s %d"), *Name, Which), [this, Name, Which, Stage]() -> float
+			{
+				Shot(FString::Printf(TEXT("acting_%s_%d"), *Name, Which));
+				if (IsValid(Stage))
+				{
+					UE_LOG(LogWTA, Display, TEXT("WTA_PLAY acting INFO %s"), *Stage->DescribeActing());
+				}
+				return 0.1f;
+			} });
+			Steps.Add({ FString::Printf(TEXT("acting %s wait %d"), *Name, Which), [Loop]() -> float { return Loop / 6.f; } });
+		}
+		// One pass over the figures after a whole loop: still acting, no bones left at the feet.
+		Steps.Add({ TEXT("acting check ") + Name, [this, Name, Stage]() -> float
+		{
+			if (!IsValid(Stage))
+			{
+				return 0.f;
+			}
+			int32 Collapsed = 0;
+			FString Who;
+			for (AActor* Figure : Stage->Figures)
+			{
+				TInlineComponentArray<USkeletalMeshComponent*> Meshes;
+				if (!IsValid(Figure))
+				{
+					continue;
+				}
+				Figure->GetComponents(Meshes);
+				for (const USkeletalMeshComponent* Mesh : Meshes)
+				{
+					const int32 Bad = UWTAPeopleLibrary::CountCollapsedBones(Mesh);
+					if (Bad > 0)
+					{
+						Collapsed += Bad;
+						Who += (Who.IsEmpty() ? TEXT("") : TEXT(", ")) + Figure->GetName();
+						break;
+					}
+				}
+			}
+			Report(TEXT("acting"), Stage->IsActing() && Collapsed == 0 ? EResult::Pass : EResult::Fail,
+				Name + TEXT(" acts a whole loop"),
+				FString::Printf(TEXT("%s, %d bones at the feet%s"), Stage->IsActing() ? TEXT("acting") : TEXT("NOT ACTING"),
+					Collapsed, Who.IsEmpty() ? TEXT("") : *(TEXT(" (") + Who + TEXT(")"))));
+			return 0.2f;
+		} });
+	}
 }
 
 // --- wax -------------------------------------------------------------------------------------

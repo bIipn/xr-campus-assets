@@ -587,15 +587,43 @@ def wax_figure(scene_id, c):
             'Yaw': round(-float(c.get('ry') or 0.0), 3)}
 
 
+def wax_beat(b):
+    """One acting beat of wax_acting.json -> FWTAWaxBeat."""
+    return {'Time': float(b['t']), 'Action': b['a'], 'Yaw': float(b.get('y') or 0.0), 'Rate': float(b.get('r') or 1.0),
+            'Blend': float(b.get('b') or 0.35), 'Lift': float(b.get('l') or 0.0)}
+
+
+def wax_prop(scene_id, p):
+    """One prop of wax_acting.json -> FWTAWaxProp. A key's figure is the scene's short name ("teen")."""
+    keys = []
+    for k in p.get('keys', []):
+        who = k.get('f') or ''
+        keys.append({'Time': float(k['t']), 'Figure': ('%s-%s' % (scene_id, who)) if who else '',
+                     'Socket': k.get('s') or '', 'Offset': vec(*(k.get('o') or [0.0, 0.0, 0.0])),
+                     'Rotation': {'Pitch': float((k.get('r') or [0, 0, 0])[0]), 'Yaw': float((k.get('r') or [0, 0, 0])[1]),
+                                  'Roll': float((k.get('r') or [0, 0, 0])[2])},
+                     'Blend': float(k.get('b') or 0.5)})
+    return {'Id': p['id'], 'Kind': p['kind'], 'Keys': keys}
+
+
 def build_wax(L):
     stages = {s['id']: s for s in L['wax_hall']['stages']}
+    # What each reenactor acts out, hand-authored from the web's keyframes (see the file's own note).
+    acting = load('wax_acting.json')['scenes']
     rows = []
     for w in load('wax_scenes.json'):
         st = stages[w['id']]
+        act = acting.get(w['id'], {})
+        beats = act.get('figures', {})
+        figures = []
+        for c in w.get('cast', []):
+            figure = wax_figure(w['id'], c)
+            figure['Beats'] = [wax_beat(b) for b in beats.get(c['var'], [])]
+            figures.append(figure)
         rows.append({'Name': w['id'], 'Number': int(w['n']), 'Year': txt(w['year']), 'Title': txt(w['title']),
                      'LoopSeconds': float(w.get('loopSeconds') or 14), 'Lines': [{'Time': float(l['t']), 'Text': txt(l['text'])} for l in w['lines']],
                      'StageLocation': vec(*st['ue_origin_cm']), 'StageYaw': round(st['ue_yaw_deg'], 3), 'ItemId': w['item']['id'], 'Sequence': '',
-                     'Figures': [wax_figure(w['id'], c) for c in w.get('cast', [])]})
+                     'Figures': figures, 'Props': [wax_prop(w['id'], p) for p in act.get('props', [])]})
     return rows
 
 
@@ -651,6 +679,8 @@ def check_value(v, typ, structs, where):
         assert isinstance(v, dict) and set(v) == {'X', 'Y', 'Z'}, '%s: bad Vector %r' % (where, v)
     elif typ == 'Vector2D':
         assert isinstance(v, dict) and set(v) == {'X', 'Y'}, '%s: bad Vector2D %r' % (where, v)
+    elif typ == 'Rotator':
+        assert isinstance(v, dict) and set(v) == {'Pitch', 'Yaw', 'Roll'}, '%s: bad Rotator %r' % (where, v)
     elif typ == 'Color':
         assert isinstance(v, dict) and set(v) == {'R', 'G', 'B', 'A'}, '%s: bad Color %r' % (where, v)
     elif typ == 'View':

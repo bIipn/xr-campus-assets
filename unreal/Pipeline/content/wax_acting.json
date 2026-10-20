@@ -1,0 +1,204 @@
+{
+ "_doc": "What each Wax Hall reenactor does over the scene's loop. Hand-authored from parts/waxscenes.js: the web scenes pose joint angles frame by frame, Unreal plays retargeted motion capture instead, so each figure gets a list of beats. A beat is {t: seconds into the loop, a: action id, y: degrees added to the figure's yaw while it plays, r: play rate, b: crossfade seconds, l: centimetres to lift the figure (seated clips sit at the clip's own seat height)}. The action id names an AnimSequence at /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<id>, retargeted from Mixamo by Content/Python/wta_mocap. The last beat runs to the end of the loop and crossfades back into the first, so the loop is seamless. Props ride the figures: each key is {t, f: figure (empty = stands still in the stage's own frame), s: socket (head/hand_l/hand_r/chest), o: offset cm, r: rotation deg, b: seconds to travel from the previous key}.",
+
+ "actions": {
+  "idle":        {"loop": true,  "seated": false, "note": "Breathing Idle"},
+  "idle_b":      {"loop": true,  "seated": false, "note": "Neutral Idle"},
+  "idle_happy":  {"loop": true,  "seated": false, "note": "Happy Idle"},
+  "look_around": {"loop": true,  "seated": false, "note": "Looking Around"},
+  "think":       {"loop": true,  "seated": false, "note": "Thinking"},
+  "talk":        {"loop": true,  "seated": false, "note": "Talking, general conversation"},
+  "talk_two":    {"loop": true,  "seated": false, "note": "Talking, asking a question with two hands"},
+  "present":     {"loop": true,  "seated": false, "note": "Hands Forward Gesture"},
+  "present_b":   {"loop": true,  "seated": false, "note": "Happy Hand Gesture"},
+  "nod":         {"loop": true,  "seated": false, "note": "Acknowledging"},
+  "point":       {"loop": true,  "seated": false, "note": "Pointing Gesture"},
+  "point_fwd":   {"loop": true,  "seated": false, "note": "Pointing Forward"},
+  "clap":        {"loop": true,  "seated": false, "note": "Clapping"},
+  "cheer":       {"loop": true,  "seated": false, "note": "Cheering"},
+  "wave":        {"loop": true,  "seated": false, "note": "Waving with both hands"},
+  "reach":       {"loop": true,  "seated": false, "note": "Reaching Out"},
+  "pick_one":    {"loop": true,  "seated": false, "note": "Picking Up Object, one hand"},
+  "carry":       {"loop": true,  "seated": false, "note": "Box Idle, carrying a box"},
+  "tablet":      {"loop": true,  "seated": false, "note": "Standing Using Touchscreen Tablet"},
+  "phone":       {"loop": true,  "seated": false, "note": "Texting While Standing"},
+  "crate":       {"loop": true,  "seated": false, "note": "Looking Through Files Low, bent over a low drawer"},
+  "shelf":       {"loop": true,  "seated": false, "note": "Searching Files High, reaching a high drawer"},
+  "crouch":      {"loop": true,  "seated": false, "note": "Crouching Idle"},
+  "kneel":       {"loop": true,  "seated": false, "note": "Kneeling Idle"},
+  "kneel_point": {"loop": true,  "seated": false, "note": "Kneeling Pointing"},
+  "sit_idle":    {"loop": true,  "seated": true,  "note": "Sitting Idle"},
+  "sit_talk":    {"loop": true,  "seated": true,  "note": "Sitting Talking"},
+  "sit_type":    {"loop": true,  "seated": true,  "note": "Typing at a computer"},
+  "sit_clap":    {"loop": true,  "seated": true,  "note": "Sitting Clap"},
+  "sit_point":   {"loop": true,  "seated": true,  "note": "Sitting And Pointing"},
+  "sit_cheer":   {"loop": true,  "seated": true,  "note": "Cheering While Sitting"},
+  "floor_idle":  {"loop": true,  "seated": true,  "note": "Sitting on the floor"},
+  "floor_cross": {"loop": true,  "seated": true,  "note": "Sitting cross legged"},
+  "sit_kid":     {"loop": true,  "seated": true,  "note": "Child sitting on a bench swinging their legs"}
+ },
+
+ "scenes": {
+
+  "wax-2016": {
+   "_note": "The teen hands a headset to the man, who puts it on and looks around inside it; the kid points, claps and cheers.",
+   "figures": {
+    "teen": [{"t": 0, "a": "talk"}, {"t": 2.2, "a": "reach"}, {"t": 4.2, "a": "present"}, {"t": 6.6, "a": "point", "y": -14}, {"t": 9.0, "a": "idle_b"}, {"t": 11.4, "a": "talk_two"}],
+    "man":  [{"t": 0, "a": "look_around"}, {"t": 2.8, "a": "reach"}, {"t": 4.6, "a": "idle"}, {"t": 6.2, "a": "look_around"}, {"t": 9.0, "a": "reach", "y": -20}, {"t": 11.0, "a": "cheer"}, {"t": 12.8, "a": "idle"}],
+    "kid":  [{"t": 0, "a": "idle_happy"}, {"t": 2.4, "a": "point", "y": 16}, {"t": 4.6, "a": "clap"}, {"t": 7.0, "a": "look_around"}, {"t": 9.4, "a": "cheer"}, {"t": 11.6, "a": "idle_happy"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [
+     {"t": 0, "f": "teen", "s": "hand_r", "o": [4, 0, 0], "r": [0, 0, 0]},
+     {"t": 3.2, "f": "man", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0], "b": 0.9}]}
+   ]
+  },
+
+  "wax-2017a": {
+   "_note": "The technician works out of a shipping crate, lifts a headset out and shows it; the librarian checks the manifest; the mover handles boxes.",
+   "figures": {
+    "tech":  [{"t": 0, "a": "crate"}, {"t": 3.4, "a": "pick_one"}, {"t": 5.2, "a": "present"}, {"t": 7.6, "a": "point", "y": -24}, {"t": 9.8, "a": "talk"}, {"t": 12.2, "a": "crate"}],
+    "lib":   [{"t": 0, "a": "tablet"}, {"t": 4.2, "a": "nod"}, {"t": 6.0, "a": "tablet"}, {"t": 9.2, "a": "point", "y": 20}, {"t": 11.2, "a": "tablet"}],
+    "mover": [{"t": 0, "a": "carry"}, {"t": 4.0, "a": "shelf"}, {"t": 6.6, "a": "carry", "y": 25}, {"t": 10.0, "a": "crate"}, {"t": 12.6, "a": "carry"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [
+     {"t": 0, "f": "", "o": [-150, 70, 60], "r": [0, 0, 0]},
+     {"t": 3.9, "f": "tech", "s": "hand_r", "o": [4, 0, 0], "r": [0, 0, 0], "b": 0.8},
+     {"t": 12.2, "f": "", "o": [-150, 70, 60], "r": [0, 0, 0], "b": 0.9}]},
+    {"id": "clipboard", "kind": "clipboard", "keys": [{"t": 0, "f": "lib", "s": "hand_l", "o": [6, 2, 0], "r": [0, 0, 90]}]},
+    {"id": "box", "kind": "box", "keys": [{"t": 0, "f": "mover", "s": "chest", "o": [34, 0, -12], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2017b": {
+   "_note": "The reader holds a picture book open and reads to two children sitting on the floor; a teen plays VR games behind them.",
+   "figures": {
+    "reader": [{"t": 0, "a": "sit_talk"}, {"t": 4.0, "a": "sit_point", "y": 12}, {"t": 6.0, "a": "sit_talk"}, {"t": 9.6, "a": "sit_idle"}, {"t": 11.4, "a": "sit_talk"}],
+    "k1":     [{"t": 0, "a": "floor_idle"}, {"t": 5.0, "a": "floor_cross"}, {"t": 9.8, "a": "floor_idle"}],
+    "k2":     [{"t": 0, "a": "floor_cross"}, {"t": 6.0, "a": "floor_idle"}, {"t": 11.0, "a": "floor_cross"}],
+    "teen":   [{"t": 0, "a": "idle"}, {"t": 2.5, "a": "reach"}, {"t": 5.0, "a": "look_around"}, {"t": 8.0, "a": "reach", "y": -18}, {"t": 10.6, "a": "cheer"}, {"t": 12.6, "a": "idle"}]
+   },
+   "props": [
+    {"id": "book", "kind": "book", "keys": [{"t": 0, "f": "reader", "s": "chest", "o": [30, 0, -16], "r": [-30, 0, 0]}]},
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "teen", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2018a": {
+   "_note": "The director cuts the ribbon at the re-opening, staff applaud, and a visitor floats among planets inside a headset.",
+   "figures": {
+    "dir":     [{"t": 0, "a": "talk"}, {"t": 1.8, "a": "reach", "y": -30}, {"t": 3.6, "a": "present"}, {"t": 5.8, "a": "wave"}, {"t": 8.2, "a": "talk_two"}, {"t": 11.4, "a": "idle_b"}],
+    "staff":   [{"t": 0, "a": "idle"}, {"t": 2.4, "a": "clap"}, {"t": 5.4, "a": "think"}, {"t": 8.0, "a": "nod"}, {"t": 10.4, "a": "clap"}, {"t": 12.8, "a": "idle"}],
+    "visitor": [{"t": 0, "a": "idle"}, {"t": 3.0, "a": "look_around"}, {"t": 5.2, "a": "reach", "y": 24}, {"t": 7.8, "a": "look_around", "y": -20}, {"t": 10.4, "a": "talk"}, {"t": 12.6, "a": "idle"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "visitor", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2019a": {
+   "_note": "A librarian takes a headset out of the road kit and hands it to a grandfather sitting on a cot; his grandson watches from the next cot.",
+   "figures": {
+    "grandpa": [{"t": 0, "a": "sit_idle"}, {"t": 3.2, "a": "sit_talk"}, {"t": 5.0, "a": "sit_idle"}, {"t": 7.0, "a": "sit_point", "y": 14}, {"t": 9.2, "a": "sit_talk"}, {"t": 11.4, "a": "sit_cheer"}, {"t": 13.4, "a": "sit_idle"}],
+    "kid":     [{"t": 0, "a": "sit_kid"}, {"t": 5.6, "a": "sit_point", "y": -16}, {"t": 8.2, "a": "sit_clap"}, {"t": 10.4, "a": "sit_kid"}],
+    "lib":     [{"t": 0, "a": "crate"}, {"t": 1.6, "a": "pick_one"}, {"t": 3.0, "a": "reach", "y": -34}, {"t": 4.6, "a": "kneel", "y": -34}, {"t": 8.0, "a": "kneel_point", "y": -34}, {"t": 10.0, "a": "kneel", "y": -34}, {"t": 12.4, "a": "present"}, {"t": 14.2, "a": "crate"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [
+     {"t": 0, "f": "", "o": [-175, -195, 82], "r": [0, 17, 0]},
+     {"t": 1.9, "f": "lib", "s": "hand_r", "o": [4, 0, 0], "r": [0, 0, 0], "b": 0.7},
+     {"t": 4.3, "f": "grandpa", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0], "b": 0.9}]}
+   ]
+  },
+
+  "wax-2019b": {
+   "_note": "Two catalogers type records into WorldCat while a third explains the collection; the record count climbs past a thousand.",
+   "figures": {
+    "cat1": [{"t": 0, "a": "sit_type"}, {"t": 4.4, "a": "sit_talk"}, {"t": 6.0, "a": "sit_type"}, {"t": 10.6, "a": "sit_cheer"}, {"t": 12.0, "a": "sit_point", "y": -18}, {"t": 13.2, "a": "sit_type"}],
+    "cat2": [{"t": 0, "a": "sit_idle"}, {"t": 1.6, "a": "sit_talk"}, {"t": 3.6, "a": "sit_point", "y": 16}, {"t": 5.2, "a": "sit_type"}, {"t": 10.6, "a": "sit_cheer"}, {"t": 12.2, "a": "sit_idle"}],
+    "cat3": [{"t": 0, "a": "think"}, {"t": 2.4, "a": "point", "y": 24}, {"t": 5.0, "a": "present"}, {"t": 7.2, "a": "look_around"}, {"t": 10.6, "a": "clap"}, {"t": 12.6, "a": "think"}]
+   },
+   "props": []
+  },
+
+  "wax-2019c": {
+   "_note": "A teen XR Star sets up a 360 camera on the farm, a boy shows the footage on his laptop, and a camper watches it back in a headset.",
+   "figures": {
+    "star": [{"t": 0, "a": "crouch"}, {"t": 2.4, "a": "idle"}, {"t": 3.8, "a": "present", "y": 20}, {"t": 5.2, "a": "talk"}, {"t": 7.2, "a": "wave"}, {"t": 9.0, "a": "idle_b"}, {"t": 12.6, "a": "crouch"}],
+    "boy":  [{"t": 0, "a": "tablet"}, {"t": 6.0, "a": "point", "y": -30}, {"t": 8.4, "a": "tablet"}, {"t": 12.0, "a": "look_around"}, {"t": 13.6, "a": "tablet"}],
+    "kid":  [{"t": 0, "a": "idle_happy"}, {"t": 2.2, "a": "look_around", "y": 30}, {"t": 4.0, "a": "point", "y": -30}, {"t": 6.0, "a": "crouch"}, {"t": 8.0, "a": "talk", "y": -40}, {"t": 10.0, "a": "cheer"}, {"t": 11.6, "a": "idle_happy"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "kid", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]},
+    {"id": "laptop", "kind": "tablet", "keys": [{"t": 0, "f": "boy", "s": "hand_l", "o": [8, 0, 2], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2020": {
+   "_note": "Project SANDI: a trainee nurse practises on a holographic dialysis machine, a coach follows the lesson on a tablet, and a technician turns a virtual valve.",
+   "figures": {
+    "nurse": [{"t": 0, "a": "idle"}, {"t": 1.6, "a": "reach"}, {"t": 3.6, "a": "reach", "y": 12}, {"t": 5.2, "a": "look_around"}, {"t": 6.8, "a": "reach", "y": -10}, {"t": 9.6, "a": "talk"}, {"t": 11.2, "a": "cheer"}, {"t": 12.8, "a": "idle"}],
+    "coach": [{"t": 0, "a": "tablet"}, {"t": 4.6, "a": "talk", "y": -24}, {"t": 6.6, "a": "point", "y": -24}, {"t": 8.6, "a": "tablet"}, {"t": 10.8, "a": "present"}, {"t": 12.8, "a": "tablet"}],
+    "tech":  [{"t": 0, "a": "idle"}, {"t": 1.4, "a": "reach"}, {"t": 5.0, "a": "reach", "y": 14, "r": 0.9}, {"t": 9.6, "a": "look_around"}, {"t": 11.0, "a": "cheer"}, {"t": 12.8, "a": "idle"}]
+   },
+   "props": [
+    {"id": "headset_n", "kind": "headset", "keys": [{"t": 0, "f": "nurse", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]},
+    {"id": "headset_t", "kind": "headset", "keys": [{"t": 0, "f": "tech", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]},
+    {"id": "tablet", "kind": "tablet", "keys": [{"t": 0, "f": "coach", "s": "hand_l", "o": [8, 0, 2], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2022a": {
+   "_note": "A trainer walks Washington librarians through 360 video: one films on her phone, the other turns right round inside the finished panorama.",
+   "figures": {
+    "trainer": [{"t": 0, "a": "present"}, {"t": 2.0, "a": "point", "y": -40}, {"t": 3.8, "a": "idle"}, {"t": 4.8, "a": "present_b", "y": 20}, {"t": 7.0, "a": "idle_b"}, {"t": 9.6, "a": "think"}, {"t": 11.6, "a": "present"}, {"t": 13.4, "a": "idle"}],
+    "lib1":    [{"t": 0, "a": "phone"}, {"t": 2.4, "a": "phone", "y": 20}, {"t": 4.4, "a": "phone", "y": 40}, {"t": 6.4, "a": "phone", "y": -20}, {"t": 8.6, "a": "phone", "y": 10}, {"t": 10.4, "a": "talk"}, {"t": 12.6, "a": "phone"}],
+    "lib2":    [{"t": 0, "a": "look_around"}, {"t": 3.0, "a": "look_around", "y": 60, "b": 1.2}, {"t": 6.0, "a": "look_around", "y": 170, "b": 1.6}, {"t": 9.0, "a": "look_around", "y": 280, "b": 1.6}, {"t": 11.0, "a": "cheer", "y": 360, "b": 1.2}, {"t": 13.0, "a": "idle", "y": 360}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "lib2", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]},
+    {"id": "phone", "kind": "phone", "keys": [{"t": 0, "f": "lib1", "s": "hand_r", "o": [5, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2022b": {
+   "_note": "Lost Stories: one student plays the tribute on a keyboard, one builds the hull in a headset, one models at the desk.",
+   "figures": {
+    "player":  [{"t": 0, "a": "sit_type"}, {"t": 7.0, "a": "sit_type", "r": 1.12}, {"t": 13.0, "a": "sit_type", "r": 0.92}],
+    "builder": [{"t": 0, "a": "idle"}, {"t": 0.9, "a": "reach"}, {"t": 2.6, "a": "point", "y": -14}, {"t": 4.2, "a": "reach", "y": 14}, {"t": 5.8, "a": "point"}, {"t": 7.4, "a": "reach", "y": -10}, {"t": 9.4, "a": "look_around"}, {"t": 11.0, "a": "think"}, {"t": 12.8, "a": "idle_b"}],
+    "modeler": [{"t": 0, "a": "sit_type"}, {"t": 4.9, "a": "sit_point", "y": -40}, {"t": 7.0, "a": "sit_type"}, {"t": 9.9, "a": "sit_idle"}, {"t": 11.9, "a": "sit_clap"}, {"t": 13.2, "a": "sit_idle"}, {"t": 14.1, "a": "sit_type"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "builder", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2024": {
+   "_note": "A browser gallery of Ukrainian children's art: a visitor walks it in a headset, a librarian kneels to talk a child through the pictures.",
+   "figures": {
+    "visitor": [{"t": 0, "a": "idle"}, {"t": 3.4, "a": "look_around"}, {"t": 5.6, "a": "reach", "y": 20}, {"t": 7.8, "a": "look_around", "y": -24}, {"t": 10.4, "a": "idle_b"}, {"t": 12.4, "a": "think"}, {"t": 14.2, "a": "idle"}],
+    "lib":     [{"t": 0, "a": "idle"}, {"t": 2.4, "a": "kneel", "y": -30}, {"t": 4.2, "a": "kneel_point", "y": -30}, {"t": 6.6, "a": "kneel", "y": -30}, {"t": 9.0, "a": "kneel_point", "y": -20}, {"t": 12.0, "a": "idle"}],
+    "kid":     [{"t": 0, "a": "idle_happy"}, {"t": 3.0, "a": "point", "y": 40}, {"t": 5.2, "a": "talk"}, {"t": 7.6, "a": "look_around", "y": -30}, {"t": 9.8, "a": "think"}, {"t": 12.2, "a": "idle_happy"}]
+   },
+   "props": [
+    {"id": "headset", "kind": "headset", "keys": [{"t": 0, "f": "visitor", "s": "head", "o": [0, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  },
+
+  "wax-2025": {
+   "_note": "Pollinators at the fair: two children plant AR flowers on tablets and look up as the butterflies hatch, dad takes a picture, the volunteer works the booth.",
+   "figures": {
+    "k1":  [{"t": 0, "a": "tablet"}, {"t": 5.2, "a": "look_around"}, {"t": 6.6, "a": "look_around", "y": 22}, {"t": 8.2, "a": "look_around", "y": -12}, {"t": 9.6, "a": "tablet"}, {"t": 10.6, "a": "cheer"}, {"t": 12.6, "a": "tablet"}],
+    "k2":  [{"t": 0, "a": "tablet"}, {"t": 5.4, "a": "look_around"}, {"t": 6.8, "a": "look_around", "y": -22}, {"t": 8.4, "a": "look_around", "y": 12}, {"t": 9.8, "a": "tablet"}, {"t": 10.9, "a": "cheer"}, {"t": 12.9, "a": "tablet"}],
+    "dad": [{"t": 0, "a": "idle"}, {"t": 3.0, "a": "point", "y": -20}, {"t": 5.6, "a": "look_around"}, {"t": 8.2, "a": "idle_b"}, {"t": 9.4, "a": "phone"}, {"t": 12.8, "a": "idle"}],
+    "vol": [{"t": 0, "a": "present"}, {"t": 2.6, "a": "idle_b"}, {"t": 4.6, "a": "point", "y": -16}, {"t": 7.0, "a": "look_around"}, {"t": 9.4, "a": "present_b"}, {"t": 11.8, "a": "idle_b"}]
+   },
+   "props": [
+    {"id": "tab1", "kind": "tablet", "keys": [{"t": 0, "f": "k1", "s": "hand_l", "o": [8, 0, 2], "r": [0, 0, 0]}]},
+    {"id": "tab2", "kind": "tablet", "keys": [{"t": 0, "f": "k2", "s": "hand_l", "o": [8, 0, 2], "r": [0, 0, 0]}]},
+    {"id": "phone", "kind": "phone", "keys": [{"t": 0, "f": "dad", "s": "hand_r", "o": [5, 0, 0], "r": [0, 0, 0]}]}
+   ]
+  }
+ }
+}

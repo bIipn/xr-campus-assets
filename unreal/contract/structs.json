@@ -7,8 +7,17 @@
       "fields": [["Type", "Name"], ["Text", "Text"], ["Items", "Array<Text>"]]},
     "FWTABookPage": {"row": false, "fields": [["Heading", "Text"], ["Blocks", "Array<FWTABookBlock>"]]},
     "FWTAWaxLine": {"row": false, "fields": [["Time", "Float"], ["Text", "Text"]]},
-    "FWTAWaxFigure": {"row": false, "doc": "A reenactor on a Wax Hall stage. Person = id in Content/Python/wta_people/people.json; its MetaHuman is /Game/WTA/Characters/<Person>/BP_<Person>. Offset = feet position in the stage frame, cm (X toward the aisle along StageYaw, Y to the right of X, Z up from the stage floor). Yaw = degrees added to StageYaw (0 = facing the aisle).",
-      "fields": [["Person", "Name"], ["Offset", "Vector"], ["Yaw", "Float"]]},
+    "FWTAWaxBeat": {"row": false, "doc": "One thing a reenactor does, from Time until the next beat (the last runs to the end of the loop and crossfades back into the first). Action names /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<Action>, retargeted from Mixamo by Content/Python/wta_mocap. Yaw = degrees added to the figure's yaw while it plays; Blend = crossfade from the beat before, seconds; Lift = cm added to the figure's height. Authored in Pipeline/content/wax_acting.json.",
+      "fields": [["Time", "Float"], ["Action", "Name"], ["Yaw", "Float"], ["Rate", "Float"], ["Blend", "Float"], ["Lift", "Float"]]},
+
+    "FWTAWaxFigure": {"row": false, "doc": "A reenactor on a Wax Hall stage. Person = id in Content/Python/wta_people/people.json; its MetaHuman is /Game/WTA/Characters/<Person>/BP_<Person>. Offset = feet position in the stage frame, cm (X toward the aisle along StageYaw, Y to the right of X, Z up from the stage floor). Yaw = degrees added to StageYaw (0 = facing the aisle). Beats = what it acts out while the player is near; with none it holds one frame of the idle.",
+      "fields": [["Person", "Name"], ["Offset", "Vector"], ["Yaw", "Float"], ["Beats", "Array<FWTAWaxBeat>"]]},
+
+    "FWTAWaxPropKey": {"row": false, "doc": "Where a prop is at Time: held by Figure (a Person id) at Socket (head, hand_l, hand_r, chest) with Offset/Rotation in that socket's frame, or standing in the stage's own frame when Figure is empty. It travels to this key over Blend seconds, arriving on Time.",
+      "fields": [["Time", "Float"], ["Figure", "Name"], ["Socket", "Name"], ["Offset", "Vector"], ["Rotation", "Rotator"], ["Blend", "Float"]]},
+
+    "FWTAWaxProp": {"row": false, "doc": "A prop on a Wax Hall stage. Kind is headset, tablet, clipboard, box, book or phone, which picks the mesh.",
+      "fields": [["Id", "Name"], ["Kind", "Name"], ["Keys", "Array<FWTAWaxPropKey>"]]},
 
     "FWTASourceRow": {"row": true, "table": "DT_Sources", "file": "Sources.json", "fields": [["Label", "Text"], ["Url", "String"]]},
     "FWTAGalleryRow": {"row": true, "table": "DT_Galleries", "file": "Galleries.json",
@@ -35,7 +44,7 @@
     "FWTATokenRow": {"row": true, "table": "DT_Tokens", "file": "Tokens.json", "doc": "RideGate = ride id that must be running to collect it ('' = always).",
       "fields": [["Place", "Text"], ["Hint", "Text"], ["Wing", "Name"], ["Location", "Vector"], ["RideGate", "Name"]]},
     "FWTAWaxSceneRow": {"row": true, "table": "DT_WaxScenes", "file": "WaxScenes.json", "doc": "StageLocation = front-centre of the stage floor; StageYaw = direction the stage faces (toward the aisle). Sequence = Level Sequence once authored ('' until then). Figures = the reenactors (web cast) on the stage.",
-      "fields": [["Number", "Int"], ["Year", "Text"], ["Title", "Text"], ["LoopSeconds", "Float"], ["Lines", "Array<FWTAWaxLine>"], ["StageLocation", "Vector"], ["StageYaw", "Float"], ["ItemId", "Name"], ["Sequence", "SoftObject"], ["Figures", "Array<FWTAWaxFigure>"]]},
+      "fields": [["Number", "Int"], ["Year", "Text"], ["Title", "Text"], ["LoopSeconds", "Float"], ["Lines", "Array<FWTAWaxLine>"], ["StageLocation", "Vector"], ["StageYaw", "Float"], ["ItemId", "Name"], ["Sequence", "SoftObject"], ["Figures", "Array<FWTAWaxFigure>"], ["Props", "Array<FWTAWaxProp>"]]},
     "FWTAStationRow": {"row": true, "table": "DT_Stations", "file": "Stations.json", "doc": "Hands-on stations (sieve, titration, pendulum, bench, diorama). Steps = step titles; Panel = the intro paragraphs shown in the station panel.",
       "fields": [["Room", "Name"], ["Kicker", "Text"], ["Title", "Text"], ["Subtitle", "Text"], ["GoLabel", "Text"], ["Steps", "Array<Text>"], ["Panel", "Array<Text>"], ["bUsesHands", "Bool"], ["Location", "Vector"], ["View", "View"]]},
     "FWTARideRow": {"row": true, "table": "DT_Rides", "file": "Rides.json",

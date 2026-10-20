@@ -88,10 +88,45 @@ struct WALKTHEARCHIVE_API FWTAWaxLine
 };
 
 /**
+ * One thing a reenactor does, from Time until the next beat (the last one runs to the end of the loop and
+ * crossfades back into the first, so the scene loops without a seam). Action names an AnimSequence at
+ * /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<Action>, retargeted from Mixamo motion capture by
+ * Content/Python/wta_mocap. Authored in Pipeline/content/wax_acting.json.
+ */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAWaxBeat
+{
+	GENERATED_BODY()
+
+	/** Seconds into the scene's loop. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Time = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Action;
+
+	/** Degrees added to the figure's yaw while this beat plays; the figure turns over Blend seconds. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Yaw = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Rate = 1.f;
+
+	/** Crossfade from the beat before, in seconds. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Blend = 0.35f;
+
+	/** Centimetres added to the figure's height while this beat plays (seated clips sit at their own seat height). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Lift = 0.f;
+};
+
+/**
  * One reenactor standing on a Wax Hall stage. Person = id in Content/Python/wta_people/people.json; its MetaHuman
  * Blueprint is /Game/WTA/Characters/<Person>/BP_<Person>. Offset = feet position in the stage's frame in cm
  * (X toward the aisle along StageYaw, Y to the right of X, Z up from the stage floor). Yaw = degrees added to
- * StageYaw (0 = facing the aisle).
+ * StageYaw (0 = facing the aisle). Beats = what it acts out while the player is watching; with none it holds
+ * one frame of the idle, as it did before the scenes were animated.
  */
 USTRUCT(BlueprintType)
 struct WALKTHEARCHIVE_API FWTAWaxFigure
@@ -106,6 +141,56 @@ struct WALKTHEARCHIVE_API FWTAWaxFigure
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	float Yaw = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTAWaxBeat> Beats;
+};
+
+/**
+ * Where a prop is at Time: held by Figure at Socket (head, hand_l, hand_r, chest) with Offset/Rotation in that
+ * socket's frame, or standing in the stage's own frame when Figure is empty. Between two keys the prop travels
+ * from one to the other over the second key's Blend seconds, so a headset passed from one pair of hands to
+ * another moves with them.
+ */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAWaxPropKey
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Time = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Figure;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Socket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FVector Offset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FRotator Rotation = FRotator::ZeroRotator;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Blend = 0.5f;
+};
+
+/** A prop on a Wax Hall stage: a headset, a tablet, a clipboard, a box, a book or a phone, and where it rides. */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAWaxProp
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Id;
+
+	/** headset / tablet / clipboard / box / book / phone - picks the mesh (AWTAWaxStageActor::PropMesh). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Kind;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTAWaxPropKey> Keys;
 };
 
 // ---------------------------------------------------------------------------
@@ -571,6 +656,10 @@ struct WALKTHEARCHIVE_API FWTAWaxSceneRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FWTAWaxFigure> Figures;
+
+	/** Headsets, tablets and boxes the reenactors hold while the scene plays. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTAWaxProp> Props;
 };
 
 /**

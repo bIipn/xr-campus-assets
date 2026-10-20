@@ -1,13 +1,15 @@
-// Walk the Archive - a Wax Hall stage: captions loop while the player stands in front of it.
+// Walk the Archive - a Wax Hall stage: the reenactors act while you are near it, and are wax when you are not.
 
 #include "World/WTAWaxStageActor.h"
 #include "Animation/AnimSequence.h"
 #include "Components/BoxComponent.h"
 #include "Components/LODSyncComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Engine/EngineTypes.h"
+#include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,12 +17,64 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "TimerManager.h"
 #include "World/WTAPeopleLibrary.h"
+#include "World/WTAWaxAnimInstance.h"
 
 namespace
 {
 	AWTAPlayerController* WaxFindController(const UObject* WorldContext)
 	{
 		return Cast<AWTAPlayerController>(UGameplayStatics::GetPlayerController(WorldContext, 0));
+	}
+
+	/** The body bone a prop key's Socket names. */
+	FName WaxSocketBone(FName Socket)
+	{
+		static const FName Head(TEXT("head"));
+		static const FName HandL(TEXT("hand_l"));
+		static const FName HandR(TEXT("hand_r"));
+		static const FName Chest(TEXT("chest"));
+		static const FName Spine(TEXT("spine_05"));
+		if (Socket == Chest)
+		{
+			return Spine;
+		}
+		if (Socket == Head || Socket == HandL || Socket == HandR)
+		{
+			return Socket;
+		}
+		return Spine;
+	}
+
+	/**
+	 * What a prop of this kind is made of: the mesh, how big it is in cm, and how it sits in the socket it rides.
+	 * The headset is the museum's own prop mesh; the rest are blocks, like the web's.
+	 */
+	struct FWaxPropKind
+	{
+		const TCHAR* Mesh;
+		FVector SizeCm;
+		FVector Offset;
+		FRotator Rotation;
+		const TCHAR* Material;
+	};
+
+	const FWaxPropKind* WaxPropKind(FName Kind)
+	{
+		static const TCHAR* Cube = TEXT("/Engine/BasicShapes/Cube.Cube");
+		static const TCHAR* Dark = TEXT("/Game/WTA/Materials/M_WTA_PropDark.M_WTA_PropDark");
+		static const TCHAR* Paper = TEXT("/Game/WTA/Materials/M_WTA_PropPaper.M_WTA_PropPaper");
+		static const TCHAR* Card = TEXT("/Game/WTA/Materials/M_WTA_PropCard.M_WTA_PropCard");
+		static const TMap<FName, FWaxPropKind> Kinds = {
+			// The museum's own headset model is an exhibit piece 1.5 m tall, so a worn one is a block over the
+			// eyes, the way the web draws it from across the aisle.
+			{ FName(TEXT("headset")),   { Cube, FVector(11.f, 20.f, 9.f), FVector(9.f, 0.f, 4.f), FRotator(0.f, 0.f, 0.f), Dark } },
+			{ FName(TEXT("tablet")),    { Cube, FVector(1.2f, 24.f, 17.f), FVector(9.f, 0.f, 1.f), FRotator(0.f, 0.f, 0.f), Dark } },
+			{ FName(TEXT("clipboard")), { Cube, FVector(1.f, 23.f, 32.f), FVector(8.f, 0.f, 2.f), FRotator(0.f, 0.f, 0.f), Paper } },
+			{ FName(TEXT("book")),      { Cube, FVector(4.f, 26.f, 18.f), FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), Paper } },
+			{ FName(TEXT("box")),       { Cube, FVector(32.f, 40.f, 28.f), FVector(0.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), Card } },
+			{ FName(TEXT("phone")),     { Cube, FVector(1.f, 7.5f, 15.f), FVector(6.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), Dark } },
+		};
+		return Kinds.Find(Kind);
 	}
 }
 
@@ -79,6 +133,7 @@ void AWTAWaxStageActor::BeginPlay()
 void AWTAWaxStageActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	FigureBones.Reset();
+	Plays.Reset();
 	for (AActor* Figure : Figures)
 	{
 		if (IsValid(Figure))
@@ -90,6 +145,28 @@ void AWTAWaxStageActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+UAnimSequence* AWTAWaxStageActor::LoadAction(FName Action)
+{
+	if (Action.IsNone())
+	{
+		return nullptr;
+	}
+	if (const TObjectPtr<UAnimSequence>* Found = Clips.Find(Action))
+	{
+		return *Found;
+	}
+	const FString Name = FString::Printf(TEXT("AS_WTA_%s"), *Action.ToString());
+	const FSoftObjectPath Path(FString::Printf(TEXT("%s/%s.%s"), *AnimFolder, *Name, *Name));
+	UAnimSequence* Clip = Cast<UAnimSequence>(Path.TryLoad());
+	if (Clip == nullptr)
+	{
+		UE_LOG(LogWTA, Warning, TEXT("%s: no clip for action '%s' (%s): the figure holds its pose instead"),
+			*GetName(), *Action.ToString(), *Path.ToString());
+	}
+	Clips.Add(Action, Clip);
+	return Clip;
+}
+
 void AWTAWaxStageActor::SpawnFigures()
 {
 	UWorld* World = GetWorld();
@@ -97,11 +174,12 @@ void AWTAWaxStageActor::SpawnFigures()
 	{
 		return;
 	}
-	UAnimSequence* Pose = FigurePose.LoadSynchronous();
+	UAnimSequence* Idle = FigurePose.LoadSynchronous();
 	const FRotator StageRotation(0.f, Scene.StageYaw, 0.f);
 	int32 NotBuilt = 0;
-	for (const FWTAWaxFigure& Figure : Scene.Figures)
+	for (int32 FigureIndex = 0; FigureIndex < Scene.Figures.Num(); ++FigureIndex)
 	{
+		const FWTAWaxFigure& Figure = Scene.Figures[FigureIndex];
 		UClass* Class = UWTAPeopleLibrary::LoadMetaHumanClass(Figure.Person);
 		if (Class == nullptr)
 		{
@@ -109,29 +187,109 @@ void AWTAWaxStageActor::SpawnFigures()
 			continue;
 		}
 		const FVector Location = Scene.StageLocation + StageRotation.RotateVector(Figure.Offset);
-		const FRotator Rotation(0.f, Scene.StageYaw + Figure.Yaw + FigureYawOffset, 0.f);
+		// The web could put a figure's back to the camera, which sat behind the scene; here the visitor stands in
+		// the aisle, and a wax figure facing the back wall is a figure you cannot see. Turn it back toward the
+		// aisle, no further than it was already turned.
+		const float Facing = FMath::ClampAngle(Figure.Yaw, -MaxTurnFromAisle, MaxTurnFromAisle);
+		const float BaseYaw = Scene.StageYaw + Facing + FigureYawOffset;
 		FActorSpawnParameters Params;
 		Params.Owner = this;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		AActor* Person = World->SpawnActor<AActor>(Class, Location, Rotation, Params);
+		AActor* Person = World->SpawnActor<AActor>(Class, Location, FRotator(0.f, BaseYaw, 0.f), Params);
 		if (Person == nullptr)
 		{
 			continue;
 		}
 		// Wax figures stand behind the rope: nothing to collide with or hover.
 		Person->SetActorEnableCollision(false);
-		if (Pose != nullptr)
-		{
-			UWTAPeopleLibrary::PlayPose(Person, Pose, false, UWTAPeopleLibrary::PersonPhase(Figure.Person) * Pose->GetPlayLength());
-		}
 		Figures.Add(Person);
+
+		// Every mesh evaluates, at whatever LOD it is drawn at, never skipped by the update rate optimizer: the
+		// frame before a freeze has to be a full pose (see UWTAPeopleLibrary::Freeze).
+		TInlineComponentArray<USkeletalMeshComponent*> Meshes;
+		Person->GetComponents(Meshes);
+		for (USkeletalMeshComponent* Mesh : Meshes)
+		{
+			if (Mesh != nullptr)
+			{
+				Mesh->bEnableUpdateRateOptimizations = false;
+			}
+		}
+		UWTAPeopleLibrary::Thaw(Person);
+
+		// The body runs our own animation instance; the face, clothes and grooms follow it as before.
+		FFigurePlay& Play = Plays.AddDefaulted_GetRef();
+		Play.Figure = Person;
+		Play.FigureIndex = FigureIndex;
+		Play.Feet = Location;
+		Play.BaseYaw = BaseYaw;
+		if (USkeletalMeshComponent* Body = UWTAPeopleLibrary::FindBody(Person))
+		{
+			Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+			Body->SetAnimInstanceClass(UWTAWaxAnimInstance::StaticClass());
+			UWTAWaxAnimInstance* Anim = Cast<UWTAWaxAnimInstance>(Body->GetAnimInstance());
+			Play.Anim = Anim;
+			if (Anim != nullptr)
+			{
+				// Stand in a frame of this figure's own first beat, so a sleeping stage is a tableau of the
+				// scene rather than a row of people in the same idle.
+				UAnimSequence* First = Figure.Beats.Num() > 0 ? LoadAction(Figure.Beats[0].Action) : Idle;
+				if (First == nullptr)
+				{
+					First = Idle;
+				}
+				if (First != nullptr)
+				{
+					const float Phase = UWTAPeopleLibrary::PersonPhase(Figure.Person) * First->GetPlayLength();
+					Anim->PlayClip(First, true, 1.f, Phase, 0.f);
+				}
+				Anim->Hold(true);
+			}
+		}
 	}
 	if (NotBuilt > 0)
 	{
 		UE_LOG(LogWTA, Log, TEXT("%s: %d of %d reenactors not built yet"), *GetName(), NotBuilt, Scene.Figures.Num());
 	}
-	// Let the held pose evaluate (body, then the face, clothes and grooms that follow it; PlayPose makes that happen
-	// even off screen), then freeze the bones (UpdateFigureBones, every frame from now on).
+
+	// Props ride the figures' sockets; they hang off the stage so a figure's own LOD never moves them.
+	for (const FWTAWaxProp& Prop : Scene.Props)
+	{
+		const FWaxPropKind* Kind = WaxPropKind(Prop.Kind);
+		UStaticMesh* Mesh = Kind != nullptr ? Cast<UStaticMesh>(FSoftObjectPath(Kind->Mesh).TryLoad()) : nullptr;
+		if (Mesh == nullptr)
+		{
+			UE_LOG(LogWTA, Warning, TEXT("%s: prop '%s' has no mesh for kind '%s'"), *GetName(), *Prop.Id.ToString(), *Prop.Kind.ToString());
+			PropParts.Add(nullptr);
+			continue;
+		}
+		UStaticMeshComponent* Part = NewObject<UStaticMeshComponent>(this);
+		Part->SetStaticMesh(Mesh);
+		if (UMaterialInterface* Material = Cast<UMaterialInterface>(FSoftObjectPath(Kind->Material).TryLoad()))
+		{
+			for (int32 Slot = 0; Slot < Part->GetNumMaterials(); ++Slot)
+			{
+				Part->SetMaterial(Slot, Material);
+			}
+		}
+		Part->SetMobility(EComponentMobility::Movable);
+		Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Part->SetCanEverAffectNavigation(false);
+		Part->bCastDynamicShadow = true;
+		if (!Kind->SizeCm.IsNearlyZero())
+		{
+			// The engine's cube is a metre across, so a size in cm is the scale over a hundred.
+			const FVector Bounds = Mesh->GetBounds().BoxExtent * 2.f;
+			Part->SetWorldScale3D(FVector(
+				Bounds.X > KINDA_SMALL_NUMBER ? Kind->SizeCm.X / Bounds.X : 1.f,
+				Bounds.Y > KINDA_SMALL_NUMBER ? Kind->SizeCm.Y / Bounds.Y : 1.f,
+				Bounds.Z > KINDA_SMALL_NUMBER ? Kind->SizeCm.Z / Bounds.Z : 1.f));
+		}
+		Part->RegisterComponent();
+		Part->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		PropParts.Add(Part);
+	}
+
 	SpawnFrame = GFrameCounter;
 	SpawnSeconds = World->GetTimeSeconds();
 	FigureBones.Reset();
@@ -157,6 +315,241 @@ void AWTAWaxStageActor::SpawnFigures()
 			PrimaryActorTick.AddPrerequisite(Sync, Sync->PrimaryComponentTick);
 		}
 	}
+	UpdateProps();
+}
+
+void AWTAWaxStageActor::SetActing(bool bWake)
+{
+	if (bActing == bWake)
+	{
+		return;
+	}
+	bActing = bWake;
+	for (FFigurePlay& Play : Plays)
+	{
+		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
+		{
+			// Waking carries on from the frame the figure stopped at, so nothing jumps either way.
+			Anim->Hold(!bWake);
+		}
+	}
+	if (bWake)
+	{
+		for (AActor* Person : Figures)
+		{
+			UWTAPeopleLibrary::Thaw(Person);
+		}
+		for (FFigureBones& Bones : FigureBones)
+		{
+			Bones.bFrozen = false;
+			Bones.EvalFrames = 0;
+		}
+	}
+	else
+	{
+		// The settle clock starts again, so a figure only freezes once it has evaluated its held pose.
+		SpawnFrame = GFrameCounter;
+		SpawnSeconds = GetWorld() != nullptr ? GetWorld()->GetTimeSeconds() : 0.0;
+	}
+}
+
+void AWTAWaxStageActor::UpdateBeats(float DeltaSeconds)
+{
+	float LoopSeconds = Scene.LoopSeconds;
+	if (LoopSeconds <= 0.f)
+	{
+		LoopSeconds = 14.f;
+	}
+	ActTime += DeltaSeconds;
+	if (ActTime >= LoopSeconds)
+	{
+		ActTime = FMath::Fmod(ActTime, LoopSeconds);
+	}
+
+	for (FFigurePlay& Play : Plays)
+	{
+		AActor* Person = Play.Figure.Get();
+		if (!IsValid(Person) || !Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const TArray<FWTAWaxBeat>& Beats = Scene.Figures[Play.FigureIndex].Beats;
+		if (Beats.Num() > 0)
+		{
+			// The beat running now is the last one whose time has passed; before the first, the last beat of the
+			// loop is still going, which is what makes the loop join without a seam.
+			int32 Want = Beats.Num() - 1;
+			for (int32 i = 0; i < Beats.Num(); ++i)
+			{
+				if (Beats[i].Time <= ActTime)
+				{
+					Want = i;
+				}
+			}
+			if (Want != Play.BeatIndex)
+			{
+				const FWTAWaxBeat& Beat = Beats[Want];
+				const FName WasAction = Beats.IsValidIndex(Play.BeatIndex) ? Beats[Play.BeatIndex].Action : NAME_None;
+				const float Blend = FMath::Max(0.08f, Beat.Blend);
+				if (Beat.Action != WasAction)
+				{
+					if (UAnimSequence* Clip = LoadAction(Beat.Action))
+					{
+						if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
+						{
+							// Each figure enters a clip at its own phase, so two people doing the same thing are
+							// never in lockstep.
+							const float Phase = UWTAPeopleLibrary::PersonPhase(Scene.Figures[Play.FigureIndex].Person) * Clip->GetPlayLength();
+							Anim->PlayClip(Clip, true, FMath::Max(0.05f, Beat.Rate), Phase, Blend);
+						}
+					}
+				}
+				// A beat that only turns the figure (same clip, new yaw) just turns it.
+				Play.YawFrom = Play.YawTo;
+				Play.YawTo = Beat.Yaw;
+				Play.LiftFrom = Play.LiftTo;
+				Play.LiftTo = Beat.Lift;
+				Play.TurnSeconds = 0.f;
+				Play.TurnLength = Blend;
+				Play.BeatIndex = Want;
+			}
+		}
+
+		if (Play.TurnSeconds < Play.TurnLength)
+		{
+			Play.TurnSeconds = FMath::Min(Play.TurnLength, Play.TurnSeconds + DeltaSeconds);
+		}
+		const float Alpha = Play.TurnLength > 0.f ? FMath::SmoothStep(0.f, 1.f, Play.TurnSeconds / Play.TurnLength) : 1.f;
+		const float Yaw = FMath::Lerp(Play.YawFrom, Play.YawTo, Alpha);
+		const float Lift = FMath::Lerp(Play.LiftFrom, Play.LiftTo, Alpha);
+		Person->SetActorRotation(FRotator(0.f, Play.BaseYaw + Yaw, 0.f));
+		Person->SetActorLocation(Play.Feet + FVector(0.f, 0.f, Lift));
+	}
+}
+
+bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FTransform& Out) const
+{
+	if (Key.Figure.IsNone() || Key.Figure.ToString().IsEmpty())
+	{
+		// Standing in the stage's own frame.
+		const FRotator StageRotation(0.f, Scene.StageYaw, 0.f);
+		Out = FTransform(FRotator(StageRotation.Pitch + Key.Rotation.Pitch, StageRotation.Yaw + Key.Rotation.Yaw, StageRotation.Roll + Key.Rotation.Roll),
+			Scene.StageLocation + StageRotation.RotateVector(Key.Offset));
+		return true;
+	}
+	// Riding a figure: the key names the figure by the short name the scene uses ("teen"), which is the row
+	// person id with the scene id taken off the front.
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (!Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const FString Person = Scene.Figures[Play.FigureIndex].Person.ToString();
+		const FString Short = FString::Printf(TEXT("%s-%s"), *SceneId.ToString(), *Key.Figure.ToString());
+		if (Person != Short && Person != Key.Figure.ToString())
+		{
+			continue;
+		}
+		AActor* Figure = Play.Figure.Get();
+		USkeletalMeshComponent* Body = IsValid(Figure) ? UWTAPeopleLibrary::FindBody(Figure) : nullptr;
+		if (Body == nullptr)
+		{
+			return false;
+		}
+		const FName Bone = WaxSocketBone(Key.Socket);
+		if (Body->GetBoneIndex(Bone) == INDEX_NONE)
+		{
+			return false;
+		}
+		FTransform Frame = Body->GetSocketTransform(Bone, RTS_World);
+		// A hand's prop turns with the hand; one on the head or chest sits square to the person, because the
+		// skull and spine bones point whichever way the rig author chose and a headset has to face forward.
+		static const FName HandL(TEXT("hand_l"));
+		static const FName HandR(TEXT("hand_r"));
+		if (Key.Socket != HandL && Key.Socket != HandR)
+		{
+			// The MetaHuman Blueprint faces +Y, which FigureYawOffset turns to the actor's +X: the person looks
+			// along the actor's yaw less that offset.
+			Frame = FTransform(FRotator(0.f, Figure->GetActorRotation().Yaw - FigureYawOffset, 0.f), Frame.GetLocation());
+		}
+		Out = FTransform(Key.Rotation, Key.Offset) * Frame;
+		return true;
+	}
+	return false;
+}
+
+void AWTAWaxStageActor::UpdateProps()
+{
+	float LoopSeconds = Scene.LoopSeconds;
+	if (LoopSeconds <= 0.f)
+	{
+		LoopSeconds = 14.f;
+	}
+	for (int32 i = 0; i < PropParts.Num() && i < Scene.Props.Num(); ++i)
+	{
+		UStaticMeshComponent* Part = PropParts[i];
+		const FWTAWaxProp& Prop = Scene.Props[i];
+		if (Part == nullptr || Prop.Keys.Num() == 0)
+		{
+			continue;
+		}
+		const FWaxPropKind* Kind = WaxPropKind(Prop.Kind);
+
+		// Where it is sitting: the last key whose time has passed (before the first, the last key of the loop).
+		int32 Resting = Prop.Keys.Num() - 1;
+		for (int32 k = 0; k < Prop.Keys.Num(); ++k)
+		{
+			if (Prop.Keys[k].Time <= ActTime)
+			{
+				Resting = k;
+			}
+		}
+		// It travels to a key over that key's Blend seconds, arriving exactly on the key's time.
+		int32 Arriving = INDEX_NONE;
+		float Alpha = 0.f;
+		for (int32 k = 0; k < Prop.Keys.Num() && Arriving == INDEX_NONE; ++k)
+		{
+			const float Travel = FMath::Max(0.05f, Prop.Keys[k].Blend);
+			const float Leaves = Prop.Keys[k].Time - Travel;
+			float Since = ActTime - Leaves;
+			if (Leaves < 0.f && ActTime > Prop.Keys[k].Time)
+			{
+				// The window straddles the loop's join.
+				Since = ActTime - (Leaves + LoopSeconds);
+			}
+			if (Since >= 0.f && Since < Travel && k != Resting)
+			{
+				Arriving = k;
+				Alpha = Since / Travel;
+			}
+		}
+
+		FTransform Where;
+		if (Arriving == INDEX_NONE)
+		{
+			if (!PropKeyTransform(Prop.Keys[Resting], Where))
+			{
+				continue;
+			}
+		}
+		else
+		{
+			FTransform From;
+			FTransform To;
+			if (!PropKeyTransform(Prop.Keys[Resting], From) || !PropKeyTransform(Prop.Keys[Arriving], To))
+			{
+				continue;
+			}
+			// A hand-over: the prop leaves one pair of hands and arrives in the other without snapping.
+			Where.Blend(From, To, FMath::SmoothStep(0.f, 1.f, Alpha));
+		}
+		if (Kind != nullptr)
+		{
+			Where = FTransform(Kind->Rotation, Kind->Offset) * Where;
+		}
+		Part->SetWorldLocationAndRotation(Where.GetLocation(), Where.GetRotation());
+	}
 }
 
 void AWTAWaxStageActor::UpdateFigureBones()
@@ -166,9 +559,14 @@ void AWTAWaxStageActor::UpdateFigureBones()
 	{
 		return;
 	}
+	if (bActing)
+	{
+		// Acting: every mesh evaluates every frame, so there is nothing to freeze or repose.
+		return;
+	}
 	// A slow start (first launch: shaders compiling, meshes streaming) can fit only a frame or two into the settle
 	// time; a face frozen before it copied the body's head and neck keeps its reference pose under a posed head and
-	// sags. So a new figure freezes after SettleSeconds and MinFramesBeforeFreeze frames, once its face sits on its
+	// sags. So a figure freezes after SettleSeconds and MinFramesBeforeFreeze frames, once its face sits on its
 	// body, or after MaxSecondsBeforeFreeze whatever the face says.
 	const double Age = World->GetTimeSeconds() - SpawnSeconds;
 	const bool bSettleTimeOver = Age >= SettleSeconds && GFrameCounter - SpawnFrame >= static_cast<uint64>(MinFramesBeforeFreeze);
@@ -237,6 +635,48 @@ void AWTAWaxStageActor::UpdateFigureBones()
 	}
 }
 
+FString AWTAWaxStageActor::DescribeActing() const
+{
+	FString Out = FString::Printf(TEXT("%s %s t=%.1f"), *SceneId.ToString(), bActing ? TEXT("acting") : TEXT("wax"), ActTime);
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (!Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const UWTAWaxAnimInstance* Anim = Play.Anim.Get();
+		const UAnimSequence* Clip = Anim != nullptr ? Anim->GetClip() : nullptr;
+		Out += FString::Printf(TEXT("; %s %s %.1fs%s"), *Scene.Figures[Play.FigureIndex].Person.ToString(),
+			Clip != nullptr ? *Clip->GetName() : TEXT("(no clip)"), Anim != nullptr ? Anim->GetClipTime() : 0.f,
+			Anim != nullptr && Anim->IsBlending() ? TEXT(" blending") : TEXT(""));
+	}
+	for (int32 i = 0; i < PropParts.Num() && i < Scene.Props.Num(); ++i)
+	{
+		const FWTAWaxProp& Prop = Scene.Props[i];
+		if (PropParts[i] == nullptr)
+		{
+			Out += FString::Printf(TEXT("; %s NO MESH"), *Prop.Id.ToString());
+			continue;
+		}
+		int32 Resting = Prop.Keys.Num() - 1;
+		for (int32 k = 0; k < Prop.Keys.Num(); ++k)
+		{
+			if (Prop.Keys[k].Time <= ActTime)
+			{
+				Resting = k;
+			}
+		}
+		const FVector At = PropParts[i]->GetComponentLocation();
+		const FVector Size = PropParts[i]->Bounds.BoxExtent * 2.f;
+		Out += FString::Printf(TEXT("; %s key %d %s %s at %s %.0fx%.0fx%.0f cm%s"), *Prop.Id.ToString(), Resting,
+			Prop.Keys.IsValidIndex(Resting) ? *Prop.Keys[Resting].Figure.ToString() : TEXT("-"),
+			Prop.Keys.IsValidIndex(Resting) ? *Prop.Keys[Resting].Socket.ToString() : TEXT("-"),
+			*At.ToCompactString(), Size.X, Size.Y, Size.Z,
+			PropParts[i]->IsVisible() ? TEXT("") : TEXT(" HIDDEN"));
+	}
+	return Out;
+}
+
 void AWTAWaxStageActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
@@ -247,7 +687,7 @@ void AWTAWaxStageActor::NotifyActorBeginOverlap(AActor* OtherActor)
 		return;
 	}
 
-	// A fresh loop every visit, like the web: the scene wakes when you walk up to it.
+	// A fresh caption loop every visit, like the web: the scene wakes when you walk up to it.
 	bPlayerInside = true;
 	bCredited = false;
 	PlayTime = 0.f;
@@ -289,6 +729,23 @@ void AWTAWaxStageActor::NotifyActorEndOverlap(AActor* OtherActor)
 void AWTAWaxStageActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	// The scene comes to life as the player walks up the aisle toward it, and is wax again once they are well
+	// past: the slack keeps it from flickering on the boundary.
+	if (bHasScene && Plays.Num() > 0)
+	{
+		const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+		if (Pawn != nullptr)
+		{
+			const float Distance = static_cast<float>(FVector::Dist(Pawn->GetActorLocation(), Scene.StageLocation));
+			SetActing(bPlayerInside || Distance <= (bActing ? WakeDistance + SleepDistanceSlack : WakeDistance));
+		}
+		if (bActing)
+		{
+			UpdateBeats(DeltaSeconds);
+			UpdateProps();
+		}
+	}
 
 	UpdateFigureBones();
 
