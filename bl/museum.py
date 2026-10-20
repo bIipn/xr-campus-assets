@@ -611,17 +611,18 @@ def exterior_shell():
             for (za, zb) in ((0.2, -1.2), (-4.8, ZO)):
                 run_boxes(ash, (a[0], za), (a[0], zb), out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)
         else:
-            wall_face(ash, a, c, out, -1.0, H, nu=8, nv=3)
-            run_boxes(ash, a, c, out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)                  # plinth course
+            # the north wall: the Wax Hall door (3.2 x 3.1 on the axis) goes through it too
+            wall_with_door(ash, (a[0], -1.0, a[1]), (1, 0, 0), (0, 1, 0), (0, 0, -1), 0.0, c[0] - a[0], H + 1.0, -a[0] - 1.6, -a[0] + 1.6, DOOR_H + 1.0, solid=False)
+            for (xa, xb) in ((a[0], -1.6), (1.6, c[0])):
+                run_boxes(ash, (xa, a[1]), (xb, a[1]), out, [(-1.0, 0.6, 0.12), (0.6, 0.7, 0.16)], seg=3.0)   # plinth course
         entablature(ent, den, a, c, out, H - ENT_H - 0.9)
         run_boxes(ash, a, c, out, [(H - 0.9, H + 0.6, 0.0 + 0.02)], seg=3.0)                           # parapet face
         # pilasters every 6 m between the windows... the block has no windows: pilasters mark the bays
         ux, uz = c[0] - a[0], c[1] - a[1]; Ln = math.hypot(ux, uz); ux, uz = ux / Ln, uz / Ln
-        s = 0.0
-        while s <= Ln + 1e-6:
-            sc = min(max(s, 0.6), Ln - 0.6)
+        # every 6 m along the long walls; the north wall's four flank its door
+        spots = [min(max(s_, 0.6), Ln - 0.6) for s_ in frange(0.0, Ln + 1e-6, 6.0)] if out[0] != 0 else [0.6, 3.3, Ln - 3.3, Ln - 0.6]
+        for sc in spots:
             pilaster(ash, ent, ash, (a[0] + ux * sc, a[1] + uz * sc), out, 0.8, H - ENT_H - 0.9, depth=0.22)
-            s += 6.0
     # the south face beside the rotunda (x beyond the drum), facing +z
     for (xa, xb) in ((XO0, -RO + 0.2), (RO - 0.2, XO1)):
         wall_face(ash, (xa, 0.2), (xb, 0.2), (0, 1), -1.0, H, nu=2, nv=3)

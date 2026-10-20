@@ -484,8 +484,9 @@ def make_frieze():
         d.text((W // 2 + 3, H // 2 + 3), text, font=fnt, fill=(232, 220, 196), anchor='mm')
         d.text((W // 2, H // 2), text, font=fnt, fill=(74, 62, 48), anchor='mm')
         img.save(os.path.join(OUT, name), optimize=True)
+    # both power-of-two tall: Unreal pads other heights and the letters slide down the band
     strip('frieze_portico.png', 'XRLIBRARIES  ·  WALK THE ARCHIVE', 4096, 512, 340)
-    strip('frieze_rotunda.png', 'SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS', 4096, 320, 220)
+    strip('frieze_rotunda.png', 'SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS', 4096, 512, 300)
 
 
 if __name__ == '__main__':
