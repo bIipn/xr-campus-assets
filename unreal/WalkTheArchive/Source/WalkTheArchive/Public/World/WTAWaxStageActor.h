@@ -125,7 +125,7 @@ public:
 	 * wrist is, where the figure stands, how closed the hand is (0..1) and which hand (hand_l / hand_r).
 	 */
 	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
-	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, FVector& OutFigure, float& OutGrip, FName& OutSocket) const;
+	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, FVector& OutFigure, float& OutGrip, FName& OutSocket, FTransform& OutPalm) const;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
