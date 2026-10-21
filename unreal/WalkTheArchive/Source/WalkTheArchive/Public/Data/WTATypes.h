@@ -185,9 +185,14 @@ struct WALKTHEARCHIVE_API FWTAWaxProp
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FName Id;
 
-	/** headset / tablet / clipboard / box / book / phone - picks the mesh (AWTAWaxStageActor::PropMesh). */
+	/** headset / tablet / clipboard / box / book / phone: how it sits in a hand, and the block to show when
+	 *  the web's own model is not imported. "static": a web carry the acting never moves. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FName Kind;
+
+	/** >= 0: the web's own model for this prop, the mesh prop__<scene>_<WebIndex> of Props.glb (its own frame). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	int32 WebIndex = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FWTAWaxPropKey> Keys;

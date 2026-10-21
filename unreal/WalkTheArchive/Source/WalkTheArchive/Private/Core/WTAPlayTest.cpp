@@ -458,6 +458,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddMuseumPhase();
 	}
+	if (Wanted.Contains(TEXT("doors")))
+	{
+		AddDoorsPhase();
+	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
 		CloseAll();
@@ -1537,6 +1541,12 @@ void UWTAPlayTest::AddMuseumPhase()
 		// the marble statues: on the west cheek block of the steps, and before the rotunda's west window
 		{ TEXT("statue_steps"),   CampusToUE(-6.3f, 0.87f,  21.2f), CampusToUE(-8.65f, 1.25f, 17.2f) },
 		{ TEXT("statue_rotunda"), CampusToUE( 1.2f, 1.62f,   5.8f), CampusToUE(-3.9f,  1.75f,  5.8f) },
+		// the library's exit: from the reading room toward the hall, from an angle, and back from the hall
+		{ TEXT("libexit_out"),    CampusToUE(-17.0f, 1.62f, -3.0f), CampusToUE(-11.0f, 1.5f, -3.0f) },
+		{ TEXT("libexit_angle"),  CampusToUE(-15.0f, 1.62f, -7.5f), CampusToUE(-11.6f, 1.6f, -3.0f) },
+		{ TEXT("libexit_back"),   CampusToUE( -8.5f, 1.62f, -3.0f), CampusToUE(-13.5f, 1.5f, -3.0f) },
+		{ TEXT("waxdoor"),        CampusToUE(  0.0f, 1.62f, -37.0f), CampusToUE(0.0f, 1.2f, -44.0f) },
+		{ TEXT("schooldoor"),     CampusToUE(  4.0f, 1.62f, -3.0f), CampusToUE(12.5f, 1.2f, -3.0f) },
 	};
 	for (const FSpot& S : Spots)
 	{
@@ -1551,6 +1561,48 @@ void UWTAPlayTest::AddMuseumPhase()
 		Steps.Add({ TEXT("museum shot ") + Name, [this, Name]() -> float
 		{
 			Shot(TEXT("museum_") + Name, false);
+			return 0.1f;
+		} });
+	}
+	// Thresholds: nothing to climb between the buildings. Along each passage, the floor under a ray every 10 cm
+	// must stay within a sill's height (20 cm) of the passage's lowest floor; a kerb names the mesh that is one.
+	struct FPassage { const TCHAR* Name; FVector2D From; FVector2D To; };
+	const FPassage Passages[] = {
+		{ TEXT("lobby to the library"),      FVector2D(-5.0f, -3.0f),  FVector2D(-15.0f, -3.0f) },
+		{ TEXT("lobby to the school"),       FVector2D( 5.0f, -3.0f),  FVector2D( 15.0f, -3.0f) },
+		{ TEXT("gallery 3 to the Wax Hall"), FVector2D( 0.0f, -38.0f), FVector2D(  0.0f, -47.0f) },
+		{ TEXT("forecourt to the rotunda"),  FVector2D( 0.0f,  16.5f), FVector2D(  0.0f,   7.0f) },
+	};
+	for (const FPassage& P : Passages)
+	{
+		const FString Name = P.Name;
+		const FVector2D From = P.From, To = P.To;
+		Steps.Add({ TEXT("museum threshold ") + Name, [this, Name, From, To]() -> float
+		{
+			UWorld* World = GetWorld();
+			float Low = TNumericLimits<float>::Max(), High = -TNumericLimits<float>::Max();
+			FString Kerb;
+			const int32 Samples = FMath::Max(2, FMath::RoundToInt(FVector2D::Distance(From, To) * 10.f));
+			for (int32 i = 0; i <= Samples; ++i)
+			{
+				const FVector2D At = FMath::Lerp(From, To, static_cast<float>(i) / Samples);
+				const FVector Top = CampusToUE(At.X, 1.5f, At.Y), Bottom = CampusToUE(At.X, -1.5f, At.Y);
+				FHitResult Hit;
+				FCollisionQueryParams Params(FName(TEXT("WTAThreshold")), true);
+				if (const AWTACharacter* Me = Player()) { Params.AddIgnoredActor(Me); }
+				if (World != nullptr && World->LineTraceSingleByChannel(Hit, Top, Bottom, ECC_Visibility, Params))
+				{
+					Low = FMath::Min(Low, static_cast<float>(Hit.Location.Z));
+					if (Hit.Location.Z > High)
+					{
+						High = static_cast<float>(Hit.Location.Z);
+						Kerb = FString::Printf(TEXT("%s at campus (%.1f, %.1f)"), Hit.GetComponent() ? *Hit.GetComponent()->GetName() : TEXT("?"), At.X, At.Y);
+					}
+				}
+			}
+			const bool bOk = Low < High && High - Low <= 20.f;
+			Report(TEXT("museum"), Low <= High ? (bOk ? EResult::Pass : EResult::Fail) : EResult::Skip, TEXT("nothing to climb from the ") + Name,
+				Low <= High ? FString::Printf(TEXT("floor from %.0f to %.0f cm; highest: %s"), Low, High, *Kerb) : TEXT("no floor found"));
 			return 0.1f;
 		} });
 	}
@@ -1680,6 +1732,94 @@ void UWTAPlayTest::AddMuseumPhase()
 			FString::Printf(TEXT("%s, %.0f cm"), bOk ? TEXT("found") : TEXT("not found"), Path != nullptr ? Path->GetPathLength() : 0.f));
 		return 0.1f;
 	} });
+}
+
+void UWTAPlayTest::AddDoorsPhase()
+{
+	// Every doorway a visitor walks through, as a pair of points either side of it (campus metres, feet on the
+	// floor). From A: a no-HUD shot looking at the door, then W held toward B until there or out of time. The walk
+	// must arrive within 60 cm of B, and the feet must never rise more than 12 cm above where they started: a kerb,
+	// a sill or a plinth across a door is a thing to climb, and nothing should be. Then the same from B back to A.
+	struct FDoor { const TCHAR* Name; FVector A; FVector B; };
+	const FDoor Doors[] = {
+		{ TEXT("front door"),     CampusToUE( 0.0f,  0.00f,  14.0f), CampusToUE( 0.0f,  0.0f,   9.0f) },
+		{ TEXT("lobby arch"),     CampusToUE( 0.0f,  0.00f,   2.5f), CampusToUE( 0.0f,  0.0f,  -2.5f) },
+		{ TEXT("west hall door"), CampusToUE(-3.0f,  0.00f,  -3.0f), CampusToUE(-8.5f,  0.0f,  -3.0f) },
+		{ TEXT("east hall door"), CampusToUE( 3.0f,  0.00f,  -3.0f), CampusToUE( 8.5f,  0.0f,  -3.0f) },
+		{ TEXT("library door"),   CampusToUE(-8.5f,  0.00f,  -3.0f), CampusToUE(-15.0f, 0.0f,  -3.0f) },
+		{ TEXT("school door"),    CampusToUE( 8.5f,  0.00f,  -3.0f), CampusToUE( 15.0f, 0.0f,  -3.0f) },
+		{ TEXT("room 101"),       CampusToUE(19.0f,  0.00f,  -3.0f), CampusToUE( 19.0f, 0.0f,  -7.0f) },
+		{ TEXT("room 102"),       CampusToUE(29.0f,  0.00f,  -3.0f), CampusToUE( 29.0f, 0.0f,  -7.0f) },
+		{ TEXT("room 103"),       CampusToUE(19.0f,  0.00f,  -3.0f), CampusToUE( 19.0f, 0.0f,   1.0f) },
+		{ TEXT("room 104"),       CampusToUE(29.0f,  0.00f,  -3.0f), CampusToUE( 29.0f, 0.0f,   1.0f) },
+		{ TEXT("yard door"),      CampusToUE(31.0f,  0.00f,  -3.0f), CampusToUE( 37.0f, 0.0f,  -3.0f) },
+		{ TEXT("gallery doors"),  CampusToUE( 0.0f,  0.00f,  -9.0f), CampusToUE(  0.0f, 0.0f, -27.0f) },
+		{ TEXT("wax hall door"),  CampusToUE( 0.0f,  0.00f, -39.5f), CampusToUE(  0.0f, 0.0f, -43.9f) },
+	};
+	for (const FDoor& D : Doors)
+	{
+		for (int32 Dir = 0; Dir < 2; ++Dir)
+		{
+			const FString Name = D.Name;
+			const FVector From = Dir == 0 ? D.A : D.B;
+			const FVector To = Dir == 0 ? D.B : D.A;
+			const FString Leg = FString::Printf(TEXT("%s %s"), *Name, Dir == 0 ? TEXT("in") : TEXT("out"));
+			const FString ShotName = FString::Printf(TEXT("door_%s_%s"), *Name.Replace(TEXT(" "), TEXT("_")), Dir == 0 ? TEXT("in") : TEXT("out"));
+			TSharedRef<int32> Polls = MakeShared<int32>(0);
+			TSharedRef<float> StartZ = MakeShared<float>(0.f);
+			TSharedRef<float> MaxRise = MakeShared<float>(0.f);
+			TSharedRef<float> MaxDrop = MakeShared<float>(0.f);
+			Steps.Add({ TEXT("doors at ") + Leg, [this, From, To]() -> float
+			{
+				CloseAll();
+				StandAt(LookFrom(From + FVector(0.f, 0.f, 162.f), To + FVector(0.f, 0.f, 150.f)));
+				return 1.2f;
+			} });
+			Steps.Add({ TEXT("doors shot ") + Leg, [this, ShotName]() -> float
+			{
+				Shot(ShotName, false);
+				return 0.1f;
+			} });
+			Steps.Add({ TEXT("doors go ") + Leg, [this, Polls, StartZ, MaxRise, MaxDrop]() -> float
+			{
+				*Polls = 0; *MaxRise = 0.f; *MaxDrop = 0.f;
+				const AWTACharacter* Me = Player();
+				*StartZ = Me != nullptr ? Me->GetActorLocation().Z : 0.f;
+				KeyDown(EKeys::W);
+				return 0.1f;
+			} });
+			const int32 MaxPolls = int32((FVector::Dist2D(From, To) / 300.f + 2.0f) * 10.f);
+			Steps.Add({ TEXT("doors walk ") + Leg, [this, Leg, From, To, Polls, StartZ, MaxRise, MaxDrop, MaxPolls]() -> float
+			{
+				AWTACharacter* Me = Player();
+				AWTAPlayerController* C = PC();
+				if (Me == nullptr || C == nullptr)
+				{
+					KeyUp(EKeys::W);
+					Report(TEXT("doors"), EResult::Fail, Leg, TEXT("no player"));
+					return 0.1f;
+				}
+				const FVector P = Me->GetActorLocation();
+				const FVector Heading = (To - P).GetSafeNormal2D();
+				C->SetControlRotation(FRotator(0.f, Heading.Rotation().Yaw, 0.f));
+				*MaxRise = FMath::Max(*MaxRise, P.Z - *StartZ);
+				*MaxDrop = FMath::Max(*MaxDrop, *StartZ - P.Z);
+				const float Left = FVector::Dist2D(P, To);
+				if (Left > 60.f && ++(*Polls) < MaxPolls)
+				{
+					return -0.1f;
+				}
+				KeyUp(EKeys::W);
+				const bool bThere = Left <= 60.f;
+				const bool bFlat = *MaxRise < 12.f;
+				Report(TEXT("doors"), bThere && bFlat ? EResult::Pass : EResult::Fail, TEXT("the way through the ") + Leg + TEXT(" is clear"),
+					FString::Printf(TEXT("%s after %.1f s: %.0f cm short of the far side at campus (%.1f, %.1f), feet rose %.0f cm, dropped %.0f cm%s"),
+						bThere ? TEXT("arrived") : TEXT("stopped"), *Polls * 0.1f, Left, P.X / 100.f, P.Y / 100.f, *MaxRise, *MaxDrop,
+						bFlat ? TEXT("") : TEXT(" - something to climb in the doorway")));
+				return 0.3f;
+			} });
+		}
+	}
 }
 
 // --- attract ---------------------------------------------------------------------------------

@@ -103,6 +103,9 @@ private:
 	 *  that the gallery deck holds you up and that the spiral stair can be walked. */
 	void AddLibraryPhase();
 	void AddMuseumPhase();
+	/** Only when named: a shot of every doorway from each side, then a walk through it with W held - the way
+	 *  through must be clear (no kerb to step over, nothing to jump) and must arrive. */
+	void AddDoorsPhase();
 	void AddUIPhase();
 	void AddGraphicsPhase();
 	void AddFpsPhase();
