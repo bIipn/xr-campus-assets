@@ -122,10 +122,10 @@ public:
 
 	/**
 	 * For QA: true when prop Index is in a figure's hand right now, with where the prop is, where that hand's
-	 * wrist is, how closed the hand is (0..1) and which hand (hand_l / hand_r).
+	 * wrist is, where the figure stands, how closed the hand is (0..1) and which hand (hand_l / hand_r).
 	 */
 	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
-	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, float& OutGrip, FName& OutSocket) const;
+	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, FVector& OutFigure, float& OutGrip, FName& OutSocket) const;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

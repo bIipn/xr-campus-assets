@@ -1982,8 +1982,10 @@ void UWTAPlayTest::AddWaxPhase()
 		AddTap(TEXT("wax esc ") + Name, EKeys::Escape, 0.4f);
 		// The props in hands: each sits in the palm of the hand its key names (within 25 cm of the wrist) and
 		// that hand is closed on it; a 90 cm close-up of the first held one, no HUD, shows the grip.
-		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, SceneName]() -> float
+		TSharedRef<bool> HeldOne = MakeShared<bool>(false);
+		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, SceneName, HeldOne]() -> float
 		{
+			*HeldOne = false;
 			AWTAWaxStageActor* Stage = nullptr;
 			for (TActorIterator<AWTAWaxStageActor> It(GetWorld()); It; ++It)
 			{
@@ -1999,38 +2001,47 @@ void UWTAPlayTest::AddWaxPhase()
 			}
 			int32 Held = 0, Placed = 0, Closed = 0;
 			FString Notes;
-			FVector FirstProp = FVector::ZeroVector, FirstWrist = FVector::ZeroVector;
+			FVector FirstProp = FVector::ZeroVector, FirstFigure = FVector::ZeroVector;
 			for (int32 i = 0; i < Stage->NumProps(); ++i)
 			{
-				FVector Prop, Wrist;
+				FVector Prop, Wrist, Figure;
 				float Grip = 0.f;
 				FName Socket;
-				if (!Stage->PropInHand(i, Prop, Wrist, Grip, Socket))
+				if (!Stage->PropInHand(i, Prop, Wrist, Figure, Grip, Socket))
 				{
 					continue;
 				}
 				const float Gap = static_cast<float>(FVector::Dist(Prop, Wrist));
 				const bool bPlaced = Gap < 25.f, bClosed = Grip > 0.2f;
 				Held += 1; Placed += bPlaced ? 1 : 0; Closed += bClosed ? 1 : 0;
-				if (Held == 1) { FirstProp = Prop; FirstWrist = Wrist; }
+				if (Held == 1) { FirstProp = Prop; FirstFigure = Figure; }
 				Notes += FString::Printf(TEXT("%s prop %d %.0f cm from the wrist, grip %.2f; "), *Socket.ToString(), i, Gap, Grip);
 			}
 			if (Held == 0)
 			{
 				return 0.f;                              // nothing in a hand at this moment of the loop
 			}
+			*HeldOne = true;
 			Report(TEXT("wax"), Placed == Held && Closed == Held ? EResult::Pass : EResult::Fail, Name + TEXT(" holds its props"), Notes);
-			// the close-up: from the aisle side of the stage (where the player stands), 90 cm from the prop and a
-			// little above it, looking down at the hand
-			const FVector Aisle = Stage->GetActorLocation() + FRotator(0.f, Stage->GetStageYaw(), 0.f).Vector() * 420.f;
-			const FVector Toward = (Aisle - FirstProp).GetSafeNormal2D();
-			const FVector Eye = FirstProp + Toward * 90.f + FVector(0.f, 0.f, 35.f);
+			// the close-up: out past the hand (away from the figure's own body, leaning toward the aisle), 75 cm
+			// from the prop and a little above it, looking down at the hand
+			const FVector Aisle = (Stage->GetActorLocation() + FRotator(0.f, Stage->GetStageYaw(), 0.f).Vector() * 420.f - FirstProp).GetSafeNormal2D();
+			FVector Out = (FirstProp - FirstFigure).GetSafeNormal2D();
+			if (Out.IsNearlyZero())
+			{
+				Out = Aisle;
+			}
+			const FVector Toward = (Out * 0.7f + Aisle * 0.3f).GetSafeNormal2D();
+			const FVector Eye = FirstProp + Toward * 75.f + FVector(0.f, 0.f, 30.f);
 			StandAt(LookFrom(Eye, FirstProp));
 			return 0.6f;
 		} });
-		Steps.Add({ TEXT("wax hands shot ") + Name, [this, Name]() -> float
+		Steps.Add({ TEXT("wax hands shot ") + Name, [this, Name, HeldOne]() -> float
 		{
-			Shot(TEXT("wax_hand_") + Name, false);
+			if (*HeldOne)
+			{
+				Shot(TEXT("wax_hand_") + Name, false);
+			}
 			return 0.1f;
 		} });
 	}

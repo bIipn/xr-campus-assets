@@ -578,7 +578,7 @@ bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, 
 	return false;
 }
 
-bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, float& OutGrip, FName& OutSocket) const
+bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, FVector& OutFigure, float& OutGrip, FName& OutSocket) const
 {
 	static const FName HandL(TEXT("hand_l"));
 	static const FName HandR(TEXT("hand_r"));
@@ -624,6 +624,7 @@ bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWr
 		}
 		OutProp = PropParts[Index]->GetComponentLocation();
 		OutWrist = Body->GetSocketLocation(Key.Socket);
+		OutFigure = Figure->GetActorLocation();
 		OutGrip = Play.Anim.IsValid() ? Play.Anim->GetGrip(Key.Socket == HandR) : 0.f;
 		OutSocket = Key.Socket;
 		return true;
