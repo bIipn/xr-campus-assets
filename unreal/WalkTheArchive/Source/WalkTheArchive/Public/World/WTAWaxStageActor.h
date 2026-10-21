@@ -112,21 +112,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
 	FString DescribeActing() const;
 
-	virtual void OnConstruction(const FTransform& Transform) override;
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
-
-protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void Tick(float DeltaSeconds) override;
-
-	/** Spawn the row's Figures whose MetaHumans exist, give each an animation instance, and build the props. */
-	void SpawnFigures();
-
-	/** The clip for a beat's Action, loaded once and kept (null, with one log line, when it has not been built). */
-	UAnimSequence* LoadAction(FName Action);
-
 	/** The stage's yaw from its row (the aisle is in front, along it). */
 	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
 	float GetStageYaw() const { return Scene.StageYaw; }
@@ -141,6 +126,21 @@ protected:
 	 */
 	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
 	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, float& OutGrip, FName& OutSocket) const;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void Tick(float DeltaSeconds) override;
+
+	/** Spawn the row's Figures whose MetaHumans exist, give each an animation instance, and build the props. */
+	void SpawnFigures();
+
+	/** The clip for a beat's Action, loaded once and kept (null, with one log line, when it has not been built). */
+	UAnimSequence* LoadAction(FName Action);
 
 	/** Wakes the reenactors (bWake) or leaves them holding the frame they reached. */
 	void SetActing(bool bWake);
