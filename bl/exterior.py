@@ -245,7 +245,7 @@ def build_trees():
     n = 0
     while n < 140:
         x = -84 + 228 * r.random(); z = -96 + 168 * r.random()
-        if -40 < x < 97 and -50 < z < 70: continue
+        if (-40 < x < 97 and -50 < z < 70) or (-14 < x < 14 and -86 < z < -40): continue     # the campus box, and the Wax Hall
         s = 1.3 + 1.4 * r.random()
         far_tree(ft, fl, x, z, s, n); n += 1
 

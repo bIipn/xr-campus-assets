@@ -4,7 +4,7 @@
   "Museum": {
    "file": "Museum.glb",
    "source": "unreal/Pipeline/out/museum/Museum.glb",
-   "meshes": 64,
+   "meshes": 63,
    "tagged": [
     "item__ca_200",
     "item__charleston",
@@ -23,8 +23,8 @@
     "item__way_out",
     "token__t_museum"
    ],
-   "triangles": 174016,
-   "bytes": 55250044
+   "triangles": 174004,
+   "bytes": 55247836
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -108,7 +108,7 @@
    "meshes": 27,
    "tagged": [],
    "triangles": 149940,
-   "bytes": 33956028
+   "bytes": 33957464
   },
   "Yard": {
    "file": "Yard.glb",

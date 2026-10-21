@@ -34,7 +34,7 @@ KEEP = {
     'M_Material_13': 'title panel frame', 'M_Material_14': 'title panel', 'M_Material_15': 'plaque',
     'M_Material_16': 'directory frame', 'M_Material_17': 'directory', 'M_Material_18': 'partners frame', 'M_Material_19': 'partners',
     'M_Material_32': 'headset lens', 'M_Material_33': 'headset lens', 'M_Material_34': 'headset lens', 'M_Material_35': 'headset lens',
-    'M_Material_73': 'bench', 'M_Material_74': 'wing sign library', 'M_Material_75': 'wing sign school',
+    'M_Material_74': 'wing sign library', 'M_Material_75': 'wing sign school',
     'M_Material_80': 'hall poster', 'M_Material_81': 'hall poster', 'M_Material_86': 'hall poster', 'M_Material_87': 'hall poster',
     'M_Material_89': 'g3 end panel frame', 'M_Material_90': 'g3 end panel',
 }
