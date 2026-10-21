@@ -38,7 +38,7 @@ import harness  # noqa: E402  (test/harness.py)
 from playwright.async_api import async_playwright  # noqa: E402
 
 OUT = os.path.join(REPO, 'unreal', 'Pipeline', 'out', 'campus')
-WINGS = ['museum', 'waxIntro', 'wax', 'lib', 'school', 'outside', 'play', 'dive']
+WINGS = ['museum', 'waxIntro', 'wax', 'lib', 'school', 'outside', 'play', 'dive', 'props']
 
 PREP = r"""
 async () => {
@@ -74,6 +74,29 @@ async () => {
   let hidden = 0;
   for (const k of Object.keys(W)) W[k].traverse((o) => { if (o !== W[k] && o.visible === false) hidden++; });
   report.hidden_objects_kept = hidden;
+  /* The Wax Hall's carried props (headsets, tablets, laptops, phones, a book, a box, a clipboard...) are
+     posed by the web's reenactors, who are not exported; frozen where the web hands were at t = 0 they would
+     float beside Unreal's own acting figures. They leave the hall and become a wing of their own, 'props':
+     one object per carry in its own local frame, named prop__<scene id>_<index of the S.carry call>, so the
+     Unreal stage can ride them on the sockets its acting data names. Where each sat at t = 0 (stage-local
+     metres, three.js axes) goes out as props_rest for the ones that stay put on a desk. */
+  const carried = new Map();
+  for (const sc of (T.WAX_SCENES || [])){ const S = sc.stage; if (!S) continue; (S.carries || []).forEach((c, k) => carried.set(c.obj, { scene:sc.id, k, stage:S })); }
+  const props = new THREE.Group(); props.name = 'props';
+  const rest = [];
+  const _inv = new THREE.Matrix4(), _loc = new THREE.Matrix4(), _P = new THREE.Vector3(), _Q = new THREE.Quaternion(), _S = new THREE.Vector3();
+  for (const [obj, info] of carried){
+    info.stage.g.updateMatrixWorld(true); obj.updateMatrixWorld(true);
+    _inv.copy(info.stage.g.matrixWorld).invert(); _loc.multiplyMatrices(_inv, obj.matrixWorld); _loc.decompose(_P, _Q, _S);
+    rest.push({ scene:info.scene, k:info.k, name:obj.name || '', p:[_P.x, _P.y, _P.z], q:[_Q.x, _Q.y, _Q.z, _Q.w], visible:obj.visible });
+    const c = obj.clone(true);
+    c.matrixAutoUpdate = true; c.matrix.identity(); c.position.set(0, 0, 0); c.quaternion.identity(); c.scale.set(1, 1, 1);
+    c.name = 'prop__' + info.scene + '_' + info.k;
+    c.traverse((o) => { o.visible = true; });
+    props.add(c);
+  }
+  report.carried = carried.size;
+  W.props = props;
   for (const k of Object.keys(W)){
     W[k].visible = true;
     const kill = [];
@@ -81,6 +104,7 @@ async () => {
       if (o === grass) kill.push([o, 'grass']);
       else if (o.name && o.name.startsWith('baked-')) kill.push([o, 'baked_room']);
       else if (staffRoots.has(o)){ kill.push([o, 'staff']); }
+      else if (carried.has(o)) kill.push([o, 'carried']);
       else if (o.isPoints || o.isLine || o.isSprite) kill.push([o, 'points/lines']);
       else if (o.isSkinnedMesh) kill.push([o, 'skinned']);
       else if (o.userData && (o.userData.baked || o.userData.bakedRoom)) kill.push([o, 'baked']);
@@ -137,7 +161,7 @@ async () => {
   }
   const lamps = (T.LAMPS && T.LAMPS.all || []).map((L) => ({ pos_m:[L.p.x, L.p.y, L.p.z], color_srgb:'#' + L.color.getHexString(), intensity_threejs:L.intensity, distance_m:L.distance, decay:L.decay, wing:L.wing }));
   const sun = T.LIGHTS && T.LIGHTS.sun ? { dir_to_sun:[T.LIGHTS.sun.position.x, T.LIGHTS.sun.position.y, T.LIGHTS.sun.position.z] } : null;
-  return { report, lamps, sun, wings:Object.keys(W) };
+  return { report, lamps, sun, wings:Object.keys(W), props_rest:rest };
 }
 """
 
@@ -193,6 +217,9 @@ async def main():
                 f.write(base64.b64decode(url.split(',', 1)[1]))
         manifest['art'] = sorted(keys)
         print('wrote', len(keys), 'exhibit art PNGs')
+        with open(os.path.join(OUT, 'props_rest.json'), 'w') as f:
+            json.dump({'units': 'stage-local metres, three.js axes (y up), relative to the stage group (StageLocation/StageYaw)',
+                       'props': info.get('props_rest', [])}, f, indent=1)
         with open(os.path.join(OUT, 'lights.json'), 'w') as f:
             json.dump({'units': 'metres, three.js axes (y up)', 'lamps': info['lamps'], 'sun': info['sun']}, f, indent=1)
         with open(os.path.join(OUT, 'manifest.json'), 'w') as f:

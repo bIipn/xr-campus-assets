@@ -12,8 +12,17 @@ test/harness.py + web/export_campus.py ──► out/campus/*.glb, art/*.png, li
 bl/library.py --ue ──► assets/lib_ue/library.blend ──► blender/export_reading_room.py ──► out/reading_room/ReadingRoom.glb, lights.json
 bl/museum.py ──► out/museum/Museum.glb, lights.json      (the neoclassical museum: galleries, lobby, halls, rotunda, portico)
 bl/exterior.py ──► out/exterior/Outside.glb, lights.json  (the grounds: terrain, path, fountain, trees, the other shells)
-out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
+bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
+
+The Wax Hall's carried props leave the web export as a wing of their own: `web/export_campus.py` writes every
+`S.carry` object as `prop__<scene>_<k>` of `out/campus/props.glb`, in its own frame, and where it rested at t = 0 to
+`out/campus/props_rest.json` (committed); `data/build_data.py` turns the carries the acting data never moves into
+`static` props standing where the web left them. The props the reenactors hold are modelled again by `bl/props.py`
+(`out/ue/HandProps.glb`, one tagged mesh `prop__<kind>` each, in the frame the stage sets in a palm: +X along the
+fingers, +Y out of the palm); `World/WTAWaxStageActor.cpp` rides them on the hand bones and closes the fingers round
+them. Neither wing is scenery: `build_level.py` skips `prop__` meshes and the stages spawn them.
 
 The Museum and Outside assets are no longer the web export: `bl/museum.py` rebuilds the museum in Blender (marble floors,
 Corinthian columns, coffered vaults with glazed laylights, a domed rotunda and a six-column portico with steps down to

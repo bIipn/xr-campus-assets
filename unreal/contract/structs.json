@@ -16,8 +16,8 @@
     "FWTAWaxPropKey": {"row": false, "doc": "Where a prop is at Time: held by Figure (a Person id) at Socket (head, hand_l, hand_r, chest) with Offset/Rotation in that socket's frame, or standing in the stage's own frame when Figure is empty. It travels to this key over Blend seconds, arriving on Time.",
       "fields": [["Time", "Float"], ["Figure", "Name"], ["Socket", "Name"], ["Offset", "Vector"], ["Rotation", "Rotator"], ["Blend", "Float"]]},
 
-    "FWTAWaxProp": {"row": false, "doc": "A prop on a Wax Hall stage. Kind is headset, tablet, clipboard, box, book or phone, which picks the mesh.",
-      "fields": [["Id", "Name"], ["Kind", "Name"], ["Keys", "Array<FWTAWaxPropKey>"]]},
+    "FWTAWaxProp": {"row": false, "doc": "A prop on a Wax Hall stage. WebIndex >= 0 names the web's own model for it, the mesh prop__<scene>_<WebIndex> of Props.glb (Kind then only picks how it sits in a hand); otherwise Kind (headset, tablet, clipboard, box, book, phone) picks a block. Kind static is a web carry the acting never moves, standing where the web left it.",
+      "fields": [["Id", "Name"], ["Kind", "Name"], ["WebIndex", "Int"], ["Keys", "Array<FWTAWaxPropKey>"]]},
 
     "FWTASourceRow": {"row": true, "table": "DT_Sources", "file": "Sources.json", "fields": [["Label", "Text"], ["Url", "String"]]},
     "FWTAGalleryRow": {"row": true, "table": "DT_Galleries", "file": "Galleries.json",

@@ -46,8 +46,9 @@ namespace
 	}
 
 	/**
-	 * What a prop of this kind is made of: the mesh, how big it is in cm, and how it sits in the socket it rides.
-	 * The headset is the museum's own prop mesh; the rest are blocks, like the web's.
+	 * A stand-in for a prop of this kind when no modelled mesh is imported: a block of SizeCm in the socket's
+	 * frame (Offset/Rotation apply to the head and chest; a hand uses the grip table below). Worn: the block
+	 * sits over the eyes the way the web draws it from across the aisle.
 	 */
 	struct FWaxPropKind
 	{
@@ -65,8 +66,6 @@ namespace
 		static const TCHAR* Paper = TEXT("/Game/WTA/Materials/M_WTA_PropPaper.M_WTA_PropPaper");
 		static const TCHAR* Card = TEXT("/Game/WTA/Materials/M_WTA_PropCard.M_WTA_PropCard");
 		static const TMap<FName, FWaxPropKind> Kinds = {
-			// The museum's own headset model is an exhibit piece 1.5 m tall, so a worn one is a block over the
-			// eyes, the way the web draws it from across the aisle.
 			{ FName(TEXT("headset")),   { Cube, FVector(11.f, 20.f, 9.f), FVector(9.f, 0.f, 4.f), FRotator(0.f, 0.f, 0.f), Dark } },
 			{ FName(TEXT("tablet")),    { Cube, FVector(1.2f, 24.f, 17.f), FVector(9.f, 0.f, 1.f), FRotator(0.f, 0.f, 0.f), Dark } },
 			{ FName(TEXT("clipboard")), { Cube, FVector(1.f, 23.f, 32.f), FVector(8.f, 0.f, 2.f), FRotator(0.f, 0.f, 0.f), Paper } },
@@ -75,6 +74,66 @@ namespace
 			{ FName(TEXT("phone")),     { Cube, FVector(1.f, 7.5f, 15.f), FVector(6.f, 0.f, 0.f), FRotator(0.f, 0.f, 0.f), Dark } },
 		};
 		return Kinds.Find(Kind);
+	}
+
+	/**
+	 * How a modelled prop (bl/props.py) sits in a hand, and how far that hand closes on it. The prop's own frame
+	 * is put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmInWrist); Offset and
+	 * Rotation move the prop in that frame. Fingers and Thumb are the grip (0..1) the hand holding it gets.
+	 */
+	struct FWaxGrip
+	{
+		FVector Offset;
+		FRotator Rotation;
+		float Fingers;
+		float Thumb;
+	};
+
+	const FWaxGrip* WaxGrip(FName Kind)
+	{
+		static const TMap<FName, FWaxGrip> Grips = {
+			// carried by its top strap: the headset (modelled for the head, +Z up) hangs below the palm, visor along the fingers
+			{ FName(TEXT("headset")),   { FVector(3.f, 6.f, 0.f), FRotator(0.f, 0.f, 90.f), 0.6f, 0.5f } },
+			{ FName(TEXT("tablet")),    { FVector::ZeroVector, FRotator::ZeroRotator, 0.35f, 0.6f } },
+			{ FName(TEXT("clipboard")), { FVector::ZeroVector, FRotator::ZeroRotator, 0.35f, 0.6f } },
+			{ FName(TEXT("book")),      { FVector::ZeroVector, FRotator::ZeroRotator, 0.30f, 0.5f } },
+			{ FName(TEXT("phone")),     { FVector::ZeroVector, FRotator::ZeroRotator, 0.75f, 0.5f } },
+			{ FName(TEXT("box")),       { FVector::ZeroVector, FRotator::ZeroRotator, 0.40f, 0.4f } },
+		};
+		return Grips.Find(Kind);
+	}
+
+	/**
+	 * The palm in the wrist bone's frame, measured on the MetaHuman body's reference pose with
+	 * C:\dev\wta_tools\probe_hands.py: F runs along the fingers, N out of the palm, and the palm's centre is 7 cm
+	 * along the fingers from the wrist. The frame returned has +X = F, +Y = N, +Z = F x N (across the palm,
+	 * toward the little finger on the right hand and the index on the left, so one prop model fits both).
+	 */
+	FTransform PalmInWrist(bool bRight)
+	{
+		const FVector F = bRight ? FVector(-0.993f, -0.107f, 0.043f) : FVector(0.993f, 0.106f, -0.042f);
+		FVector N = bRight ? FVector(-0.105f, 0.994f, 0.038f) : FVector(0.105f, -0.994f, -0.038f);
+		const FVector Centre = bRight ? FVector(-6.954f, -0.747f, 0.298f) : FVector(6.954f, 0.743f, -0.296f);
+		const FVector X = F.GetSafeNormal();
+		N = (N - X * FVector::DotProduct(N, X)).GetSafeNormal();
+		return FTransform(FMatrix(X, N, FVector::CrossProduct(X, N), Centre));
+	}
+
+	/** A campus mesh by wing and name, where the Interchange import files them (import_meshes.py). */
+	UStaticMesh* FindCampusMesh(const TCHAR* Wing, const FString& Name)
+	{
+		const FString Paths[2] = {
+			FString::Printf(TEXT("/Game/WTA/Campus/%s/%s/StaticMeshes/%s.%s"), Wing, Wing, *Name, *Name),
+			FString::Printf(TEXT("/Game/WTA/Campus/%s/StaticMeshes/%s.%s"), Wing, *Name, *Name),
+		};
+		for (const FString& Path : Paths)
+		{
+			if (UStaticMesh* Mesh = Cast<UStaticMesh>(FSoftObjectPath(Path).TryLoad()))
+			{
+				return Mesh;
+			}
+		}
+		return nullptr;
 	}
 }
 
@@ -252,31 +311,51 @@ void AWTAWaxStageActor::SpawnFigures()
 		UE_LOG(LogWTA, Log, TEXT("%s: %d of %d reenactors not built yet"), *GetName(), NotBuilt, Scene.Figures.Num());
 	}
 
-	// Props ride the figures' sockets; they hang off the stage so a figure's own LOD never moves them.
+	// Props ride the figures' sockets; they hang off the stage so a figure's own LOD never moves them. A prop
+	// shows the modelled object of its kind (HandProps, bl/props.py), else the web's own model for it
+	// (Props.glb, prop__<scene>_<WebIndex>), else a block of its kind's size.
+	PropModelled.Reset();
 	for (const FWTAWaxProp& Prop : Scene.Props)
 	{
 		const FWaxPropKind* Kind = WaxPropKind(Prop.Kind);
-		UStaticMesh* Mesh = Kind != nullptr ? Cast<UStaticMesh>(FSoftObjectPath(Kind->Mesh).TryLoad()) : nullptr;
+		UStaticMesh* Mesh = nullptr;
+		if (Kind != nullptr)
+		{
+			Mesh = FindCampusMesh(TEXT("HandProps"), FString::Printf(TEXT("prop__%s"), *Prop.Kind.ToString()));
+		}
+		if (Mesh == nullptr && Prop.WebIndex >= 0)
+		{
+			Mesh = FindCampusMesh(TEXT("Props"), FString::Printf(TEXT("prop__%s_%d"), *SceneId.ToString().Replace(TEXT("-"), TEXT("_")), Prop.WebIndex));
+		}
+		const bool bModelled = Mesh != nullptr;
+		if (Mesh == nullptr && Kind != nullptr)
+		{
+			Mesh = Cast<UStaticMesh>(FSoftObjectPath(Kind->Mesh).TryLoad());
+		}
 		if (Mesh == nullptr)
 		{
-			UE_LOG(LogWTA, Warning, TEXT("%s: prop '%s' has no mesh for kind '%s'"), *GetName(), *Prop.Id.ToString(), *Prop.Kind.ToString());
+			UE_LOG(LogWTA, Warning, TEXT("%s: prop '%s' has no mesh (kind '%s', web %d)"), *GetName(), *Prop.Id.ToString(), *Prop.Kind.ToString(), Prop.WebIndex);
 			PropParts.Add(nullptr);
+			PropModelled.Add(false);
 			continue;
 		}
 		UStaticMeshComponent* Part = NewObject<UStaticMeshComponent>(this);
 		Part->SetStaticMesh(Mesh);
-		if (UMaterialInterface* Material = Cast<UMaterialInterface>(FSoftObjectPath(Kind->Material).TryLoad()))
+		if (!bModelled)
 		{
-			for (int32 Slot = 0; Slot < Part->GetNumMaterials(); ++Slot)
+			if (UMaterialInterface* Material = Cast<UMaterialInterface>(FSoftObjectPath(Kind->Material).TryLoad()))
 			{
-				Part->SetMaterial(Slot, Material);
+				for (int32 Slot = 0; Slot < Part->GetNumMaterials(); ++Slot)
+				{
+					Part->SetMaterial(Slot, Material);
+				}
 			}
 		}
 		Part->SetMobility(EComponentMobility::Movable);
 		Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		Part->SetCanEverAffectNavigation(false);
 		Part->bCastDynamicShadow = true;
-		if (!Kind->SizeCm.IsNearlyZero())
+		if (!bModelled && !Kind->SizeCm.IsNearlyZero())
 		{
 			// The engine's cube is a metre across, so a size in cm is the scale over a hundred.
 			const FVector Bounds = Mesh->GetBounds().BoxExtent * 2.f;
@@ -288,6 +367,7 @@ void AWTAWaxStageActor::SpawnFigures()
 		Part->RegisterComponent();
 		Part->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 		PropParts.Add(Part);
+		PropModelled.Add(bModelled);
 	}
 
 	SpawnFrame = GFrameCounter;
@@ -427,11 +507,11 @@ void AWTAWaxStageActor::UpdateBeats(float DeltaSeconds)
 	}
 }
 
-bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FTransform& Out) const
+bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, bool bModelled, FTransform& Out) const
 {
 	if (Key.Figure.IsNone() || Key.Figure.ToString().IsEmpty())
 	{
-		// Standing in the stage's own frame.
+		// Standing in the stage's own frame (the web's carries rest where the web left them).
 		const FRotator StageRotation(0.f, Scene.StageYaw, 0.f);
 		Out = FTransform(FRotator(StageRotation.Pitch + Key.Rotation.Pitch, StageRotation.Yaw + Key.Rotation.Yaw, StageRotation.Roll + Key.Rotation.Roll),
 			Scene.StageLocation + StageRotation.RotateVector(Key.Offset));
@@ -463,20 +543,121 @@ bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FTransform& 
 			return false;
 		}
 		FTransform Frame = Body->GetSocketTransform(Bone, RTS_World);
-		// A hand's prop turns with the hand; one on the head or chest sits square to the person, because the
-		// skull and spine bones point whichever way the rig author chose and a headset has to face forward.
+		// A hand's prop sits in the palm, in the prop's own frame (+X along the fingers, +Y out of the palm), and
+		// its kind says how; one on the head or chest sits square to the person, because the skull and spine
+		// bones point whichever way the rig author chose and a headset has to face forward.
 		static const FName HandL(TEXT("hand_l"));
 		static const FName HandR(TEXT("hand_r"));
-		if (Key.Socket != HandL && Key.Socket != HandR)
+		static const FName Head(TEXT("head"));
+		if (Key.Socket == HandL || Key.Socket == HandR)
+		{
+			Frame = PalmInWrist(Key.Socket == HandR) * Frame;
+			if (const FWaxGrip* Grip = WaxGrip(Kind))
+			{
+				Frame = FTransform(Grip->Rotation, Grip->Offset) * Frame;
+			}
+		}
+		else
 		{
 			// The MetaHuman Blueprint faces +Y, which FigureYawOffset turns to the actor's +X: the person looks
 			// along the actor's yaw less that offset.
 			Frame = FTransform(FRotator(0.f, Figure->GetActorRotation().Yaw - FigureYawOffset, 0.f), Frame.GetLocation());
+			if (bModelled && Key.Socket == Head)
+			{
+				// the modelled headset is centred on its visor: the gasket meets the face 8.5 cm ahead of the head bone
+				static const FName Headset(TEXT("headset"));
+				if (Kind == Headset)
+				{
+					Frame = FTransform(FRotator::ZeroRotator, FVector(14.5f, 0.f, 4.f)) * Frame;
+				}
+			}
 		}
 		Out = FTransform(Key.Rotation, Key.Offset) * Frame;
 		return true;
 	}
 	return false;
+}
+
+bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, float& OutGrip, FName& OutSocket) const
+{
+	static const FName HandL(TEXT("hand_l"));
+	static const FName HandR(TEXT("hand_r"));
+	if (!Scene.Props.IsValidIndex(Index) || !PropParts.IsValidIndex(Index) || PropParts[Index] == nullptr)
+	{
+		return false;
+	}
+	const FWTAWaxProp& Prop = Scene.Props[Index];
+	int32 Resting = Prop.Keys.Num() - 1;
+	for (int32 k = 0; k < Prop.Keys.Num(); ++k)
+	{
+		if (Prop.Keys[k].Time <= ActTime)
+		{
+			Resting = k;
+		}
+	}
+	if (!Prop.Keys.IsValidIndex(Resting))
+	{
+		return false;
+	}
+	const FWTAWaxPropKey& Key = Prop.Keys[Resting];
+	if (Key.Socket != HandL && Key.Socket != HandR)
+	{
+		return false;
+	}
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (!Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const FString Person = Scene.Figures[Play.FigureIndex].Person.ToString();
+		const FString Short = FString::Printf(TEXT("%s-%s"), *SceneId.ToString(), *Key.Figure.ToString());
+		if (Person != Short && Person != Key.Figure.ToString())
+		{
+			continue;
+		}
+		AActor* Figure = Play.Figure.Get();
+		const USkeletalMeshComponent* Body = IsValid(Figure) ? UWTAPeopleLibrary::FindBody(Figure) : nullptr;
+		if (Body == nullptr)
+		{
+			return false;
+		}
+		OutProp = PropParts[Index]->GetComponentLocation();
+		OutWrist = Body->GetSocketLocation(Key.Socket);
+		OutGrip = Play.Anim.IsValid() ? Play.Anim->GetGrip(Key.Socket == HandR) : 0.f;
+		OutSocket = Key.Socket;
+		return true;
+	}
+	return false;
+}
+
+void AWTAWaxStageActor::SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float Scale) const
+{
+	static const FName HandL(TEXT("hand_l"));
+	static const FName HandR(TEXT("hand_r"));
+	if (Key.Socket != HandL && Key.Socket != HandR)
+	{
+		return;
+	}
+	const FWaxGrip* Grip = WaxGrip(Kind);
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (!Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const FString Person = Scene.Figures[Play.FigureIndex].Person.ToString();
+		const FString Short = FString::Printf(TEXT("%s-%s"), *SceneId.ToString(), *Key.Figure.ToString());
+		if (Person != Short && Person != Key.Figure.ToString())
+		{
+			continue;
+		}
+		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
+		{
+			Anim->SetGrip(Key.Socket == HandR, Grip != nullptr ? Grip->Fingers * Scale : 0.f, Grip != nullptr ? Grip->Thumb * Scale : 0.f);
+		}
+		return;
+	}
 }
 
 void AWTAWaxStageActor::UpdateProps()
@@ -486,6 +667,15 @@ void AWTAWaxStageActor::UpdateProps()
 	{
 		LoopSeconds = 14.f;
 	}
+	// Every hand opens unless a prop below is in it this frame.
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
+		{
+			Anim->SetGrip(false, 0.f, 0.f);
+			Anim->SetGrip(true, 0.f, 0.f);
+		}
+	}
 	for (int32 i = 0; i < PropParts.Num() && i < Scene.Props.Num(); ++i)
 	{
 		UStaticMeshComponent* Part = PropParts[i];
@@ -494,7 +684,8 @@ void AWTAWaxStageActor::UpdateProps()
 		{
 			continue;
 		}
-		const FWaxPropKind* Kind = WaxPropKind(Prop.Kind);
+		const bool bModelled = PropModelled.IsValidIndex(i) && PropModelled[i];
+		const FWaxPropKind* Kind = bModelled ? nullptr : WaxPropKind(Prop.Kind);
 
 		// Where it is sitting: the last key whose time has passed (before the first, the last key of the loop).
 		int32 Resting = Prop.Keys.Num() - 1;
@@ -528,25 +719,37 @@ void AWTAWaxStageActor::UpdateProps()
 		FTransform Where;
 		if (Arriving == INDEX_NONE)
 		{
-			if (!PropKeyTransform(Prop.Keys[Resting], Where))
+			if (!PropKeyTransform(Prop.Keys[Resting], Prop.Kind, bModelled, Where))
 			{
 				continue;
 			}
+			SetKeyGrip(Prop.Keys[Resting], Prop.Kind, 1.f);
 		}
 		else
 		{
 			FTransform From;
 			FTransform To;
-			if (!PropKeyTransform(Prop.Keys[Resting], From) || !PropKeyTransform(Prop.Keys[Arriving], To))
+			if (!PropKeyTransform(Prop.Keys[Resting], Prop.Kind, bModelled, From) || !PropKeyTransform(Prop.Keys[Arriving], Prop.Kind, bModelled, To))
 			{
 				continue;
 			}
-			// A hand-over: the prop leaves one pair of hands and arrives in the other without snapping.
-			Where.Blend(From, To, FMath::SmoothStep(0.f, 1.f, Alpha));
+			// A hand-over: the prop leaves one pair of hands and arrives in the other without snapping; the
+			// giving hand opens as the taking one closes.
+			const float Smooth = FMath::SmoothStep(0.f, 1.f, Alpha);
+			Where.Blend(From, To, Smooth);
+			SetKeyGrip(Prop.Keys[Resting], Prop.Kind, 1.f - Smooth);
+			SetKeyGrip(Prop.Keys[Arriving], Prop.Kind, Smooth);
 		}
 		if (Kind != nullptr)
 		{
-			Where = FTransform(Kind->Rotation, Kind->Offset) * Where;
+			// a stand-in block: its kind's offset puts it over the eyes or in front of the chest
+			static const FName HandL(TEXT("hand_l"));
+			static const FName HandR(TEXT("hand_r"));
+			const FName Socket = Prop.Keys[Arriving == INDEX_NONE ? Resting : Arriving].Socket;
+			if (Socket != HandL && Socket != HandR)
+			{
+				Where = FTransform(Kind->Rotation, Kind->Offset) * Where;
+			}
 		}
 		Part->SetWorldLocationAndRotation(Where.GetLocation(), Where.GetRotation());
 	}

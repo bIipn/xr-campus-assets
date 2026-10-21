@@ -671,7 +671,7 @@
    "name": "hall",
    "type": "POINT",
    "campus_pos_m": [
-    -10.5,
+    -10.275,
     3.05,
     -3.0
    ],
@@ -693,7 +693,7 @@
    "name": "hall",
    "type": "POINT",
    "campus_pos_m": [
-    -7.5,
+    -7.275,
     3.05,
     -3.0
    ],

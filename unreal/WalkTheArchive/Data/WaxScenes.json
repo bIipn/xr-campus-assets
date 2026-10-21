@@ -218,13 +218,14 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2016-teen",
       "Socket": "hand_r",
       "Offset": {
-       "X": 4,
+       "X": 0,
        "Y": 0,
        "Z": 0
       },
@@ -450,6 +451,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
@@ -472,7 +474,7 @@
       "Figure": "wax-2017a-tech",
       "Socket": "hand_r",
       "Offset": {
-       "X": 4,
+       "X": 0,
        "Y": 0,
        "Z": 0
       },
@@ -504,20 +506,21 @@
    {
     "Id": "clipboard",
     "Kind": "clipboard",
+    "WebIndex": 2,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2017a-lib",
       "Socket": "hand_l",
       "Offset": {
-       "X": 6,
-       "Y": 2,
+       "X": 0,
+       "Y": 0,
        "Z": 0
       },
       "Rotation": {
        "Pitch": 0.0,
        "Yaw": 0.0,
-       "Roll": 90.0
+       "Roll": 0.0
       },
       "Blend": 0.5
      }
@@ -526,6 +529,7 @@
    {
     "Id": "box",
     "Kind": "box",
+    "WebIndex": 3,
     "Keys": [
      {
       "Time": 0.0,
@@ -535,6 +539,29 @@
        "X": 34,
        "Y": 0,
        "Z": -12
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web0",
+    "Kind": "static",
+    "WebIndex": 0,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -246.0,
+       "Y": 90.0,
+       "Z": 50.0
       },
       "Rotation": {
        "Pitch": 0.0,
@@ -761,18 +788,19 @@
    {
     "Id": "book",
     "Kind": "book",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2017b-reader",
-      "Socket": "chest",
+      "Socket": "hand_l",
       "Offset": {
-       "X": 30,
+       "X": 0,
        "Y": 0,
-       "Z": -16
+       "Z": 0
       },
       "Rotation": {
-       "Pitch": -30.0,
+       "Pitch": 0.0,
        "Yaw": 0.0,
        "Roll": 0.0
       },
@@ -783,6 +811,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
@@ -1015,6 +1044,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
@@ -1029,6 +1059,29 @@
        "Pitch": 0.0,
        "Yaw": 0.0,
        "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web0",
+    "Kind": "static",
+    "WebIndex": 0,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -161.8,
+       "Y": 106.93,
+       "Z": 95.21
+      },
+      "Rotation": {
+       "Pitch": -79.889,
+       "Yaw": 8.444,
+       "Roll": -8.576
       },
       "Blend": 0.5
      }
@@ -1255,6 +1308,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -1277,7 +1331,7 @@
       "Figure": "wax-2019a-lib",
       "Socket": "hand_r",
       "Offset": {
-       "X": 4,
+       "X": 0,
        "Y": 0,
        "Z": 0
       },
@@ -1515,7 +1569,77 @@
     ]
    }
   ],
-  "Props": []
+  "Props": [
+   {
+    "Id": "web0",
+    "Kind": "static",
+    "WebIndex": 0,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -175.0,
+       "Y": 110.0,
+       "Z": 74.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": -171.4,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web1",
+    "Kind": "static",
+    "WebIndex": 1,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -175.0,
+       "Y": 10.0,
+       "Z": 74.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 171.4,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web2",
+    "Kind": "static",
+    "WebIndex": 2,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -210.0,
+       "Y": 10.0,
+       "Z": 77.1
+      },
+      "Rotation": {
+       "Pitch": -20.0,
+       "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   }
+  ]
  },
  {
   "Name": "wax-2019c",
@@ -1736,6 +1860,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -1758,15 +1883,16 @@
    {
     "Id": "laptop",
     "Kind": "tablet",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2019c-boy",
       "Socket": "hand_l",
       "Offset": {
-       "X": 8,
+       "X": 0,
        "Y": 0,
-       "Z": 2
+       "Z": 0
       },
       "Rotation": {
        "Pitch": 0.0,
@@ -2006,6 +2132,7 @@
    {
     "Id": "headset_n",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -2028,6 +2155,7 @@
    {
     "Id": "headset_t",
     "Kind": "headset",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
@@ -2050,15 +2178,16 @@
    {
     "Id": "tablet",
     "Kind": "tablet",
+    "WebIndex": 2,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2020-coach",
       "Socket": "hand_l",
       "Offset": {
-       "X": 8,
+       "X": 0,
        "Y": 0,
-       "Z": 2
+       "Z": 0
       },
       "Rotation": {
        "Pitch": 0.0,
@@ -2306,6 +2435,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -2328,13 +2458,14 @@
    {
     "Id": "phone",
     "Kind": "phone",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2022a-lib1",
       "Socket": "hand_r",
       "Offset": {
-       "X": 5,
+       "X": 0,
        "Y": 0,
        "Z": 0
       },
@@ -2568,6 +2699,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -2581,6 +2713,52 @@
       "Rotation": {
        "Pitch": 0.0,
        "Yaw": 0.0,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web1",
+    "Kind": "static",
+    "WebIndex": 1,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -155.0,
+       "Y": 170.0,
+       "Z": 0.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 160.0,
+       "Roll": 0.0
+      },
+      "Blend": 0.5
+     }
+    ]
+   },
+   {
+    "Id": "web2",
+    "Kind": "static",
+    "WebIndex": 2,
+    "Keys": [
+     {
+      "Time": 0.0,
+      "Figure": "",
+      "Socket": "",
+      "Offset": {
+       "X": -188.5,
+       "Y": -186.5,
+       "Z": 74.0
+      },
+      "Rotation": {
+       "Pitch": 0.0,
+       "Yaw": 17.2,
        "Roll": 0.0
       },
       "Blend": 0.5
@@ -2808,6 +2986,7 @@
    {
     "Id": "headset",
     "Kind": "headset",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
@@ -3115,15 +3294,16 @@
    {
     "Id": "tab1",
     "Kind": "tablet",
+    "WebIndex": 0,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2025-k1",
       "Socket": "hand_l",
       "Offset": {
-       "X": 8,
+       "X": 0,
        "Y": 0,
-       "Z": 2
+       "Z": 0
       },
       "Rotation": {
        "Pitch": 0.0,
@@ -3137,15 +3317,16 @@
    {
     "Id": "tab2",
     "Kind": "tablet",
+    "WebIndex": 1,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2025-k2",
       "Socket": "hand_l",
       "Offset": {
-       "X": 8,
+       "X": 0,
        "Y": 0,
-       "Z": 2
+       "Z": 0
       },
       "Rotation": {
        "Pitch": 0.0,
@@ -3159,13 +3340,14 @@
    {
     "Id": "phone",
     "Kind": "phone",
+    "WebIndex": 2,
     "Keys": [
      {
       "Time": 0.0,
       "Figure": "wax-2025-dad",
       "Socket": "hand_r",
       "Offset": {
-       "X": 5,
+       "X": 0,
        "Y": 0,
        "Z": 0
       },

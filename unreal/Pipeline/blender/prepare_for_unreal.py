@@ -37,8 +37,10 @@ SOURCES = [
     ('Yard', 'unreal/Pipeline/out/campus/play.glb'),
     ('OceanDive', 'unreal/Pipeline/out/campus/dive.glb'),
     ('ReadingRoom', 'unreal/Pipeline/out/reading_room/ReadingRoom.glb'),
+    ('Props', 'unreal/Pipeline/out/campus/props.glb'),          # the Wax Hall's carried props, one mesh each, in their own frames
+    ('HandProps', 'unreal/Pipeline/out/props/HandProps.glb'),   # bl/props.py: the held props as real objects, one mesh per kind
 ]
-TAG = re.compile(r'^(item|token|ride|staff|station|book|bp)__')
+TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop)__')
 
 
 def tag_of(o):

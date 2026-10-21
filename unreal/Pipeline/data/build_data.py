@@ -34,6 +34,12 @@ def load(name):
         return json.load(f)
 
 
+def load_out(name):
+    """A file the exporters wrote under Pipeline/out (props_rest.json is committed; the GLBs are not)."""
+    with open(os.path.join(UNREAL, 'Pipeline', 'out', name), encoding='utf-8') as f:
+        return json.load(f)
+
+
 # ---------- conversions (contract section 2) ----------
 def vec(x, y, z):
     return {'X': round(x, 2), 'Y': round(y, 2), 'Z': round(z, 2)}
@@ -639,13 +645,57 @@ def wax_prop(scene_id, p):
                      'Rotation': {'Pitch': float((k.get('r') or [0, 0, 0])[0]), 'Yaw': float((k.get('r') or [0, 0, 0])[1]),
                                   'Roll': float((k.get('r') or [0, 0, 0])[2])},
                      'Blend': float(k.get('b') or 0.5)})
-    return {'Id': p['id'], 'Kind': p['kind'], 'Keys': keys}
+    return {'Id': p['id'], 'Kind': p['kind'], 'WebIndex': int(p.get('web', -1)), 'Keys': keys}
+
+
+def ue_rotator_from_web_quat(q):
+    """A three.js quaternion (x, y, z, w) in the web stage frame -> the UE rotator (Pitch, Yaw, Roll) in the contract's
+    stage frame. Axes map X = z, Y = -x, Z = y (the figure mapping); the rotator follows FMatrix::Rotator()."""
+    x, y, z, w = q
+    # rotation matrix of q (rows), web axes
+    R = [[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+         [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+         [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]]
+    C = [[0, 0, 1], [-1, 0, 0], [0, 1, 0]]      # UE row i = sum_j C[i][j] * web j
+    def mul(A, B):
+        return [[sum(A[i][k] * B[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+    Ct = [[C[j][i] for j in range(3)] for i in range(3)]
+    U = mul(mul(C, R), Ct)                         # the same rotation, UE axes
+    # UE: the rotated X axis is column 0, etc. FMatrix::Rotator(): pitch and yaw from the X axis, roll from Y/Z
+    import math
+    X = [U[0][0], U[1][0], U[2][0]]; Y = [U[0][1], U[1][1], U[2][1]]; Z = [U[0][2], U[1][2], U[2][2]]
+    pitch = math.degrees(math.atan2(X[2], math.hypot(X[0], X[1])))
+    yaw = math.degrees(math.atan2(X[1], X[0]))
+    # the Y axis of a rotator with that pitch and yaw and no roll
+    cy, sy = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    SY = [-sy, cy, 0.0]
+    roll = math.degrees(math.atan2(sum(Z[i] * SY[i] for i in range(3)), sum(Y[i] * SY[i] for i in range(3))))
+    return {'Pitch': round(pitch, 3), 'Yaw': round(yaw, 3), 'Roll': round(roll, 3)}
+
+
+def wax_static_props(scene_id, acting_props, rest):
+    """The web carries of a scene that the acting data does not ride: FWTAWaxProps of kind static, standing where
+    the web left them at t = 0 (out/campus/props_rest.json, stage-local metres: X = z, Y = -x, Z = y cm)."""
+    ridden = {int(p.get('web', -1)) for p in acting_props}
+    rows = []
+    for r in rest:
+        if r['scene'] != scene_id or r['k'] in ridden:
+            continue
+        x, y, z = r['p']
+        rows.append({'Id': 'web%d' % r['k'], 'Kind': 'static', 'WebIndex': int(r['k']),
+                     'Keys': [{'Time': 0.0, 'Figure': '', 'Socket': '', 'Offset': vec(100.0 * z, -100.0 * x, 100.0 * y),
+                               'Rotation': ue_rotator_from_web_quat(r['q']), 'Blend': 0.5}]})
+    return rows
 
 
 def build_wax(L):
     stages = {s['id']: s for s in L['wax_hall']['stages']}
     # What each reenactor acts out, hand-authored from the web's keyframes (see the file's own note).
     acting = load('wax_acting.json')['scenes']
+    try:
+        rest = load_out('campus/props_rest.json')['props']
+    except (OSError, ValueError, KeyError):
+        rest = []
     rows = []
     for w in load('wax_scenes.json'):
         st = stages[w['id']]
@@ -659,7 +709,8 @@ def build_wax(L):
         rows.append({'Name': w['id'], 'Number': int(w['n']), 'Year': txt(w['year']), 'Title': txt(w['title']),
                      'LoopSeconds': float(w.get('loopSeconds') or 14), 'Lines': [{'Time': float(l['t']), 'Text': txt(l['text'])} for l in w['lines']],
                      'StageLocation': vec(*st['ue_origin_cm']), 'StageYaw': round(st['ue_yaw_deg'], 3), 'ItemId': w['item']['id'], 'Sequence': '',
-                     'Figures': figures, 'Props': [wax_prop(w['id'], p) for p in act.get('props', [])]})
+                     'Figures': figures,
+                     'Props': [wax_prop(w['id'], p) for p in act.get('props', [])] + wax_static_props(w['id'], act.get('props', []), rest)})
     return rows
 
 

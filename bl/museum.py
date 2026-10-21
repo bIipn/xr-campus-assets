@@ -55,6 +55,9 @@ VCY = 8.6 - VR
 WALL_T = 0.25                     # solid thickness given to the inner wall faces (Lumen wants closed rooms)
 HALL_H = 3.4                      # the two side halls
 HALL = ((-12.0, -6.0), (6.0, 12.0)); HZ0, HZ1 = -4.6, -1.4
+# the halls' walls and ceiling start at the Reading Room's outer face (x -11.55): its door reveal fills the
+# last 45 cm (bl/library.py), and two faces in one plane flicker. The floor still runs to -12.
+HALL_WALLS = ((-11.55, -6.0), (6.0, 12.0))
 SIDE_DOOR = (-4.2, -1.8)          # lobby -> halls, 2.4 x 3.1 at x = +-6
 # the rotunda and the front
 RC = (0.0, 5.8)                   # centre (x, z)
@@ -363,7 +366,7 @@ def chandelier(pd, pb, px, pz, ceil, hang):
 def halls():
     wl = builder('walls', 'lime', tile=3.0); gold = builder('gilt_trim', 'gilt')
     bs = builder('aedicule', 'stone', tile=2.0); bc = builder('capitals', 'gilt'); bb = builder('bases', 'stone', tile=2.0)
-    for (xa, xb) in HALL:
+    for (xa, xb) in HALL_WALLS:
         for (z, out) in ((HZ0, (0, 1)), (HZ1, (0, -1))):
             wall_face(wl, (xa, z), (xb, z), out, DADO_H - 0.02, HALL_H, nu=3, nv=1)
             dado_run((xa, z), (xb, z), out)

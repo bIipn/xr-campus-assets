@@ -18,4 +18,5 @@ deploy/lib/
 
 # Blender builds of the museum and grounds (bl/museum.py, bl/exterior.py): rebuilt in seconds; only the prepared out/ue copies are kept
 unreal/Pipeline/out/museum/Museum.glb
+unreal/Pipeline/out/props/HandProps.glb
 unreal/Pipeline/out/exterior/Outside.glb

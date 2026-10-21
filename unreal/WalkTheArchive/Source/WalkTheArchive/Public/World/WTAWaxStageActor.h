@@ -13,7 +13,8 @@
 // A figure acts while the player is within WakeDistance of the stage and is a wax figure otherwise:
 //  - acting: ActTime runs and loops, and each FWTAWaxBeat whose Time has passed is the clip the body plays,
 //    crossfading over the beat's Blend; the figure turns to the beat's Yaw over the same time. Props (headsets,
-//    tablets, boxes) ride the sockets their keys name and travel between hands when a key hands them over.
+//    tablets, boxes) ride the sockets their keys name and travel between hands when a key hands them over; a
+//    prop in a hand sits in the palm and that hand's fingers close round it (UWTAWaxAnimInstance::SetGrip).
 //  - wax: the animation instance holds the frame it reached, so each figure freezes mid-gesture in a pose from
 //    its own scene, and the meshes stop evaluating (UWTAPeopleLibrary::Freeze). A frozen figure is posed again
 //    for a couple of frames whenever one of its meshes changes LOD (see UpdateFigureBones).
@@ -126,6 +127,21 @@ protected:
 	/** The clip for a beat's Action, loaded once and kept (null, with one log line, when it has not been built). */
 	UAnimSequence* LoadAction(FName Action);
 
+	/** The stage's yaw from its row (the aisle is in front, along it). */
+	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
+	float GetStageYaw() const { return Scene.StageYaw; }
+
+	/** How many props the scene has (rows of Scene.Props). */
+	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
+	int32 NumProps() const { return Scene.Props.Num(); }
+
+	/**
+	 * For QA: true when prop Index is in a figure's hand right now, with where the prop is, where that hand's
+	 * wrist is, how closed the hand is (0..1) and which hand (hand_l / hand_r).
+	 */
+	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
+	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, float& OutGrip, FName& OutSocket) const;
+
 	/** Wakes the reenactors (bWake) or leaves them holding the frame they reached. */
 	void SetActing(bool bWake);
 
@@ -135,8 +151,14 @@ protected:
 	/** Puts every prop where its keys say it is at ActTime. */
 	void UpdateProps();
 
-	/** World transform of one prop key: on a figure's socket, or standing in the stage's frame. */
-	bool PropKeyTransform(const FWTAWaxPropKey& Key, FTransform& Out) const;
+	/**
+	 * World transform of one prop key: in a figure's hand (the prop's own frame set in the palm, see the .cpp),
+	 * on its head or chest, or standing in the stage's frame. Kind picks how the prop sits in a hand.
+	 */
+	bool PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, bool bModelled, FTransform& Out) const;
+
+	/** Closes (or opens) the hand a key names round a prop of Kind: 0 gives the hand back to its clip. */
+	void SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float Scale) const;
 
 	/**
 	 * Every frame, after the figures' LOD syncs pick this frame's LODs and before the figures' meshes tick:
@@ -200,6 +222,9 @@ protected:
 	/** One component per row prop, in the row's order. */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UStaticMeshComponent>> PropParts;
+
+	/** Per row prop: true when it shows a modelled mesh (HandProps or the web's own), false for a stand-in block. */
+	TArray<bool> PropModelled;
 
 	uint64 SpawnFrame = 0;
 	double SpawnSeconds = 0.0;

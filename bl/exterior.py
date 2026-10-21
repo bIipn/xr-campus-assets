@@ -206,10 +206,13 @@ def build_shells():
                 ub = (u1 - a[1]) * uz if key in ('E', 'W') else (u1 - a[0]) * ux
                 ua, ub = min(ua, ub), max(ua, ub)
                 wall_with_door(ash, (a[0], -1.0, a[1]), (ux, 0, uz), (0, 1, 0), (out[0], 0, out[1]), 0.0, Ln, h + 1.0, ua, ub, oh + 1.0, solid=False)
+                # the plinth course stops either side of the door: across it, it was a 50 cm kerb to jump
+                run_boxes(ash, a, (a[0] + ux * ua, a[1] + uz * ua), out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
+                run_boxes(ash, (a[0] + ux * ub, a[1] + uz * ub), c, out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
             else:
                 A0 = P(a[0], -1.0, a[1]); C0 = P(c[0], -1.0, c[1]); A1 = P(a[0], h, a[1])
                 ash.grid(A0, C0 - A0, A1 - A0, D(out[0], 0, out[1]), 6, 3)
-            run_boxes(ash, a, c, out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
+                run_boxes(ash, a, c, out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
             if order:
                 entablature(ent, den, a, c, out, top)
                 ux, uz = c[0] - a[0], c[1] - a[1]; Ln = math.hypot(ux, uz); ux, uz = ux / Ln, uz / Ln

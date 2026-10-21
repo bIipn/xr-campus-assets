@@ -53,6 +53,19 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 	bool bHeld = false;
 	/** Bumped by PlayClip; the proxy picks the change up in PreUpdate. */
 	uint32 Serial = 0;
+
+	/**
+	 * A grip closes a hand's fingers round a prop on top of whatever the clip does with the arm: [0] the left
+	 * hand, [1] the right. 0 = the clip's own fingers, 1 = closed. Eased toward the target so a hand-over
+	 * closes and opens over a few frames.
+	 */
+	float Grip[2] = { 0.f, 0.f };
+	float Thumb[2] = { 0.f, 0.f };
+	float GripTarget[2] = { 0.f, 0.f };
+	float ThumbTarget[2] = { 0.f, 0.f };
+
+	/** Curls the finger joints of each gripping hand about their hinge axes (local space, after the clips). */
+	void ApplyGrip(FPoseContext& Output) const;
 };
 
 UCLASS()
@@ -71,6 +84,17 @@ public:
 	/** Stops advancing time: the figure holds the pose it is in (a wax figure again). */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
 	void Hold(bool bHold);
+
+	/**
+	 * Closes one hand round a prop: Fingers and Thumb 0..1 scale how far the finger and thumb joints curl (1 is
+	 * a fist). 0 gives the hand back to the clip. The proxy eases toward it over about a quarter second.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	void SetGrip(bool bRightHand, float Fingers, float Thumb);
+
+	/** The grip asked for on a hand (for QA). */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	float GetGrip(bool bRightHand) const { return PendingGrip[bRightHand ? 1 : 0]; }
 
 	/** The clip playing now (null before the first PlayClip). */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
@@ -102,4 +126,6 @@ protected:
 	bool bPendingLoop = true;
 	bool bPendingHold = false;
 	uint32 PendingSerial = 0;
+	float PendingGrip[2] = { 0.f, 0.f };
+	float PendingThumb[2] = { 0.f, 0.f };
 };

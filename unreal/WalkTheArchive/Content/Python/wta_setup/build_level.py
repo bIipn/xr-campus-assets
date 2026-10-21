@@ -49,6 +49,10 @@ def spawn_meshes():
         for _path, mesh in meshes:
             name = util.object_name(mesh)
             tag = util.mesh_tag(name)
+            if tag and tag[0] == "prop":
+                # the Wax Hall's props (Props, HandProps) stand in their own frames: the stages spawn them
+                counts[asset] -= 1
+                continue
             label = name if tag else "%s_%s" % (asset, name)
             actor = util.spawn_object(mesh, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), step=STEP, label=label,
                                       folder="Campus/" + asset)

@@ -7,6 +7,7 @@
    "points/lines": 43,
    "staff": 4,
    "invisible_helper": 97,
+   "carried": 27,
    "baked_room": 1,
    "baked": 28,
    "attr_stripped": 6,
@@ -14,12 +15,13 @@
    "grass": 1
   },
   "tagged": 152,
-  "hidden_objects_kept": 272
+  "hidden_objects_kept": 272,
+  "carried": 27
  },
  "wings": {
   "museum": {
    "file": "museum.glb",
-   "bytes": 13203432
+   "bytes": 13203428
   },
   "waxIntro": {
    "file": "waxIntro.glb",
@@ -27,11 +29,11 @@
   },
   "wax": {
    "file": "wax.glb",
-   "bytes": 15166204
+   "bytes": 14844760
   },
   "lib": {
    "file": "lib.glb",
-   "bytes": 8437624
+   "bytes": 8437620
   },
   "school": {
    "file": "school.glb",
@@ -48,6 +50,10 @@
   "dive": {
    "file": "dive.glb",
    "bytes": 1440164
+  },
+  "props": {
+   "file": "props.glb",
+   "bytes": 336660
   }
  },
  "art": [
