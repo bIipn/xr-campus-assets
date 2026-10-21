@@ -587,17 +587,12 @@ bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWr
 		return false;
 	}
 	const FWTAWaxProp& Prop = Scene.Props[Index];
-	int32 Resting = Prop.Keys.Num() - 1;
-	for (int32 k = 0; k < Prop.Keys.Num(); ++k)
+	int32 Resting = INDEX_NONE, Arriving = INDEX_NONE;
+	float Alpha = 0.f;
+	PropKeysAt(Prop, Resting, Arriving, Alpha);
+	if (!Prop.Keys.IsValidIndex(Resting) || Arriving != INDEX_NONE)
 	{
-		if (Prop.Keys[k].Time <= ActTime)
-		{
-			Resting = k;
-		}
-	}
-	if (!Prop.Keys.IsValidIndex(Resting))
-	{
-		return false;
+		return false;                            // not there yet, or on its way somewhere else
 	}
 	const FWTAWaxPropKey& Key = Prop.Keys[Resting];
 	if (Key.Socket != HandL && Key.Socket != HandR)
@@ -661,13 +656,45 @@ void AWTAWaxStageActor::SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float 
 	}
 }
 
-void AWTAWaxStageActor::UpdateProps()
+void AWTAWaxStageActor::PropKeysAt(const FWTAWaxProp& Prop, int32& Resting, int32& Arriving, float& Alpha) const
 {
 	float LoopSeconds = Scene.LoopSeconds;
 	if (LoopSeconds <= 0.f)
 	{
 		LoopSeconds = 14.f;
 	}
+	// Where it is sitting: the last key whose time has passed (before the first, the last key of the loop).
+	Resting = Prop.Keys.Num() - 1;
+	for (int32 k = 0; k < Prop.Keys.Num(); ++k)
+	{
+		if (Prop.Keys[k].Time <= ActTime)
+		{
+			Resting = k;
+		}
+	}
+	// It travels to a key over that key's Blend seconds, arriving exactly on the key's time.
+	Arriving = INDEX_NONE;
+	Alpha = 0.f;
+	for (int32 k = 0; k < Prop.Keys.Num() && Arriving == INDEX_NONE; ++k)
+	{
+		const float Travel = FMath::Max(0.05f, Prop.Keys[k].Blend);
+		const float Leaves = Prop.Keys[k].Time - Travel;
+		float Since = ActTime - Leaves;
+		if (Leaves < 0.f && ActTime > Prop.Keys[k].Time)
+		{
+			// The window straddles the loop's join.
+			Since = ActTime - (Leaves + LoopSeconds);
+		}
+		if (Since >= 0.f && Since < Travel && k != Resting)
+		{
+			Arriving = k;
+			Alpha = Since / Travel;
+		}
+	}
+}
+
+void AWTAWaxStageActor::UpdateProps()
+{
 	// Every hand opens unless a prop below is in it this frame.
 	for (const FFigurePlay& Play : Plays)
 	{
@@ -688,34 +715,9 @@ void AWTAWaxStageActor::UpdateProps()
 		const bool bModelled = PropModelled.IsValidIndex(i) && PropModelled[i];
 		const FWaxPropKind* Kind = bModelled ? nullptr : WaxPropKind(Prop.Kind);
 
-		// Where it is sitting: the last key whose time has passed (before the first, the last key of the loop).
-		int32 Resting = Prop.Keys.Num() - 1;
-		for (int32 k = 0; k < Prop.Keys.Num(); ++k)
-		{
-			if (Prop.Keys[k].Time <= ActTime)
-			{
-				Resting = k;
-			}
-		}
-		// It travels to a key over that key's Blend seconds, arriving exactly on the key's time.
-		int32 Arriving = INDEX_NONE;
+		int32 Resting = INDEX_NONE, Arriving = INDEX_NONE;
 		float Alpha = 0.f;
-		for (int32 k = 0; k < Prop.Keys.Num() && Arriving == INDEX_NONE; ++k)
-		{
-			const float Travel = FMath::Max(0.05f, Prop.Keys[k].Blend);
-			const float Leaves = Prop.Keys[k].Time - Travel;
-			float Since = ActTime - Leaves;
-			if (Leaves < 0.f && ActTime > Prop.Keys[k].Time)
-			{
-				// The window straddles the loop's join.
-				Since = ActTime - (Leaves + LoopSeconds);
-			}
-			if (Since >= 0.f && Since < Travel && k != Resting)
-			{
-				Arriving = k;
-				Alpha = Since / Travel;
-			}
-		}
+		PropKeysAt(Prop, Resting, Arriving, Alpha);
 
 		FTransform Where;
 		if (Arriving == INDEX_NONE)

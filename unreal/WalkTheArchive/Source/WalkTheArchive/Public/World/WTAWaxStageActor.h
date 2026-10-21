@@ -151,6 +151,9 @@ protected:
 	/** Puts every prop where its keys say it is at ActTime. */
 	void UpdateProps();
 
+	/** The key a prop sits at (Resting) at ActTime and, while it travels, the key it is on its way to and how far. */
+	void PropKeysAt(const FWTAWaxProp& Prop, int32& Resting, int32& Arriving, float& Alpha) const;
+
 	/**
 	 * World transform of one prop key: in a figure's hand (the prop's own frame set in the palm, see the .cpp),
 	 * on its head or chest, or standing in the stage's frame. Kind picks how the prop sits in a hand.
