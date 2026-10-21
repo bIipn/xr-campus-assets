@@ -104,19 +104,42 @@ namespace
 	}
 
 	/**
-	 * The palm in the wrist bone's frame, measured on the MetaHuman body's reference pose with
-	 * C:\dev\wta_tools\probe_hands.py: F runs along the fingers, N out of the palm, and the palm's centre is 7 cm
-	 * along the fingers from the wrist. The frame returned has +X = F, +Y = N, +Z = F x N (across the palm,
-	 * toward the little finger on the right hand and the index on the left, so one prop model fits both).
+	 * The palm, in world space, from the hand's own bones this frame: +X runs from the wrist toward the middle
+	 * finger's knuckle, +Y is the palm's normal (square to the fingers, on the thumb's side of the hand's plane,
+	 * where the thumb tip lies), +Z = X x Y across the palm, and the origin is 7 cm along the fingers from the
+	 * wrist (mid-palm). One prop model fits both hands, since Z runs toward the little finger on the right hand
+	 * and the index on the left. False when this LOD has no finger bones.
 	 */
-	FTransform PalmInWrist(bool bRight)
+	bool PalmFrame(const USkeletalMeshComponent* Body, bool bRight, FTransform& Out)
 	{
-		const FVector F = bRight ? FVector(-0.993f, -0.107f, 0.043f) : FVector(0.993f, 0.106f, -0.042f);
-		FVector N = bRight ? FVector(-0.105f, 0.994f, 0.038f) : FVector(0.105f, -0.994f, -0.038f);
-		const FVector Centre = bRight ? FVector(-6.954f, -0.747f, 0.298f) : FVector(6.954f, 0.743f, -0.296f);
-		const FVector X = F.GetSafeNormal();
-		N = (N - X * FVector::DotProduct(N, X)).GetSafeNormal();
-		return FTransform(FMatrix(X, N, FVector::CrossProduct(X, N), Centre));
+		const TCHAR* Side = bRight ? TEXT("r") : TEXT("l");
+		const FName Wrist(*FString::Printf(TEXT("hand_%s"), Side));
+		const FName Middle(*FString::Printf(TEXT("middle_01_%s"), Side));
+		const FName Index(*FString::Printf(TEXT("index_01_%s"), Side));
+		const FName Pinky(*FString::Printf(TEXT("pinky_01_%s"), Side));
+		const FName Thumb(*FString::Printf(TEXT("thumb_03_%s"), Side));
+		for (const FName& Bone : { Wrist, Middle, Index, Pinky, Thumb })
+		{
+			if (Body == nullptr || Body->GetBoneIndex(Bone) == INDEX_NONE)
+			{
+				return false;
+			}
+		}
+		const FVector W0 = Body->GetSocketLocation(Wrist);
+		const FVector F = (Body->GetSocketLocation(Middle) - W0).GetSafeNormal();
+		const FVector Across = (Body->GetSocketLocation(Index) - Body->GetSocketLocation(Pinky)).GetSafeNormal();
+		FVector N = FVector::CrossProduct(F, Across).GetSafeNormal();
+		if (FVector::DotProduct(Body->GetSocketLocation(Thumb) - W0, N) < 0.f)
+		{
+			N = -N;
+		}
+		N = (N - F * FVector::DotProduct(N, F)).GetSafeNormal();
+		if (F.IsNearlyZero() || N.IsNearlyZero())
+		{
+			return false;
+		}
+		Out = FTransform(FMatrix(F, N, FVector::CrossProduct(F, N), W0 + F * 7.f));
+		return true;
 	}
 
 	/** A campus mesh by wing and name, where the Interchange import files them (import_meshes.py). */
@@ -551,7 +574,11 @@ bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, 
 		static const FName Head(TEXT("head"));
 		if (Key.Socket == HandL || Key.Socket == HandR)
 		{
-			Frame = PalmInWrist(Key.Socket == HandR) * Frame;
+			FTransform Palm;
+			if (PalmFrame(Body, Key.Socket == HandR, Palm))
+			{
+				Frame = Palm;
+			}
 			if (const FWaxGrip* Grip = WaxGrip(Kind))
 			{
 				Frame = FTransform(Grip->Rotation, Grip->Offset) * Frame;
