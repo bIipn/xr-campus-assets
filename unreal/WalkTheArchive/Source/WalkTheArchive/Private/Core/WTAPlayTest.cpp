@@ -28,6 +28,7 @@
 #include "World/WTAWaxStageActor.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
 #include "CollisionQueryParams.h"
 #include "CollisionShape.h"
 #include "Components/CapsuleComponent.h"
@@ -1983,7 +1984,8 @@ void UWTAPlayTest::AddWaxPhase()
 		// The props in hands: each sits in the palm of the hand its key names (within 25 cm of the wrist) and
 		// that hand is closed on it; a 90 cm close-up of the first held one, no HUD, shows the grip.
 		TSharedRef<bool> HeldOne = MakeShared<bool>(false);
-		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, SceneName, HeldOne]() -> float
+		TSharedRef<FVector> Target = MakeShared<FVector>(FVector::ZeroVector);
+		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, SceneName, HeldOne, Target]() -> float
 		{
 			*HeldOne = false;
 			AWTAWaxStageActor* Stage = nullptr;
@@ -2033,10 +2035,25 @@ void UWTAPlayTest::AddWaxPhase()
 			}
 			const FVector Toward = (Out * 0.7f + Aisle * 0.3f).GetSafeNormal2D();
 			const FVector Eye = FirstProp + Toward * 75.f + FVector(0.f, 0.f, 30.f);
+			*Target = FirstProp;
 			StandAt(LookFrom(Eye, FirstProp));
 			return 0.6f;
 		} });
-		Steps.Add({ TEXT("wax hands shot ") + Name, [this, Name, HeldOne]() -> float
+		Steps.Add({ TEXT("wax hands shot ") + Name, [this, Name, HeldOne, Target]() -> float
+		{
+			if (!*HeldOne)
+			{
+				return 0.1f;
+			}
+			// The floor set the feet, so the eye is not where it was asked to be: aim from where it is.
+			if (AWTAPlayerController* C = PC())
+			{
+				const FVector From = C->PlayerCameraManager != nullptr ? C->PlayerCameraManager->GetCameraLocation() : C->GetPawn()->GetActorLocation();
+				C->SetControlRotation((*Target - From).Rotation());
+			}
+			return 0.2f;
+		} });
+		Steps.Add({ TEXT("wax hands take ") + Name, [this, Name, HeldOne]() -> float
 		{
 			if (*HeldOne)
 			{
