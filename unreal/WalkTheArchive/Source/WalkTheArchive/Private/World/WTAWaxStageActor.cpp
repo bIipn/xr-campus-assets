@@ -78,7 +78,7 @@ namespace
 
 	/**
 	 * How a modelled prop (bl/props.py) sits in a hand, and how far that hand closes on it. The prop's own frame
-	 * is put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmInWrist); Offset and
+	 * is put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmFrame); Offset and
 	 * Rotation move the prop in that frame. Fingers and Thumb are the grip (0..1) the hand holding it gets.
 	 */
 	struct FWaxGrip
