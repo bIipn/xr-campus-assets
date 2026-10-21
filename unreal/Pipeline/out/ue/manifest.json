@@ -24,7 +24,7 @@
     "token__t_museum"
    ],
    "triangles": 174016,
-   "bytes": 55248604
+   "bytes": 55248732
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -37,7 +37,7 @@
   "WaxHall": {
    "file": "WaxHall.glb",
    "source": "unreal/Pipeline/out/campus/wax.glb",
-   "meshes": 167,
+   "meshes": 154,
    "tagged": [
     "item__wax_2016",
     "item__wax_2017a",
@@ -52,8 +52,8 @@
     "item__wax_2024",
     "item__wax_2025"
    ],
-   "triangles": 54466,
-   "bytes": 17734388
+   "triangles": 35870,
+   "bytes": 15670940
   },
   "LibraryShell": {
    "file": "LibraryShell.glb",
@@ -107,8 +107,8 @@
    "source": "unreal/Pipeline/out/exterior/Outside.glb",
    "meshes": 27,
    "tagged": [],
-   "triangles": 149980,
-   "bytes": 33955048
+   "triangles": 149940,
+   "bytes": 33956056
   },
   "Yard": {
    "file": "Yard.glb",
@@ -142,6 +142,57 @@
    "tagged": [],
    "triangles": 196418,
    "bytes": 63575264
+  },
+  "Props": {
+   "file": "Props.glb",
+   "source": "unreal/Pipeline/out/campus/props.glb",
+   "meshes": 27,
+   "tagged": [
+    "prop__wax_2016_0",
+    "prop__wax_2017a_0",
+    "prop__wax_2017a_1",
+    "prop__wax_2017a_2",
+    "prop__wax_2017a_3",
+    "prop__wax_2017b_0",
+    "prop__wax_2017b_1",
+    "prop__wax_2018a_0",
+    "prop__wax_2018a_1",
+    "prop__wax_2019a_0",
+    "prop__wax_2019b_0",
+    "prop__wax_2019b_1",
+    "prop__wax_2019b_2",
+    "prop__wax_2019c_0",
+    "prop__wax_2019c_1",
+    "prop__wax_2020_0",
+    "prop__wax_2020_1",
+    "prop__wax_2020_2",
+    "prop__wax_2022a_0",
+    "prop__wax_2022a_1",
+    "prop__wax_2022b_0",
+    "prop__wax_2022b_1",
+    "prop__wax_2022b_2",
+    "prop__wax_2024_0",
+    "prop__wax_2025_0",
+    "prop__wax_2025_1",
+    "prop__wax_2025_2"
+   ],
+   "triangles": 18596,
+   "bytes": 2021436
+  },
+  "HandProps": {
+   "file": "HandProps.glb",
+   "source": "unreal/Pipeline/out/props/HandProps.glb",
+   "meshes": 6,
+   "tagged": [
+    "prop__book",
+    "prop__box",
+    "prop__clipboard",
+    "prop__headset",
+    "prop__phone",
+    "prop__tablet"
+   ],
+   "triangles": 4320,
+   "bytes": 192720
   }
  }
 }
