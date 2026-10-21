@@ -56,13 +56,14 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 
 	/**
 	 * A grip closes a hand's fingers round a prop on top of whatever the clip does with the arm: [0] the left
-	 * hand, [1] the right. 0 = the clip's own fingers, 1 = closed. Eased toward the target so a hand-over
-	 * closes and opens over a few frames.
+	 * hand, [1] the right. FingerDeg/ThumbDeg are the degrees each of the three joints bends at a full grip
+	 * (x, y, z = the first, second and third joint from the knuckle), Grip how far toward that the hand is
+	 * (0 = the clip's own fingers), eased so a hand-over closes and opens over a few frames.
 	 */
 	float Grip[2] = { 0.f, 0.f };
-	float Thumb[2] = { 0.f, 0.f };
 	float GripTarget[2] = { 0.f, 0.f };
-	float ThumbTarget[2] = { 0.f, 0.f };
+	FVector FingerDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	FVector ThumbDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
 
 	/** Curls the finger joints of each gripping hand about their hinge axes (local space, after the clips). */
 	void ApplyGrip(FPoseContext& Output) const;
@@ -86,13 +87,14 @@ public:
 	void Hold(bool bHold);
 
 	/**
-	 * Closes one hand round a prop: Fingers and Thumb 0..1 scale how far the finger and thumb joints curl (1 is
-	 * a fist). 0 gives the hand back to the clip. The proxy eases toward it over about a quarter second.
+	 * Closes one hand round a prop: FingerDeg and ThumbDeg are the degrees the three joints of each finger and
+	 * of the thumb bend (x = at the knuckle, y, z = the next two), Amount 0..1 how far toward that. Amount 0 gives
+	 * the hand back to the clip. The proxy eases toward it over about a quarter second.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "WTA|People")
-	void SetGrip(bool bRightHand, float Fingers, float Thumb);
+	void SetGrip(bool bRightHand, float Amount, FVector FingerDeg, FVector ThumbDeg);
 
-	/** The grip asked for on a hand (for QA). */
+	/** How far closed a hand was asked to be (for QA). */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
 	float GetGrip(bool bRightHand) const { return PendingGrip[bRightHand ? 1 : 0]; }
 
@@ -127,5 +129,6 @@ protected:
 	bool bPendingHold = false;
 	uint32 PendingSerial = 0;
 	float PendingGrip[2] = { 0.f, 0.f };
-	float PendingThumb[2] = { 0.f, 0.f };
+	FVector PendingFingerDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	FVector PendingThumbDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
 };

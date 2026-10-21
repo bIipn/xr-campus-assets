@@ -77,28 +77,37 @@ namespace
 	}
 
 	/**
-	 * How a modelled prop (bl/props.py) sits in a hand, and how far that hand closes on it. The prop's own frame
-	 * is put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmFrame); Offset and
-	 * Rotation move the prop in that frame. Fingers and Thumb are the grip (0..1) the hand holding it gets.
+	 * How a modelled prop (bl/props.py) sits in a hand, and how that hand closes on it. The prop's own frame is
+	 * put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmFrame); Offset and
+	 * Rotation move the prop in that frame. FingerDeg and ThumbDeg are the degrees the three joints of each
+	 * finger and of the thumb bend, from the knuckle out (UWTAWaxAnimInstance::SetGrip).
+	 *
+	 * Two holds: a wrap, where the prop's edge lies along the crease at the base of the fingers and the second
+	 * and third joints close over it (the phone across the palm, the headset's strap); and a cradle, where the
+	 * prop lies flat on the open palm and fingers with the thumb over its near edge (tablet, clipboard, book).
 	 */
 	struct FWaxGrip
 	{
 		FVector Offset;
 		FRotator Rotation;
-		float Fingers;
-		float Thumb;
+		FVector FingerDeg;
+		FVector ThumbDeg;
 	};
 
 	const FWaxGrip* WaxGrip(FName Kind)
 	{
+		static const FVector Wrap(18.f, 62.f, 52.f), WrapThumb(28.f, 32.f, 20.f);
+		static const FVector Cradle(8.f, 14.f, 10.f), CradleThumb(34.f, 28.f, 16.f);
 		static const TMap<FName, FWaxGrip> Grips = {
 			// carried by its top strap: the headset (modelled for the head, +Z up) hangs below the palm, visor along the fingers
-			{ FName(TEXT("headset")),   { FVector(3.f, 6.f, 0.f), FRotator(0.f, 0.f, 90.f), 0.6f, 0.5f } },
-			{ FName(TEXT("tablet")),    { FVector::ZeroVector, FRotator::ZeroRotator, 0.35f, 0.6f } },
-			{ FName(TEXT("clipboard")), { FVector::ZeroVector, FRotator::ZeroRotator, 0.35f, 0.6f } },
-			{ FName(TEXT("book")),      { FVector::ZeroVector, FRotator::ZeroRotator, 0.30f, 0.5f } },
-			{ FName(TEXT("phone")),     { FVector::ZeroVector, FRotator::ZeroRotator, 0.75f, 0.5f } },
-			{ FName(TEXT("box")),       { FVector::ZeroVector, FRotator::ZeroRotator, 0.40f, 0.4f } },
+			{ FName(TEXT("headset")),   { FVector(3.f, 6.f, 0.f), FRotator(0.f, 0.f, 90.f), Wrap, WrapThumb } },
+			{ FName(TEXT("tablet")),    { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
+			{ FName(TEXT("clipboard")), { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
+			{ FName(TEXT("book")),      { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
+			// across the palm (its length along Z: pitch 90 turns +X to +Z about the palm's normal), its near long
+			// edge at the base of the fingers, resting on the first joints
+			{ FName(TEXT("phone")),     { FVector(6.75f, 1.4f, 0.f), FRotator(90.f, 0.f, 0.f), Wrap, WrapThumb } },
+			{ FName(TEXT("box")),       { FVector::ZeroVector, FRotator::ZeroRotator, Cradle, CradleThumb } },
 		};
 		return Grips.Find(Kind);
 	}
@@ -681,7 +690,7 @@ void AWTAWaxStageActor::SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float 
 		}
 		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
 		{
-			Anim->SetGrip(Key.Socket == HandR, Grip != nullptr ? Grip->Fingers * Scale : 0.f, Grip != nullptr ? Grip->Thumb * Scale : 0.f);
+			Anim->SetGrip(Key.Socket == HandR, Grip != nullptr ? Scale : 0.f, Grip != nullptr ? Grip->FingerDeg : FVector::ZeroVector, Grip != nullptr ? Grip->ThumbDeg : FVector::ZeroVector);
 		}
 		return;
 	}
@@ -731,8 +740,8 @@ void AWTAWaxStageActor::UpdateProps()
 	{
 		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
 		{
-			Anim->SetGrip(false, 0.f, 0.f);
-			Anim->SetGrip(true, 0.f, 0.f);
+			Anim->SetGrip(false, 0.f, FVector::ZeroVector, FVector::ZeroVector);
+			Anim->SetGrip(true, 0.f, FVector::ZeroVector, FVector::ZeroVector);
 		}
 	}
 	for (int32 i = 0; i < PropParts.Num() && i < Scene.Props.Num(); ++i)
