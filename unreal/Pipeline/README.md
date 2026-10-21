@@ -33,6 +33,13 @@ the architectural vocabulary (columns, capitals, entablatures, vaults, domes, ur
 `bl/textures.py` (`limestone museum_marbles grass flagstone trees banners frieze`) and are committed under `assets/tex`.
 `blender/cull_indoor_trees.py` only applies to the old web export.
 
+`blender/find_flicker.py -- Museum ReadingRoom Outside` is the gate against walls that flicker: it loads the prepared
+GLBs and lists every pair of faces from different meshes that lie in one plane (within 1.5 mm), face the same way and
+overlap (true polygon overlap, not bounds), biggest first, with where the largest piece is in campus metres. Faces
+glued back to back onto a surface and the undersides of things standing on the floor are left out. What it still
+lists after a build is read with judgment: a pair buried inside a wall or on a roof top cannot be seen; one on a
+jamb, a sill, a reveal or a ceiling can, and the builders are changed until it is gone.
+
 ## Coordinates
 
 Web campus: metres, three.js axes (Y up, camera yaw 0 looks toward −Z). Unreal: centimetres, X east, Y south, Z up.

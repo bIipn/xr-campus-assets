@@ -1,5 +1,5 @@
 {
- "source": "assets\\lib_ue\\library.blend",
+ "source": "assets/lib_ue/library.blend",
  "units": "metres, three.js campus axes (y up)",
  "lights": [
   {

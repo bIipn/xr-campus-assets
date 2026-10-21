@@ -331,8 +331,9 @@ def build_shell():
     ll.grid(P(LX0, H + 0.3, LZ0), P(LX1, H + 0.3, LZ0) - P(LX0, H + 0.3, LZ0), P(LX0, H + 0.3, LZ1) - P(LX0, H + 0.3, LZ0), Vector((0, 0, -1)))
     ll.finish()
     lf = Builder('laylight_frame', 'plaster_v', tile=3.0, lightmap=False, vcol=True, seg=1.0)
-    lf.box((LX0 + LX1) / 2, H + 0.15, LZ0 - 0.1, LX1 - LX0 + 0.4, 0.3, 0.2); lf.box((LX0 + LX1) / 2, H + 0.15, LZ1 + 0.1, LX1 - LX0 + 0.4, 0.3, 0.2)
-    lf.box(LX0 - 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0); lf.box(LX1 + 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0)
+    # the frame lines the inside of the opening (outside it, its faces shared the ceiling slab's rim and flickered)
+    lf.box((LX0 + LX1) / 2, H + 0.15, LZ0 + 0.1, LX1 - LX0, 0.3, 0.2); lf.box((LX0 + LX1) / 2, H + 0.15, LZ1 - 0.1, LX1 - LX0, 0.3, 0.2)
+    lf.box(LX0 + 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0); lf.box(LX1 - 0.1, H + 0.15, (LZ0 + LZ1) / 2, 0.2, 0.3, LZ1 - LZ0)
     # mullions across the laylight
     for x in frange(LX0 + 2.0, LX1 - 0.5, 2.0): lf.box(x, H + 0.15, (LZ0 + LZ1) / 2, 0.08, 0.3, LZ1 - LZ0)
     lf.finish()

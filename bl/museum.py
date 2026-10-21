@@ -206,7 +206,7 @@ def gallery_walls():
     for (a, c) in (((X0, ZW), (-1.6, ZW)), ((1.6, ZW), (X1, ZW))):
         dado_run(a, c, (0, 1)); entablature(ent, den, a, c, (0, 1), H_COL)
     entablature(ent, den, (-1.6, ZW), (1.6, ZW), (0, 1), H_COL, dent=True)
-    aedicule(ZW, (0, 1))
+    aedicule(ZW, (0, 1), face_offset=0.0)                       # against the wall itself, not a partition's face
     # the lunette above the end wall's entablature, up to the vault
     extrude_profile(wl, lunette_pts(VR, VCY, 6.0, H_ENT), (0.0, 0.0, ZW), (1, 0, 0), (0, 1, 0), (0, 0, 1), 0.0, back=False, sides=False)
 
@@ -302,13 +302,16 @@ def lobby():
         # a moulded surround for the hall door, and the wing sign above it sits in a gilt frame
         run_boxes(bs, (x, SIDE_DOOR[0] - 0.2), (x, SIDE_DOOR[1] + 0.2), out, [(3.1, 3.3, 0.12), (3.9, 4.05, 0.16)])
         for z in (SIDE_DOOR[0] - 0.15, SIDE_DOOR[1] + 0.15): bs.box(x + out[0] * 0.06, 1.55, z, 0.12, 3.1, 0.14, seg=1.5)
-    # the back wall z = 0: the arch into the rotunda, flanked by the title panel and the plaque
+    # the back wall z = 0: the arch into the rotunda, flanked by the title panel and the plaque. Its opening is
+    # 5 cm wider all round than the drum's cut, which lines the passage from z = 0: the wall's own 25 cm of
+    # thickness then steps back behind the archivolt instead of sharing the lining's planes (which flickered).
     w, sp = LOBBY_ARCH
-    wall_with_arch(wl, (X0, 0.0, 0.0), (1, 0, 0), (0, 1, 0), (0, 0, -1), 0.0, X1 - X0, H_COL, 6.0 - w / 2, 6.0 + w / 2, sp, solid=False)
-    for (a, c) in (((X0, 0.0), (-w / 2, 0.0)), ((w / 2, 0.0), (X1, 0.0))):
+    ZB = 0.0
+    wall_with_arch(wl, (X0, 0.0, ZB), (1, 0, 0), (0, 1, 0), (0, 0, -1), 0.0, X1 - X0, H_COL, 6.0 - w / 2 - 0.05, 6.0 + w / 2 + 0.05, sp, solid=False)
+    for (a, c) in (((X0, ZB), (-w / 2, ZB)), ((w / 2, ZB), (X1, ZB))):
         dado_run(a, c, (0, -1))
-    entablature(ent, den, (X0, 0.0), (X1, 0.0), (0, -1), H_COL)
-    archivolt((0.0, 0.0), (0, -1), w, sp, bs, gold)
+    entablature(ent, den, (X0, ZB), (X1, ZB), (0, -1), H_COL)
+    archivolt((0.0, ZB), (0, -1), w, sp, bs, gold)
     # ceiling: flat, coffered, at the entablature's top
     coffered_flat(builder('ceiling', 'lime', tile=3.0), gold, X0, X1, -6.0, 0.0, H_ENT, 6, 3, rib=0.34, depth=0.26)
     # two chandeliers
@@ -486,12 +489,13 @@ def rotunda():
         face_uv(fz, [P(cx + rr * math.cos(a0), y0, cz + rr * math.sin(a0)), P(cx + rr * math.cos(a1), y0, cz + rr * math.sin(a1)),
                      P(cx + rr * math.cos(a1), y1, cz + rr * math.sin(a1)), P(cx + rr * math.cos(a0), y1, cz + rr * math.sin(a0))],
                 D(-math.cos((a0 + a1) / 2), 0, -math.sin((a0 + a1) / 2)), [(u0, 0), (u1, 0), (u1, 1), (u0, 1)])
-    # urns in the four niches, torcheres between the columns
+    # urns on pedestals before the four niches (a pedestal in the niche shared the sill's plane and flickered),
+    # torcheres between the columns
     for k in range(4):
         phi = math.pi / 4 + k * math.pi / 2
-        px, pz = cx + (RI + 0.1) * math.cos(phi), cz + (RI + 0.1) * math.sin(phi)
-        pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), px, pz, 0.8, 0.9)
-        urn(builder('urns', 'stone', tile=2.0), px, pz, 0.9, h=1.3, s=1.0)
+        px, pz = cx + (RI - 0.42) * math.cos(phi), cz + (RI - 0.42) * math.sin(phi)
+        pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), px, pz, 0.8, 0.92)
+        urn(builder('urns', 'stone', tile=2.0), px, pz, 0.92, h=1.3, s=1.0)
     # pedestals before the east and west windows for the two marble statues (Pipeline/content/statues.json)
     for px in (-3.9, 3.9):
         pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), cx + px, cz, 0.9, 0.9)
@@ -543,8 +547,9 @@ def front():
             corners = [(xa, za), (xa + cell, za), (xa, za + cell), (xa + cell, za + cell)]
             if all(math.hypot(px - cx, pz - cz) >= RO - 0.1 for (px, pz) in corners):
                 ash.face([P(xa, H1, za), P(xa + cell, H1, za), P(xa + cell, H1, za + cell), P(xa, H1, za + cell)], D(0, 1, 0))
-    # the passage through the pronaos: jambs, and the arched soffit from z = cz + RI (rotunda wall) to z1
-    pz0 = cz + RI
+    # the passage through the pronaos: jambs, and the arched soffit from the drum's outer face (z = cz + RO; the
+    # drum's own cut lines the passage from RI to RO, and two linings in one plane flicker) to z1
+    pz0 = cz + RO
     for s in (-1, 1):
         ash.box(s * w / 2, (sp + 1.0) / 2 - 0.5, (pz0 + z1) / 2, 0.02, sp + 1.0, z1 - pz0, faces=('x' if s > 0 else 'X'), seg=2.0)
     arc = arch_pts(-w / 2, w / 2, sp, 16)

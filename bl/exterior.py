@@ -222,7 +222,7 @@ def build_shells():
                     sx += 6.0 if Ln > 12 else Ln - 1.2
             else:
                 run_boxes(ent, a, c, out, [(h - 0.40, h - 0.30, 0.10), (h - 0.30, h - 0.12, 0.18), (h - 0.12, h, 0.26)], seg=3.0)
-        rf.box((x0 + x1) / 2, h - 0.06, (z0 + z1) / 2, x1 - x0, 0.12, z1 - z0, faces='Y')
+        rf.box((x0 + x1) / 2, h + 0.04, (z0 + z1) / 2, x1 - x0, 0.12, z1 - z0, faces='Y')     # above the rooms' own ceilings
         ash.box((x0 + x1) / 2, h + 0.25, (z0 + z1) / 2, x1 - x0 + 0.1, 0.5, z1 - z0 + 0.1, faces='xXzZY')      # parapet
     # the Reading Room's roof lantern (over the laylight x -30..-14, z -3.9..-2.1)
     lb = builder('shells', 'ashlar', tile=2.4)
