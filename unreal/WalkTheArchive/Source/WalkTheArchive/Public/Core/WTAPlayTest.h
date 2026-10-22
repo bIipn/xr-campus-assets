@@ -20,6 +20,8 @@
 //             check what opens (exhibit card, book, station, ride card, chat, token collected), turn a book's pages,
 //             Esc closes it
 //   wax       stand in front of each Wax Hall scene, press E with nothing under the crosshair: the scene's story opens
+//   quiz      (only when named) every class's quiz straight from DT_Talks, no venue needed: opened, answered right,
+//             the name typed, the certificate shown and saved
 //   talks     every talk and class (DT_Talks): the speaker on the spot and the title slide on the screens; sit on a seat
 //             of its venue, the talk starts (slide 1, the voice reading, a caption); the next slide shows; a class is
 //             run to its end, the quiz opens, every question is answered right, a name is typed, the certificate
@@ -102,6 +104,10 @@ private:
 	void AddSeatsPhase();
 	/** Every talk and class: see the header. */
 	void AddTalksPhase();
+	/** Only when named: every class's quiz opened straight from DT_Talks (no venue needed), answered right, the certificate. */
+	void AddQuizPhase();
+	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
+	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
 	void AddActingPhase();
 	/** Only when named: walks up to a spread of exhibits and checks each one's light rises as you arrive

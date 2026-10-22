@@ -91,8 +91,16 @@ BLENDER_LUMENS = {
     # sconce-lit walls still read, and the oculus (a 2.6 m disc of sky 14 m up) brighter so the rotunda floor is lit
     "laylight": (40000.0, 2000.0, None),
     "oculus": (120000.0, 3000.0, None),
+    # the auditorium wing and the classroom (bl/auditorium.py, bl/classroom.py)
+    "downlight": (1800.0, 900.0, 4.0),
+    "stage": (6000.0, 1400.0, 6.0),
+    "step": (120.0, 250.0, 1.0),
+    "foyer": (2500.0, 1100.0, 5.0),
+    "panel": (3500.0, 900.0, None),
+    "screen": (800.0, 700.0, 4.0),
+    "theatre": (1400.0, 1400.0, 5.0),
 }
-BLENDER_WINGS = {"post": "outside", "lantern": "outside"}
+BLENDER_WINGS = {"post": "outside", "lantern": "outside", "theatre": "outside"}
 
 LUMENS = {
     "museum": 8000.0,
@@ -318,7 +326,8 @@ def blender_fixtures():
     """Lights of the Blender-built museum and grounds (their lights.json files), with lumens by fixture name.
     Returns (point lamps, area panels); empty when neither file exists (the web's museum lamps are used then)."""
     points, areas = [], []
-    for path, default_wing in ((paths.MUSEUM_LIGHTS_JSON, "museum"), (paths.EXTERIOR_LIGHTS_JSON, "outside")):
+    for path, default_wing in ((paths.MUSEUM_LIGHTS_JSON, "museum"), (paths.EXTERIOR_LIGHTS_JSON, "outside"),
+                               (paths.AUDITORIUM_LIGHTS_JSON, "museum"), (paths.CLASSROOM_LIGHTS_JSON, "school")):
         try:
             doc = paths.read_json(path)
         except Exception:

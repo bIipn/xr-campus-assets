@@ -431,6 +431,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddTalksPhase();
 	}
+	if (Wanted.Contains(TEXT("quiz")))
+	{
+		AddQuizPhase();
+	}
 	if (Want(TEXT("ui")))
 	{
 		AddUIPhase();
@@ -2976,6 +2980,109 @@ void UWTAPlayTest::AddFacesPhase()
 // talks: every talk and class
 // ---------------------------------------------------------------------------
 
+void UWTAPlayTest::AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag)
+{
+	for (int32 Q = 0; Q < Quiz.Num(); ++Q)
+	{
+		const int32 Right = Quiz[Q].Answer;
+		Steps.Add({ Name + FString::Printf(TEXT(" answer %d"), Q + 1), [this, Ok, TalkId, Q, Right]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			Controller->Panel->HandleAction(FName(TEXT("Answer")), TalkId, Right);
+			return Q == 0 ? 0.5f : 0.2f;
+		} });
+		if (Q == 0)
+		{
+			Steps.Add({ Name + TEXT(" answered shot"), [this, Ok, Tag]() -> float
+			{
+				if (*Ok)
+				{
+					Shot(FString::Printf(TEXT("talk_%s_answered"), *Tag), true);
+					return 0.3f;
+				}
+				return 0.f;
+			} });
+		}
+		Steps.Add({ Name + FString::Printf(TEXT(" next %d"), Q + 1), [this, Ok, TalkId, Q]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			Controller->Panel->HandleAction(FName(TEXT("QuizNext")), TalkId, Q + 1);
+			return 0.3f;
+		} });
+	}
+	Steps.Add({ Name + TEXT(" result"), [this, Phase, Ok, Name, Tag, TalkId, Total = Quiz.Num()]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+		{
+			return 0.f;
+		}
+		UWTAPanelWidget* Panel = Controller->Panel;
+		const int32 Score = Panel->QuizScore();
+		const bool bNameBox = Panel->NameBox != nullptr;
+		*Ok = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Quiz && Score == Total && bNameBox;
+		Report(*Phase, *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" scores the quiz"),
+			FString::Printf(TEXT("%d of %d right; %s"), Score, Total, bNameBox ? TEXT("the name box is up") : TEXT("no name box (not a pass?)")));
+		if (*Ok)
+		{
+			Panel->NameBox->SetText(FText::FromString(TEXT("QA Visitor")));
+			Shot(FString::Printf(TEXT("talk_%s_passed"), *Tag), true);
+			return 0.4f;
+		}
+		return 0.f;
+	} });
+	Steps.Add({ Name + TEXT(" certificate"), [this, Ok, TalkId]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+		{
+			return 0.f;
+		}
+		Controller->Panel->HandleAction(FName(TEXT("Certificate")), TalkId, -1);
+		return 0.9f;
+	} });
+	Steps.Add({ Name + TEXT(" certificate shows"), [this, Phase, Ok, Name, Tag, TalkId]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (!*Ok || Controller == nullptr)
+		{
+			return 0.f;
+		}
+		const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+		const FWTATalkRow* Class = Data ? Data->FindTalk(TalkId) : nullptr;
+		const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+		const bool bOpen = Controller->Certificate != nullptr && Controller->Certificate->IsOpen();
+		const bool bKept = Progress != nullptr && Progress->HasCertificate(TalkId) && Progress->CertificateName(TalkId) == TEXT("QA Visitor");
+		const bool bBadge = Class == nullptr || Class->BadgeId.IsNone() || (Progress != nullptr && Progress->HasBadge(Class->BadgeId));
+		FString Picture;
+		if (bOpen)
+		{
+			Picture = Controller->Certificate->SavePicture();
+		}
+		const bool bPicture = !Picture.IsEmpty() && IFileManager::Get().FileSize(*Picture) > 10000;
+		*Ok = bOpen && bKept && bBadge && bPicture;
+		Report(*Phase, *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" gives a certificate"),
+			FString::Printf(TEXT("%s; kept in progress: %s; badge %s: %s; picture %s"), bOpen ? TEXT("shown") : TEXT("not shown"),
+				bKept ? TEXT("yes") : TEXT("no"), Class != nullptr ? *Class->BadgeId.ToString() : TEXT("-"), bBadge ? TEXT("yes") : TEXT("no"),
+				bPicture ? *Picture : TEXT("not written")));
+		if (bOpen)
+		{
+			Shot(FString::Printf(TEXT("talk_%s_certificate"), *Tag), true);
+			return 0.4f;
+		}
+		return 0.f;
+	} });
+}
+
+
 void UWTAPlayTest::AddTalksPhase()
 {
 	TArray<AWTATalkActor*> Talks;
@@ -3225,104 +3332,7 @@ void UWTAPlayTest::AddTalksPhase()
 				}
 				return 0.f;
 			} });
-			for (int32 Q = 0; Q < Row->Quiz.Num(); ++Q)
-			{
-				const int32 Right = Row->Quiz[Q].Answer;
-				Steps.Add({ Name + FString::Printf(TEXT(" answer %d"), Q + 1), [this, Ok, TalkId, Q, Right]() -> float
-				{
-					AWTAPlayerController* Controller = PC();
-					if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
-					{
-						return 0.f;
-					}
-					Controller->Panel->HandleAction(FName(TEXT("Answer")), TalkId, Right);
-					return Q == 0 ? 0.5f : 0.2f;
-				} });
-				if (Q == 0)
-				{
-					Steps.Add({ Name + TEXT(" answered shot"), [this, Ok, Tag]() -> float
-					{
-						if (*Ok)
-						{
-							Shot(FString::Printf(TEXT("talk_%s_answered"), *Tag), true);
-							return 0.3f;
-						}
-						return 0.f;
-					} });
-				}
-				Steps.Add({ Name + FString::Printf(TEXT(" next %d"), Q + 1), [this, Ok, TalkId, Q]() -> float
-				{
-					AWTAPlayerController* Controller = PC();
-					if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
-					{
-						return 0.f;
-					}
-					Controller->Panel->HandleAction(FName(TEXT("QuizNext")), TalkId, Q + 1);
-					return 0.3f;
-				} });
-			}
-			Steps.Add({ Name + TEXT(" result"), [this, Ok, Name, Tag, TalkId, Total = Row->Quiz.Num()]() -> float
-			{
-				AWTAPlayerController* Controller = PC();
-				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
-				{
-					return 0.f;
-				}
-				UWTAPanelWidget* Panel = Controller->Panel;
-				const int32 Score = Panel->QuizScore();
-				const bool bNameBox = Panel->NameBox != nullptr;
-				*Ok = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Quiz && Score == Total && bNameBox;
-				Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" scores the quiz"),
-					FString::Printf(TEXT("%d of %d right; %s"), Score, Total, bNameBox ? TEXT("the name box is up") : TEXT("no name box (not a pass?)")));
-				if (*Ok)
-				{
-					Panel->NameBox->SetText(FText::FromString(TEXT("QA Visitor")));
-					Shot(FString::Printf(TEXT("talk_%s_passed"), *Tag), true);
-					return 0.4f;
-				}
-				return 0.f;
-			} });
-			Steps.Add({ Name + TEXT(" certificate"), [this, Ok, TalkId]() -> float
-			{
-				AWTAPlayerController* Controller = PC();
-				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
-				{
-					return 0.f;
-				}
-				Controller->Panel->HandleAction(FName(TEXT("Certificate")), TalkId, -1);
-				return 0.9f;
-			} });
-			Steps.Add({ Name + TEXT(" certificate shows"), [this, Ok, Name, Tag, TalkId]() -> float
-			{
-				AWTAPlayerController* Controller = PC();
-				if (!*Ok || Controller == nullptr)
-				{
-					return 0.f;
-				}
-				const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
-				const FWTATalkRow* Class = Data ? Data->FindTalk(TalkId) : nullptr;
-				const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
-				const bool bOpen = Controller->Certificate != nullptr && Controller->Certificate->IsOpen();
-				const bool bKept = Progress != nullptr && Progress->HasCertificate(TalkId) && Progress->CertificateName(TalkId) == TEXT("QA Visitor");
-				const bool bBadge = Class == nullptr || Class->BadgeId.IsNone() || (Progress != nullptr && Progress->HasBadge(Class->BadgeId));
-				FString Picture;
-				if (bOpen)
-				{
-					Picture = Controller->Certificate->SavePicture();
-				}
-				const bool bPicture = !Picture.IsEmpty() && IFileManager::Get().FileSize(*Picture) > 10000;
-				*Ok = bOpen && bKept && bBadge && bPicture;
-				Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" gives a certificate"),
-					FString::Printf(TEXT("%s; kept in progress: %s; badge %s: %s; picture %s"), bOpen ? TEXT("shown") : TEXT("not shown"),
-						bKept ? TEXT("yes") : TEXT("no"), Class != nullptr ? *Class->BadgeId.ToString() : TEXT("-"), bBadge ? TEXT("yes") : TEXT("no"),
-						bPicture ? *Picture : TEXT("not written")));
-				if (bOpen)
-				{
-					Shot(FString::Printf(TEXT("talk_%s_certificate"), *Tag), true);
-					return 0.4f;
-				}
-				return 0.f;
-			} });
+			AddQuizSteps(TEXT("talks"), Name, TalkId, Row->Quiz, Ok, Tag);
 		}
 
 		// 4. Stand up: the talk stops and the caption goes.
@@ -3356,5 +3366,61 @@ void UWTAPlayTest::AddTalksPhase()
 				FString::Printf(TEXT("state %d, the voice %s"), static_cast<int32>(Target->GetState()), bQuiet ? TEXT("quiet") : TEXT("still reading")));
 			return 0.f;
 		} });
+	}
+}
+
+// ---------------------------------------------------------------------------
+// quiz: every class's quiz and certificate, opened straight from the table (no venue needed)
+// ---------------------------------------------------------------------------
+
+void UWTAPlayTest::AddQuizPhase()
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	TArray<FName> Classes;
+	if (Content != nullptr)
+	{
+		for (const FName& Id : Content->GetRowNames(EWTATable::Talks))
+		{
+			const FWTATalkRow* Row = Content->FindTalk(Id);
+			if (Row != nullptr && Row->IsClass() && Row->Quiz.Num() > 0)
+			{
+				Classes.Add(Id);
+			}
+		}
+	}
+	Classes.Sort([](const FName& A, const FName& B) { return A.LexicalLess(B); });
+	Steps.Add({ TEXT("quiz start"), [this, Count = Classes.Num()]() -> float
+	{
+		Report(TEXT("quiz"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("classes"), FString::Printf(TEXT("%d classes with a quiz in DT_Talks"), Count));
+		return 0.f;
+	} });
+	for (const FName& TalkId : Classes)
+	{
+		const FWTATalkRow* Row = Content->FindTalk(TalkId);
+		const FString Name = FString::Printf(TEXT("quiz %s"), *TalkId.ToString());
+		const FString Tag = TalkId.ToString().Replace(TEXT("-"), TEXT("_"));
+		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		Steps.Add({ Name + TEXT(" open"), [this, Ok, Name, Tag, TalkId]() -> float
+		{
+			*Ok = false;
+			AWTAPlayerController* Controller = PC();
+			if (Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			CloseAll();
+			Controller->OpenQuiz(TalkId);
+			const bool bQuiz = Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Quiz && Controller->Panel->GetCurrentId() == TalkId;
+			*Ok = bQuiz;
+			Report(TEXT("quiz"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" opens"), bQuiz ? TEXT("question 1 is up") : TEXT("the quiz card did not open"));
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("quiz_%s_q1"), *Tag), true);
+				return 0.4f;
+			}
+			return 0.f;
+		} });
+		AddQuizSteps(TEXT("quiz"), Name, TalkId, Row->Quiz, Ok, Tag);
+		Steps.Add({ Name + TEXT(" close"), [this]() -> float { CloseAll(); return 0.3f; } });
 	}
 }
