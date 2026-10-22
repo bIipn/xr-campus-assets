@@ -31,7 +31,7 @@ reading the script with captions, sitting down starts it, and a course adds the 
 | 3 | **Classes you attend**: a teacher, a board, the Intro to VR class, a quiz at the end and a certificate | schools, libraries | stations, badges, voice | medium | **now** |
 | 4 | **Sit, read, listen**: seats everywhere, cards read aloud, captions | accessibility, long visits | sitting, voice, captions | low | now (seats are in; the new rooms add more) |
 | 5 | **Training wing**: step-by-step stations with a checklist, a quiz and a certificate (the dialysis course first) | workforce programs | the classes system, stations, badges, story cards | medium | next |
-| 6 | **Client content packs**: a library fills in a sheet and gets its own campus | every library system, tribe, school district | the data tables and builders, `build_client.py` | medium | next |
+| 6 | **Client content packs**: a library fills in a sheet and gets its own campus | every library system, tribe, school district | the data tables and builders, `build_client.py`, the sheet `clients/start.html` | medium | now (the pack and the sheet are in; the build runs on our side) |
 | 7 | **Seasonal exhibits swapped without a rebuild** | every client | the JSON tables load at start | low | next |
 | 8 | **Spanish and any language from the pack**: every string and voice line per language | Nevada and California libraries | the data tables, the voice pipeline | medium | next |
 | 9 | **Catalogue links**: a card's source opens the library's own catalogue record | every client | exhibit sources | low | next |

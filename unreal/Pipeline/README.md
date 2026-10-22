@@ -106,6 +106,18 @@ runs the talk while a visitor sits on one of the venue's seats (`seat__<venue>_*
 sentences as captions, the speaker gesturing and looking at the listener; a class ends in its quiz and a certificate.
 `build_client.py` runs the slides and (when the Kokoro model is on the machine) the voices with everything else.
 
+## A client pack, and the sheet a library fills in
+
+`clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit
+screens, the frieze lines, the open book, where its content lives) and, beside it, its own `talks.json`.
+`clients/start.html` is the sheet a library fills in to get one: the words on the building, the talks and classes
+with their slides, quizzes and certificates, a contact. It validates as they type and downloads `<folder>-pack.zip`
+(`campus.json`, `talks.json`, a README), which goes into `clients/<folder>/`; then
+`python3 build_client.py --client clients/<folder>` rebuilds everything from it. The page is self-contained (one
+file; JSZip from cdnjs), opens from disk or any web host, and is also published as a Claude artifact with its
+download capability. `clients/make_start.py` rebuilds it from `clients/start.template.html` with the XR Libraries
+pack inlined as the example it opens on.
+
 ## What is in `out/ue/`
 
 | Asset | Meshes | Triangles | Notes |

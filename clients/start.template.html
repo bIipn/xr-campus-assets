@@ -1,0 +1,678 @@
+<title>Start Your Campus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a deep-green masthead, then a two-column shell (the form, 720px, beside a sticky rail that previews the pack)
+   that stacks to one column under 1000px; a sticky bar at the foot carries the download. */
+:root {
+  --bg: #f3f5f1;
+  --paper: #ffffff;
+  --ink: #15201b;
+  --ink-2: #4e5e56;
+  --line: #d3dbd5;
+  --line-2: #e6ebe7;
+  --green: #1f4d3a;
+  --green-deep: #12302a;
+  --green-ink: #f1f6f2;
+  --brass: #b08d3c;
+  --brass-ink: #7a5f22;
+  --tint: #e7efe9;
+  --danger: #a33a2a;
+  --ok: #2d6a4f;
+  --display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --body: 'Work Sans', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+  --shadow: 0 1px 2px rgba(21, 32, 27, .06), 0 8px 24px rgba(21, 32, 27, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1613; --paper: #171f1b; --ink: #e8eee9; --ink-2: #a8b6ad; --line: #2c3a33; --line-2: #22302a;
+    --green: #2a6049; --green-deep: #0b1612; --green-ink: #eef4ef; --brass: #c9a655; --brass-ink: #dcc07a;
+    --tint: #1b2a23; --danger: #e4836f; --ok: #79cf9d; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1613; --paper: #171f1b; --ink: #e8eee9; --ink-2: #a8b6ad; --line: #2c3a33; --line-2: #22302a;
+  --green: #2a6049; --green-deep: #0b1612; --green-ink: #eef4ef; --brass: #c9a655; --brass-ink: #dcc07a;
+  --tint: #1b2a23; --danger: #e4836f; --ok: #79cf9d; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--green-deep); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.1; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--brass-ink); }
+button { font: inherit; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* masthead */
+.masthead { background: var(--green-deep); color: var(--green-ink); }
+.masthead .inner { max-width: 1120px; margin: 0 auto; padding-block: 40px 36px; display: grid; gap: 14px; }
+.kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--brass); font-weight: 600; }
+.masthead h1 { font-size: clamp(40px, 6vw, 64px); font-weight: 500; letter-spacing: -.01em; }
+.masthead h1 em { font-style: italic; font-weight: 500; color: var(--brass); }
+.masthead .lede { max-width: 62ch; font-size: 17px; color: var(--green-ink); opacity: .9; }
+.masthead .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  border-radius: 4px; padding: 9px 14px; font-weight: 500; cursor: pointer; line-height: 1.2; }
+.btn:hover { border-color: var(--brass); }
+.btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.btn.primary { background: var(--brass); border-color: var(--brass); color: #16110a; font-weight: 600; }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.quiet { background: transparent; border-color: rgba(255,255,255,.28); color: var(--green-ink); }
+.btn.quiet:hover { border-color: var(--brass); }
+.btn.small { padding: 5px 10px; font-size: 13px; }
+.btn.danger { color: var(--danger); }
+.btn[disabled] { opacity: .5; cursor: default; }
+
+/* shell */
+.shell { max-width: 1120px; margin: 0 auto; padding-block: 28px 120px; display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 36px; align-items: start; }
+@media (max-width: 1000px) { .shell { grid-template-columns: minmax(0, 1fr); } .rail { position: static !important; } }
+.form { display: grid; gap: 28px; min-width: 0; }
+section.block { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 24px 24px 26px; display: grid; gap: 18px; min-width: 0; }
+@media (max-width: 520px) { section.block { padding: 18px 16px 20px; } }
+.block-head { display: grid; gap: 4px; }
+.block-head h2 { font-size: 30px; }
+.block-head p { color: var(--ink-2); max-width: 65ch; }
+.grid { display: grid; gap: 14px 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid .wide { grid-column: 1 / -1; }
+@media (max-width: 640px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.field { display: grid; gap: 5px; min-width: 0; }
+.field label, .field .lbl { font-size: 13px; font-weight: 600; color: var(--ink-2); letter-spacing: .01em; }
+.field .hint { font-size: 12.5px; color: var(--ink-2); }
+input[type="text"], input[type="email"], input[type="number"], select, textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; min-width: 0; }
+textarea { resize: vertical; min-height: 64px; line-height: 1.45; }
+input.carved { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: 16px; }
+.req::after { content: " *"; color: var(--brass-ink); }
+
+/* talks */
+.talks { display: grid; gap: 18px; }
+.talk { border: 1px solid var(--line); border-radius: 6px; background: var(--paper); display: grid; gap: 0; overflow: hidden; }
+.talk-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 18px; background: var(--tint); border-bottom: 1px solid var(--line); }
+.talk-head .chip { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--green-ink); background: var(--green); padding: 4px 8px; border-radius: 3px; }
+.talk-head .chip.class { background: var(--brass); color: #16110a; }
+.talk-head .name { font-family: var(--display); font-size: 24px; font-weight: 600; flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
+.talk-head .tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.talk-body { padding: 18px; display: grid; gap: 20px; }
+.sub { display: grid; gap: 12px; }
+.sub-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.sub-head h3 { font-size: 22px; }
+.sub-head .count { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.slide { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px 12px; padding: 12px 0 14px; border-top: 1px solid var(--line-2); }
+.slide:first-of-type { border-top: 0; }
+.slide .num { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--brass-ink); font-variant-numeric: tabular-nums; padding-top: 22px; text-align: right; }
+.slide .fields { display: grid; gap: 10px; min-width: 0; }
+.slide .row { display: grid; grid-template-columns: minmax(0, 1fr) 220px auto; gap: 10px; align-items: end; }
+@media (max-width: 640px) { .slide .row { grid-template-columns: minmax(0, 1fr); } }
+.q { display: grid; gap: 10px; padding: 14px 0; border-top: 1px solid var(--line-2); }
+.q:first-of-type { border-top: 0; }
+.q .top { display: flex; gap: 10px; align-items: end; }
+.q .top .field { flex: 1 1 auto; }
+.opts { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .opts { grid-template-columns: minmax(0, 1fr); } }
+.opt { display: flex; gap: 8px; align-items: center; }
+.opt input[type="radio"] { accent-color: var(--brass); width: 16px; height: 16px; flex: 0 0 auto; }
+.opt .tick { font-size: 11px; color: var(--ink-2); flex: 0 0 auto; width: 40px; }
+.add-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.empty { border: 1px dashed var(--line); border-radius: 6px; padding: 22px; text-align: center; color: var(--ink-2); }
+
+/* rail */
+.rail { position: sticky; top: calc(16px + env(safe-area-inset-top, 0px)); display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.card h3 { font-size: 20px; }
+.stone { background: linear-gradient(180deg, #e9e6dc, #d9d5c8); color: #4b4538; border-radius: 3px; padding: 18px 14px; text-align: center;
+  font-family: var(--display); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 15px; line-height: 1.35;
+  text-shadow: 0 1px 0 rgba(255,255,255,.7), 0 -1px 0 rgba(0,0,0,.18); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); overflow-wrap: anywhere; }
+.stone small { display: block; font-size: 11px; letter-spacing: .18em; margin-top: 8px; opacity: .8; }
+.tree { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--ink-2); white-space: pre; overflow-x: auto; }
+.tree b { color: var(--ink); font-weight: 600; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat { background: var(--tint); border-radius: 4px; padding: 10px 10px 8px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 28px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11.5px; color: var(--ink-2); letter-spacing: .06em; text-transform: uppercase; }
+.steps { margin: 0; padding-left: 20px; color: var(--ink-2); display: grid; gap: 6px; font-size: 14px; }
+.steps b { color: var(--ink); font-weight: 600; }
+code { font-family: var(--mono); font-size: 12.5px; background: var(--tint); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+.issues { display: grid; gap: 6px; font-size: 13.5px; }
+.issues li { color: var(--danger); }
+.issues li.warn { color: var(--ink-2); }
+.issues ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+/* foot bar */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--paper); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(0,0,0,.08); z-index: 5;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-top: 10px; }
+.bar .inner { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.bar .status { flex: 1 1 240px; min-width: 0; font-size: 13.5px; color: var(--ink-2); }
+.bar .status b { color: var(--ink); font-weight: 600; }
+.bar .status .ok { color: var(--ok); }
+.bar .status .bad { color: var(--danger); }
+.toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--green-deep); color: var(--green-ink);
+  padding: 10px 16px; border-radius: 4px; font-size: 14px; box-shadow: var(--shadow); max-width: min(92vw, 560px); z-index: 6; }
+@media (prefers-reduced-motion: no-preference) { .toast { animation: rise .25s ease-out; } @keyframes rise { from { opacity: 0; transform: translate(-50%, 8px); } } }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+
+<header class="masthead gutter">
+  <div class="inner">
+    <div class="kicker">XR Libraries · Walk the Archive</div>
+    <h1>Start <em>your</em> campus</h1>
+    <p class="lede">Fill this in and you get a client pack: the words cut into the building, the app on the lit screens, the talks your docents give and the classes that end in a quiz and a certificate. One command on our side builds your campus from it; the museum, the reading room, the school and the grounds are already there.</p>
+    <div class="actions">
+      <button class="btn quiet" type="button" id="btn-example">Load the XR Libraries example</button>
+      <button class="btn quiet" type="button" id="btn-blank">Start blank</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell gutter">
+  <form class="form" id="form" novalidate>
+    <section class="block">
+      <div class="block-head">
+        <h2>Your library</h2>
+        <p>What the campus calls itself. The organisation's name goes on the certificate and the slides; the app title lights up the tablets and phones the wax figures hold.</p>
+      </div>
+      <div class="grid">
+        <div class="field wide"><label class="req" for="f-client">Library or organisation</label><input type="text" id="f-client" data-path="client" placeholder="Washoe County Library System" autocomplete="organization"></div>
+        <div class="field"><label for="f-campus">Campus title</label><input type="text" id="f-campus" data-path="campus" placeholder="Walk the Archive"><div class="hint">On the intro screen and every slide's footer.</div></div>
+        <div class="field"><label for="f-slug">Folder name</label><input type="text" id="f-slug" data-path="slug" placeholder="washoe" spellcheck="false"><div class="hint">Letters, digits and dashes. The pack lives at <code>clients/&lt;folder&gt;/</code>.</div></div>
+        <div class="field"><label for="f-app-title">App title</label><input type="text" id="f-app-title" data-path="app.title" placeholder="XR Libraries"></div>
+        <div class="field"><label for="f-app-tag">App tagline</label><input type="text" id="f-app-tag" data-path="app.tagline" placeholder="Learn anywhere"></div>
+        <div class="field"><label for="f-lang">Language</label><select id="f-lang" data-path="language"><option value="en">English</option><option value="es">Spanish (voices and strings are next on the plan)</option></select></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <h2>On the building</h2>
+        <p>Two lines are carved in stone: one across the portico over the front doors, one round the museum's rotunda. The book is the one that lies open in the Wax Hall.</p>
+      </div>
+      <div class="grid">
+        <div class="field wide"><label for="f-portico">Portico frieze</label><input type="text" id="f-portico" data-path="frieze.portico" class="carved" placeholder="YOUR LIBRARY  ·  WALK THE ARCHIVE"><div class="hint">Capitals carry best. A middle dot (·) splits the line.</div></div>
+        <div class="field wide"><label for="f-rotunda">Rotunda frieze</label><input type="text" id="f-rotunda" data-path="frieze.rotunda" class="carved" placeholder="SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS"></div>
+        <div class="field"><label for="f-book-title">The open book's title</label><input type="text" id="f-book-title" data-path="book.title" placeholder="Lost Stories"></div>
+        <div class="field"><label for="f-book-chapter">Its chapter heading</label><input type="text" id="f-book-chapter" data-path="book.chapter" placeholder="The Boxes Under the Desk"></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <h2>Talks and classes</h2>
+        <p>A talk is a docent on a stage with slides: one slide per line of the script, read aloud while the slide shows. A class is a talk with a quiz after the last slide and a certificate for passing it. Visitors sit down and the talk begins.</p>
+      </div>
+      <div class="talks" id="talks"></div>
+      <div class="add-row">
+        <button class="btn" type="button" data-act="add-talk">+ Add a talk</button>
+        <button class="btn" type="button" data-act="add-class">+ Add a class</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <h2>Who to talk to</h2>
+        <p>So we know whom to send the first walkthrough to. Optional.</p>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="f-contact-name">Name</label><input type="text" id="f-contact-name" data-path="contact.name" autocomplete="name"></div>
+        <div class="field"><label for="f-contact-email">Email</label><input type="email" id="f-contact-email" data-path="contact.email" autocomplete="email"></div>
+      </div>
+    </section>
+  </form>
+
+  <aside class="rail" aria-label="Your pack">
+    <div class="card">
+      <h3>Over the front doors</h3>
+      <div class="stone" id="pv-stone">YOUR LIBRARY · WALK THE ARCHIVE<small id="pv-stone-2">Since 2016</small></div>
+    </div>
+    <div class="card">
+      <h3>The pack</h3>
+      <div class="tree" id="pv-tree"></div>
+      <div class="stats">
+        <div class="stat"><b id="st-talks">0</b><span>talks</span></div>
+        <div class="stat"><b id="st-slides">0</b><span>slides</span></div>
+        <div class="stat"><b id="st-questions">0</b><span>questions</span></div>
+      </div>
+      <div class="issues" id="pv-issues"></div>
+    </div>
+    <div class="card">
+      <h3>What happens next</h3>
+      <ol class="steps">
+        <li><b>Download the pack</b> and send it to your XR Libraries contact.</li>
+        <li>We drop it in <code>clients/</code> and run one command. The friezes, the screens, the slides and the voices are built from your words.</li>
+        <li>You get a walkthrough of your campus, and a link to edit this page again when the words change.</li>
+      </ol>
+    </div>
+  </aside>
+</main>
+
+<footer class="bar gutter">
+  <div class="inner">
+    <div class="status" id="status"></div>
+    <button class="btn" type="button" id="btn-copy">Copy as text</button>
+    <button class="btn primary" type="button" id="btn-download">Download the pack</button>
+  </div>
+</footer>
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var EXAMPLE = __EXAMPLE__;
+
+  var VENUES = [
+    ['forecourt', 'The forecourt theatre (outside, on the museum steps)'],
+    ['auditorium', 'The auditorium (through the lobby and Hall R)'],
+    ['classroom', 'The XR Classroom (Room 104 in the school)']
+  ];
+  var LOOKS = [
+    ['', 'Pick a look'],
+    ['hale', 'Mr. Hale, the campus teacher (staff)'],
+    ['margaret', 'Margaret, the museum guide (staff)'],
+    ['rosa', 'Rosa, the reference librarian (staff)'],
+    ['rae', 'Coach Rae, from the recess yard (staff)'],
+    ['wax-2018a-dir', 'Woman · the director, 2018 scene'],
+    ['wax-2017a-lib', 'Woman · the librarian, 2017 scene'],
+    ['wax-2019b-cat1', 'Woman · the cataloguer, 2019 scene'],
+    ['wax-2020-nurse', 'Woman · the nurse, 2020 scene'],
+    ['wax-2022a-lib1', 'Woman · the librarian, 2022 scene'],
+    ['wax-2024-lib', 'Woman · the librarian, 2024 scene'],
+    ['wax-2025-vol', 'Woman · the volunteer, 2025 scene'],
+    ['wax-2017a-tech', 'Man · the technician, 2017 scene'],
+    ['wax-2019a-lib', 'Man · the librarian, 2019 scene'],
+    ['wax-2019b-cat2', 'Man · the cataloguer, 2019 scene'],
+    ['wax-2020-coach', 'Man · the job coach, 2020 scene'],
+    ['wax-2022a-trainer', 'Man · the trainer, 2022 scene'],
+    ['wax-2025-dad', 'Man · the father, 2025 scene'],
+    ['wax-2019a-grandpa', 'Older man · 2019 scene'],
+    ['wax-2022a-lib2', 'Older librarian · 2022 scene']
+  ];
+  var STAFF = { hale: 1, margaret: 1, rosa: 1, rae: 1 };
+  var VOICES = [
+    ['af_bella', 'Bella · US, woman'], ['af_sarah', 'Sarah · US, woman'], ['af_nicole', 'Nicole · US, woman'], ['af_sky', 'Sky · US, woman'],
+    ['am_michael', 'Michael · US, man'], ['am_adam', 'Adam · US, man'], ['am_eric', 'Eric · US, man'], ['am_liam', 'Liam · US, man'],
+    ['bf_emma', 'Emma · UK, woman'], ['bf_isabella', 'Isabella · UK, woman'],
+    ['bm_george', 'George · UK, man'], ['bm_lewis', 'Lewis · UK, man'], ['bm_daniel', 'Daniel · UK, man']
+  ];
+  var SIDES = [
+    ['', 'Nothing on the right'],
+    ['figure:vr_ar_mr', 'Drawing · VR, AR and MR'], ['figure:headset', 'Drawing · inside a headset'], ['figure:dof', 'Drawing · 3DoF and 6DoF'],
+    ['figure:refresh', 'Drawing · refresh rate'], ['figure:comfort', 'Drawing · comfort'], ['figure:boundary', 'Drawing · the boundary'],
+    ['art:headset', 'Picture · a headset'], ['art:mission', 'Picture · the mission'], ['art:ca-200', 'Picture · 200 systems in California'],
+    ['art:nv-2017', 'Picture · Nevada, 2017'], ['art:nv-1100', 'Picture · 1,100 headsets in Nevada'], ['art:playbooks', 'Picture · the playbooks'],
+    ['art:sandi', 'Picture · Project SANDI'], ['art:dialysis', 'Picture · the dialysis course'], ['art:cil-talks', 'Picture · library talks'],
+    ['art:showcase', 'Picture · a showcase'], ['art:pollinators', 'Picture · pollinators'], ['art:way-out', 'Picture · stories worth saving'],
+    ['art:charleston', 'Picture · Charleston'], ['art:freedom', 'Picture · freedom'], ['art:seeking', 'Picture · seeking'], ['art:ukraine', 'Picture · children’s art']
+  ];
+  var DRAFT_KEY = 'wta-start-your-campus-draft-v1';
+
+  function blank() {
+    return { client: '', campus: 'Walk the Archive', slug: '', slugTouched: false, app: { title: '', tagline: 'Learn anywhere' },
+      language: 'en', frieze: { portico: '', rotunda: '' }, book: { title: '', chapter: '' }, contact: { name: '', email: '' }, talks: [] };
+  }
+  function newTalk(kind) {
+    var t = { id: '', idTouched: false, title: '', subtitle: '', kind: kind, venue: kind === 'class' ? 'classroom' : 'auditorium',
+      speaker: { name: '', short: '', role: kind === 'class' ? 'Teacher' : 'Docent', person: kind === 'class' ? 'hale' : '', voice: kind === 'class' ? 'am_michael' : 'af_bella' },
+      slides: [newSlide(), newSlide()], quiz: { pass: 1, questions: [] }, certificate: null };
+    if (kind === 'class') {
+      t.quiz.questions = [newQuestion()];
+      t.certificate = { title: 'Certificate of Completion', line: 'has completed the class', place: 'Room 104 · XR Classroom', signer: '', signer_role: '', org: '',
+        note: 'A Walk the Archive campus. A record of learning, not an accredited qualification.' };
+    }
+    return t;
+  }
+  function newSlide() { return { title: '', points: '', say: '', side: '' }; }
+  function newQuestion() { return { q: '', options: ['', '', '', ''], answer: 0, why: '' }; }
+
+  function slugify(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function get(o, path) { var p = path.split('.'), n = o; for (var i = 0; i < p.length; i++) { if (n == null) return ''; n = n[p[i]]; } return n == null ? '' : n; }
+  function set(o, path, v) { var p = path.split('.'), n = o; for (var i = 0; i < p.length - 1; i++) { if (n[p[i]] == null) n[p[i]] = {}; n = n[p[i]]; } n[p[p.length - 1]] = v; }
+  function opts(list, value) { return list.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === value ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join(''); }
+
+  // ---------- the example pack, turned into form state ----------
+  function fromPack(campus, talksDoc) {
+    var s = blank();
+    s.client = campus.client || ''; s.campus = campus.campus || 'Walk the Archive';
+    s.app = { title: get(campus, 'app.title'), tagline: get(campus, 'app.tagline') };
+    s.frieze = { portico: get(campus, 'frieze.portico'), rotunda: get(campus, 'frieze.rotunda') };
+    s.book = { title: get(campus, 'book.title'), chapter: get(campus, 'book.chapter') };
+    s.language = campus.language || 'en';
+    s.slug = campus.slug || slugify(s.client); s.slugTouched = false;
+    s.talks = (talksDoc.talks || []).map(function (t) {
+      var sp = t.speaker || {};
+      var nt = { id: t.id || '', idTouched: true, title: t.title || '', subtitle: t.subtitle || '', kind: t.kind === 'class' ? 'class' : 'talk', venue: t.venue || 'auditorium',
+        speaker: { name: sp.name || '', short: sp.short || '', role: sp.role || '', person: sp.staff || sp.person || '', voice: sp.voice || 'af_bella' },
+        slides: (t.slides || []).map(function (sl) { return { title: sl.title || '', points: (sl.points || []).join('\n'), say: sl.say || '', side: sl.figure ? 'figure:' + sl.figure : (sl.art ? 'art:' + sl.art : '') }; }),
+        quiz: { pass: (t.quiz && t.quiz.pass) || 1, questions: ((t.quiz && t.quiz.questions) || []).map(function (q) { return { q: q.q || '', options: (q.options || []).slice(0, 4).concat(['', '', '', '']).slice(0, 4), answer: q.answer || 0, why: q.why || '' }; }) },
+        certificate: t.certificate ? { title: t.certificate.title || '', line: t.certificate.line || '', place: t.certificate.place || '', signer: t.certificate.signer || '', signer_role: t.certificate.signer_role || '', org: t.certificate.org || '', note: t.certificate.note || '' } : null };
+      if (nt.kind === 'class' && !nt.certificate) nt.certificate = newTalk('class').certificate;
+      return nt;
+    });
+    return s;
+  }
+
+  // ---------- the pack, built from the form ----------
+  function buildPack(s) {
+    var slug = s.slug || slugify(s.client) || 'my-library';
+    var campus = {
+      about: 'A client pack for Walk the Archive, made with Start Your Campus. Everything here is this library’s rather than the campus’s: build_client.py reads it (WTA_CLIENT points the builders at this folder) and rebuilds the friezes, the screens, the slides, the voices and the data tables from it.',
+      client: s.client, campus: s.campus || 'Walk the Archive',
+      app: { title: s.app.title || s.client, tagline: s.app.tagline || '' },
+      frieze: { portico: s.frieze.portico || (s.client.toUpperCase() + '  ·  WALK THE ARCHIVE'), rotunda: s.frieze.rotunda || '' },
+      book: { title: s.book.title || '', chapter: s.book.chapter || '' },
+      language: s.language || 'en',
+      contact: { name: s.contact.name || '', email: s.contact.email || '' },
+      requested: new Date().toISOString().slice(0, 10),
+      content: 'unreal/Pipeline/content', surfaces: 'unreal/Pipeline/content/surfaces.json'
+    };
+    var talks = s.talks.map(function (t, i) {
+      var id = t.id || slugify(t.title) || ('talk-' + (i + 1));
+      var sp = { name: t.speaker.name, short: t.speaker.short || t.speaker.name.split(' ')[0], role: t.speaker.role, voice: t.speaker.voice };
+      var look = t.speaker.person || (t.kind === 'class' ? 'hale' : (/^[ab]f_/.test(t.speaker.voice) ? 'wax-2018a-dir' : 'wax-2019a-lib'));
+      sp.person = look;
+      if (STAFF[look]) sp.staff = look;
+      var n = t.slides.length;
+      var slides = t.slides.map(function (sl, k) {
+        var o = { title: sl.title, points: sl.points.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) };
+        if (k === 0) o.layout = 'title'; else if (k === n - 1 && n > 1) o.layout = 'end';
+        if (sl.side && !o.layout) { var parts = sl.side.split(':'); o[parts[0]] = parts[1]; }
+        o.say = sl.say;
+        return o;
+      });
+      var out = { id: id, venue: t.venue, kind: t.kind, title: t.title, subtitle: t.subtitle || '', speaker: sp, slides: slides };
+      if (t.kind === 'class') {
+        var qs = t.quiz.questions.map(function (q) {
+          var options = q.options.map(function (x) { return x.trim(); });
+          while (options.length && !options[options.length - 1]) options.pop();
+          return { q: q.q, options: options, answer: Math.min(q.answer, Math.max(options.length - 1, 0)), why: q.why };
+        });
+        out.quiz = { pass: Math.max(1, Math.min(qs.length, parseInt(t.quiz.pass, 10) || qs.length)), questions: qs };
+        var c = t.certificate || {};
+        out.certificate = { title: c.title || 'Certificate of Completion', line: c.line || 'has completed the class', place: c.place || '',
+          signer: c.signer || t.speaker.name, signer_role: c.signer_role || t.speaker.role, org: c.org || (s.client + ' Campus'), note: c.note || '' };
+      }
+      return out;
+    });
+    var talksDoc = { _doc: 'Talks and classes for ' + s.client + '. A talk is a speaker reenactor with slides and a script read aloud: one slide per line. A class is a talk with a quiz after the last slide and a certificate for passing it. The venue names the room the builders made (forecourt, auditorium, classroom). Speakers are made-up docents, never real people.', talks: talks };
+    var readme = [
+      s.client + ' — a Walk the Archive client pack', 'Made with Start Your Campus on ' + campus.requested + '.', '',
+      'Put this folder at clients/' + slug + '/ in the xr-campus-assets repo and run', '', '    python3 build_client.py --client clients/' + slug, '',
+      'That rebuilds the friezes, the lit screens, the talks’ slides and voices, the props, the rooms and the data tables from these words.',
+      'Then on the Unreal machine: Tools/win/setup_project.ps1 (import_meshes, import_art, surfaces, data_tables, build_level, lighting, actors, navmesh)',
+      'and the voices (wta_voice.build.run from the voiceover folder).', '', 'campus.json  the names, the app, the friezes, the book, the contact', 'talks.json   the talks and classes, their slides, quizzes and certificates'
+    ].join('\n');
+    return { slug: slug, files: { 'campus.json': JSON.stringify(campus, null, 2) + '\n', 'talks.json': JSON.stringify(talksDoc, null, 2) + '\n', 'README.txt': readme + '\n' } };
+  }
+
+  function validate(s) {
+    var errs = [], warns = [];
+    if (!s.client.trim()) errs.push('The library’s name is empty.');
+    if (!s.talks.length) warns.push('No talks yet: the stages stay empty until a talk is added.');
+    s.talks.forEach(function (t, i) {
+      var who = t.title.trim() ? '“' + t.title.trim() + '”' : (t.kind === 'class' ? 'Class ' : 'Talk ') + (i + 1);
+      if (!t.title.trim()) errs.push(who + ' has no title.');
+      if (!t.speaker.name.trim()) errs.push(who + ': the speaker has no name.');
+      if (!t.speaker.person) warns.push(who + ': no look picked for the speaker, so ' + (t.kind === 'class' ? 'Mr. Hale teaches it.' : 'a docent from the Wax Hall stands in.'));
+      if (!t.slides.length) errs.push(who + ' has no slides.');
+      t.slides.forEach(function (sl, k) {
+        if (!sl.title.trim()) errs.push(who + ', slide ' + (k + 1) + ' has no title.');
+        if (!sl.say.trim()) errs.push(who + ', slide ' + (k + 1) + ': nothing for the speaker to say.');
+      });
+      if (t.kind === 'class') {
+        if (!t.quiz.questions.length) errs.push(who + ' is a class but has no quiz questions.');
+        t.quiz.questions.forEach(function (q, k) {
+          var filled = q.options.filter(function (x) { return x.trim(); }).length;
+          if (!q.q.trim()) errs.push(who + ', question ' + (k + 1) + ' is empty.');
+          if (filled < 2) errs.push(who + ', question ' + (k + 1) + ' needs at least two answers.');
+          if (!(q.options[q.answer] || '').trim()) errs.push(who + ', question ' + (k + 1) + ': mark which answer is right.');
+        });
+      }
+    });
+    return { errs: errs, warns: warns };
+  }
+
+  // ---------- rendering ----------
+  var state = blank();
+  var form = document.getElementById('form');
+  var talksEl = document.getElementById('talks');
+
+  function fillStatic() {
+    form.querySelectorAll('[data-path]').forEach(function (el) { el.value = get(state, el.dataset.path); });
+  }
+
+  function renderTalks() {
+    if (!state.talks.length) {
+      talksEl.innerHTML = '<div class="empty">No talks yet. Add a talk for the auditorium or the forecourt theatre, or a class for Room 104.</div>';
+      return;
+    }
+    talksEl.innerHTML = state.talks.map(renderTalk).join('');
+  }
+
+  function renderTalk(t, i) {
+    var isClass = t.kind === 'class';
+    var h = '<article class="talk" data-t="' + i + '">';
+    h += '<div class="talk-head"><span class="chip' + (isClass ? ' class' : '') + '">' + (isClass ? 'Class' : 'Talk') + '</span>';
+    h += '<span class="name">' + (esc(t.title) || '<span style="color:var(--ink-2)">Untitled</span>') + '</span>';
+    h += '<span class="tools"><button class="btn small" type="button" data-act="up" title="Move up" aria-label="Move up">↑</button><button class="btn small" type="button" data-act="down" title="Move down" aria-label="Move down">↓</button><button class="btn small danger" type="button" data-act="del-talk">Remove</button></span></div>';
+    h += '<div class="talk-body">';
+    h += '<div class="grid">';
+    h += field('wide req', 'Title', 'text', 'title', t.title, i, 'Libraries and the Next Reality');
+    h += field('', 'Subtitle', 'text', 'subtitle', t.subtitle, i, 'How XR came to public libraries');
+    h += '<div class="field"><label for="t' + i + '-venue">Where it is given</label><select id="t' + i + '-venue" data-k="venue">' + opts(VENUES, t.venue) + '</select></div>';
+    h += '<div class="field"><label for="t' + i + '-id">Short id</label><input type="text" id="t' + i + '-id" data-k="id" value="' + esc(t.id) + '" placeholder="' + esc(slugify(t.title) || 'next-reality') + '" spellcheck="false"><div class="hint">Names the slides and voice clips. Letters, digits and dashes.</div></div>';
+    h += '</div>';
+    // speaker
+    h += '<div class="sub"><div class="sub-head"><h3>The speaker</h3><span class="count">A reenactor, not a real person</span></div><div class="grid">';
+    h += field('req', 'Name', 'text', 'speaker.name', t.speaker.name, i, 'Theo Grant');
+    h += field('', 'Short name', 'text', 'speaker.short', t.speaker.short, i, 'Theo');
+    h += field('', 'Role', 'text', 'speaker.role', t.speaker.role, i, isClass ? 'Workshop teacher' : 'Guest speaker');
+    h += '<div class="field"><label for="t' + i + '-voice">Voice</label><select id="t' + i + '-voice" data-k="speaker.voice">' + opts(VOICES, t.speaker.voice) + '</select></div>';
+    h += '<div class="field wide"><label for="t' + i + '-look">Look</label><select id="t' + i + '-look" data-k="speaker.person">' + opts(LOOKS, t.speaker.person) + '</select><div class="hint">The campus staff teach in person; the others are figures from the Wax Hall, borrowed for the talk.</div></div>';
+    h += '</div></div>';
+    // slides
+    h += '<div class="sub"><div class="sub-head"><h3>Slides</h3><span class="count">' + t.slides.length + ' slide' + (t.slides.length === 1 ? '' : 's') + ' · the first is the title slide, the last the closing one</span></div><div>';
+    h += t.slides.map(function (sl, k) { return renderSlide(sl, i, k, t.slides.length); }).join('');
+    h += '</div><div class="add-row"><button class="btn small" type="button" data-act="add-slide">+ Add a slide</button></div></div>';
+    // quiz + certificate
+    if (isClass) {
+      h += '<div class="sub"><div class="sub-head"><h3>The quiz</h3><span class="count">' + t.quiz.questions.length + ' question' + (t.quiz.questions.length === 1 ? '' : 's') + '</span></div>';
+      h += '<div class="grid"><div class="field"><label for="t' + i + '-pass">Right answers needed to pass</label><input type="number" id="t' + i + '-pass" data-k="quiz.pass" min="1" max="' + Math.max(1, t.quiz.questions.length) + '" value="' + esc(t.quiz.pass) + '"></div></div>';
+      h += '<div>' + t.quiz.questions.map(function (q, k) { return renderQuestion(q, i, k); }).join('') + '</div>';
+      h += '<div class="add-row"><button class="btn small" type="button" data-act="add-q">+ Add a question</button></div></div>';
+      var c = t.certificate || {};
+      h += '<div class="sub"><div class="sub-head"><h3>The certificate</h3><span class="count">Printed for whoever passes, with their name in script</span></div><div class="grid">';
+      h += field('', 'Heading', 'text', 'certificate.title', c.title, i, 'Certificate of Completion');
+      h += field('', 'Line before the class title', 'text', 'certificate.line', c.line, i, 'has completed the class');
+      h += field('', 'Place', 'text', 'certificate.place', c.place, i, 'Room 104 · XR Classroom');
+      h += field('', 'Signed by', 'text', 'certificate.signer', c.signer, i, t.speaker.name || 'Mr. Hale');
+      h += field('', 'Signer’s role', 'text', 'certificate.signer_role', c.signer_role, i, t.speaker.role || 'Workshop teacher');
+      h += field('', 'Organisation on the seal', 'text', 'certificate.org', c.org, i, (state.client || 'XR Libraries') + ' Campus');
+      h += field('wide', 'Small print', 'text', 'certificate.note', c.note, i, 'A record of learning, not an accredited qualification.');
+      h += '</div></div>';
+    }
+    h += '</div></article>';
+    return h;
+  }
+
+  function field(cls, label, type, key, value, i, ph) {
+    var id = 't' + i + '-' + key.replace(/\./g, '-');
+    var req = /\breq\b/.test(cls);
+    return '<div class="field ' + cls.replace(/\breq\b/, '').trim() + '"><label class="' + (req ? 'req' : '') + '" for="' + id + '">' + esc(label) + '</label><input type="' + type + '" id="' + id + '" data-k="' + esc(key) + '" value="' + esc(value) + '" placeholder="' + esc(ph || '') + '"></div>';
+  }
+
+  function renderSlide(sl, i, k, n) {
+    var id = 't' + i + '-s' + k;
+    var h = '<div class="slide" data-s="' + k + '"><div class="num">' + (k + 1) + '</div><div class="fields">';
+    h += '<div class="row"><div class="field"><label class="req" for="' + id + '-title">' + (k === 0 ? 'Title slide' : (k === n - 1 && n > 1 ? 'Closing slide' : 'Slide title')) + '</label><input type="text" id="' + id + '-title" data-k="title" value="' + esc(sl.title) + '" placeholder="' + (k === 0 ? 'The talk’s title' : 'What this slide is about') + '"></div>';
+    if (k === 0 || (k === n - 1 && n > 1)) h += '<div class="field"><span class="lbl">On the right</span><input type="text" value="' + (k === 0 ? 'The speaker’s name and role' : 'The campus monogram') + '" disabled></div>';
+    else h += '<div class="field"><label for="' + id + '-side">On the right</label><select id="' + id + '-side" data-k="side">' + opts(SIDES, sl.side) + '</select></div>';
+    h += '<button class="btn small danger" type="button" data-act="del-slide" aria-label="Remove slide ' + (k + 1) + '">Remove</button></div>';
+    h += '<div class="field"><label for="' + id + '-points">Points, one per line</label><textarea id="' + id + '-points" data-k="points" rows="3" placeholder="Three short lines read best">' + esc(sl.points) + '</textarea></div>';
+    h += '<div class="field"><label class="req" for="' + id + '-say">What the speaker says</label><textarea id="' + id + '-say" data-k="say" rows="3" placeholder="Two or three sentences. The slide stays up while they are read aloud.">' + esc(sl.say) + '</textarea></div>';
+    h += '</div></div>';
+    return h;
+  }
+
+  function renderQuestion(q, i, k) {
+    var id = 't' + i + '-q' + k;
+    var h = '<div class="q" data-q="' + k + '"><div class="top"><div class="field"><label class="req" for="' + id + '">Question ' + (k + 1) + '</label><input type="text" id="' + id + '" data-k="q" value="' + esc(q.q) + '" placeholder="Which one replaces the whole room around you with a new world?"></div>';
+    h += '<button class="btn small danger" type="button" data-act="del-q" aria-label="Remove question ' + (k + 1) + '">Remove</button></div>';
+    h += '<div class="opts">' + q.options.map(function (o, j) {
+      return '<div class="opt"><input type="radio" name="' + id + '-answer" data-k="answer" value="' + j + '"' + (q.answer === j ? ' checked' : '') + ' title="This is the right answer" aria-label="Answer ' + (j + 1) + ' is the right one"><input type="text" data-k="options.' + j + '" value="' + esc(o) + '" placeholder="Answer ' + (j + 1) + '" aria-label="Answer ' + (j + 1) + '"></div>';
+    }).join('') + '</div>';
+    h += '<div class="field"><label for="' + id + '-why">Why that’s right (shown after they answer)</label><input type="text" id="' + id + '-why" data-k="why" value="' + esc(q.why) + '" placeholder="Virtual reality replaces what you see; augmented and mixed add to the real world."></div>';
+    h += '</div>';
+    return h;
+  }
+
+  // ---------- the rail and the foot bar ----------
+  function updatePreview() {
+    var pack = buildPack(state), v = validate(state);
+    var stone = document.getElementById('pv-stone');
+    stone.firstChild.nodeValue = (state.frieze.portico || (state.client ? state.client.toUpperCase() + '  ·  WALK THE ARCHIVE' : 'YOUR LIBRARY  ·  WALK THE ARCHIVE')).replace(/\s+/g, ' ');
+    document.getElementById('pv-stone-2').textContent = state.frieze.rotunda ? state.frieze.rotunda.replace(/\s+/g, ' ') : 'the rotunda line goes here';
+    var sizes = {}; Object.keys(pack.files).forEach(function (f) { sizes[f] = Math.max(1, Math.round(pack.files[f].length / 1024)) + ' KB'; });
+    document.getElementById('pv-tree').innerHTML = 'clients/\n└─ <b>' + esc(pack.slug) + '/</b>\n   ├─ campus.json   ' + sizes['campus.json'] + '\n   ├─ talks.json    ' + sizes['talks.json'] + '\n   └─ README.txt';
+    var nSlides = 0, nQ = 0; state.talks.forEach(function (t) { nSlides += t.slides.length; if (t.kind === 'class') nQ += t.quiz.questions.length; });
+    document.getElementById('st-talks').textContent = state.talks.length;
+    document.getElementById('st-slides').textContent = nSlides;
+    document.getElementById('st-questions').textContent = nQ;
+    var issues = document.getElementById('pv-issues');
+    if (!v.errs.length && !v.warns.length) issues.innerHTML = '<span style="color:var(--ok)">Ready to download.</span>';
+    else issues.innerHTML = '<ul>' + v.errs.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + v.warns.map(function (w) { return '<li class="warn">' + esc(w) + '</li>'; }).join('') + '</ul>';
+    var status = document.getElementById('status');
+    var classes = state.talks.filter(function (t) { return t.kind === 'class'; }).length;
+    var summary = '<b>' + esc(state.client || 'Your library') + '</b> · ' + state.talks.length + ' talk' + (state.talks.length === 1 ? '' : 's') + (classes ? ' (' + classes + ' class' + (classes === 1 ? '' : 'es') + ')' : '') + ' · ' + nSlides + ' slides';
+    status.innerHTML = summary + (v.errs.length ? ' · <span class="bad">' + v.errs.length + ' thing' + (v.errs.length === 1 ? '' : 's') + ' to fix</span>' : ' · <span class="ok">ready</span>');
+    document.getElementById('btn-download').disabled = v.errs.length > 0;
+    saveDraft();
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var old = document.querySelector('.toast'); if (old) old.remove();
+    var el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; document.body.appendChild(el);
+    document.getElementById('live').textContent = msg;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { el.remove(); }, 4200);
+  }
+
+  function saveDraft() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch (e) {} }
+  function loadDraft() { try { var d = localStorage.getItem(DRAFT_KEY); if (d) { var s = JSON.parse(d); if (s && s.talks) return s; } } catch (e) {} return null; }
+
+  function rerenderAll() { fillStatic(); renderTalks(); updatePreview(); }
+
+  // ---------- events ----------
+  form.addEventListener('input', function (e) {
+    var el = e.target;
+    if (el.dataset.path) {
+      set(state, el.dataset.path, el.value);
+      if (el.dataset.path === 'slug') { state.slug = slugify(el.value); state.slugTouched = !!state.slug; }
+      if (el.dataset.path === 'client' && !state.slugTouched) { state.slug = slugify(el.value); document.getElementById('f-slug').value = state.slug; }
+      updatePreview();
+      return;
+    }
+    var talk = el.closest('[data-t]'); if (!talk) return;
+    var t = state.talks[+talk.dataset.t]; if (!t) return;
+    var slide = el.closest('[data-s]'), q = el.closest('[data-q]'), k = el.dataset.k;
+    if (!k) return;
+    if (slide) set(t.slides[+slide.dataset.s], k, el.value);
+    else if (q) {
+      var qq = t.quiz.questions[+q.dataset.q];
+      if (k === 'answer') qq.answer = +el.value; else set(qq, k, el.value);
+    } else {
+      if (k === 'id') { t.id = slugify(el.value); t.idTouched = !!t.id; }
+      else if (k === 'quiz.pass') t.quiz.pass = parseInt(el.value, 10) || 1;
+      else set(t, k, el.value);
+      if (k === 'title') {
+        talk.querySelector('.talk-head .name').textContent = el.value || 'Untitled';
+        if (!t.idTouched) { t.id = slugify(el.value); var idEl = talk.querySelector('[data-k="id"]'); if (idEl) { idEl.value = t.id; } }
+        if (t.slides.length && !t.slides[0].title) { t.slides[0].title = el.value; var s0 = talk.querySelector('[data-s="0"] [data-k="title"]'); if (s0) s0.value = el.value; }
+      }
+    }
+    updatePreview();
+  });
+  form.addEventListener('change', function (e) {
+    var el = e.target;
+    if (el.type === 'radio' || el.tagName === 'SELECT') el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  form.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-act]'); if (!btn) return;
+    var act = btn.dataset.act;
+    if (act === 'add-talk' || act === 'add-class') { state.talks.push(newTalk(act === 'add-class' ? 'class' : 'talk')); renderTalks(); updatePreview(); var last = talksEl.lastElementChild; if (last) { last.scrollIntoView({ behavior: 'smooth', block: 'start' }); var first = last.querySelector('[data-k="title"]'); if (first) first.focus({ preventScroll: true }); } return; }
+    var talk = btn.closest('[data-t]'); if (!talk) return;
+    var i = +talk.dataset.t, t = state.talks[i];
+    if (act === 'del-talk') { if (btn.dataset.armed) { state.talks.splice(i, 1); renderTalks(); updatePreview(); toast('Removed.'); } else { btn.dataset.armed = '1'; btn.textContent = 'Really remove?'; setTimeout(function () { btn.dataset.armed = ''; btn.textContent = 'Remove'; }, 3000); } return; }
+    if (act === 'up' && i > 0) { state.talks.splice(i - 1, 0, state.talks.splice(i, 1)[0]); renderTalks(); updatePreview(); return; }
+    if (act === 'down' && i < state.talks.length - 1) { state.talks.splice(i + 1, 0, state.talks.splice(i, 1)[0]); renderTalks(); updatePreview(); return; }
+    if (act === 'add-slide') { t.slides.splice(Math.max(1, t.slides.length - 1), 0, newSlide()); renderTalks(); updatePreview(); return; }
+    if (act === 'del-slide') { var s = btn.closest('[data-s]'); if (t.slides.length > 1) t.slides.splice(+s.dataset.s, 1); renderTalks(); updatePreview(); return; }
+    if (act === 'add-q') { t.quiz.questions.push(newQuestion()); renderTalks(); updatePreview(); return; }
+    if (act === 'del-q') { var qel = btn.closest('[data-q]'); t.quiz.questions.splice(+qel.dataset.q, 1); if (t.quiz.pass > t.quiz.questions.length) t.quiz.pass = Math.max(1, t.quiz.questions.length); renderTalks(); updatePreview(); return; }
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+  document.getElementById('btn-example').addEventListener('click', function () {
+    state = fromPack(EXAMPLE.campus, EXAMPLE.talks); rerenderAll(); toast('The XR Libraries pack is loaded as an example. Change every word to your own.');
+  });
+  document.getElementById('btn-blank').addEventListener('click', function () {
+    state = blank(); rerenderAll(); toast('A blank pack. Your draft is kept in this browser as you type.');
+  });
+
+  // ---------- saving the pack ----------
+  var downloads = null, downloadsResolved = false;
+  function resolveDownloads() {
+    if (!(window.claude && typeof window.claude.use === 'function')) { downloadsResolved = true; return Promise.resolve(null); }
+    return window.claude.use('downloads').then(function (d) { downloads = d; downloadsResolved = true; return d; }, function () { downloadsResolved = true; return null; });
+  }
+  resolveDownloads();
+
+  function packText(pack) {
+    return Object.keys(pack.files).map(function (f) { return '=== clients/' + pack.slug + '/' + f + ' ===\n' + pack.files[f]; }).join('\n');
+  }
+
+  document.getElementById('btn-download').addEventListener('click', function () {
+    var v = validate(state); if (v.errs.length) { toast(v.errs[0]); return; }
+    var pack = buildPack(state), name = pack.slug + '-pack.zip';
+    var zip = new JSZip(), folder = zip.folder(pack.slug);
+    Object.keys(pack.files).forEach(function (f) { folder.file(f, pack.files[f]); });
+    zip.generateAsync({ type: 'blob' }).then(function (blob) {
+      var inArtifact = !!(window.claude && typeof window.claude.use === 'function');
+      if (!inArtifact) {
+        var url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000); toast('Saved ' + name + '.'); return;
+      }
+      return (downloadsResolved ? Promise.resolve(downloads) : resolveDownloads()).then(function (d) {
+        if (!d) { toast('Saving files is not available in this view. Use “Copy as text” and paste the pack into a message instead.'); return; }
+        return d.save({ filename: name, data: blob }).then(function () { toast('Saved ' + name + '. Send it to your XR Libraries contact.'); }, function (err) {
+          var code = err && err.code;
+          if (code === 'declined') toast('Not saved.');
+          else if (code === 'rate_limited') toast('One moment, then try again.');
+          else toast('Saving is not available here. Use “Copy as text” instead.');
+        });
+      });
+    });
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', function () {
+    var text = packText(buildPack(state));
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove();
+      toast(ok ? 'The pack is copied as text: campus.json, talks.json and the README.' : 'Could not copy here. Select the text in the files yourself.');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast('The pack is copied as text: campus.json, talks.json and the README.'); }, fallback);
+    else fallback();
+  });
+
+  // ---------- boot ----------
+  var draft = loadDraft();
+  state = draft || fromPack(EXAMPLE.campus, EXAMPLE.talks);
+  rerenderAll();
+})();
+</script>
