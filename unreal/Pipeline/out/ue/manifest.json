@@ -140,8 +140,8 @@
    "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
    "meshes": 21,
    "tagged": [],
-   "triangles": 196402,
-   "bytes": 63574784
+   "triangles": 202304,
+   "bytes": 63720164
   },
   "Props": {
    "file": "Props.glb",

@@ -92,6 +92,69 @@ def turned(b, cx, cy, cz, h, w, n=6, prof=None):
         if t1 <= t0: continue
         prism(b, cx, cy + h * t0, cz, w * s0 / 2, h * (t1 - t0), n=n, r_top=w * s1 / 2, cap_top=False, cap_bot=False)
 
+def sweep(b, pts, prof, cap_start=True, cap_end=True):
+    """One continuous bar along the campus polyline pts (x, y, z) with the section prof, a closed outline of
+    (side, up) offsets in metres, counter-clockwise seen from the far end. The section stays upright, so a
+    handrail keeps its flat underside level as it climbs and turns; there is no joint anywhere along it."""
+    up = Vector((0.0, 0.0, 1.0))
+    rings, centres = [], []
+    n = len(pts)
+    for i, p in enumerate(pts):
+        a = P(*pts[max(i - 1, 0)]); c = P(*pts[min(i + 1, n - 1)])
+        t = c - a
+        if t.length < 1e-9: continue
+        t.normalize()
+        if abs(t.dot(up)) > 0.98: side = t.cross(Vector((0.0, 1.0, 0.0))).normalized()
+        else: side = t.cross(up).normalized()
+        sup = side.cross(t).normalized()
+        o = P(*p)
+        centres.append(o)
+        rings.append([o + side * u + sup * v for (u, v) in prof])
+    m = len(prof)
+    for k, (r0, r1) in enumerate(zip(rings, rings[1:])):
+        for i in range(m):
+            j = (i + 1) % m
+            mid = (r0[i] + r0[j] + r1[i] + r1[j]) / 4
+            b.face([r0[i], r0[j], r1[j], r1[i]], (mid - (centres[k] + centres[k + 1]) / 2).normalized())
+    if rings and cap_start:
+        t = (centres[1] - centres[0]).normalized() if len(centres) > 1 else up
+        for i in range(1, m - 1): b.face([rings[0][0], rings[0][i + 1], rings[0][i]], -t)
+    if rings and cap_end:
+        t = (centres[-1] - centres[-2]).normalized() if len(centres) > 1 else up
+        for i in range(1, m - 1): b.face([rings[-1][0], rings[-1][i], rings[-1][i + 1]], t)
+
+RAIL_W, RAIL_H = 0.064, 0.050   # the handrail's section: a mopstick, round over the top, flat underneath for the balusters
+def rail_profile():
+    """The handrail section about its centre line, which runs 0.02 above the flat underside."""
+    r = RAIL_W / 2; top = RAIL_H - 0.020
+    pts = [(r, -0.012)]
+    for k in range(1, 12):                     # the round top, right side over to the left
+        a = math.pi * k / 12
+        pts.append((r * math.cos(a), -0.012 + (top + 0.012) * math.sin(a)))
+    pts += [(-r, -0.012), (-r + 0.010, -0.020), (r - 0.010, -0.020)]
+    return pts
+
+# a baluster between its blocks: (height fraction, width fraction) of the turned part, a vase under a bead and a long taper
+BALUSTER = [(0.00, 0.78), (0.05, 0.92), (0.14, 1.00), (0.30, 0.92), (0.40, 0.56), (0.47, 0.70), (0.52, 0.56), (0.80, 0.48), (0.90, 0.46), (1.00, 0.58)]
+def baluster(wd, cx, cy, cz, h, w, n=12):
+    """A turned baluster standing on y = cy and h tall to the rail's underside: a square base block, the turned
+    length, and a square neck block the rail sits on, so it reads as joinery at both ends."""
+    base, neck = 0.11, 0.055
+    wd.box(cx, cy + base / 2, cz, w, base, w, seg=0)
+    turned(wd, cx, cy + base, cz, h - base - neck, w, n=n)
+    wd.box(cx, cy + h - neck / 2, cz, w * 0.62, neck, w * 0.62, seg=0)
+
+def newel(wd, br, cx, cy, cz, h, w=0.14):
+    """A square newel post standing on y = cy: the post, a moulded cap plate and a brass ball on top."""
+    wd.box(cx, cy + h / 2, cz, w, h, w, seg=0)
+    wd.box(cx, cy + 0.06, cz, w + 0.04, 0.12, w + 0.04, seg=0)                        # plinth block
+    wd.box(cx, cy + h + 0.015, cz, w + 0.05, 0.03, w + 0.05, seg=0)                    # cap plate
+    wd.box(cx, cy + h + 0.045, cz, w + 0.015, 0.03, w + 0.015, seg=0)                  # the cap's upper step
+    prism(br, cx, cy + h + 0.06, cz, 0.035, 0.012, n=12)                               # a brass collar...
+    for (t0, s0), (t1, s1) in zip([(0.0, 0.5), (0.3, 0.95), (0.6, 1.0), (0.85, 0.7), (1.0, 0.2)], [(0.3, 0.95), (0.6, 1.0), (0.85, 0.7), (1.0, 0.2), (1.0, 0.2)]):
+        if t1 <= t0: continue
+        prism(br, cx, cy + h + 0.072 + 0.09 * t0, cz, 0.048 * s0, 0.09 * (t1 - t0), n=12, r_top=0.048 * s1, cap_top=(t1 >= 1.0), cap_bot=False)   # ...and ball
+
 def poly_prism(b, pts, cx, cy, cz, h, ry=0.0, top=True, bot=True, side=True):
     """Extrude a closed plan outline (list of (u, v) offsets, counter-clockwise) from y = cy up by h.
     Fan-triangulated from the centroid, so a concave outline such as a grand piano case is safe."""
@@ -209,9 +272,10 @@ def setup_materials():
 # ---------------------------------------------------------------- mesh building
 class Builder:
     """Collects boxes/quads into one mesh per (name, material). World-scale box UVs; optional lightmap uv layer."""
-    def __init__(self, name, mat, tile=1.0, lightmap=False, vcol=True, seg=0.0, collection=None):
+    def __init__(self, name, mat, tile=1.0, lightmap=False, vcol=True, seg=0.0, collection=None, smooth=None):
         self.name = name; self.mat = MATS[mat] if isinstance(mat, str) else mat; self.tile = tile
         self.lightmap = lightmap; self.vcol = vcol; self.seg = seg
+        self.smooth = smooth      # degrees: faces meeting at less than this shade smooth (turned posts, swept rails)
         self.bm = bmesh.new(); self.uv = self.bm.loops.layers.uv.new('uv')
         self.count = 0
     def _quad(self, pts, normal, uvs=None, tile=None):
@@ -272,6 +336,13 @@ class Builder:
     def finish(self, collection=None):
         bm = self.bm
         bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+        if self.smooth is not None:
+            # smooth across gentle angles, sharp where faces meet at a real edge (the exporter splits normals there)
+            thr = math.radians(self.smooth)
+            for f in bm.faces: f.smooth = True
+            for e in bm.edges:
+                if len(e.link_faces) == 2: e.smooth = e.calc_face_angle(0.0) < thr
+                else: e.smooth = False
         me = bpy.data.meshes.new(self.name)
         bm.to_mesh(me); bm.free()
         ob = bpy.data.objects.new(self.name, me)
@@ -284,8 +355,9 @@ class Builder:
             me.color_attributes.new(name='light', type='FLOAT_COLOR', domain='CORNER')
             me.color_attributes.active_color = me.color_attributes['light']
             ob['vc'] = 1
-        # smooth shading only where faces are nearly coplanar (keeps boxes crisp)
-        for p in me.polygons: p.use_smooth = False
+        # smooth shading only where asked for (keeps boxes crisp)
+        if self.smooth is None:
+            for p in me.polygons: p.use_smooth = False
         return ob
 
 # ---------------------------------------------------------------- room pieces
@@ -596,7 +668,7 @@ def build_rails():
     parapet_run(wd, br, 'x', cx, gx, SGAP[1], +1)               # south edge
     parapet_run(wd, br, 'z', SGAP[0], SGAP[1], cx, -1)          # west edge, from the stair newel to the corner
     for (nx, nz) in ((gx - 0.07, SGAP[0]), (gx - 0.07, SGAP[1]), (cx, SGAP[1])):   # the three free corners
-        turned(wd, nx, DECK, nz, PARAPET_H + 0.1, 0.13, n=8)
+        newel(wd, br, nx, DECK, nz, PARAPET_H + 0.06)
     wd.finish(); br.finish()
 
 def tread(b, cx, cz, y, a0, a1, r0, r1, th, steps=3):
@@ -618,22 +690,24 @@ def build_stair(lights):
     gallery flush, which is how a spiral is actually finished - the arc alone would leave a crescent to fall down."""
     cx, cz, R = STAIR
     gx = X1 - MEZZ_D
-    tw = Builder('stair', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.6)
-    br = Builder('stair_brass', 'brass_v', tile=0.35, lightmap=False, vcol=True, seg=0.6)   # fine grain on thin posts
+    tw = Builder('stair', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.6, smooth=40)
+    br = Builder('stair_brass', 'brass_v', tile=0.35, lightmap=False, vcol=True, seg=0.6, smooth=40)   # fine grain on thin posts
     N = 20                           # risers to the gallery deck
     rise = DECK / N                  # 0.186 m rise against a 0.26 m going on the walking line: 2R + G = 0.63
-    sweep = math.radians(300.0)      # just under a full turn, so no tread ever passes over another
-    w = sweep / N
-    tops = []
+    sweep_a = math.radians(300.0)    # just under a full turn, so no tread ever passes over another
+    w = sweep_a / N
+    # Balusters right out at the nosing. Further in they pinch the walking line: a visitor is a 60 cm capsule,
+    # and at the natural line (85 cm from the newel) its rim reaches 1.15 m, which the swells and the handrail
+    # must stay outside of. At R - 0.07 the swell's inner face is at 1.21 and the rail's at 1.25.
+    rb = R - 0.07                    # the balustrade's radius
+    BAL_H = 0.86                     # tread to the rail's underside
+    def on_helix(a): return (cx + rb * math.cos(a), cz + rb * math.sin(a))
+    def rail_y(a): return (a / w + N) * rise + BAL_H + 0.020      # the rail's centre line height at angle a
     for i in range(1, N):            # the last riser is on to the landing, so there is no tread for it
         a = (i - N) * w; y = i * rise
         tread(tw, cx, cz, y, a - w / 2, a + w / 2, 0.14, R, 0.055)
-        # Balusters right out at the nosing. Further in they pinch the walking line: a visitor is a 60 cm capsule,
-        # and at the natural line (85 cm from the newel) its rim reaches 1.15 m, which the swells and the handrail
-        # must stay outside of. At R - 0.07 the swell's inner face is at 1.21 and the rail's at 1.25.
-        bx, bz = cx + (R - 0.07) * math.cos(a), cz + (R - 0.07) * math.sin(a)
-        turned(tw, bx, y, bz, 0.86, 0.10, n=8)
-        tops.append((bx, y + 0.86, bz))
+        bx, bz = on_helix(a)
+        baluster(tw, bx, y, bz, BAL_H, 0.095)
     # landing: flush with the gallery deck and butted to its edge, in the sector past the top tread (SGAP)
     tw.box((cx + gx) / 2, DECK - 0.11, (SGAP[0] + SGAP[1]) / 2, gx - cx, 0.22, SGAP[1] - SGAP[0], seg=0.6)
     # newel, in segments so the vertex-colour bake has something to work with up its length
@@ -643,9 +717,29 @@ def build_stair(lights):
         prism(br, cx, y, cz, 0.078, h, n=12, cap_top=False, cap_bot=(y < 1e-9)); y += h
     prism(br, cx, -0.012, cz, 0.26, 0.06, n=16)                              # base plate
     prism(br, cx, DECK + 1.0, cz, 0.078, 0.13, n=12, r_top=0.028)            # finial
-    for a, c in zip(tops, tops[1:]): bar(br, a, c, 0.055)                    # the climbing handrail
-    last = tops[-1]
-    bar(br, last, (gx - 0.07, DECK + PARAPET_H - 0.05, SGAP[0]), 0.055)      # and on to the newel at the gallery's corner
+    # The balustrade starts on a square newel at the foot of the stair, standing on the floor where the first
+    # riser begins, and ends on the gallery's corner newel, which the helix arrives at by itself (the landing
+    # corner sits on the stair's own radius). The handrail is one swept piece between them: it climbs the helix
+    # over every baluster and eases up over the last two treads to arrive level with the parapet's cap.
+    a_foot = -sweep_a
+    fx, fz = on_helix(a_foot)
+    newel(tw, br, fx, 0.0, fz, rail_y(a_foot) + 0.02 - 0.025)
+    nx, nz = gx - 0.07, SGAP[0]                                              # the gallery corner newel (build_rails)
+    a_end = -0.016                                                           # where the helix meets that newel's face
+    y_end = DECK + PARAPET_H - 0.045                                         # the parapet cap rail's centre
+    a_start = a_foot + 0.07 / rb                                             # off the foot newel's face
+    path = []
+    k = 0
+    while True:
+        a = a_start + k * (w / 5)
+        if a >= a_end: break
+        ease = max(0.0, (a - (a_end - 2 * w)) / (2 * w))                     # 0 until the last two treads, then 1 at the newel
+        yy = rail_y(a) + (y_end - rail_y(a_end)) * (ease * ease * (3 - 2 * ease))
+        path.append((on_helix(a)[0], yy, on_helix(a)[1])); k += 1
+    ex, ez = on_helix(a_end)
+    path.append((ex, y_end, ez))
+    path.append((ex + (nx - ex) * 0.5, y_end, ez + (nz - ez) * 0.5))         # into the newel's face
+    sweep(br, path, rail_profile())
     # the stair stands in a corner the chandeliers do not reach, so it gets light of its own
     lights.append(('point', (cx - 0.1, 2.30, cz), (1.0, 0.86, 0.66), 45))
     lights.append(('point', (cx + 0.9, DECK + 1.10, cz), (1.0, 0.86, 0.66), 40))
