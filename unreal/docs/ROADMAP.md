@@ -21,8 +21,9 @@ The interactive systems are specified in detail in `docs/reference/systems.md` (
 Ev's call: all fifteen ideas go in, the PC-VR mode comes last. The first three are being built now: the talks
 auditorium as a new wing of the building, the forecourt turned into an open-air talk space with seats, and the
 school classroom turned into a class you attend, with a quiz and a certificate at the end. All three run on one
-talks-and-classes system (`content/talks.json`, `content/courses.json`): slides, a speaker reenactor, the voice
-reading the script with captions, sitting down starts it, and a course adds the quiz and the certificate.
+talks-and-classes system (`content/talks.json`): slides, a speaker reenactor, the voice reading the script with
+captions, sitting down starts it, and a class adds the quiz and the certificate. A course (kind `course` in the same
+file) is a class taught by doing: stations to finish, then the quiz at the course lead's desk.
 
 | # | Idea | Who it's for | Builds on | Size | Order |
 |---|---|---|---|---|---|
@@ -30,7 +31,7 @@ reading the script with captions, sitting down starts it, and a course adds the 
 | 2 | **Outside talk space**: the forecourt becomes an open-air theatre with stone benches, a stage and a slide screen | every client | the same talks system | medium | **now** |
 | 3 | **Classes you attend**: a teacher, a board, the Intro to VR class, a quiz at the end and a certificate | schools, libraries | stations, badges, voice | medium | **now** |
 | 4 | **Sit, read, listen**: seats everywhere, cards read aloud, captions | accessibility, long visits | sitting, voice, captions | low | now (seats are in; the new rooms add more) |
-| 5 | **Training wing**: step-by-step stations with a checklist, a quiz and a certificate (the dialysis course first) | workforce programs | the classes system, stations, badges, story cards | medium | next |
+| 5 | **Training wing**: step-by-step stations with a checklist, a quiz and a certificate (the dialysis course first) | workforce programs | the classes system, stations, badges, story cards | medium | **now** (the course runs in the engine: five stations, the checklist card at the lead's desk, the quiz, the certificate and two badges; the wing's room, desk and props are being built) |
 | 6 | **Client content packs**: a library fills in a sheet and gets its own campus | every library system, tribe, school district | the data tables and builders, `build_client.py`, the sheet `clients/start.html` | medium | now (the pack and the sheet are in; the build runs on our side) |
 | 7 | **Seasonal exhibits swapped without a rebuild** | every client | the JSON tables load at start | low | next |
 | 8 | **Spanish and any language from the pack**: every string and voice line per language | Nevada and California libraries | the data tables, the voice pipeline | medium | next |
