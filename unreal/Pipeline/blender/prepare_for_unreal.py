@@ -39,6 +39,7 @@ SOURCES = [
     ('ReadingRoom', 'unreal/Pipeline/out/reading_room/ReadingRoom.glb'),
     ('Props', 'unreal/Pipeline/out/campus/props.glb'),          # the Wax Hall's carried props, one mesh each, in their own frames
     ('HandProps', 'unreal/Pipeline/out/props/HandProps.glb'),   # bl/props.py: the held props as real objects, one mesh per kind
+    ('Seats', 'unreal/Pipeline/out/props/Seats.glb'),           # bl/seats.py: settees for the Wax Hall aisle, each seat a tagged mesh
 ]
 TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat)__')
 

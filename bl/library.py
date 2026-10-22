@@ -41,6 +41,9 @@ rnd = random.Random(4242)
 # campus -> blender
 def P(x, y, z): return Vector((x, -z, y))
 def D(dx, dy, dz): return Vector((dx, -dz, dy))   # the same mapping for a direction (no translation)
+def seat_yaw(dx, dz):
+    """The Unreal yaw (degrees, 0..359) a sitter faces, from a campus direction: Unreal X is campus x, Unreal Y is campus z."""
+    return int(round(math.degrees(math.atan2(dz, dx)))) % 360
 
 # ---------------------------------------------------------------- geometry helpers
 # Builder.box covers anything axis-aligned with a yaw. These four cover what it cannot:
@@ -755,6 +758,7 @@ def build_furniture(lights):
     walnut = Builder('furniture', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.4)
     tops = Builder('tabletops', 'oak', tile=1.0, lightmap=True, vcol=False)
     leather = Builder('seats', 'leather_v', tile=0.6, lightmap=False, vcol=True, seg=0.3)
+    nseat = [0]
     brass = Builder('lamp_brass', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.5)
     shade = Builder('lamp_shades', 'shade_e', tile=1.0, lightmap=False, vcol=False)
     bulb = Builder('lamp_bulbs', 'bulb_e', tile=1.0, lightmap=False, vcol=False)
@@ -776,7 +780,12 @@ def build_furniture(lights):
             lamp(brass, shade, bulb, lx, 0.79, tz); lights.append(('point', (lx, 1.09, tz), (1.0, 0.75, 0.45), 18))
             for s in (-1, 1):
                 cz = tz + s * 0.85
-                leather.box(lx, 0.47, cz, 0.44, 0.06, 0.42); leather.box(lx, 0.74, cz + s * 0.2, 0.44, 0.5, 0.05)
+                # the cushion is its own tagged mesh, so Unreal makes a seat of it (seat__<id>_f<yaw>: the sitter
+                # faces the table, away from the back; the yaw is Unreal's, atan2(dz, dx) in campus axes)
+                nseat[0] += 1
+                cushion = Builder('seat__lib%02d_f%d' % (nseat[0], seat_yaw(0.0, -s)), 'leather_v', tile=0.6, lightmap=False, vcol=True, seg=0.3)
+                cushion.box(lx, 0.47, cz, 0.44, 0.06, 0.42); cushion.finish()
+                leather.box(lx, 0.74, cz + s * 0.2, 0.44, 0.5, 0.05)
                 walnut.box(lx, 0.22, cz, 0.40, 0.44, 0.38, seg=0.2)
                 for dx in (-0.19, 0.19): walnut.box(lx + dx, 0.75, cz + s * 0.2, 0.03, 0.56, 0.03)
     # featured table

@@ -4,7 +4,7 @@
   "Museum": {
    "file": "Museum.glb",
    "source": "unreal/Pipeline/out/museum/Museum.glb",
-   "meshes": 63,
+   "meshes": 69,
    "tagged": [
     "item__ca_200",
     "item__charleston",
@@ -21,10 +21,16 @@
     "item__showcase",
     "item__ukraine",
     "item__way_out",
+    "seat__mus1a_f180",
+    "seat__mus1b_f180",
+    "seat__mus2a_f180",
+    "seat__mus2b_f180",
+    "seat__mus3a_f180",
+    "seat__mus3b_f180",
     "token__t_museum"
    ],
-   "triangles": 174004,
-   "bytes": 55247836
+   "triangles": 174136,
+   "bytes": 55260208
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -138,10 +144,23 @@
   "ReadingRoom": {
    "file": "ReadingRoom.glb",
    "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
-   "meshes": 21,
-   "tagged": [],
+   "meshes": 33,
+   "tagged": [
+    "seat__lib01_f90",
+    "seat__lib02_f270",
+    "seat__lib03_f90",
+    "seat__lib04_f270",
+    "seat__lib05_f90",
+    "seat__lib06_f270",
+    "seat__lib07_f90",
+    "seat__lib08_f270",
+    "seat__lib09_f90",
+    "seat__lib10_f270",
+    "seat__lib11_f90",
+    "seat__lib12_f270"
+   ],
    "triangles": 202304,
-   "bytes": 63720164
+   "bytes": 63728148
   },
   "Props": {
    "file": "Props.glb",
@@ -193,6 +212,23 @@
    ],
    "triangles": 4320,
    "bytes": 192712
+  },
+  "Seats": {
+   "file": "Seats.glb",
+   "source": "unreal/Pipeline/out/props/Seats.glb",
+   "meshes": 11,
+   "tagged": [
+    "seat__wax1a_f180",
+    "seat__wax1b_f0",
+    "seat__wax2a_f180",
+    "seat__wax2b_f0",
+    "seat__wax3a_f180",
+    "seat__wax3b_f0",
+    "seat__wax4a_f180",
+    "seat__wax4b_f0"
+   ],
+   "triangles": 2576,
+   "bytes": 179616
   }
  }
 }

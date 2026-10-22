@@ -276,13 +276,18 @@ def vaults():
             px, pz = s * 4.6, zb - 1.2
             pedestal(builder('pedestals', 'verde', tile=2.0), builder('stone', 'stone', tile=2.0), px, pz, 0.7, 1.1)
             urn(builder('urns', 'stone', tile=2.0), px, pz, 1.1, h=1.0, s=0.85)
-        bench(2.6, zm)
+        bench(2.6, zm, gi)
 
 
-def bench(x, z):
-    b = builder('pedestals', 'verde', tile=2.0); t = builder('stone', 'stone', tile=2.0)
+def bench(x, z, gi=0):
+    """A stone bench on two verde pedestals. Its slab is two tagged seat meshes (seat__<id>_f<yaw>), one a side,
+    so Unreal seats a visitor on each facing the hall's middle (the yaw is Unreal's: atan2(dz, dx) in campus axes)."""
+    b = builder('pedestals', 'verde', tile=2.0)
     for dz in (-0.7, 0.7): b.box(x, 0.2, z + dz, 0.5, 0.4, 0.16, seg=0)
-    t.box(x, 0.44, z, 0.6, 0.08, 1.9, seg=0)
+    yaw = int(round(math.degrees(math.atan2(0.0, -1.0 if x > 0 else 1.0)))) % 360
+    for k, dz in enumerate((-0.475, 0.475)):
+        t = builder('seat__mus%d%s_f%d' % (gi + 1, 'ab'[k], yaw), 'stone', tile=2.0)
+        t.box(x, 0.44, z + dz, 0.6, 0.08, 0.95, seg=0)
 
 
 # ---------------------------------------------------------------- the lobby, the halls
