@@ -1,6 +1,7 @@
 """Tileable PBR textures for the photoreal rooms, generated here (no downloads): FFT-filtered noise is periodic by
 construction, so every map tiles. Writes assets/tex/<name>_{col,rgh,nrm}.png (+ a few single-use images)."""
-import os, math, numpy as np
+import os, math, sys, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', 'tex')
 os.makedirs(OUT, exist_ok=True)
@@ -511,8 +512,9 @@ def make_frieze():
         d.text((W // 2, H // 2), text, font=fnt, fill=(74, 62, 48), anchor='mm')
         img.save(os.path.join(OUT, name), optimize=True)
     # both power-of-two tall: Unreal pads other heights and the letters slide down the band
-    strip('frieze_portico.png', 'XRLIBRARIES  ·  WALK THE ARCHIVE', 4096, 512, 340)
-    strip('frieze_rotunda.png', 'SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS', 4096, 512, 300)
+    import clientpack
+    strip('frieze_portico.png', clientpack.get('frieze.portico', 'XRLIBRARIES  ·  WALK THE ARCHIVE'), 4096, 512, 340)
+    strip('frieze_rotunda.png', clientpack.get('frieze.rotunda', 'SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS'), 4096, 512, 300)
 
 
 if __name__ == '__main__':

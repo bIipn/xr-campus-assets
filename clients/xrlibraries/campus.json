@@ -1,0 +1,13 @@
+{
+  "about": "A client pack: everything about the campus that is this client's rather than the campus's. build_client.py reads it (WTA_CLIENT points the builders at it) and rebuilds the textures, the screens, the props, the rooms and the data tables from it. Copy this folder, change the words, run build_client.py --client <folder>.",
+  "client": "XR Libraries",
+  "campus": "Walk the Archive",
+  "app": {"title": "XR Libraries", "tagline": "Learn anywhere"},
+  "frieze": {
+    "portico": "XRLIBRARIES  ·  WALK THE ARCHIVE",
+    "rotunda": "SINCE 2016  ·  VIRTUAL REALITY IN LIBRARIES AND SCHOOLS"
+  },
+  "book": {"title": "Lost Stories", "chapter": "The Boxes Under the Desk"},
+  "content": "unreal/Pipeline/content",
+  "surfaces": "unreal/Pipeline/content/surfaces.json"
+}

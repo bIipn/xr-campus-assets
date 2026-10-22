@@ -1,6 +1,7 @@
 // Walk the Archive - the intro / pause menu, built in code.
 
 #include "UI/WTAMenuWidget.h"
+#include "Core/WTASettings.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/HorizontalBox.h"
@@ -77,10 +78,13 @@ void UWTAMenuWidget::NativeOnInitialized()
 	CardWidth->SetContent(Column);
 
 	// Kicker, title, subtitle.
-	UTextBlock* Kicker = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("XRLIBRARIES CAMPUS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
+	const UWTASettings* Settings = UWTASettings::Get();
+	const FString ClientName = Settings != nullptr && !Settings->ClientName.IsEmpty() ? Settings->ClientName : TEXT("XR Libraries");
+	const FString CampusTitle = Settings != nullptr && !Settings->CampusTitle.IsEmpty() ? Settings->CampusTitle : TEXT("Walk the Archive");
+	UTextBlock* Kicker = WTAWidgets::MakeText(Tree, FText::FromString(ClientName.Replace(TEXT(" "), TEXT("")).ToUpper() + TEXT(" CAMPUS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
 	Column->AddChildToVerticalBox(Kicker)->SetPadding(FMargin(0.f, 0.f, 0.f, 6.f));
 
-	TitleText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Walk the Archive")), WTAStyle::Font(34, true), WTAStyle::Bone(), true);
+	TitleText = WTAWidgets::MakeText(Tree, FText::FromString(CampusTitle), WTAStyle::Font(34, true), WTAStyle::Bone(), true);
 	Column->AddChildToVerticalBox(TitleText)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
 
 	SubtitleText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(14), WTAStyle::BoneDim(), true);

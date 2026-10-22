@@ -92,6 +92,16 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Player")
 	FString SaveSlotName = TEXT("WalkTheArchive");
 
+	// --- Client (clients/<name>/campus.json, written here by build_client.py) ---
+
+	/** The client the campus is built for, on the intro menu's kicker ("XRLIBRARIES CAMPUS"). */
+	UPROPERTY(Config, EditAnywhere, Category = "Client")
+	FString ClientName = TEXT("XR Libraries");
+
+	/** The campus's own name, the intro menu's title. */
+	UPROPERTY(Config, EditAnywhere, Category = "Client")
+	FString CampusTitle = TEXT("Walk the Archive");
+
 	// --- UI ----------------------------------------------------------------
 
 	/** Default toast time, seconds (web: 3.4). */

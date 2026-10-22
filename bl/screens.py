@@ -10,9 +10,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEX = os.path.join(os.path.dirname(HERE), 'assets', 'tex')
+import sys
+sys.path.insert(0, HERE)
 
-TITLE = 'XR Libraries'
-TAGLINE = 'Learn anywhere'
+import clientpack
+
+TITLE = clientpack.get('app.title', 'XR Libraries')
+TAGLINE = clientpack.get('app.tagline', 'Learn anywhere')
 BG = (14, 18, 24)
 PANEL = (24, 30, 40)
 INK = (236, 240, 244)
@@ -90,7 +94,8 @@ def app(w, h, phone=False):
     return im
 
 
-BOOK_TITLE = 'Lost Stories'
+BOOK_TITLE = clientpack.get('book.title', 'Lost Stories')
+BOOK_CHAPTER = clientpack.get('book.chapter', 'The Boxes Under the Desk')
 BOOK_TEXT = [
     "Every library keeps two collections. One sits on the shelves, catalogued and lent. The other is carried in "
     "through the door each morning by the people who come to read, to ask, to wait out the rain: the stories "
@@ -169,7 +174,7 @@ def main():
     app(768, 1120).save(os.path.join(TEX, 'screen_tablet.png'))
     app(512, 1088, phone=True).save(os.path.join(TEX, 'screen_phone.png'))
     # the open book: 12.8 x 19 cm pages, the spread's left page first
-    left, rest = page(640, 950, 42, BOOK_TEXT, title='The Boxes Under the Desk', first=True)
+    left, rest = page(640, 950, 42, BOOK_TEXT, title=BOOK_CHAPTER, first=True)
     right, _ = page(640, 950, 43, rest or BOOK_TEXT[2:])
     left.save(os.path.join(TEX, 'page_left.png')); right.save(os.path.join(TEX, 'page_right.png'))
     print('wrote', os.path.join(TEX, 'screen_tablet.png'), 'screen_phone.png, page_left.png, page_right.png')

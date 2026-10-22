@@ -52,6 +52,7 @@ return the action `FName`s; `WTABadge::FirstSteps()/Explorer()/Bookworm()/Curiou
 `UCLASS(Config=Game, DefaultConfig, meta=(DisplayName="Walk the Archive"))`, section `[/Script/WalkTheArchive.WTASettings]`.
 - `static const UWTASettings* Get()`; `GetCategoryName()` = "Game".
 - `UP(Config, EditAnywhere) TSoftObjectPtr<UDataTable>` **Exhibits, Books, Sources, Galleries, Subjects, Rooms, Places, Tour, Staff, StaffRules, Facts, Lessons, Badges, Tokens, WaxScenes, Stations, Rides** — constructor defaults `/Game/WTA/Data/DT_<Name>.DT_<Name>`.
+- `UP(Config) FString ClientName` ("XR Libraries") and `CampusTitle` ("Walk the Archive"): the intro menu's kicker (`<CLIENTNAME> CAMPUS`) and title; `build_client.py` writes them into DefaultGame.ini from the client pack (`clients/<name>/campus.json`).
 - `UP(Config) FWTAView SpawnView` (default (0,-70,162) yaw -90 pitch 1.146 valid), `FString SaveSlotName = "WalkTheArchive"`, `float ToastSeconds = 3.4`, `float HintSeconds = 6`, `bool bShowIntroMenu = true`.
 
 ### `AWTAGameMode : AGameModeBase` (`Core/WTAGameMode.h`)

@@ -23,3 +23,4 @@ unreal/Pipeline/out/exterior/Outside.glb
 # derived by unreal/Tools/holds/design_holds.py
 unreal/Tools/holds/holds.json
 unreal/Tools/holds/hold_*.png
+assets/build_*.log
