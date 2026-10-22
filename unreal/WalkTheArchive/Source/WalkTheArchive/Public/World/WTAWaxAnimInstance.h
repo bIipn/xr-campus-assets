@@ -15,6 +15,24 @@
 
 class UAnimSequence;
 
+/**
+ * How a hand closes on a prop: for each finger (index, middle, ring, little) and the thumb, the rotation of its
+ * three joints from the knuckle out, each a rotation vector in degrees about the joint's own axes (direction =
+ * the axis, length = the angle). Applied over the body's reference pose, not the clip's fingers, so a hold looks
+ * the same whatever the clip does with the hand. The same values fit both hands (the MetaHuman rig mirrors the
+ * joint frames). AWTAWaxStageActor keeps a table of them per prop kind.
+ */
+struct FWTAHandPose
+{
+	FVector Joint[5][3] = {};
+
+	bool IsSet() const
+	{
+		for (int32 f = 0; f < 5; ++f) { for (int32 j = 0; j < 3; ++j) { if (!Joint[f][j].IsNearlyZero()) { return true; } } }
+		return false;
+	}
+};
+
 /** One clip being sampled: the sequence, where in it we are, how fast, and whether it wraps. */
 struct FWTAWaxClip
 {
@@ -56,16 +74,14 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 
 	/**
 	 * A grip closes a hand's fingers round a prop on top of whatever the clip does with the arm: [0] the left
-	 * hand, [1] the right. FingerDeg/ThumbDeg are the degrees each of the three joints bends at a full grip
-	 * (x, y, z = the first, second and third joint from the knuckle), Grip how far toward that the hand is
+	 * hand, [1] the right. Pose is the hand's finger pose at a full grip, Grip how far toward it the hand is
 	 * (0 = the clip's own fingers), eased so a hand-over closes and opens over a few frames.
 	 */
 	float Grip[2] = { 0.f, 0.f };
 	float GripTarget[2] = { 0.f, 0.f };
-	FVector FingerDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
-	FVector ThumbDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	FWTAHandPose Pose[2];
 
-	/** Curls the finger joints of each gripping hand about their hinge axes (local space, after the clips). */
+	/** Turns each gripping hand's finger joints from the reference pose into Pose, blended by Grip (local space, after the clips). */
 	void ApplyGrip(FPoseContext& Output) const;
 };
 
@@ -87,12 +103,10 @@ public:
 	void Hold(bool bHold);
 
 	/**
-	 * Closes one hand round a prop: FingerDeg and ThumbDeg are the degrees the three joints of each finger and
-	 * of the thumb bend (x = at the knuckle, y, z = the next two), Amount 0..1 how far toward that. Amount 0 gives
-	 * the hand back to the clip. The proxy eases toward it over about a quarter second.
+	 * Closes one hand round a prop: Pose is the finger pose at a full grip, Amount 0..1 how far toward it. Amount
+	 * 0 gives the hand back to the clip. The proxy eases toward it over about a quarter second.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "WTA|People")
-	void SetGrip(bool bRightHand, float Amount, FVector FingerDeg, FVector ThumbDeg);
+	void SetGrip(bool bRightHand, float Amount, const FWTAHandPose& Pose);
 
 	/** How far closed a hand was asked to be (for QA). */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
@@ -129,6 +143,5 @@ protected:
 	bool bPendingHold = false;
 	uint32 PendingSerial = 0;
 	float PendingGrip[2] = { 0.f, 0.f };
-	FVector PendingFingerDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
-	FVector PendingThumbDeg[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	FWTAHandPose PendingPose[2];
 };

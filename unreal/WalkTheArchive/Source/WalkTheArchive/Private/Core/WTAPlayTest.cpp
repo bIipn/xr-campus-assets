@@ -1981,22 +1981,83 @@ void UWTAPlayTest::AddWaxPhase()
 			return 0.1f;
 		} });
 		AddTap(TEXT("wax esc ") + Name, EKeys::Escape, 0.4f);
-		// The props in hands: each sits in the palm of the hand its key names (within 25 cm of the wrist) and
-		// that hand is closed on it; a 90 cm close-up of the first held one, no HUD, shows the grip.
+		// The props in hands: each meets the palm of the hand its key names (within 25 cm of the wrist) and that
+		// hand is closed on it; a close-up of the first held one, from a free camera on a side of the hand that
+		// nothing blocks, shows the grip. The camera is aimed again in the frame the shot is taken, since the
+		// hand moves while the stream settles.
 		TSharedRef<bool> HeldOne = MakeShared<bool>(false);
-		TSharedRef<FTransform> Palm = MakeShared<FTransform>(FTransform::Identity);
-		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, SceneName, HeldOne, Palm]() -> float
+		TSharedRef<int32> HeldIndex = MakeShared<int32>(INDEX_NONE);
+		auto FindStage = [this, SceneName]() -> AWTAWaxStageActor*
 		{
-			*HeldOne = false;
-			AWTAWaxStageActor* Stage = nullptr;
 			for (TActorIterator<AWTAWaxStageActor> It(GetWorld()); It; ++It)
 			{
 				if (It->SceneId == SceneName)
 				{
-					Stage = *It;
-					break;
+					return *It;
 				}
 			}
+			return nullptr;
+		};
+		auto AimAtHand = [this](AWTAWaxStageActor* Stage, int32 Index)
+		{
+			FVector Prop, Wrist, Figure;
+			float Grip = 0.f;
+			FName Socket;
+			FTransform Palm;
+			UWorld* World = GetWorld();
+			if (World == nullptr || Stage == nullptr || !Stage->PropInHand(Index, Prop, Wrist, Figure, Grip, Socket, Palm))
+			{
+				return;
+			}
+			if (FaceCamera == nullptr)
+			{
+				FActorSpawnParameters Params;
+				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				FaceCamera = World->SpawnActor<ACameraActor>(FVector::ZeroVector, FRotator::ZeroRotator, Params);
+				if (FaceCamera != nullptr && FaceCamera->GetCameraComponent() != nullptr)
+				{
+					FaceCamera->GetCameraComponent()->SetFieldOfView(45.f);
+					FaceCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
+				}
+			}
+			if (FaceCamera == nullptr)
+			{
+				return;
+			}
+			const FVector F = Palm.GetUnitAxis(EAxis::X), N = Palm.GetUnitAxis(EAxis::Y), Z = Palm.GetUnitAxis(EAxis::Z);
+			const FVector Look = Palm.GetLocation() + F * 3.f + N * 4.f;
+			// candidate directions, best first: three-quarter views from either edge of the hand (the thumb on top
+			// of the prop and the fingers under it both show), then the open side, the edges and the end
+			const FVector Candidates[] = { (N - Z + F * 0.4f).GetSafeNormal(), (N + Z + F * 0.4f).GetSafeNormal(), (N + F).GetSafeNormal(), N,
+				(N - Z).GetSafeNormal(), (N + Z).GetSafeNormal(), F, (F + Z).GetSafeNormal(), (F - Z).GetSafeNormal(), Z, -Z, (N - F).GetSafeNormal(), -N };
+			const FVector Away = (Palm.GetLocation() - (Figure + FVector(0.f, 0.f, 130.f))).GetSafeNormal2D();
+			const float Dist = 70.f;
+			FCollisionQueryParams Params(FName(TEXT("WTAHandCamera")), true);
+			Params.AddIgnoredActor(Stage);
+			FVector Eye = Look + N * Dist;
+			float Best = -10.f;
+			int32 Order = 0;
+			for (const FVector& Dir : Candidates)
+			{
+				const FVector Try = Look + Dir * Dist;
+				FHitResult Hit;
+				const bool bBlocked = World->LineTraceSingleByChannel(Hit, Look + Dir * 6.f, Try, ECC_Visibility, Params);
+				// a clear view, away from the figure's chest, of the palm's open side, earlier in the list on a tie
+				const float Score = (bBlocked ? -4.f : 0.f) + static_cast<float>(FVector::DotProduct(Dir, Away)) + 0.3f * static_cast<float>(FVector::DotProduct(Dir, N)) - 0.02f * Order;
+				++Order;
+				if (Score > Best)
+				{
+					Best = Score;
+					Eye = bBlocked ? Look + Dir * FMath::Max(25.f, Hit.Distance * 0.8f) : Try;
+				}
+			}
+			FaceCamera->SetActorLocationAndRotation(Eye, (Look - Eye).Rotation());
+		};
+		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, HeldOne, HeldIndex, FindStage, AimAtHand]() -> float
+		{
+			*HeldOne = false;
+			*HeldIndex = INDEX_NONE;
+			AWTAWaxStageActor* Stage = FindStage();
 			if (Stage == nullptr)
 			{
 				return 0.f;
@@ -2016,7 +2077,7 @@ void UWTAPlayTest::AddWaxPhase()
 				const float Gap = static_cast<float>(FVector::Dist(Prop, Wrist));
 				const bool bPlaced = Gap < 25.f, bClosed = Grip > 0.2f;
 				Held += 1; Placed += bPlaced ? 1 : 0; Closed += bClosed ? 1 : 0;
-				if (Held == 1) { *Palm = PalmOf; }
+				if (Held == 1) { *HeldIndex = i; }
 				Notes += FString::Printf(TEXT("%s prop %d %.0f cm from the wrist, grip %.2f; "), *Socket.ToString(), i, Gap, Grip);
 			}
 			if (Held == 0)
@@ -2025,37 +2086,21 @@ void UWTAPlayTest::AddWaxPhase()
 			}
 			*HeldOne = true;
 			Report(TEXT("wax"), Placed == Held && Closed == Held ? EResult::Pass : EResult::Fail, Name + TEXT(" holds its props"), Notes);
-			// The close-up is a free camera (the faces phase's), 55 cm off the palm on its open side and a little
-			// toward the fingertips, looking at the middle of the palm: it sees the fingers close on the prop.
-			UWorld* World = GetWorld();
-			if (World != nullptr && FaceCamera == nullptr)
+			AimAtHand(Stage, *HeldIndex);
+			if (AWTAPlayerController* C = PC())
 			{
-				FActorSpawnParameters Params;
-				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				FaceCamera = World->SpawnActor<ACameraActor>(FVector::ZeroVector, FRotator::ZeroRotator, Params);
-				if (FaceCamera != nullptr && FaceCamera->GetCameraComponent() != nullptr)
-				{
-					FaceCamera->GetCameraComponent()->SetFieldOfView(40.f);
-					FaceCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
-				}
-			}
-			if (FaceCamera != nullptr)
-			{
-				const FVector Fingers = Palm->GetUnitAxis(EAxis::X), Normal = Palm->GetUnitAxis(EAxis::Y);
-				const FVector Look = Palm->GetLocation() + Fingers * 4.f;
-				const FVector Eye = Palm->GetLocation() + Normal * 55.f + Fingers * 10.f + FVector(0.f, 0.f, 6.f);
-				FaceCamera->SetActorLocationAndRotation(Eye, (Look - Eye).Rotation());
-				if (AWTAPlayerController* C = PC())
+				if (FaceCamera != nullptr)
 				{
 					C->SetViewTargetWithBlend(FaceCamera, 0.f);
 				}
 			}
 			return 0.5f;
 		} });
-		Steps.Add({ TEXT("wax hands take ") + Name, [this, Name, HeldOne]() -> float
+		Steps.Add({ TEXT("wax hands take ") + Name, [this, Name, HeldOne, HeldIndex, FindStage, AimAtHand]() -> float
 		{
 			if (*HeldOne)
 			{
+				AimAtHand(FindStage(), *HeldIndex);
 				Shot(TEXT("wax_hand_") + Name, false);
 			}
 			return 0.1f;

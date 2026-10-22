@@ -70,8 +70,7 @@ void FWTAWaxAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSecon
 		GripTarget[Hand] = FMath::Clamp(Instance->PendingGrip[Hand], 0.f, 1.f);
 		if (GripTarget[Hand] > KINDA_SMALL_NUMBER)
 		{
-			FingerDeg[Hand] = Instance->PendingFingerDeg[Hand];
-			ThumbDeg[Hand] = Instance->PendingThumbDeg[Hand];
+			Pose[Hand] = Instance->PendingPose[Hand];
 		}
 		// a hand closes or opens in about a quarter second
 		Grip[Hand] = FMath::FInterpConstantTo(Grip[Hand], GripTarget[Hand], 1.f, 4.f * DeltaSeconds);
@@ -133,14 +132,10 @@ void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 	{
 		return;
 	}
-	// The MetaHuman body's finger joints, and the axis each bends about in its own frame (measured from the
-	// reference pose with C:\dev\wta_tools\probe_hands.py: the cross product of the finger's direction and the
-	// palm's normal, expressed in the joint). The same on both hands.
-	static const FVector FingerAxis[3] = { FVector(0.10f, 0.20f, -0.97f).GetSafeNormal(), FVector(0.25f, 0.37f, -0.89f).GetSafeNormal(), FVector(0.f, 0.f, -1.f) };
-	static const FVector ThumbAxis[3] = { FVector(-0.014f, 0.906f, -0.423f).GetSafeNormal(), FVector(0.147f, 0.975f, -0.165f).GetSafeNormal(), FVector(0.f, 0.989f, -0.149f).GetSafeNormal() };
-	static const TCHAR* Fingers[4] = { TEXT("index"), TEXT("middle"), TEXT("ring"), TEXT("pinky") };
+	// The MetaHuman body's finger joints: [hand][finger 0..3 = index, middle, ring, little; 4 = thumb][joint],
+	// named once.
+	static const TCHAR* Fingers[5] = { TEXT("index"), TEXT("middle"), TEXT("ring"), TEXT("pinky"), TEXT("thumb") };
 	static const TCHAR* Sides[2] = { TEXT("l"), TEXT("r") };
-	// bone names, built once: [hand][finger 0..3 = fingers, 4 = thumb][joint]
 	static FName Names[2][5][3];
 	static bool bNamed = false;
 	if (!bNamed)
@@ -151,13 +146,15 @@ void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 			{
 				for (int32 Joint = 0; Joint < 3; ++Joint)
 				{
-					Names[Hand][Finger][Joint] = FName(*FString::Printf(TEXT("%s_%02d_%s"), Finger < 4 ? Fingers[Finger] : TEXT("thumb"), Joint + 1, Sides[Hand]));
+					Names[Hand][Finger][Joint] = FName(*FString::Printf(TEXT("%s_%02d_%s"), Fingers[Finger], Joint + 1, Sides[Hand]));
 				}
 			}
 		}
 		bNamed = true;
 	}
 
+	// Each joint goes from the clip's rotation toward the reference pose turned by its rotation vector (the hold
+	// was designed on the reference pose, so it lands where it was designed whatever the clip's fingers do).
 	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
 	for (int32 Hand = 0; Hand < 2; ++Hand)
 	{
@@ -167,7 +164,6 @@ void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 		}
 		for (int32 Finger = 0; Finger < 5; ++Finger)
 		{
-			const FVector& Deg = Finger < 4 ? FingerDeg[Hand] : ThumbDeg[Hand];
 			for (int32 Joint = 0; Joint < 3; ++Joint)
 			{
 				const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Names[Hand][Finger][Joint]);
@@ -180,14 +176,12 @@ void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 				{
 					continue;                 // this LOD has no such bone
 				}
-				const FVector& Axis = Finger < 4 ? FingerAxis[Joint] : ThumbAxis[Joint];
-				const float Degrees = Deg[Joint] * Grip[Hand];
-				if (FMath::Abs(Degrees) < KINDA_SMALL_NUMBER)
-				{
-					continue;
-				}
+				const FVector& Turn = Pose[Hand].Joint[Finger][Joint];
+				const float Degrees = static_cast<float>(Turn.Size());
+				const FQuat Local = Degrees > KINDA_SMALL_NUMBER ? FQuat(Turn / Degrees, FMath::DegreesToRadians(Degrees)) : FQuat::Identity;
+				const FQuat Target = Bones.GetRefPoseTransform(Index).GetRotation() * Local;
 				FTransform& Bone = Output.Pose[Index];
-				Bone.SetRotation(Bone.GetRotation() * FQuat(Axis, FMath::DegreesToRadians(Degrees)));
+				Bone.SetRotation(FQuat::Slerp(Bone.GetRotation(), Target, Grip[Hand]));
 			}
 		}
 	}
@@ -212,13 +206,12 @@ void UWTAWaxAnimInstance::Hold(bool bHold)
 	bPendingHold = bHold;
 }
 
-void UWTAWaxAnimInstance::SetGrip(bool bRightHand, float Amount, FVector InFingerDeg, FVector InThumbDeg)
+void UWTAWaxAnimInstance::SetGrip(bool bRightHand, float Amount, const FWTAHandPose& InPose)
 {
 	const int32 Hand = bRightHand ? 1 : 0;
 	PendingGrip[Hand] = FMath::Clamp(Amount, 0.f, 1.f);
 	if (PendingGrip[Hand] > KINDA_SMALL_NUMBER)
 	{
-		PendingFingerDeg[Hand] = InFingerDeg;
-		PendingThumbDeg[Hand] = InThumbDeg;
+		PendingPose[Hand] = InPose;
 	}
 }

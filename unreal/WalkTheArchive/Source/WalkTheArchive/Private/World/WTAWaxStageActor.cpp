@@ -78,38 +78,129 @@ namespace
 
 	/**
 	 * How a modelled prop (bl/props.py) sits in a hand, and how that hand closes on it. The prop's own frame is
-	 * put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmFrame); Offset and
-	 * Rotation move the prop in that frame. FingerDeg and ThumbDeg are the degrees the three joints of each
-	 * finger and of the thumb bend, from the knuckle out (UWTAWaxAnimInstance::SetGrip).
+	 * put in the palm: +X along the fingers, +Y out of the palm, +Z across it (see PalmFrame); Hold is the prop's
+	 * transform in that frame, for the right hand (the left is its mirror in Z). Pose is the finger pose of the
+	 * hold (UWTAWaxAnimInstance::SetGrip).
 	 *
-	 * Two holds: a wrap, where the prop's edge lies along the crease at the base of the fingers and the second
-	 * and third joints close over it (the phone across the palm, the headset's strap); and a cradle, where the
-	 * prop lies flat on the open palm and fingers with the thumb over its near edge (tablet, clipboard, book).
+	 * One hold for everything: the fingers lie flat and the prop rests on them, 2.5 cm out from the palm bones,
+	 * with the thumb pressed on its top near its near edge - a tablet, clipboard or phone held by one end, an
+	 * open book on the hand. The headset hangs by its top strap: the strap's tube lies across the flat fingers
+	 * under the thumb, and the rest of the headset hangs from it the way the world's down says, so it dangles
+	 * below the hand however the arm is held (bHang; the tube's point and axes are in the prop's own frame).
+	 *
+	 * Designed offline against the body's reference pose and the prop meshes by unreal/Tools/holds/design_holds.py
+	 * (the joints from Tools/holds/probe_palm.py): the fingers' flesh tops lie within a millimetre of the prop's
+	 * underside and the thumb's pad within a millimetre of its top. Rerun it after changing a prop model.
 	 */
 	struct FWaxGrip
 	{
-		FVector Offset;
-		FRotator Rotation;
-		FVector FingerDeg;
-		FVector ThumbDeg;
+		FTransform Hold;
+		FWTAHandPose Pose;
+		bool bHang = false;
+		FVector HangPoint = FVector::ZeroVector;         // the strap tube's top, prop frame
+		FVector HangTangent = FVector::ForwardVector;    // along that tube, prop frame
+		FVector HangUp = FVector::UpVector;              // the prop's axis that points from its body to the tube
+		FVector Tube = FVector::ZeroVector;              // where the tube lies in the palm, right hand
 	};
+
+	/** The fingers laid flat (index, middle, ring, little), as rotation vectors in degrees per joint. */
+	void WaxFlatFingers(FWTAHandPose& Pose)
+	{
+		static const FVector Flat[4][3] = {
+			{ FVector(-3.2, -6.4, 30.9), FVector(-3.4, -5.1, 12.3), FVector(0.0, 0.0, 1.2) },
+			{ FVector(-2.1, -4.2, 20.4), FVector(-7.7, -11.4, 27.4), FVector(0.0, 0.0, 7.1) },
+			{ FVector(-1.9, -3.8, 18.6), FVector(-6.1, -9.0, 21.7), FVector(0.0, 0.0, 7.3) },
+			{ FVector(-2.6, -5.2, 25.1), FVector(-4.2, -6.3, 15.0), FVector(0.0, 0.0, 5.0) },
+		};
+		for (int32 f = 0; f < 4; ++f)
+		{
+			for (int32 j = 0; j < 3; ++j)
+			{
+				Pose.Joint[f][j] = Flat[f][j];
+			}
+		}
+	}
+
+	FWaxGrip WaxSlabGrip(float Lift, const FVector& Thumb1, const FVector& Thumb2, const FVector& Thumb3)
+	{
+		FWaxGrip Grip;
+		Grip.Hold = FTransform(FQuat::Identity, FVector(0.f, Lift, 0.f));
+		WaxFlatFingers(Grip.Pose);
+		Grip.Pose.Joint[4][0] = Thumb1;
+		Grip.Pose.Joint[4][1] = Thumb2;
+		Grip.Pose.Joint[4][2] = Thumb3;
+		return Grip;
+	}
 
 	const FWaxGrip* WaxGrip(FName Kind)
 	{
-		static const FVector Wrap(18.f, 62.f, 52.f), WrapThumb(28.f, 32.f, 20.f);
-		static const FVector Cradle(8.f, 14.f, 10.f), CradleThumb(34.f, 28.f, 16.f);
-		static const TMap<FName, FWaxGrip> Grips = {
-			// carried by its top strap: the headset (modelled for the head, +Z up) hangs below the palm, visor along the fingers
-			{ FName(TEXT("headset")),   { FVector(3.f, 6.f, 0.f), FRotator(0.f, 0.f, 90.f), Wrap, WrapThumb } },
-			{ FName(TEXT("tablet")),    { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
-			{ FName(TEXT("clipboard")), { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
-			{ FName(TEXT("book")),      { FVector(0.f, 0.3f, 0.f), FRotator::ZeroRotator, Cradle, CradleThumb } },
-			// across the palm (its length along Z: pitch 90 turns +X to +Z about the palm's normal), its near long
-			// edge at the base of the fingers, resting on the first joints
-			{ FName(TEXT("phone")),     { FVector(6.75f, 1.4f, 0.f), FRotator(90.f, 0.f, 0.f), Wrap, WrapThumb } },
-			{ FName(TEXT("box")),       { FVector::ZeroVector, FRotator::ZeroRotator, Cradle, CradleThumb } },
-		};
+		static TMap<FName, FWaxGrip> Grips;
+		if (Grips.Num() == 0)
+		{
+			Grips.Add(FName(TEXT("phone")),     WaxSlabGrip(2.58f, FVector(-12.7, -17.8, -2.4), FVector(20.2, -20.2, -20.2), FVector(15.4, -15.4, -15.4)));
+			Grips.Add(FName(TEXT("tablet")),    WaxSlabGrip(2.47f, FVector(-24.7, -8.9, -4.3), FVector(21.1, -21.1, -21.1), FVector(15.7, -15.7, -15.7)));
+			Grips.Add(FName(TEXT("clipboard")), WaxSlabGrip(2.60f, FVector(-26.2, -7.7, -4.5), FVector(21.3, -21.3, -21.3), FVector(15.7, -15.7, -15.7)));
+			Grips.Add(FName(TEXT("book")),      WaxSlabGrip(2.50f, FVector(-17.3, 3.9, -12.7), FVector(20.4, -20.4, -20.4), FVector(21.8, -21.8, -21.8)));
+			// the box is carried at the chest; in a hand it would rest on the fingers like a slab
+			Grips.Add(FName(TEXT("box")),       WaxSlabGrip(2.50f, FVector(-24.7, -8.9, -4.3), FVector(21.1, -21.1, -21.1), FVector(15.7, -15.7, -15.7)));
+			FWaxGrip Headset = WaxSlabGrip(0.f, FVector(-9.5, -15.2, -5.9), FVector(15.5, -15.5, -15.5), FVector(11.3, -11.3, -11.3));
+			Headset.bHang = true;
+			Headset.HangPoint = FVector(-12.f, 0.f, 10.6f);     // the top strap's top: 12 cm behind the visor, 10.6 above the band
+			Headset.HangTangent = FVector::ForwardVector;      // the top strap runs front to back
+			Headset.HangUp = FVector::UpVector;
+			Headset.Tube = FVector(3.f, 3.35f, 1.f);            // resting on the flat fingers' flesh, under the thumb
+			// a fallback for a hand whose palm frame can't be built: the hanging frame itself, palm down
+			Headset.Hold = FTransform(FMatrix(FVector(0, 0, 1), FVector(-1, 0, 0), FVector(0, -1, 0), FVector::ZeroVector));
+			Headset.Hold.SetLocation(Headset.Tube - Headset.Hold.TransformVector(Headset.HangPoint));
+			Grips.Add(FName(TEXT("headset")), Headset);
+		}
 		return Grips.Find(Kind);
+	}
+
+	/** The right hand's hold mirrored for the left: Z across the palm flips, so the translation's Z and the rotation's sense do. */
+	FTransform WaxMirrorHold(const FTransform& Hold)
+	{
+		const FQuat Q = Hold.GetRotation();
+		FVector T = Hold.GetLocation();
+		T.Z = -T.Z;
+		return FTransform(FQuat(-Q.X, -Q.Y, Q.Z, Q.W), T);
+	}
+
+	/**
+	 * A prop in a hand, in world space: Palm is the hand's palm frame (PalmFrame) and bRight which hand. A
+	 * hanging prop's tube lies across the palm at Grip.Tube and the prop hangs from it toward the world's down.
+	 */
+	FTransform WaxHeldTransform(const FWaxGrip& Grip, const FTransform& Palm, bool bRight)
+	{
+		if (!Grip.bHang)
+		{
+			return (bRight ? Grip.Hold : WaxMirrorHold(Grip.Hold)) * Palm;
+		}
+		FVector Tube = Grip.Tube;
+		if (!bRight)
+		{
+			Tube.Z = -Tube.Z;
+		}
+		const FVector TubeWorld = Palm.TransformPosition(Tube);
+		// the tube runs across the palm, toward the little finger on both hands
+		const FVector Along = Palm.GetUnitAxis(EAxis::Z) * (bRight ? 1.f : -1.f);
+		FVector Down = -FVector::UpVector;
+		Down -= Along * FVector::DotProduct(Down, Along);
+		if (!Down.Normalize(KINDA_SMALL_NUMBER))
+		{
+			Down = Palm.GetUnitAxis(EAxis::X);               // the tube is vertical: hang along the fingers
+		}
+		// the prop's frame: HangTangent along the tube, HangUp against the hang, the third axis square to both
+		const FVector Up = -Down;
+		const FVector Third = FVector::CrossProduct(Up, Along).GetSafeNormal();
+		// rows of a matrix that takes the prop's (tangent, third, up) to (Along, Third, Up): build it as the
+		// prop frame's basis in world, then account for which prop axes those are
+		const FMatrix World(Along, Third, Up, FVector::ZeroVector);
+		const FMatrix Local(Grip.HangTangent, FVector::CrossProduct(Grip.HangUp, Grip.HangTangent).GetSafeNormal(), Grip.HangUp, FVector::ZeroVector);
+		const FMatrix Rotation = Local.GetTransposed() * World;      // prop -> world (Local's rows are the prop axes)
+		FTransform Out(Rotation);
+		Out.SetLocation(TubeWorld - Out.TransformVector(Grip.HangPoint));
+		return Out;
 	}
 
 	/**
@@ -583,14 +674,15 @@ bool AWTAWaxStageActor::PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, 
 		static const FName Head(TEXT("head"));
 		if (Key.Socket == HandL || Key.Socket == HandR)
 		{
+			const bool bRight = Key.Socket == HandR;
 			FTransform Palm;
-			if (PalmFrame(Body, Key.Socket == HandR, Palm))
+			if (PalmFrame(Body, bRight, Palm))
 			{
 				Frame = Palm;
 			}
 			if (const FWaxGrip* Grip = WaxGrip(Kind))
 			{
-				Frame = FTransform(Grip->Rotation, Grip->Offset) * Frame;
+				Frame = WaxHeldTransform(*Grip, Frame, bRight);
 			}
 		}
 		else
@@ -653,12 +745,22 @@ bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWr
 		{
 			return false;
 		}
-		OutProp = PropParts[Index]->GetComponentLocation();
 		OutWrist = Body->GetSocketLocation(Key.Socket);
 		OutFigure = Figure->GetActorLocation();
 		if (!PalmFrame(Body, Key.Socket == HandR, OutPalm))
 		{
 			OutPalm = Body->GetSocketTransform(Key.Socket, RTS_World);
+		}
+		// where the prop meets the hand: a hanging prop's tube, otherwise the point of it the palm frame holds
+		OutProp = PropParts[Index]->GetComponentLocation();
+		if (const FWaxGrip* Grip = WaxGrip(Prop.Kind))
+		{
+			FVector Contact = Grip->bHang ? Grip->Tube : Grip->Hold.GetLocation();
+			if (Key.Socket != HandR)
+			{
+				Contact.Z = -Contact.Z;
+			}
+			OutProp = OutPalm.TransformPosition(Contact);
 		}
 		OutGrip = Play.Anim.IsValid() ? Play.Anim->GetGrip(Key.Socket == HandR) : 0.f;
 		OutSocket = Key.Socket;
@@ -690,7 +792,8 @@ void AWTAWaxStageActor::SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float 
 		}
 		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
 		{
-			Anim->SetGrip(Key.Socket == HandR, Grip != nullptr ? Scale : 0.f, Grip != nullptr ? Grip->FingerDeg : FVector::ZeroVector, Grip != nullptr ? Grip->ThumbDeg : FVector::ZeroVector);
+			static const FWTAHandPose Open;
+			Anim->SetGrip(Key.Socket == HandR, Grip != nullptr ? Scale : 0.f, Grip != nullptr ? Grip->Pose : Open);
 		}
 		return;
 	}
@@ -740,8 +843,9 @@ void AWTAWaxStageActor::UpdateProps()
 	{
 		if (UWTAWaxAnimInstance* Anim = Play.Anim.Get())
 		{
-			Anim->SetGrip(false, 0.f, FVector::ZeroVector, FVector::ZeroVector);
-			Anim->SetGrip(true, 0.f, FVector::ZeroVector, FVector::ZeroVector);
+			static const FWTAHandPose Open;
+			Anim->SetGrip(false, 0.f, Open);
+			Anim->SetGrip(true, 0.f, Open);
 		}
 	}
 	for (int32 i = 0; i < PropParts.Num() && i < Scene.Props.Num(); ++i)

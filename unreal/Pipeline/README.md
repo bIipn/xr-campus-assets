@@ -21,8 +21,11 @@ The Wax Hall's carried props leave the web export as a wing of their own: `web/e
 `out/campus/props_rest.json` (committed); `data/build_data.py` turns the carries the acting data never moves into
 `static` props standing where the web left them. The props the reenactors hold are modelled again by `bl/props.py`
 (`out/ue/HandProps.glb`, one tagged mesh `prop__<kind>` each, in the frame the stage sets in a palm: +X along the
-fingers, +Y out of the palm); `World/WTAWaxStageActor.cpp` rides them on the hand bones and closes the fingers round
-them. Neither wing is scenery: `build_level.py` skips `prop__` meshes and the stages spawn them.
+fingers, +Y out of the palm); `World/WTAWaxStageActor.cpp` rides them on the hand bones and closes the fingers on
+them the way `unreal/Tools/holds/design_holds.py` worked out from the body's finger joints (`Tools/holds/probe_palm.py`
+-> `palm.json`) and these meshes: the fingers flat under the prop, the thumb pressed on its top, the headset hanging
+by its top strap. Rerun the designer after changing a prop model and paste its table into the stage actor. Neither
+wing is scenery: `build_level.py` skips `prop__` meshes and the stages spawn them.
 
 The Museum and Outside assets are no longer the web export: `bl/museum.py` rebuilds the museum in Blender (marble floors,
 Corinthian columns, coffered vaults with glazed laylights, a domed rotunda and a six-column portico with steps down to

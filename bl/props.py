@@ -18,7 +18,7 @@ import os
 import sys
 
 import bpy
-from mathutils import Vector
+from mathutils import Euler, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -127,14 +127,20 @@ def clipboard():
 
 
 def book():
-    # open on the palm: the spine along the fingers, the two halves fanned either side and tilted up a little
+    # open on the palm: the spine along the fingers, the two halves fanned either side and tilted up 14 degrees,
+    # each turning about its inner edge so the whole underside (spine and the covers' inner edges) is at y = 0
     for s in (-1, 1):
         tilt = s * math.radians(14)
-        cz = s * 0.066 * math.cos(tilt)
-        box('pages', 0.095, -0.012 + 0.066 * math.sin(abs(tilt)) * 0.5, cz, 0.190, 0.018, 0.128, 'page', rot=(tilt, 0, 0))
-        box('cover', 0.095, -0.0025 + 0.068 * math.sin(abs(tilt)) * 0.5, s * 0.070 * math.cos(tilt), 0.198, 0.0035, 0.138, 'cover',
-            bevel=0.0012, segs=2, rot=(tilt, 0, 0))
-    box('spine', 0.095, -0.004, 0.0, 0.198, 0.012, 0.016, 'cover', bevel=0.002, segs=2)
+        pivot = Vector((0.095, 0.0, 0.0))
+        def tilted(local):
+            v = Vector(local)
+            v.rotate(Euler((tilt, 0.0, 0.0)))
+            return pivot + v
+        c = tilted((0.0, -0.00175, s * 0.069))
+        box('cover', c.x, c.y, c.z, 0.198, 0.0035, 0.138, 'cover', bevel=0.0012, segs=2, rot=(tilt, 0, 0))
+        c = tilted((0.0, -0.0035 - 0.009, s * 0.064))
+        box('pages', c.x, c.y, c.z, 0.190, 0.018, 0.128, 'page', rot=(tilt, 0, 0))
+    box('spine', 0.095, -0.006, 0.0, 0.198, 0.012, 0.016, 'cover', bevel=0.002, segs=2)
     return finish('prop__book')
 
 

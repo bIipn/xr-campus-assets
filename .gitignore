@@ -20,3 +20,6 @@ deploy/lib/
 unreal/Pipeline/out/museum/Museum.glb
 unreal/Pipeline/out/props/HandProps.glb
 unreal/Pipeline/out/exterior/Outside.glb
+# derived by unreal/Tools/holds/design_holds.py
+unreal/Tools/holds/holds.json
+unreal/Tools/holds/hold_*.png
