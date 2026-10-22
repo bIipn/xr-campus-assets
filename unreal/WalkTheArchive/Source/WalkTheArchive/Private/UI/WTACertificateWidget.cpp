@@ -185,10 +185,10 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 	UHorizontalBox* Foot = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 	Column->AddChildToVerticalBox(Foot)->SetPadding(FMargin(0.f, 0.f, 0.f, 22.f * S));
 	{
-		UHorizontalBoxSlot* Slot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(DateText), WTAStyle::Serif(FMath::RoundToInt(34.f * S)), FText::FromString(TEXT("Date")), S));
-		Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-		Slot->SetHorizontalAlignment(HAlign_Center);
-		Slot->SetVerticalAlignment(VAlign_Bottom);
+		UHorizontalBoxSlot* DateSlot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(DateText), WTAStyle::Serif(FMath::RoundToInt(34.f * S)), FText::FromString(TEXT("Date")), S));
+		DateSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+		DateSlot->SetHorizontalAlignment(HAlign_Center);
+		DateSlot->SetVerticalAlignment(VAlign_Bottom);
 	}
 	{
 		// The seal: two brass rings round the client's mark.
@@ -207,19 +207,19 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 		Ring->SetContent(Mark);
 		Outer->SetContent(Ring);
 		SealSize->SetContent(Outer);
-		UHorizontalBoxSlot* Slot = Foot->AddChildToHorizontalBox(SealSize);
-		Slot->SetHorizontalAlignment(HAlign_Center);
-		Slot->SetVerticalAlignment(VAlign_Bottom);
-		Slot->SetPadding(FMargin(20.f * S, 0.f));
+		UHorizontalBoxSlot* SealSlot = Foot->AddChildToHorizontalBox(SealSize);
+		SealSlot->SetHorizontalAlignment(HAlign_Center);
+		SealSlot->SetVerticalAlignment(VAlign_Bottom);
+		SealSlot->SetPadding(FMargin(20.f * S, 0.f));
 	}
 	{
 		const FString Signer = Row.Certificate.Signer.IsEmpty() ? Row.Speaker.ToString() : Row.Certificate.Signer.ToString();
 		const FString Role = Row.Certificate.SignerRole.IsEmpty() ? Row.SpeakerRole.ToString() : Row.Certificate.SignerRole.ToString();
-		UHorizontalBoxSlot* Slot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(Signer), WTAStyle::Script(FMath::RoundToInt(46.f * S)),
+		UHorizontalBoxSlot* SignSlot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(Signer), WTAStyle::Script(FMath::RoundToInt(46.f * S)),
 			FText::FromString(Role.IsEmpty() ? Signer : FString::Printf(TEXT("%s, %s"), *Signer, *Role)), S));
-		Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-		Slot->SetHorizontalAlignment(HAlign_Center);
-		Slot->SetVerticalAlignment(VAlign_Bottom);
+		SignSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+		SignSlot->SetHorizontalAlignment(HAlign_Center);
+		SignSlot->SetVerticalAlignment(VAlign_Bottom);
 	}
 	if (!Row.Certificate.Note.IsEmpty())
 	{
