@@ -266,11 +266,12 @@ def place_say(p):
     return UE_SAY.get(p['id'], p['label'])
 
 
-# Places the Unreal campus changed: Room 104 is a classroom you sit in, seen from the back row toward the board.
+# Places the Unreal campus changed: Room 104 is a classroom you sit in, seen from the back-left corner (between the
+# beanbags and the layer table bl/classroom.py's refit moved to the back) over the desks toward the board.
 UE_PLACE = {'worldroom': {'label': 'Room 104: XR Classroom',
                           'names': ['xr classroom', 'classroom', 'class', 'room 104', 'intro to vr', 'quiz', 'certificate', 'course',
                                     'world builder studio', 'world builder', 'layer table'],
-                          'view': {'x': 26.2, 'z': 2.6, 'yaw': -math.pi / 2, 'pitch': -0.06},
+                          'view': {'x': 26.0, 'z': 0.8, 'yaw': -math.pi / 2 - 0.22, 'pitch': -0.04},
                           'directions': 'Room 104, the XR Classroom: through the doorway on the right side of the lobby and down '
                                         'the school hall. It is the second door on the right.'}}
 

@@ -524,12 +524,12 @@
   ],
   "View": {
    "Location": {
-    "X": 2620.0,
-    "Y": 260.0,
+    "X": 2600.0,
+    "Y": 80.0,
     "Z": 162.0
    },
-   "Yaw": 0.0,
-   "Pitch": -3.438,
+   "Yaw": 12.605,
+   "Pitch": -2.292,
    "bValid": true
   },
   "Directions": "Room 104, the XR Classroom: through the doorway on the right side of the lobby and down the school hall. It is the second door on the right.",
@@ -1003,14 +1003,14 @@
   "View": {
    "Location": {
     "X": 0.0,
-    "Y": 2400.0,
+    "Y": 3050.0,
     "Z": 87.0
    },
    "Yaw": -90.0,
-   "Pitch": 4.584,
+   "Pitch": 2.292,
    "bValid": true
   },
-  "Directions": "out through the rotunda and the front doors, down the steps.",
+  "Directions": "out through the rotunda and the front doors, down the steps: the stage is at their foot, the seats rise in front of it.",
   "Say": "the forecourt theatre"
  },
  {
@@ -1028,15 +1028,15 @@
   ],
   "View": {
    "Location": {
-    "X": 1800.0,
-    "Y": -1620.0,
+    "X": 1375.0,
+    "Y": -1600.0,
     "Z": 162.0
    },
    "Yaw": -90.0,
-   "Pitch": -6.875,
+   "Pitch": -5.73,
    "bValid": true
   },
-  "Directions": "through the lobby's right-hand door into Hall R, then through the doorway on your left and up the foyer.",
+  "Directions": "through the lobby's right-hand door into Hall R, out through the door at its far end, across the foyer and through the portal.",
   "Say": "the auditorium"
  }
 ]

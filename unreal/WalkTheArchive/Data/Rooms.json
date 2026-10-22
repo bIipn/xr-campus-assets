@@ -360,17 +360,17 @@
   "Name": "talksFoyer",
   "Kicker": "Talks",
   "DisplayName": "The Auditorium Foyer",
-  "Sub": "Talks run all day · The doors are ahead",
+  "Sub": "Talks run all day · The portal is ahead",
   "Wing": "museum",
   "BoundsMin": {
-   "X": 655.0,
+   "X": 670.0,
    "Y": -1365.0,
    "Z": 0.0
   },
   "BoundsMax": {
-   "X": 1150.0,
-   "Y": -460.0,
-   "Z": 440.0
+   "X": 1135.0,
+   "Y": -495.0,
+   "Z": 460.0
   },
   "bOutdoor": false,
   "StaffId": "None",
@@ -384,14 +384,14 @@
   "Sub": "Take a seat and the talk begins",
   "Wing": "museum",
   "BoundsMin": {
-   "X": 700.0,
-   "Y": -3930.0,
-   "Z": -220.0
+   "X": 675.0,
+   "Y": -3100.0,
+   "Z": -160.0
   },
   "BoundsMax": {
-   "X": 2930.0,
-   "Y": -1365.0,
-   "Z": 800.0
+   "X": 2075.0,
+   "Y": -1410.0,
+   "Z": 660.0
   },
   "bOutdoor": false,
   "StaffId": "None",
