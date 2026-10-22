@@ -159,8 +159,8 @@
     "seat__lib11_f90",
     "seat__lib12_f270"
    ],
-   "triangles": 202304,
-   "bytes": 63728148
+   "triangles": 202184,
+   "bytes": 63715908
   },
   "Props": {
    "file": "Props.glb",
@@ -210,8 +210,8 @@
     "prop__phone",
     "prop__tablet"
    ],
-   "triangles": 4320,
-   "bytes": 192712
+   "triangles": 4300,
+   "bytes": 280212
   },
   "Seats": {
    "file": "Seats.glb",

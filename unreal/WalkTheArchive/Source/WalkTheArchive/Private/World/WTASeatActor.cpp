@@ -53,7 +53,7 @@ void AWTASeatActor::ReadRow()
 	const FVector Forward = FRotator(0.f, SeatYaw, 0.f).Vector();
 	ViewSpot.Location = GetSitPoint() + Forward * 110.f + FVector(0.f, 0.f, 120.f);
 	ViewSpot.Yaw = SeatYaw + 180.f;
-	ViewSpot.Pitch = -28.f;
+	ViewSpot.Pitch = -FMath::RadiansToDegrees(FMath::Atan2(115.f, 110.f));    // the crosshair lands just above the cushion
 	ViewSpot.bValid = true;
 }
 

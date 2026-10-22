@@ -349,16 +349,21 @@ void FWTAWaxAnimProxy::SolveContact(const FBoneContainer& Bones, int32 Hand, FWT
 		}
 		const bool bThumb = Finger == 4;
 		const FVector Axis[3] = { bThumb ? InOut.Joint[4][0].GetSafeNormal() : WaxFingerAxis[0], bThumb ? WaxThumbAxis : WaxFingerAxis[1], bThumb ? WaxThumbAxis : WaxFingerAxis[2] };
-		// the open start and the furthest curl of each joint (degrees about its hinge, over the reference pose);
-		// the thumb's first joint is the designed swing and does not move
-		float Open[3] = { -38.f, -22.f, -16.f };
-		float Most[3] = { 70.f, 95.f, 65.f };
+		// Each joint starts where the designed pose has it (its vector's turn about the hinge: the flat fingers a
+		// slab rests on, say) and curls from there until it touches; the thumb's first joint is the designed swing
+		// and does not move, its other two start a little open of their design.
+		float Open[3], Most[3];
+		for (int32 j = 0; j < 3; ++j)
+		{
+			Open[j] = static_cast<float>(FVector::DotProduct(InOut.Joint[Finger][j], Axis[j]));
+			Most[j] = Open[j] + (j == 0 ? 95.f : j == 1 ? 105.f : 75.f);
+		}
 		if (bThumb)
 		{
 			const float Swing = static_cast<float>(InOut.Joint[4][0].Size());
 			Open[0] = Swing; Most[0] = Swing;
-			Open[1] = static_cast<float>(InOut.Joint[4][1].Size()) - 30.f; Most[1] = Open[1] + 90.f;
-			Open[2] = static_cast<float>(InOut.Joint[4][2].Size()) - 25.f; Most[2] = Open[2] + 80.f;
+			Open[1] -= 30.f; Most[1] = Open[1] + 90.f;
+			Open[2] -= 25.f; Most[2] = Open[2] + 80.f;
 		}
 		float Deg[3] = { Open[0], Open[1], Open[2] };
 		const float Radius = WaxFingerRadius[Finger];

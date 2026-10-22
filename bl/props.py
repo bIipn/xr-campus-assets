@@ -32,6 +32,9 @@ def mats():
     material('plastic', color=(0.055, 0.055, 0.06, 1), roughness=0.42)
     material('plastic_light', color=(0.82, 0.82, 0.80, 1), roughness=0.5)
     material('screen_e', color=(0.02, 0.02, 0.03, 1), emission=(0.62, 0.74, 0.92, 1), emission_strength=1.6, roughness=0.08)
+    # the lit screens: the XR Libraries app mock (bl/screens.py), portrait, the top away from the hand
+    material('screen_tablet_e', col='screen_tablet', emission=True, emission_strength=1.3, roughness=0.08, uvmap='UVMap')
+    material('screen_phone_e', col='screen_phone', emission=True, emission_strength=1.3, roughness=0.08, uvmap='UVMap')
     material('glass_dark', color=(0.02, 0.02, 0.025, 1), roughness=0.06)
     material('paper', color=(0.93, 0.92, 0.88, 1), roughness=0.9)
     material('page', color=(0.96, 0.95, 0.90, 1), roughness=0.92)
@@ -55,6 +58,23 @@ def box(name, cx, cy, cz, sx, sy, sz, mat, bevel=0.0, segs=3, rot=(0, 0, 0)):
     bpy.ops.object.transform_apply(scale=True)
     if bevel > 0:
         m = o.modifiers.new('bevel', 'BEVEL'); m.width = bevel; m.segments = segs; m.limit_method = 'NONE'
+    o.data.materials.append(L.MATS[mat])
+    PARTS.append(o)
+    return o
+
+
+def screen(name, cx, cy, cz, sx, sz, mat):
+    """A lit screen: one quad at y = cy facing -y (out of the palm), sx along x and sz across, mapped so the
+    texture's top is toward +x (away from the hand) and its right toward -z - portrait as the thing is held."""
+    import bmesh
+    bm = bmesh.new(); uv = bm.loops.layers.uv.new('UVMap')          # the cubes' own layer name, so it is UV0 after the join
+    hx, hz = sx / 2, sz / 2
+    corners = [((cx - hx, cy, cz + hz), (0, 0)), ((cx - hx, cy, cz - hz), (1, 0)), ((cx + hx, cy, cz - hz), (1, 1)), ((cx + hx, cy, cz + hz), (0, 1))]
+    vs = [bm.verts.new(c) for c, _ in corners]
+    f = bm.faces.new(vs)
+    for l, (_, t) in zip(f.loops, corners): l[uv].uv = t
+    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
     o.data.materials.append(L.MATS[mat])
     PARTS.append(o)
     return o
@@ -104,7 +124,7 @@ def finish(name):
 def phone():
     # 7.5 x 15 cm, 8 mm thick, long axis along the fingers; the screen faces out of the palm (-y here)
     box('body', 0.085, -0.004, 0.0, 0.150, 0.0080, 0.075, 'plastic', bevel=0.003, segs=4)
-    box('screen', 0.085, -0.0083, 0.0, 0.142, 0.0006, 0.067, 'screen_e')
+    screen('screen', 0.085, -0.0084, 0.0, 0.142, 0.067, 'screen_phone_e')
     box('camera', 0.150, 0.0002, -0.022, 0.012, 0.0012, 0.022, 'glass_dark', bevel=0.001, segs=2)
     return finish('prop__phone')
 
@@ -112,7 +132,7 @@ def phone():
 def tablet():
     # 24 x 17 cm held by one short edge: it runs out along the fingers from the palm, the screen out of the palm
     box('body', 0.105, -0.004, 0.0, 0.240, 0.0075, 0.170, 'plastic', bevel=0.004, segs=4)
-    box('screen', 0.105, -0.0080, 0.0, 0.224, 0.0006, 0.154, 'screen_e')
+    screen('screen', 0.105, -0.0081, 0.0, 0.224, 0.154, 'screen_tablet_e')
     box('button', 0.0, -0.0080, 0.0, 0.004, 0.0004, 0.014, 'plastic_light')
     return finish('prop__tablet')
 

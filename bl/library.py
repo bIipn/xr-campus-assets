@@ -776,8 +776,11 @@ def build_furniture(lights):
         for lx in (-1.7, 1.7):
             for lz in (-0.47, 0.47): walnut.box(TX + lx, 0.365, tz + lz, 0.08, 0.73, 0.08)
         walnut.box(TX, 0.12, tz, 3.4, 0.05, 0.08)
-        for lx in (TX - 1.2, TX, TX + 1.2):
+        # two lamps down the middle of the table, three chairs a side between and beyond them, so no reader
+        # sits staring into a shade
+        for lx in (TX - 0.65, TX + 0.65):
             lamp(brass, shade, bulb, lx, 0.79, tz); lights.append(('point', (lx, 1.09, tz), (1.0, 0.75, 0.45), 18))
+        for lx in (TX - 1.3, TX, TX + 1.3):
             for s in (-1, 1):
                 cz = tz + s * 0.85
                 # the cushion is its own tagged mesh, so Unreal makes a seat of it (seat__<id>_f<yaw>: the sitter

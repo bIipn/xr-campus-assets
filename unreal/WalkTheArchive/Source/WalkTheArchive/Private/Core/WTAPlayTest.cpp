@@ -2254,7 +2254,7 @@ void UWTAPlayTest::AddSeatsPhase()
 			}
 			return 0.f;
 		} });
-		Steps.Add({ Name + TEXT(" E"), [this, Weak, Name, Ok]() -> float
+		Steps.Add({ Name + TEXT(" E"), [this, Weak, Name, Ok, StoodAt]() -> float
 		{
 			AWTASeatActor* Target = Weak.Get();
 			AWTAPlayerController* Controller = PC();
@@ -2269,6 +2269,10 @@ void UWTAPlayTest::AddSeatsPhase()
 				*Ok = false;
 				Report(TEXT("seats"), EResult::Fail, Name + TEXT(" says Sit"), FString::Printf(TEXT("the crosshair has \"%s\" on %s; %s"), *Label, Hovered != nullptr ? *Hovered->GetName() : TEXT("nothing"), *DescribeAim(Target)));
 				return 0.f;
+			}
+			if (AWTACharacter* Me = Player())
+			{
+				*StoodAt = Me->GetActorLocation();       // the hover step may have moved the player: this is where they sit down from
 			}
 			KeyDown(EKeys::E);
 			return 0.12f;
@@ -2293,12 +2297,13 @@ void UWTAPlayTest::AddSeatsPhase()
 			const FVector Sit = Target->GetSitPoint();
 			const float Over = static_cast<float>(Eye.Z - Sit.Z);
 			const float Off = static_cast<float>(FVector::Dist2D(Eye, Sit));
-			// the view ahead: nothing within a metre of the eyes in the direction the seat faces
+			// the view ahead: nothing solid within a metre of the eyes in the direction the seat faces (the camera
+			// channel, which the pick boxes of exhibits and seats do not block)
 			const FVector Forward = FRotator(0.f, Target->SeatYaw, 0.f).Vector();
 			FHitResult Hit;
 			FCollisionQueryParams Params(FName(TEXT("WTASeatView")), false, Me);
 			Params.AddIgnoredActor(Target);
-			const bool bBlocked = GetWorld()->LineTraceSingleByChannel(Hit, Eye, Eye + Forward * 100.f, ECC_Visibility, Params);
+			const bool bBlocked = GetWorld()->LineTraceSingleByChannel(Hit, Eye, Eye + Forward * 100.f, ECC_Camera, Params);
 			const bool bSeated = Me->IsSeated() && Me->GetSeat() == Target;
 			const bool bHeight = FMath::Abs(Over - Me->SeatEyeHeight) < 6.f;
 			const bool bOnIt = Off < 12.f;
