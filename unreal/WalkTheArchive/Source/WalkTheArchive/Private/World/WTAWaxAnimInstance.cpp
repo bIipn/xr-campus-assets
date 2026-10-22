@@ -128,20 +128,18 @@ bool FWTAWaxAnimProxy::Evaluate(FPoseContext& Output)
 
 void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 {
-	if (Grip[0] <= KINDA_SMALL_NUMBER && Grip[1] <= KINDA_SMALL_NUMBER)
-	{
-		return;
-	}
 	// The MetaHuman body's finger joints: [hand][finger 0..3 = index, middle, ring, little; 4 = thumb][joint],
 	// named once.
 	static const TCHAR* Fingers[5] = { TEXT("index"), TEXT("middle"), TEXT("ring"), TEXT("pinky"), TEXT("thumb") };
 	static const TCHAR* Sides[2] = { TEXT("l"), TEXT("r") };
 	static FName Names[2][5][3];
+	static FName Hands[2];
 	static bool bNamed = false;
 	if (!bNamed)
 	{
 		for (int32 Hand = 0; Hand < 2; ++Hand)
 		{
+			Hands[Hand] = FName(*FString::Printf(TEXT("hand_%s"), Sides[Hand]));
 			for (int32 Finger = 0; Finger < 5; ++Finger)
 			{
 				for (int32 Joint = 0; Joint < 3; ++Joint)
@@ -153,9 +151,56 @@ void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const
 		bNamed = true;
 	}
 
-	// Each joint goes from the clip's rotation toward the reference pose turned by its rotation vector (the hold
-	// was designed on the reference pose, so it lands where it was designed whatever the clip's fingers do).
 	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
+	FCompactPoseBoneIndex HandIndex[2] = { FCompactPoseBoneIndex(INDEX_NONE), FCompactPoseBoneIndex(INDEX_NONE) };
+	for (int32 Hand = 0; Hand < 2; ++Hand)
+	{
+		const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Hands[Hand]);
+		if (MeshIndex != INDEX_NONE)
+		{
+			HandIndex[Hand] = Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex));
+		}
+	}
+
+	// The clips came through a retarget that squashes the hands (a metacarpal can land 3 cm from the wrist
+	// instead of 9), so every bone below a wrist keeps the reference pose's length and scale, and the
+	// metacarpals its rotation too: the hand keeps its shape whatever the clip does. The finger joints' own
+	// rotations are the clip's unless a grip says otherwise, below.
+	const int32 Num = Output.Pose.GetNumBones();
+	for (int32 i = 0; i < Num; ++i)
+	{
+		const FCompactPoseBoneIndex Index(i);
+		int32 Hand = INDEX_NONE;
+		for (FCompactPoseBoneIndex Up = Bones.GetParentBoneIndex(Index); Up.GetInt() != INDEX_NONE; Up = Bones.GetParentBoneIndex(Up))
+		{
+			if (Up == HandIndex[0]) { Hand = 0; break; }
+			if (Up == HandIndex[1]) { Hand = 1; break; }
+		}
+		if (Hand == INDEX_NONE)
+		{
+			continue;
+		}
+		const FTransform& Ref = Bones.GetRefPoseTransform(Index);
+		FTransform& Bone = Output.Pose[Index];
+		Bone.SetTranslation(Ref.GetTranslation());
+		Bone.SetScale3D(Ref.GetScale3D());
+		if (Bones.GetParentBoneIndex(Index) == HandIndex[Hand])
+		{
+			// a metacarpal (or the thumb's first joint, handled with the grip below if it is one)
+			bool bFingerJoint = false;
+			for (int32 Finger = 0; Finger < 5 && !bFingerJoint; ++Finger)
+			{
+				bFingerJoint = Bones.GetPoseBoneIndexForBoneName(Names[Hand][Finger][0]) == Bones.MakeMeshPoseIndex(Index).GetInt();
+			}
+			if (!bFingerJoint)
+			{
+				Bone.SetRotation(Ref.GetRotation());
+			}
+		}
+	}
+
+	// Each gripping hand's finger joints go from the clip's rotation toward the reference pose turned by the
+	// pose's rotation vector (the hold was designed on the reference pose, so it lands where it was designed).
 	for (int32 Hand = 0; Hand < 2; ++Hand)
 	{
 		if (Grip[Hand] <= KINDA_SMALL_NUMBER)

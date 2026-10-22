@@ -204,41 +204,32 @@ namespace
 	}
 
 	/**
-	 * The palm, in world space, from the hand's own bones this frame: +X runs from the wrist toward the middle
-	 * finger's knuckle, +Y is the palm's normal (square to the fingers, on the thumb's side of the hand's plane,
-	 * where the thumb tip lies), +Z = X x Y across the palm, and the origin is 7 cm along the fingers from the
-	 * wrist (mid-palm). One prop model fits both hands, since Z runs toward the little finger on the right hand
-	 * and the index on the left. False when this LOD has no finger bones.
+	 * The palm, in world space, from the hand bone's own axes this frame: +X runs from the wrist toward the
+	 * fingers (the rig's -X on the right hand, +X on the left), +Y is the palm's normal (the rig's +Y on the
+	 * right, -Y on the left), +Z = X x Y across the palm, and the origin is 7 cm along the fingers from the wrist
+	 * (mid-palm). The bone's axes, not the finger joints, so no finger pose can turn the frame over. Z runs toward
+	 * the little finger on the right hand and the index on the left, so a right-hand hold mirrored in Z fits the
+	 * left (WaxMirrorHold). False when the body has no such hand.
 	 */
 	bool PalmFrame(const USkeletalMeshComponent* Body, bool bRight, FTransform& Out)
 	{
-		const TCHAR* Side = bRight ? TEXT("r") : TEXT("l");
-		const FName Wrist(*FString::Printf(TEXT("hand_%s"), Side));
-		const FName Middle(*FString::Printf(TEXT("middle_01_%s"), Side));
-		const FName Index(*FString::Printf(TEXT("index_01_%s"), Side));
-		const FName Pinky(*FString::Printf(TEXT("pinky_01_%s"), Side));
-		const FName Thumb(*FString::Printf(TEXT("thumb_03_%s"), Side));
-		for (const FName& Bone : { Wrist, Middle, Index, Pinky, Thumb })
+		static const FName HandL(TEXT("hand_l"));
+		static const FName HandR(TEXT("hand_r"));
+		const FName Wrist = bRight ? HandR : HandL;
+		if (Body == nullptr || Body->GetBoneIndex(Wrist) == INDEX_NONE)
 		{
-			if (Body == nullptr || Body->GetBoneIndex(Bone) == INDEX_NONE)
-			{
-				return false;
-			}
+			return false;
 		}
-		const FVector W0 = Body->GetSocketLocation(Wrist);
-		const FVector F = (Body->GetSocketLocation(Middle) - W0).GetSafeNormal();
-		const FVector Across = (Body->GetSocketLocation(Index) - Body->GetSocketLocation(Pinky)).GetSafeNormal();
-		FVector N = FVector::CrossProduct(F, Across).GetSafeNormal();
-		if (FVector::DotProduct(Body->GetSocketLocation(Thumb) - W0, N) < 0.f)
-		{
-			N = -N;
-		}
+		const FTransform Hand = Body->GetSocketTransform(Wrist, RTS_World);
+		const float Sign = bRight ? 1.f : -1.f;
+		const FVector F = (Hand.GetUnitAxis(EAxis::X) * -Sign).GetSafeNormal();
+		FVector N = Hand.GetUnitAxis(EAxis::Y) * Sign;
 		N = (N - F * FVector::DotProduct(N, F)).GetSafeNormal();
 		if (F.IsNearlyZero() || N.IsNearlyZero())
 		{
 			return false;
 		}
-		Out = FTransform(FMatrix(F, N, FVector::CrossProduct(F, N), W0 + F * 7.f));
+		Out = FTransform(FMatrix(F, N, FVector::CrossProduct(F, N), Hand.GetLocation() + F * 7.f));
 		return true;
 	}
 

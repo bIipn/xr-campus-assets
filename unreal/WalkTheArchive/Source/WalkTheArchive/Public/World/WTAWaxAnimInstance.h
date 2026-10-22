@@ -81,7 +81,11 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 	float GripTarget[2] = { 0.f, 0.f };
 	FWTAHandPose Pose[2];
 
-	/** Turns each gripping hand's finger joints from the reference pose into Pose, blended by Grip (local space, after the clips). */
+	/**
+	 * After the clips: every bone below a wrist keeps the reference pose's length (the retargeted clips squash
+	 * the hands) and the metacarpals its rotation; each gripping hand's finger joints turn from the reference
+	 * pose into Pose, blended by Grip (local space).
+	 */
 	void ApplyGrip(FPoseContext& Output) const;
 };
 

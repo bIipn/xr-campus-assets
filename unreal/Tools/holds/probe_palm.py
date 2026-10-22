@@ -1,6 +1,6 @@
 """Dump the MetaHuman body's hands in the stage's palm frame (World/WTAWaxStageActor.cpp PalmFrame) as JSON:
 for each finger joint, its position and its own frame's axes in palm coordinates (+X fingers, +Y palm normal,
-+Z across; cm). design_holds.py designs the Wax Hall holds from it. Run headless in the editor:
++Z across; cm), the frame taken from the hand bone's own axes. design_holds.py designs the Wax Hall holds from it. Run headless in the editor:
 
     UnrealEditor-Cmd.exe <project>.uproject -ExecutePythonScript=<repo>/unreal/Tools/holds/probe_palm.py -unattended -nopause -nosplash
 
@@ -53,17 +53,13 @@ def frame(bone):
 out = {"body": str(body.get_path_name()), "hands": {}}
 for side in ("r", "l"):
     hand = "hand_%s" % side
-    W0 = frame(hand).translation
-    mid = frame("middle_01_%s" % side).translation
-    idx = frame("index_01_%s" % side).translation
-    pky = frame("pinky_01_%s" % side).translation
-    th3 = frame("thumb_03_%s" % side).translation
-    # the same frame PalmFrame builds
-    F = unit(sub(mid, W0))
-    across = unit(sub(idx, pky))
-    N = unit(cross(F, across))
-    if dot(sub(th3, W0), N) < 0:
-        N = mul(N, -1)
+    H = frame(hand)
+    W0 = H.translation
+    # the same frame PalmFrame builds: from the hand bone's own axes (the rig puts the right hand's -X along the
+    # fingers and its +Y out of the palm; the left hand's +X and -Y), so no pose can turn it over
+    sign = 1.0 if side == "r" else -1.0
+    F = unit(H.transform_direction(V(-sign, 0, 0)))
+    N = unit(H.transform_direction(V(0, sign, 0)))
     N = unit(sub(N, mul(F, dot(N, F))))
     Z = cross(F, N)
     O = add(W0, mul(F, 7.0))
@@ -72,7 +68,6 @@ for side in ("r", "l"):
         return [round(dot(r, F), 3), round(dot(r, N), 3), round(dot(r, Z), 3)]
     def palm_d(d):
         return [round(dot(d, F), 4), round(dot(d, N), 4), round(dot(d, Z), 4)]
-    H = frame(hand)
     hd = {"wrist": palm_p(W0), "wrist_axes": [palm_d(H.transform_direction(V(1, 0, 0))), palm_d(H.transform_direction(V(0, 1, 0))), palm_d(H.transform_direction(V(0, 0, 1)))], "fingers": {}}
     for finger in ("thumb", "index", "middle", "ring", "pinky"):
         joints = []
