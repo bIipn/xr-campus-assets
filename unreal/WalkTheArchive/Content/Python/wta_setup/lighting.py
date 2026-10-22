@@ -93,7 +93,7 @@ BLENDER_LUMENS = {
     "oculus": (120000.0, 3000.0, None),
     # the auditorium wing and the classroom (bl/auditorium.py, bl/classroom.py)
     "downlight": (1800.0, 900.0, 4.0),
-    "stage": (6000.0, 1400.0, 6.0),
+    "stage": (16000.0, 1600.0, 6.0),
     "step": (120.0, 250.0, 1.0),
     "foyer": (2500.0, 1100.0, 5.0),
     "panel": (3500.0, 900.0, None),
@@ -322,9 +322,16 @@ def reading_room_lamps():
     return out
 
 
+# Fixtures that are aimed lights rather than bare bulbs: SpotLights along the lights.json campus_dir, with this
+# outer cone (degrees). The auditorium's stage wash hangs on a truss 6 m over the stage: a point light there
+# scattered most of its light into the hall, a 50 degree spot puts it on the speaker.
+BLENDER_SPOTS = {"stage": 50.0}
+
+
 def blender_fixtures():
     """Lights of the Blender-built museum and grounds (their lights.json files), with lumens by fixture name.
-    Returns (point lamps, area panels); empty when neither file exists (the web's museum lamps are used then)."""
+    Returns (point lamps, area panels); empty when neither file exists (the web's museum lamps are used then).
+    A BLENDER_SPOTS fixture carries "spot" (its cone) and "dir" (campus_dir in Unreal axes) in its entry."""
     points, areas = [], []
     for path, default_wing in ((paths.MUSEUM_LIGHTS_JSON, "museum"), (paths.EXTERIOR_LIGHTS_JSON, "outside"),
                                (paths.AUDITORIUM_LIGHTS_JSON, "museum"), (paths.CLASSROOM_LIGHTS_JSON, "school")):
@@ -348,6 +355,10 @@ def blender_fixtures():
                 entry["size"] = light["area_size_m"]
                 areas.append(entry)
             else:
+                if kind in BLENDER_SPOTS:
+                    dx, dy, dz = light.get("campus_dir", [0, -1, 0])
+                    entry["spot"] = BLENDER_SPOTS[kind]
+                    entry["dir"] = (dx, dz, dy)
                 points.append(entry)
     return points, areas
 
@@ -361,8 +372,16 @@ def build_point_lights(report, skip_wings=()):
         if lamp["wing"] in skip_wings:
             skipped += 1
             continue
-        _actor, comp = spawn_light("PointLight", lamp["loc"], (0.0, 0.0, 0.0), lamp["label"], lamp["wing"])
-        set_lumens(comp, lamp["lumens"], lamp["radius"], lamp["source_radius"])
+        if lamp.get("spot"):
+            dx, dy, dz = lamp["dir"]
+            target = (lamp["loc"][0] + 100.0 * dx, lamp["loc"][1] + 100.0 * dy, lamp["loc"][2] + 100.0 * dz)
+            pitch, yaw = util.look_at(lamp["loc"], target)
+            _actor, comp = spawn_light("SpotLight", lamp["loc"], (pitch, yaw, 0.0), lamp["label"], lamp["wing"])
+            set_lumens(comp, lamp["lumens"], lamp["radius"], lamp["source_radius"])
+            util.set_props(comp, {"inner_cone_angle": lamp["spot"] * 0.6, "outer_cone_angle": lamp["spot"]}, label=lamp["label"])
+        else:
+            _actor, comp = spawn_light("PointLight", lamp["loc"], (0.0, 0.0, 0.0), lamp["label"], lamp["wing"])
+            set_lumens(comp, lamp["lumens"], lamp["radius"], lamp["source_radius"])
         set_light_color(comp, lamp["rgb"])
         count += 1
     for panel in b_areas:
