@@ -174,6 +174,11 @@ bool UWTAProgressSubsystem::HasHeardTalk(FName TalkId) const
 	return SaveData != nullptr && SaveData->TalksHeard.Contains(TalkId);
 }
 
+bool UWTAProgressSubsystem::HasFinishedStation(FName StationId) const
+{
+	return SaveData != nullptr && SaveData->StationsFinished.Contains(StationId);
+}
+
 bool UWTAProgressSubsystem::HasCertificate(FName TalkId) const
 {
 	return SaveData != nullptr && SaveData->Certificates.Contains(TalkId);
@@ -239,6 +244,15 @@ void UWTAProgressSubsystem::NoteRideFinished(FName RideId)
 
 void UWTAProgressSubsystem::NoteStationFinished(FName StationId)
 {
+	if (StationId.IsNone() || SaveData == nullptr)
+	{
+		return;
+	}
+	if (!SaveData->StationsFinished.Contains(StationId))
+	{
+		SaveData->StationsFinished.Add(StationId);
+		Save();
+	}
 	// Station -> badge, by the room the station is in (DT_Stations.Room), with the web's station ids as a fallback.
 	const UWTAContentSubsystem* Content = GetGameInstance() ? GetGameInstance()->GetSubsystem<UWTAContentSubsystem>() : nullptr;
 	const FWTAStationRow* Station = Content ? Content->FindStation(StationId) : nullptr;
@@ -248,6 +262,7 @@ void UWTAProgressSubsystem::NoteStationFinished(FName StationId)
 	else if (Room == FName(TEXT("blueprint")))  { Badge = FName(TEXT("maker")); }
 	else if (Room == FName(TEXT("world")))      { Badge = FName(TEXT("worldbuilder")); }
 	else if (Room == FName(TEXT("studio")))     { Badge = FName(TEXT("artist")); }
+	else if (Room == FName(TEXT("training")))   { Badge = FName(TEXT("trainee")); }
 	else if (StationId == FName(TEXT("sieve")) || StationId == FName(TEXT("titration")) || StationId == FName(TEXT("pendulum"))) { Badge = FName(TEXT("scientist")); }
 	else if (StationId == FName(TEXT("bench")))   { Badge = FName(TEXT("maker")); }
 	else if (StationId == FName(TEXT("diorama"))) { Badge = FName(TEXT("worldbuilder")); }

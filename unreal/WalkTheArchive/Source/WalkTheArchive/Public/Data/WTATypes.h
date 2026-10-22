@@ -694,6 +694,10 @@ struct WALKTHEARCHIVE_API FWTAStationRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FText> Steps;
 
+	/** One paragraph per step: what to do and why (the panel shows and reads one at a time). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FText> StepTexts;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FText> Panel;
 

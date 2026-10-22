@@ -7,7 +7,10 @@
 //                Prev/Next step through the exhibit's list (the 12 wax scenes form a timeline)
 //   ShowBook     cover (Page -1: title, subtitle, TOC buttons Action "Page", "Start reading") or page N
 //                (heading, blocks Para/List/Quote/Note/Code, "Page N of M", Prev/Next, "Contents" = Page -1)
-//   ShowStation  kicker, title, subtitle, numbered steps, intro paragraphs, Close
+//   ShowStation  kicker, title, subtitle, the intro paragraphs, the numbered steps (ticked once finished) and "Start"
+//                (Action "StationStep" 1); ShowStationStep walks the steps one card at a time (title, its paragraph read
+//                aloud as VO_station_<id>_<nn>, Back / Next step), the last one's "Finish" (Action "StationFinish")
+//                notes the station finished (UWTAProgressSubsystem: badge, remembered) and returns to the overview
 //   ShowRide     kicker, name, card text, note, Close
 //   ShowBadges   every DT_Badges row (name + "Unlocked" or How), token list with hints, "Start over" (Action "Reset")
 //   ShowPlaces   every DT_Places row as a GoPlace button (M key)
@@ -69,9 +72,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowBook(FName BookId, int32 Page);
 
-	/** Station panel for DT_Stations[StationId]. */
+	/** Station panel for DT_Stations[StationId]: the overview with its steps and Start. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowStation(FName StationId);
+
+	/** One step of a station (1-based; 0 shows the overview): its title and paragraph, read aloud when there is a clip. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowStationStep(FName StationId, int32 Step);
 
 	/** Ride card for DT_Rides[RideId]. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")

@@ -1,8 +1,10 @@
 """Reads every talk and class aloud: one WAV per slide line in the speaker's own voice, named the way the engine
 finds them (VO_talk_<talk>_<nn>.wav, the id's hyphens as underscores), plus each class's quiz questions
-(VO_quiz_<talk>_<nn>.wav) so a visitor can listen instead of read.
+(VO_quiz_<talk>_<nn>.wav) so a visitor can listen instead of read, and every station's steps in the campus's
+reading voice (VO_station_<station>_<nn>.wav, from WalkTheArchive/Data/Stations.json: the words on the step card).
 
     python3 unreal/Tools/voice/make_talk_voices.py [--talks path/to/talks.json] [--out folder] [--only welcome,intro-vr]
+                                                   [--stations path/to/Stations.json | --no-stations]
 
 The voice is Kokoro-82M (Apache 2.0) through kokoro-onnx; the model files are looked for in KOKORO_DIR, else
 /home/claude/tts. Lines that already have a WAV with the same words are skipped (a .txt beside each WAV keeps them).
@@ -18,6 +20,8 @@ import wave
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
 DEFAULT_TALKS = os.path.join(ROOT, 'unreal', 'Pipeline', 'content', 'talks.json')
 DEFAULT_OUT = os.path.join(ROOT, 'unreal', 'Pipeline', 'out', 'voice')
+DEFAULT_STATIONS = os.path.join(ROOT, 'unreal', 'WalkTheArchive', 'Data', 'Stations.json')
+NARRATOR = 'af_heart'          # the campus's reading voice (the exhibit cards and the station overviews use it)
 
 
 def clip_name(kind, ident):
@@ -36,6 +40,19 @@ def lines_for(talks, only):
             yield clip_name('quiz', '%s-%02d' % (talk['id'], i + 1)), q['q'], voice
 
 
+def station_lines(path, only):
+    """Every station's steps, read by the narrator: VO_station_<id>_<nn>."""
+    if not path or not os.path.exists(path):
+        return
+    with open(path, 'r', encoding='utf-8') as fh:
+        rows = json.load(fh)
+    for row in rows:
+        if only and row['Name'] not in only:
+            continue
+        for i, text in enumerate(row.get('StepTexts') or []):
+            yield clip_name('station', '%s-%02d' % (row['Name'], i + 1)), text, NARRATOR
+
+
 def main():
     ap = argparse.ArgumentParser()
     pack = os.environ.get('WTA_CLIENT')
@@ -43,13 +60,16 @@ def main():
     ap.add_argument('--talks', default=os.environ.get('WTA_TALKS') or (pack_talks if pack_talks and os.path.exists(pack_talks) else DEFAULT_TALKS))
     ap.add_argument('--out', default=DEFAULT_OUT)
     ap.add_argument('--only', default='')
+    ap.add_argument('--stations', default=DEFAULT_STATIONS)
+    ap.add_argument('--no-stations', action='store_true')
     args = ap.parse_args()
     only = {s.strip() for s in args.only.split(',') if s.strip()}
     with open(args.talks, 'r', encoding='utf-8') as fh:
         talks = json.load(fh)['talks']
     os.makedirs(args.out, exist_ok=True)
     todo = []
-    for name, text, voice in lines_for(talks, only):
+    lines = list(lines_for(talks, only)) + ([] if args.no_stations else list(station_lines(args.stations, only)))
+    for name, text, voice in lines:
         txt = os.path.join(args.out, name + '.txt')
         wav = os.path.join(args.out, name + '.wav')
         if os.path.exists(wav) and os.path.exists(txt) and open(txt, encoding='utf-8').read() == voice + '|' + text:

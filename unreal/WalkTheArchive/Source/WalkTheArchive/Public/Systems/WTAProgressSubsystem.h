@@ -72,9 +72,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void NoteRideFinished(FName RideId);
 
-	/** A station run finished: awards its badge (scientist, maker, worldbuilder, artist; phase 1+). */
+	/** A station's steps were walked through to Finish: remembered, and its room's badge (scientist, maker,
+	    worldbuilder, artist, trainee) awarded. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void NoteStationFinished(FName StationId);
+
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool HasFinishedStation(FName StationId) const;
 
 	/** A talk or class was heard through to its last slide: the Listener badge. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")

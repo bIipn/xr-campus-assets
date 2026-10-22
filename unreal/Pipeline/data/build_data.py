@@ -749,6 +749,37 @@ def build_wax(L):
 UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}}}
 
 
+# The steps a visitor walks through at each station (the panel shows one at a time and reads it aloud; the last
+# one finishes the station). The sieve and the titration have their own step titles and a paragraph per step in
+# stations.json; the others are given theirs here: the pendulum's from its paragraphs, the model bench's from the
+# car kit (bench_kits.json), the layer table's from the nine layers (world_layers.json), the easel's written here.
+EASEL_STEPS = [
+    ('Pick a brush', 'Seven brushes hang on the easel: neon, paint, ribbon, chrome, rainbow, beads and sparkle. Each leaves a different trail in the air. Start with paint.'),
+    ('Paint in the air', 'Hold the trigger and move your hand: the stroke hangs where you drew it. Step round it. A stroke in the air has a front, a back and sides, like a sculpture.'),
+    ('Add a shape', 'Stamp a cube, a sphere, a cone, a ring, a star or a heart, and switch on symmetry to mirror every stroke across the easel.'),
+    ('Turn the turntable', 'Spin the turntable to see your piece from every side, then save a picture of it. Walk-around art is what XR studios make.'),
+]
+PENDULUM_STEPS = ['The pendulum', 'The math', 'Set the length and let go', 'Ten swings']
+
+
+def station_steps(s):
+    """(titles, texts) for a station, the same length, from stations.json or the overrides above."""
+    paragraphs = [p['text'] for p in (s.get('panelTexts') or []) if p.get('kind') == 'stp']
+    titles = s.get('stepTitles') or []
+    if titles and len(titles) == len(paragraphs):
+        return titles, paragraphs
+    if s['id'] == 'pendulum':
+        return PENDULUM_STEPS[:len(paragraphs)], paragraphs[:len(PENDULUM_STEPS)]
+    if s['id'] == 'bench':
+        kits = {k['id']: k for k in load('bench_kits.json')}
+        steps = kits['car']['steps']
+        return [st['t'] for st in steps], ['%s %s' % (st['d'], st.get('w', '')) for st in steps]
+    if s['id'] == 'diorama':
+        layers = load('world_layers.json')
+        return [l['t'] for l in layers], [l['d'] for l in layers]
+    return titles, paragraphs[:len(titles)]
+
+
 def build_stations(L):
     lay = {s['id']: s for s in L['stations']}
     rows = []
@@ -759,8 +790,11 @@ def build_stations(L):
             ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]
             ls['view'] = {'ue': {'location_cm': [u['view']['x'] * 100.0, u['view']['z'] * 100.0, EYE_CM],
                                  'rotation_deg': {'pitch': math.degrees(u['view']['pitch']), 'yaw': ue_yaw(u['view']['yaw']), 'roll': 0.0}}}
+        titles, texts = station_steps(s)
+        assert len(titles) == len(texts) and titles, 'station %s: %d step titles, %d texts' % (s['id'], len(titles), len(texts))
         rows.append({'Name': s['id'], 'Room': s['room'], 'Kicker': txt(s.get('kick') or card.get('k')), 'Title': txt(card.get('t')),
-                     'Subtitle': txt(card.get('m')), 'GoLabel': txt(card.get('go')), 'Steps': [txt(x) for x in s.get('stepTitles') or []],
+                     'Subtitle': txt(card.get('m')), 'GoLabel': txt(card.get('go')), 'Steps': [txt(x) for x in titles],
+                     'StepTexts': [txt(x.strip()) for x in texts],
                      # the panel's paragraphs, without the live status lines of a running test ("Swinging… The photogate ...")
                      'Panel': [txt(p['text']) for p in (s.get('panelTexts') or [])
                                if p.get('kind') == 'stp' and not re.match('^\\w+…', p['text'])][:6],
@@ -769,7 +803,7 @@ def build_stations(L):
         ls = lay['easel']
         rows.append({'Name': 'easel', 'Room': 'studio', 'Kicker': 'Room 101 · 3D Art Studio', 'Title': '3D Art Studio',
                      'Subtitle': 'Paint in the air with brushes, shapes and symmetry', 'GoLabel': 'Start making art',
-                     'Steps': ['Pick a brush', 'Paint in the air', 'Turn the turntable', 'Save a picture'],
+                     'Steps': [t for t, _ in EASEL_STEPS], 'StepTexts': [d for _, d in EASEL_STEPS],
                      'Panel': ['Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around.'],
                      'bUsesHands': False, 'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
     return rows

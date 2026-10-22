@@ -53,6 +53,8 @@ namespace
 	const FName NAME_PanelQuizNext(TEXT("QuizNext"));
 	const FName NAME_PanelQuizRetry(TEXT("QuizRetry"));
 	const FName NAME_PanelCertificate(TEXT("Certificate"));
+	const FName NAME_PanelStationStep(TEXT("StationStep"));
+	const FName NAME_PanelStationFinish(TEXT("StationFinish"));
 
 	const FName NAME_PanelBlockPara(TEXT("Para"));
 	const FName NAME_PanelBlockList(TEXT("List"));
@@ -425,29 +427,70 @@ void UWTAPanelWidget::ShowStation(FName StationId)
 		return;
 	}
 
+	const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+	const bool bFinished = Progress != nullptr && Progress->HasFinishedStation(StationId);
+	CurrentPage = 0;
+	NumPages = Row->Steps.Num();
 	BeginCard(EWTAPanelMode::Station, StationId, Row->Kicker, Row->Title);
 	if (!Row->Subtitle.IsEmpty())
 	{
 		AddText(Row->Subtitle, WTAStyle::Italic(17), WTAStyle::CardInk());
 	}
-	if (Row->Steps.Num() > 0)
-	{
-		AddHeading(PanelText(TEXT("Steps")));
-		for (int32 i = 0; i < Row->Steps.Num(); ++i)
-		{
-			AddText(FText::Format(PanelText(TEXT("{0}. {1}")), FText::AsNumber(i + 1), Row->Steps[i]), WTAStyle::Font(15), WTAStyle::CardInk());
-		}
-	}
 	if (Row->Panel.Num() > 0)
 	{
-		AddHeading(PanelText(TEXT("About this station")));
-		for (const FText& Paragraph : Row->Panel)
+		AddParagraph(Row->Panel[0]);
+	}
+	if (Row->Steps.Num() > 0)
+	{
+		AddHeading(PanelText(bFinished ? TEXT("Steps · finished") : TEXT("Steps")));
+		for (int32 i = 0; i < Row->Steps.Num(); ++i)
 		{
-			AddParagraph(Paragraph);
+			const TCHAR* Mark = bFinished ? TEXT("✓  ") : TEXT("");
+			AddText(FText::Format(PanelText(TEXT("{0}{1}. {2}")), FText::FromString(Mark), FText::AsNumber(i + 1), Row->Steps[i]),
+				WTAStyle::Font(15), bFinished ? WTAStyle::FromHex(0x2f6b3a) : WTAStyle::CardInk());
+		}
+		AddButton(bFinished ? PanelText(TEXT("Do it again")) : (Row->GoLabel.IsEmpty() ? PanelText(TEXT("Start")) : Row->GoLabel),
+			NAME_PanelStationStep, StationId, 1, true);
+	}
+	for (int32 i = 1; i < Row->Panel.Num(); ++i)
+	{
+		AddParagraph(Row->Panel[i]);
+	}
+	EndCard(false, false, FText::GetEmpty());
+}
+
+void UWTAPanelWidget::ShowStationStep(FName StationId, int32 Step)
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTAStationRow* Row = Data ? Data->FindStation(StationId) : nullptr;
+	if (Row == nullptr || Step <= 0 || Step > Row->Steps.Num())
+	{
+		ShowStation(StationId);
+		return;
+	}
+	CurrentPage = Step;
+	NumPages = Row->Steps.Num();
+	const bool bLast = Step == NumPages;
+	BeginCard(EWTAPanelMode::Station, StationId, Row->Title,
+		FText::Format(PanelText(TEXT("Step {0} of {1}")), FText::AsNumber(Step), FText::AsNumber(NumPages)));
+	AddText(Row->Steps[Step - 1], WTAStyle::Font(22, true), WTAStyle::CardInk());
+	if (Row->StepTexts.IsValidIndex(Step - 1))
+	{
+		AddParagraph(Row->StepTexts[Step - 1]);
+	}
+	AddButton(PanelText(bLast ? TEXT("Finish") : TEXT("Next step")), bLast ? NAME_PanelStationFinish : NAME_PanelStationStep, StationId, Step + 1, true);
+	AddButton(PanelText(Step == 1 ? TEXT("Overview") : TEXT("Back")), NAME_PanelStationStep, StationId, Step - 1, false);
+	EndCard(false, false, FText::GetEmpty());
+	// Each step is read out, like a slide: VO_station_<id>_<nn>, when the voice has it.
+	if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+	{
+		const FName Clip = VoiceId();
+		if (!Clip.IsNone() && Voice->HasClip(NAME_VoiceStation, Clip))
+		{
+			Voice->Read(NAME_VoiceStation, Clip);
+			RefreshListenButton();
 		}
 	}
-	AddNote(PanelText(TEXT("The hands-on version of this station is coming in a later build.")));
-	EndCard(false, false, FText::GetEmpty());
 }
 
 void UWTAPanelWidget::ShowRide(FName RideId)
@@ -807,6 +850,39 @@ void UWTAPanelWidget::HandleAction(FName Action, FName Arg, int32 Index)
 		return;
 	}
 
+	if (Action == NAME_PanelStationStep)
+	{
+		if (Mode == EWTAPanelMode::Station)
+		{
+			if (Index <= 0)
+			{
+				ShowStation(CurrentId);
+			}
+			else
+			{
+				ShowStationStep(CurrentId, Index);
+			}
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelStationFinish)
+	{
+		if (Mode == EWTAPanelMode::Station)
+		{
+			if (UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
+			{
+				Progress->NoteStationFinished(CurrentId);
+			}
+			if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+			{
+				Voice->Stop();
+			}
+			ShowStation(CurrentId);
+		}
+		return;
+	}
+
 	if (Action == NAME_PanelQuizRetry)
 	{
 		if (Mode == EWTAPanelMode::Quiz)
@@ -1007,6 +1083,11 @@ FName UWTAPanelWidget::VoiceKind() const
 
 FName UWTAPanelWidget::VoiceId() const
 {
+	if (Mode == EWTAPanelMode::Station)
+	{
+		// the overview reads the station's own clip (VO_station_<id>), a step its own (VO_station_<id>_<nn>)
+		return CurrentPage > 0 ? FName(*FString::Printf(TEXT("%s-%02d"), *CurrentId.ToString(), CurrentPage)) : CurrentId;
+	}
 	if (Mode != EWTAPanelMode::Quiz)
 	{
 		return CurrentId;

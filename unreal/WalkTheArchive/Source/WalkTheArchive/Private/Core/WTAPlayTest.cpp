@@ -435,6 +435,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddQuizPhase();
 	}
+	if (Want(TEXT("stations")))
+	{
+		AddStationsPhase();
+	}
 	if (Want(TEXT("ui")))
 	{
 		AddUIPhase();
@@ -3372,6 +3376,100 @@ void UWTAPlayTest::AddTalksPhase()
 // ---------------------------------------------------------------------------
 // quiz: every class's quiz and certificate, opened straight from the table (no venue needed)
 // ---------------------------------------------------------------------------
+
+void UWTAPlayTest::AddStationsPhase()
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	TArray<FName> Ids = Content != nullptr ? Content->GetRowNames(EWTATable::Stations) : TArray<FName>();
+	Ids.Sort([](const FName& A, const FName& B) { return A.LexicalLess(B); });
+	Steps.Add({ TEXT("stations start"), [this, Count = Ids.Num()]() -> float
+	{
+		Report(TEXT("stations"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("stations"), FString::Printf(TEXT("%d stations in DT_Stations"), Count));
+		return 0.f;
+	} });
+	bool bShot = false;
+	for (const FName& StationId : Ids)
+	{
+		const FWTAStationRow* Row = Content->FindStation(StationId);
+		if (Row == nullptr)
+		{
+			continue;
+		}
+		const FString Name = FString::Printf(TEXT("station %s"), *StationId.ToString());
+		const int32 NumSteps = Row->Steps.Num();
+		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		const bool bTakeShot = !bShot;
+		bShot = true;
+		Steps.Add({ Name + TEXT(" open"), [this, Ok, Name, StationId, NumSteps]() -> float
+		{
+			*Ok = false;
+			AWTAPlayerController* Controller = PC();
+			if (Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			CloseAll();
+			Controller->OpenStation(StationId);
+			UWTAPanelWidget* Panel = Controller->Panel;
+			const bool bOpen = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Station && Panel->GetCurrentId() == StationId && Panel->GetCurrentPage() == 0;
+			*Ok = bOpen && NumSteps > 0;
+			Report(TEXT("stations"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" opens"),
+				bOpen ? FString::Printf(TEXT("the overview, %d steps"), NumSteps) : TEXT("the station card did not open on its overview"));
+			return *Ok ? 0.3f : 0.f;
+		} });
+		for (int32 Step = 1; Step <= NumSteps; ++Step)
+		{
+			const FText Title = Row->Steps[Step - 1];
+			Steps.Add({ FString::Printf(TEXT("%s step %d"), *Name, Step), [this, Ok, Name, StationId, Step, NumSteps, Title, bTakeShot]() -> float
+			{
+				AWTAPlayerController* Controller = PC();
+				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+				{
+					return 0.f;
+				}
+				UWTAPanelWidget* Panel = Controller->Panel;
+				Panel->HandleAction(FName("StationStep"), StationId, Step);
+				const bool bOn = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Station && Panel->GetCurrentPage() == Step;
+				if (!bOn)
+				{
+					*Ok = false;
+					Report(TEXT("stations"), EResult::Fail, FString::Printf(TEXT("%s shows step %d"), *Name, Step),
+						FString::Printf(TEXT("the card is on page %d"), Panel->GetCurrentPage()));
+					return 0.f;
+				}
+				if (Step == 1 || Step == NumSteps)
+				{
+					Report(TEXT("stations"), EResult::Pass, FString::Printf(TEXT("%s shows step %d"), *Name, Step),
+						FString::Printf(TEXT("'%s' of %d"), *Title.ToString(), NumSteps));
+				}
+				if (bTakeShot && Step == 1)
+				{
+					Shot(FString::Printf(TEXT("station_%s_step1"), *StationId.ToString()), true);
+					return 0.4f;
+				}
+				return 0.15f;
+			} });
+		}
+		Steps.Add({ Name + TEXT(" finish"), [this, Ok, Name, StationId]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+			{
+				return 0.f;
+			}
+			UWTAPanelWidget* Panel = Controller->Panel;
+			Panel->HandleAction(FName("StationFinish"), StationId, 0);
+			const bool bDone = Progress->HasFinishedStation(StationId);
+			const bool bOverview = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Station && Panel->GetCurrentPage() == 0;
+			*Ok = bDone && bOverview;
+			Report(TEXT("stations"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" finishes"),
+				FString::Printf(TEXT("remembered as finished: %s; back on the overview: %s"), bDone ? TEXT("yes") : TEXT("no"), bOverview ? TEXT("yes") : TEXT("no")));
+			CloseAll();
+			return 0.3f;
+		} });
+	}
+}
 
 void UWTAPlayTest::AddQuizPhase()
 {

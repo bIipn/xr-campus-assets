@@ -39,6 +39,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FName> TalksHeard;
 
+	/** Stations walked through to Finish (DT_Stations ids). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FName> StationsFinished;
+
 	/** Classes passed (DT_Talks ids), and the name each certificate was made out to, in the same order. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
 	TArray<FName> Certificates;

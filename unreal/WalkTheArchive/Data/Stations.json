@@ -15,6 +15,15 @@
    "Weigh each sieve",
    "Results"
   ],
+  "StepTexts": [
+   "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials.",
+   "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams.",
+   "Dry the sample in the oven at about 110 °C until its mass stops changing, and let it cool. Then press TARE with the empty dish on the balance, so the reading only counts the sand, and pour the sample in.",
+   "Nest the sieves with the biggest openings on top and the finest at the bottom, with a pan underneath to catch the dust. Sieves are named by their US mesh number, roughly the number of openings per inch.",
+   "Pour the sample onto the top sieve, put the cover on, clamp the stack and press START. The shaker swirls and taps the stack so every grain gets its chance to fall through. Labs often shake for 10 to 15 minutes; this run is sped up.",
+   "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass.",
+   "The AFS grain fineness number sums each sieve’s % retained times a multiplier, then divides by the total. A bigger number means finer sand. Plants compare it, and the whole curve, against each customer’s spec."
+  ],
   "Panel": [
    "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials.",
    "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams.",
@@ -53,6 +62,12 @@
    "Titrate",
    "Results"
   ],
+  "StepTexts": [
+   "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid.",
+   "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2.",
+   "Pour exactly 25.00 mL of the mystery acid into the flask and add 2 drops of phenolphthalein. Fill the burette with 0.1000 M sodium hydroxide, then read the starting volume at the bottom of the curved liquid surface, the meniscus, with your eye level with it.",
+   "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
+  ],
   "Panel": [
    "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid.",
    "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2.",
@@ -83,7 +98,18 @@
   "Title": "Pendulum",
   "Subtitle": "Measure gravity with a string and a weight",
   "GoLabel": "Start swinging",
-  "Steps": [],
+  "Steps": [
+   "The pendulum",
+   "The math",
+   "Set the length and let go",
+   "Ten swings"
+  ],
+  "StepTexts": [
+   "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
+   "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
+   "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back).",
+   "Swinging… The photogate times each pass. Let it finish 10 full swings."
+  ],
   "Panel": [
    "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
    "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
@@ -113,7 +139,26 @@
   "Title": "Model bench",
   "Subtitle": "Build a model car or building",
   "GoLabel": "Start building",
-  "Steps": [],
+  "Steps": [
+   "Gather materials",
+   "Chassis",
+   "Bearings",
+   "Axles",
+   "Wheels",
+   "Rubber-band motor",
+   "Body",
+   "Test drive"
+  ],
+  "StepTexts": [
+   "Stiff cardboard or foam board, 2 drinking straws, 2 wooden skewers, 4 bottle caps, a rubber band, a paper clip, tape and glue. It’s all in the kit box. Good engineers start with a plan and a parts list.",
+   "Take the cardboard rectangle, about 20 by 8 centimeters, and rest it on the little stand so you can work underneath. This is the chassis, the frame everything else attaches to. A stiff, light chassis wastes less energy bending.",
+   "Tape the two straws across the bottom, one near each end. Keep them parallel or the car will curve. The straws are bearings: the axles spin inside them with very little friction.",
+   "Slide a skewer through each straw, leaving a little sticking out on both sides. Axles carry the wheels and let each pair turn together.",
+   "Poke a hole in the center of each bottle cap and push one onto each axle end. A dab of glue keeps them on. Wheels that are centered and straight roll farther and wobble less.",
+   "Hook the rubber band on a paper clip taped to the front, and loop the other end around the rear axle. The stretched rubber band stores energy. As it unwinds it spins the rear axle: your engine and drivetrain in one.",
+   "Fold a body from card stock and set it over the chassis. Keep it light. Less weight lets the same stored energy push the car farther.",
+   "Roll the car backward to wind the band around the axle, set it down and let go! Real engineers test, measure, change one thing and test again."
+  ],
   "Panel": [
    "Pick a kit. You’ll build it with your own hands, one part at a time, the way you would with real materials, then test it."
   ],
@@ -141,7 +186,28 @@
   "Title": "Layer table",
   "Subtitle": "Build a mini world, one layer at a time",
   "GoLabel": "Build a world",
-  "Steps": [],
+  "Steps": [
+   "Plan",
+   "Block out",
+   "Models",
+   "Materials",
+   "Light",
+   "Effects",
+   "Physics",
+   "Life",
+   "Publish"
+  ],
+  "StepTexts": [
+   "Every world starts as an idea and a sketch. Who is it for, and what will they do there? This campus started as a list (a museum, a library, a school and a recess yard) and a rough map of how to walk between them.",
+   "Build the layout from plain boxes, then walk around it. Is the hall wide enough? Does the coaster fit? Fixing things now is cheap. Game studios call this a blockout, or graybox.",
+   "Swap the boxes for real models. Artists build them in tools like Blender; this campus builds almost everything from code: boxes, cylinders, spheres and extruded shapes. Every model is a mesh of triangles. Turn on X-ray to see them.",
+   "Materials say what a surface is made of: its color, how rough or shiny it is, and whether it’s metal. Physically based materials (PBR) react to light the way real surfaces do. Many of the textures here are drawn by code as the campus loads.",
+   "Light sells the scene. Outdoors, a sun casts shadows and the sky tints everything; indoors, lamps take over. Lights are expensive to draw, so this campus keeps just 8 lamps switched on and moves them to wherever you are.",
+   "Post effects are the finishing pass over the whole picture: glow (bloom) around bright lights, soft shading in corners (ambient occlusion) and color grading.",
+   "A physics engine moves things with gravity, mass and collisions. The Recess Yard runs a physics engine called Rapier, stepping the world 60 times a second. Drop some balls and watch them bounce.",
+   "Life makes a world feel real: people who move, rides that run and things you can tap. Tapping works by casting a ray from your finger into the scene; walking uses A* (A-star) pathfinding on a grid.",
+   "Ship it! This whole campus is one web page, with no app store and no download, so it runs on phones, Chromebooks and laptops. Then watch real people use it, listen, and make it better."
+  ],
   "Panel": [],
   "bUsesHands": false,
   "Location": {
@@ -170,8 +236,14 @@
   "Steps": [
    "Pick a brush",
    "Paint in the air",
-   "Turn the turntable",
-   "Save a picture"
+   "Add a shape",
+   "Turn the turntable"
+  ],
+  "StepTexts": [
+   "Seven brushes hang on the easel: neon, paint, ribbon, chrome, rainbow, beads and sparkle. Each leaves a different trail in the air. Start with paint.",
+   "Hold the trigger and move your hand: the stroke hangs where you drew it. Step round it. A stroke in the air has a front, a back and sides, like a sculpture.",
+   "Stamp a cube, a sphere, a cone, a ring, a star or a heart, and switch on symmetry to mirror every stroke across the easel.",
+   "Spin the turntable to see your piece from every side, then save a picture of it. Walk-around art is what XR studios make."
   ],
   "Panel": [
    "Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around."
