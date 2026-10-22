@@ -21,11 +21,17 @@
 #include "Components/VerticalBoxSlot.h"
 #include "Components/WrapBox.h"
 #include "Components/WrapBoxSlot.h"
+#include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Engine/Texture2D.h"
+#include "Engine/World.h"
+#include "HAL/FileManager.h"
 #include "HAL/PlatformProcess.h"
 #include "InputCoreTypes.h"
 #include "Layout/Margin.h"
+#include "Misc/Paths.h"
+#include "TimerManager.h"
+#include "UnrealClient.h"
 #include "Styling/SlateBrush.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
@@ -56,6 +62,7 @@ namespace
 	const FName NAME_PanelCertificate(TEXT("Certificate"));
 	const FName NAME_PanelStationStep(TEXT("StationStep"));
 	const FName NAME_PanelStationFinish(TEXT("StationFinish"));
+	const FName NAME_PanelHuntPicture(TEXT("HuntPicture"));
 
 	const FName NAME_PanelBlockPara(TEXT("Para"));
 	const FName NAME_PanelBlockList(TEXT("List"));
@@ -578,6 +585,7 @@ void UWTAPanelWidget::ShowBadges()
 	}
 
 	AddSpacer(14.f);
+	AddButton(PanelText(TEXT("My library card")), WTAAction::OpenHunt(), NAME_None, -1, false);
 	if (bConfirmReset)
 	{
 		AddText(PanelText(TEXT("Clear every badge, token and page read on this computer?")), WTAStyle::Font(14, true), WTAStyle::CardInk());
@@ -590,6 +598,102 @@ void UWTAPanelWidget::ShowBadges()
 	}
 
 	EndCard(false, false, FText::Format(PanelText(TEXT("{0} / {1}")), FText::AsNumber(Unlocked), FText::AsNumber(Total)));
+}
+
+void UWTAPanelWidget::ShowHunt()
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+	BeginCard(EWTAPanelMode::Hunt, NAME_None, PanelText(TEXT("Token hunt")), PanelText(TEXT("My Library Card")));
+	SetHeaderExtras(FText::GetEmpty(), PanelText(TEXT("Glowing XR tokens are hidden around the campus. Each one you find stamps this card.")));
+
+	int32 Found = 0;
+	int32 Total = 0;
+	TArray<FName> Hiding;
+	UWrapBox* Stamps = WidgetTree->ConstructWidget<UWrapBox>(UWrapBox::StaticClass());
+	Stamps->SetInnerSlotPadding(FVector2D(10.f, 12.f));
+	if (Data != nullptr)
+	{
+		int32 Number = 0;
+		for (const FName& TokenId : Data->GetRowNames(EWTATable::Tokens))
+		{
+			const FWTATokenRow* Token = Data->FindToken(TokenId);
+			if (Token == nullptr)
+			{
+				continue;
+			}
+			++Number;
+			++Total;
+			const bool bHas = Progress != nullptr && Progress->HasToken(TokenId);
+			Found += bHas ? 1 : 0;
+			if (!bHas)
+			{
+				Hiding.Add(TokenId);
+			}
+			// A round stamp with the token's number, brass once it is found, and the place under it.
+			UVerticalBox* Stamp = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+			USizeBox* Round = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+			Round->SetWidthOverride(76.f);
+			Round->SetHeightOverride(76.f);
+			FLinearColor Faint = WTAStyle::CardInk();
+			Faint.A = 0.08f;
+			UBorder* Disc = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass());
+			Disc->SetBrush(WTAStyle::RoundedBrush(bHas ? WTAStyle::Brass() : Faint, 38.f));
+			Disc->SetPadding(FMargin(0.f));
+			Disc->SetHorizontalAlignment(HAlign_Center);
+			Disc->SetVerticalAlignment(VAlign_Center);
+			UTextBlock* Mark = WTAWidgets::MakeText(WidgetTree, bHas ? PanelText(TEXT("✓")) : FText::AsNumber(Number),
+				WTAStyle::Font(bHas ? 30 : 22, bHas), bHas ? WTAStyle::Ink() : WTAStyle::CardInkDim(), false);
+			Mark->SetJustification(ETextJustify::Center);
+			Disc->SetContent(Mark);
+			Round->SetContent(Disc);
+			UVerticalBoxSlot* RoundSlot = Stamp->AddChildToVerticalBox(Round);
+			RoundSlot->SetHorizontalAlignment(HAlign_Center);
+			RoundSlot->SetPadding(FMargin(0.f, 0.f, 0.f, 4.f));
+			USizeBox* LabelWidth = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+			LabelWidth->SetWidthOverride(96.f);
+			UTextBlock* Label = WTAWidgets::MakeText(WidgetTree, Token->Place, WTAStyle::Font(12, bHas), bHas ? WTAStyle::BrassDark() : WTAStyle::CardInkDim(), true);
+			Label->SetJustification(ETextJustify::Center);
+			LabelWidth->SetContent(Label);
+			Stamp->AddChildToVerticalBox(LabelWidth)->SetHorizontalAlignment(HAlign_Center);
+			Stamps->AddChildToWrapBox(Stamp);
+		}
+	}
+	PanelAddRow(Content, Stamps, FMargin(0.f, 8.f, 0.f, 10.f));
+	CurrentPage = Found;
+	NumPages = Total;
+
+	const bool bAll = Total > 0 && Found >= Total;
+	if (bAll)
+	{
+		AddSection(PanelText(TEXT("Every token found")));
+		AddParagraph(PanelText(TEXT("The card is full. Show it at the front desk and the prize is yours; a picture of it works too.")));
+		AddButton(PanelText(TEXT("Save a picture")), NAME_PanelHuntPicture, NAME_None, -1, true);
+	}
+	else
+	{
+		AddText(FText::Format(PanelText(TEXT("{0} of {1} stamped")), FText::AsNumber(Found), FText::AsNumber(Total)), WTAStyle::Font(16, true), WTAStyle::CardInk());
+		AddSection(PanelText(TEXT("Still hiding")));
+		for (const FName& TokenId : Hiding)
+		{
+			if (const FWTATokenRow* Token = Data->FindToken(TokenId))
+			{
+				AddText(FText::Format(PanelText(TEXT("{0} · {1}")), Token->Place, Token->Hint), WTAStyle::Font(14), WTAStyle::CardInk());
+			}
+		}
+		AddNote(PanelText(TEXT("Fill the card and show it at the front desk for a prize.")));
+	}
+	AddSpacer(6.f);
+	AddButton(PanelText(TEXT("Badges")), WTAAction::OpenBadges(), NAME_None, -1, false);
+	EndCard(false, false, FText::Format(PanelText(TEXT("{0} / {1}")), FText::AsNumber(Found), FText::AsNumber(Total)));
+}
+
+void UWTAPanelWidget::HuntPictureSaved()
+{
+	if (AWTAPlayerController* PC = Cast<AWTAPlayerController>(GetOwningPlayer()))
+	{
+		PC->ShowToast(FText::FromString(FString::Printf(TEXT("Saved to %s"), *HuntPictureFile)), 6.f);
+	}
 }
 
 void UWTAPanelWidget::ShowPlaces()
@@ -1049,6 +1153,20 @@ void UWTAPanelWidget::HandleAction(FName Action, FName Arg, int32 Index)
 		return;
 	}
 
+	if (Action == NAME_PanelHuntPicture)
+	{
+		// A picture of the card as it stands (the UI on), for the desk: Saved/Cards/library_card_<time>.png.
+		HuntPictureFile = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Cards"),
+			FString::Printf(TEXT("library_card_%s.png"), *FDateTime::Now().ToString(TEXT("%Y%m%d-%H%M%S")))));
+		IFileManager::Get().MakeDirectory(*FPaths::GetPath(HuntPictureFile), true);
+		FScreenshotRequest::RequestScreenshot(HuntPictureFile, true, false);
+		UE_LOG(LogWTA, Display, TEXT("WTA library card %s"), *HuntPictureFile);
+		if (UWorld* World = GetWorld())
+		{
+			World->GetTimerManager().SetTimer(HuntPictureTimer, this, &UWTAPanelWidget::HuntPictureSaved, 0.3f, false);
+		}
+		return;
+	}
 	if (Action == NAME_PanelReset)
 	{
 		if (Index == 0)

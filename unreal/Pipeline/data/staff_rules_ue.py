@@ -155,8 +155,9 @@ RULES = [
     # 26 the hidden tokens (three ride on the rides)
     R('R026', 26, 26, 'There are {n:tokens} glowing XR tokens hidden around the campus: in the museum, the library, '
       'the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding '
-      'opens in a later build. Look at a token and press E or click to collect it.', ['{rx:tokens}'],
-      **offer('OpenBadges', 'None', 'Show me the hints')),
+      'opens in a later build. Look at a token and press E or click to collect it; each one stamps your library '
+      'card, and a full card wins a prize at the front desk.', ['{rx:tokens}'],
+      **offer('OpenHunt', 'None', 'Show my library card')),
     # 27 badges (the ones this build can award: UWTAProgressSubsystem)
     R('R027', 27, 27, 'There are {n:badges} badges. In this build you can earn First Steps, Museum Explorer, Bookworm, '
       'Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: '

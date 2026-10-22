@@ -120,7 +120,7 @@ panel/chat/menu is open; `FInputModeGameOnly` + no cursor otherwise).
 ### 4.8 Actions
 One action vocabulary for tour stops, staff answers and buttons (`FName`, `None` = no action):
 `GoPlace` (arg = place id), `OpenItem` (exhibit id), `OpenBook` (book id), `OpenStation` (station id), `OpenRide` (ride id),
-`StartTour`, `OpenBadges`. `AWTAPlayerController::RunAction(FName Action, FName Arg)` executes them.
+`StartTour`, `OpenBadges`, `OpenHunt` (the token hunt's library card), `OpenQuiz` (talk id of a class), `OpenCourse` (talk id of a course), `StartTalk` (talk id). `AWTAPlayerController::RunAction(FName Action, FName Arg)` executes them.
 
 ## 5. Data files
 - Converter: `unreal/Pipeline/data/build_data.py` (Python 3, stdlib only). Reads the raw web extraction

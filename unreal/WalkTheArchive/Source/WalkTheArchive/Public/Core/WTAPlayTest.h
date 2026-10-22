@@ -112,6 +112,8 @@ private:
 	void AddCoursePhase();
 	/** photo: P writes a framed postcard of the view; the frame is shot while it is up, then the file is checked. */
 	void AddPhotoPhase();
+	/** hunt: the library card opens with the tokens found as stamps, a collected token adds one, a full card's picture is written. */
+	void AddHuntPhase();
 	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
 	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */

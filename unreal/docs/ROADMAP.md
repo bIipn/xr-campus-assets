@@ -37,7 +37,7 @@ file) is a class taught by doing: stations to finish, then the quiz at the cours
 | 8 | **Spanish and any language from the pack**: every string and voice line per language | Nevada and California libraries | the data tables, the voice pipeline | medium | next |
 | 9 | **Catalogue links**: a card's source opens the library's own catalogue record | every client | exhibit sources | low | next |
 | 10 | **Photo mode**: a framed postcard of where you stand, saved to share | visitors | the screenshot system | low | **in**: P frames the view as a matted postcard with the place and the date and writes it to `Saved/Postcards/` |
-| 11 | **Kids' hunt with a library card**: tokens stamp a card, a prize at the desk | children's programs | tokens and badges | low | next |
+| 11 | **Kids' hunt with a library card**: tokens stamp a card, a prize at the desk | children's programs | tokens and badges | low | **in**: the library card (Badges → My library card, or ask Margaret) shows a stamp per token, the hints still open, and with a full card "show it at the desk" plus a saved picture of it |
 | 12 | **Visit heatmaps and dwell times** exported for grant reports | the library's own reporting | the places list, the walk tour | low | next |
 | 13 | **Lost Stories booth**: record an oral history at a mic; it is transcribed and becomes an exhibit a reenactor reads | tribes, local history, the Miwok archive | voice pipeline, exhibits, wax figures | medium | then |
 | 14 | **Pop-up book room**: library books open as 3D scenes on the reading table | kids' programs | the book reader | medium | then |

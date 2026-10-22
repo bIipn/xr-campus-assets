@@ -468,6 +468,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddPhotoPhase();
 	}
+	if (Want(TEXT("hunt")))
+	{
+		AddHuntPhase();
+	}
 	if (Want(TEXT("ui")))
 	{
 		AddUIPhase();
@@ -3723,6 +3727,144 @@ void UWTAPlayTest::AddPhotoPhase()
 		Report(TEXT("photo"), bOk ? EResult::Pass : EResult::Fail, TEXT("the postcard is written"),
 			FString::Printf(TEXT("%s (%lld bytes); HUD %s; frame %s"), **File, Size, bHudBack ? TEXT("back") : TEXT("still hidden"), bFrameDown ? TEXT("down") : TEXT("still up")));
 		return 0.f;
+	} });
+}
+
+void UWTAPlayTest::AddHuntPhase()
+{
+	// The token hunt's library card: it opens with as many stamps as tokens found, a token collected stamps one
+	// more, and with every token found the card offers its picture, which is written.
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	TArray<FName> Tokens = Content != nullptr ? Content->GetRowNames(EWTATable::Tokens) : TArray<FName>();
+	const TSharedRef<int32> Before = MakeShared<int32>(0);
+	const TSharedRef<bool> Ok = MakeShared<bool>(false);
+	Steps.Add({ TEXT("hunt open"), [this, Ok, Before, Total = Tokens.Num()]() -> float
+	{
+		*Ok = false;
+		AWTAPlayerController* Controller = PC();
+		const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+		if (Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+		{
+			return 0.f;
+		}
+		CloseAll();
+		Controller->OpenHunt();
+		UWTAPanelWidget* Panel = Controller->Panel;
+		*Before = Progress->NumTokens();
+		const bool bOpen = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Hunt;
+		*Ok = bOpen && Panel->GetCurrentPage() == *Before && Panel->GetNumPages() == Total;
+		Report(TEXT("hunt"), *Ok ? EResult::Pass : EResult::Fail, TEXT("the library card opens"),
+			bOpen ? FString::Printf(TEXT("%d of %d stamped (progress says %d of %d)"), Panel->GetCurrentPage(), Panel->GetNumPages(), *Before, Total) : TEXT("the card did not open"));
+		return *Ok ? 0.5f : 0.f;
+	} });
+	Steps.Add({ TEXT("hunt card shot"), [this, Ok]() -> float
+	{
+		if (*Ok)
+		{
+			Shot(TEXT("library_card"), true);
+			return 0.3f;
+		}
+		return 0.f;
+	} });
+	Steps.Add({ TEXT("hunt stamp"), [this, Ok, Before, Tokens]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+		if (!*Ok || Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+		{
+			return 0.f;
+		}
+		// Collect the first token not yet found (or report that they all are) and open the card again.
+		FName Collected;
+		for (const FName& TokenId : Tokens)
+		{
+			if (!Progress->HasToken(TokenId) && Progress->CollectToken(TokenId))
+			{
+				Collected = TokenId;
+				break;
+			}
+		}
+		CloseAll();
+		Controller->OpenHunt();
+		const int32 Now = Controller->Panel->GetCurrentPage();
+		const int32 Want = *Before + (Collected.IsNone() ? 0 : 1);
+		*Ok = Controller->Panel->GetMode() == EWTAPanelMode::Hunt && Now == Want;
+		Report(TEXT("hunt"), *Ok ? EResult::Pass : EResult::Fail, TEXT("a token stamps the card"),
+			Collected.IsNone() ? FString::Printf(TEXT("every token was already found; %d stamps"), Now)
+			                   : FString::Printf(TEXT("%s collected: %d stamps, was %d"), *Collected.ToString(), Now, *Before));
+		return 0.3f;
+	} });
+	Steps.Add({ TEXT("hunt fill"), [this, Ok, Tokens]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+		if (!*Ok || Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+		{
+			return 0.f;
+		}
+		for (const FName& TokenId : Tokens)
+		{
+			if (!Progress->HasToken(TokenId))
+			{
+				Progress->CollectToken(TokenId);
+			}
+		}
+		CloseAll();
+		Controller->OpenHunt();
+		UWTAPanelWidget* Panel = Controller->Panel;
+		const bool bFull = Panel->GetMode() == EWTAPanelMode::Hunt && Panel->GetCurrentPage() == Tokens.Num() && Tokens.Num() > 0;
+		const bool bHunter = Progress->HasBadge(WTABadge::Hunter());
+		*Ok = bFull && bHunter;
+		Report(TEXT("hunt"), *Ok ? EResult::Pass : EResult::Fail, TEXT("a full card"),
+			FString::Printf(TEXT("%d of %d stamped; Token Hunter badge: %s"), Panel->GetCurrentPage(), Tokens.Num(), bHunter ? TEXT("yes") : TEXT("no")));
+		return *Ok ? 0.5f : 0.f;
+	} });
+	Steps.Add({ TEXT("hunt full shot"), [this, Ok]() -> float
+	{
+		if (*Ok)
+		{
+			Shot(TEXT("library_card_full"), true);
+			return 0.3f;
+		}
+		return 0.f;
+	} });
+	Steps.Add({ TEXT("hunt picture"), [this, Ok]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+		{
+			return 0.f;
+		}
+		Controller->Panel->HandleAction(FName(TEXT("HuntPicture")), NAME_None, -1);
+		return 1.2f;
+	} });
+	Steps.Add({ TEXT("hunt picture file"), [this, Ok]() -> float
+	{
+		if (!*Ok)
+		{
+			return 0.f;
+		}
+		const FString Dir = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Cards"));
+		TArray<FString> Files;
+		IFileManager::Get().FindFiles(Files, *FPaths::Combine(Dir, TEXT("library_card_*.png")), true, false);
+		FString Newest;
+		FDateTime NewestTime = FDateTime::MinValue();
+		for (const FString& Name : Files)
+		{
+			const FString Path = FPaths::Combine(Dir, Name);
+			const FDateTime Stamp = IFileManager::Get().GetTimeStamp(*Path);
+			if (Stamp > NewestTime)
+			{
+				NewestTime = Stamp;
+				Newest = Path;
+			}
+		}
+		const int64 Size = Newest.IsEmpty() ? -1 : IFileManager::Get().FileSize(*Newest);
+		const bool bFresh = !Newest.IsEmpty() && (FDateTime::UtcNow() - NewestTime) < FTimespan::FromSeconds(30.0);
+		Report(TEXT("hunt"), Size > 50000 && bFresh ? EResult::Pass : EResult::Fail, TEXT("the card's picture is written"),
+			Newest.IsEmpty() ? TEXT("no Saved/Cards/library_card_*.png") : FString::Printf(TEXT("%s (%lld bytes, %s)"), *FPaths::ConvertRelativePathToFull(Newest), Size, bFresh ? TEXT("just written") : TEXT("old")));
+		CloseAll();
+		return 0.2f;
 	} });
 }
 

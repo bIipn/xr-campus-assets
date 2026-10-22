@@ -184,6 +184,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void OpenBadges();
 
+	/** Open the token hunt's library card (a stamp per token). RunAction("OpenHunt") does the same. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void OpenHunt();
+
 	/** Open the places list (every DT_Places row as a "walk there" button). M key. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void OpenPlaces();
@@ -262,7 +266,7 @@ public:
 	// --- Actions and travel ------------------------------------------------
 
 	/** Run one action of the shared vocabulary (GoPlace, OpenItem, OpenBook, OpenStation, OpenRide, StartTour, OpenBadges,
-	    OpenQuiz, OpenCourse, StartTalk). */
+	    OpenQuiz, OpenCourse, OpenHunt, StartTalk). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void RunAction(FName Action, FName Arg);
 

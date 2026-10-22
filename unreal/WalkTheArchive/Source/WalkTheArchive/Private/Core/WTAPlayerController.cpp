@@ -578,6 +578,20 @@ void AWTAPlayerController::OpenBadges()
 	SetUIMode(true);
 }
 
+void AWTAPlayerController::OpenHunt()
+{
+	if (Panel == nullptr)
+	{
+		return;
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	Panel->ShowHunt();
+	SetUIMode(true);
+}
+
 void AWTAPlayerController::OpenPlaces()
 {
 	if (Panel == nullptr)
@@ -979,6 +993,10 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	else if (Action == WTAAction::OpenCourse())
 	{
 		OpenCourse(Arg);
+	}
+	else if (Action == WTAAction::OpenHunt())
+	{
+		OpenHunt();
 	}
 	else if (Action == WTAAction::StartTalk())
 	{
@@ -1700,8 +1718,8 @@ void AWTAPlayerController::HandleBadgeAwarded(FName BadgeId)
 void AWTAPlayerController::HandleTokenCollected(FName TokenId, int32 Found, int32 Total)
 {
 	const FString Message = (Total > 0 && Found >= Total)
-		? FString::Printf(TEXT("You found all %d XR tokens!"), Total)
-		: FString::Printf(TEXT("XR token found! %d of %d."), Found, Total);
+		? FString::Printf(TEXT("You found all %d XR tokens! Your library card is full: show it at the desk."), Total)
+		: FString::Printf(TEXT("XR token found! %d of %d stamped on your library card."), Found, Total);
 	ShowToast(FText::FromString(Message), 0.f);
 }
 

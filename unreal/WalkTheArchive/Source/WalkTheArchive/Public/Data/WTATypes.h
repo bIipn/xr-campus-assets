@@ -918,6 +918,8 @@ namespace WTAAction
 	inline FName OpenQuiz()    { static const FName N(TEXT("OpenQuiz"));    return N; }
 	/** A course's card (DT_Talks row of kind course): Arg = the talk id. */
 	inline FName OpenCourse()  { static const FName N(TEXT("OpenCourse"));  return N; }
+	/** The token hunt's library card (the tokens as stamps). */
+	inline FName OpenHunt()    { static const FName N(TEXT("OpenHunt"));    return N; }
 	/** Start (or restart) a talk from its first slide; arg = DT_Talks row. Sitting in its venue does the same. */
 	inline FName StartTalk()   { static const FName N(TEXT("StartTalk"));   return N; }
 }

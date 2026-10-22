@@ -17,6 +17,7 @@
 //   ShowCourse   a course (DT_Talks kind course): the lead's welcome read aloud, its stations as a checklist ticked
 //                from the progress with a Go button each (Action "OpenStation"), "Take the quiz" (Action "OpenQuiz")
 //                once all are finished, "Certified" once passed
+//   ShowHunt     the token hunt's library card: a stamp per token, the hints still open, a picture to show at the desk
 //   ShowQuiz     a class's quiz (DT_Talks), one question at a time: the options as buttons (Action "Answer"), then
 //                the right answer marked and why, "Next question"; the result card scores it and, when passed, asks
 //                for a name and makes the certificate (Action "Certificate" -> AWTAPlayerController::ShowCertificate)
@@ -59,7 +60,8 @@ enum class EWTAPanelMode : uint8
 	Badges,
 	Places,
 	Quiz,
-	Course
+	Course,
+	Hunt
 };
 
 UCLASS()
@@ -105,6 +107,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowCourse(FName TalkId);
 
+	/** The token hunt's library card: one round stamp per DT_Tokens row (brass once found), the hints of the ones
+	    still hiding, and with every token found "show this at the desk" and a Save a picture button. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowHunt();
+
 	/** Question Index of the quiz: unanswered (Chosen -1) as option buttons, else marked with the right answer and why. */
 	void ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen);
 
@@ -133,9 +140,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	FName GetCurrentId() const { return CurrentId; }
 
-	/** Book page showing (-1 cover) when Mode is Book. */
+	/** Book page showing (-1 cover) when Mode is Book; stations finished on a course card; stamps on the library card. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	int32 GetCurrentPage() const { return CurrentPage; }
+
+	/** Pages of a book; stations of a course; tokens on the library card. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	int32 GetNumPages() const { return NumPages; }
 
 protected:
 	friend class UWTAPlayTest;
@@ -202,6 +213,11 @@ protected:
 	/** Shows the Listen button when this card has a clip, labelled for whether it is being read. */
 	UFUNCTION()
 	void RefreshListenButton();
+
+	/** HuntPicture: the toast after the screenshot of the card has been taken. */
+	void HuntPictureSaved();
+	FTimerHandle HuntPictureTimer;
+	FString HuntPictureFile;
 
 	UPROPERTY(Transient) TObjectPtr<UBorder> Scrim;
 	UPROPERTY(Transient) TObjectPtr<UBorder> Card;

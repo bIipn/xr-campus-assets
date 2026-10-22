@@ -580,11 +580,11 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "There are 11 glowing XR tokens hidden around the campus: in the museum, the library, the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding opens in a later build. Look at a token and press E or click to collect it.",
-  "Action": "OpenBadges",
+  "Answer": "There are 11 glowing XR tokens hidden around the campus: in the museum, the library, the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding opens in a later build. Look at a token and press E or click to collect it; each one stamps your library card, and a full card wins a prize at the front desk.",
+  "Action": "OpenHunt",
   "ActionArg": "None",
   "bOffer": true,
-  "OfferLabel": "Show me the hints"
+  "OfferLabel": "Show my library card"
  },
  {
   "Name": "R027",

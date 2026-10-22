@@ -401,7 +401,8 @@ UE_WH = r"\bwhere('?s| is| are| can i find| do i find)\b|\bwhich way\b|\bhow do 
 PLACEHOLDER = re.compile(r'\{(\w+)(?::([\w-]+))?\}')
 STAFF_KEYS = ('name', 'role', 'help')
 ACTION_TABLES = {'GoPlace': 'FWTAPlaceRow', 'OpenItem': 'FWTAExhibitRow', 'OpenBook': 'FWTABookRow',
-                 'OpenStation': 'FWTAStationRow', 'OpenRide': 'FWTARideRow', 'StartTour': None, 'OpenBadges': None}
+                 'OpenStation': 'FWTAStationRow', 'OpenRide': 'FWTARideRow', 'StartTour': None, 'OpenBadges': None,
+                 'OpenHunt': None, 'OpenQuiz': 'FWTATalkRow', 'OpenCourse': 'FWTATalkRow', 'StartTalk': 'FWTATalkRow'}
 
 
 def rule_row(name, order, pattern, answer, max_words=0, staff_only=(), staff_not=(), action='None', arg='None',
