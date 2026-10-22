@@ -107,10 +107,10 @@ namespace
 	void WaxFlatFingers(FWTAHandPose& Pose)
 	{
 		static const FVector Flat[4][3] = {
-			{ FVector(-3.2, -6.4, 30.9), FVector(-3.4, -5.1, 12.3), FVector(0.0, 0.0, 1.2) },
-			{ FVector(-2.1, -4.2, 20.4), FVector(-7.7, -11.4, 27.4), FVector(0.0, 0.0, 7.1) },
-			{ FVector(-1.9, -3.8, 18.6), FVector(-6.1, -9.0, 21.7), FVector(0.0, 0.0, 7.3) },
-			{ FVector(-2.6, -5.2, 25.1), FVector(-4.2, -6.3, 15.0), FVector(0.0, 0.0, 5.0) },
+			{ FVector(-1.3, -2.7, 12.9), FVector(-5.8, -8.5, 20.5), FVector(0.0, 0.0, 5.0) },
+			{ FVector(-0.5, -1.1, 5.1), FVector(-9.6, -14.3, 34.3), FVector(0.0, 0.0, 10.2) },
+			{ FVector(-0.5, -1.1, 5.2), FVector(-7.7, -11.4, 27.3), FVector(0.0, 0.0, 10.6) },
+			{ FVector(-1.3, -2.6, 12.8), FVector(-5.6, -8.3, 19.9), FVector(0.0, 0.0, 8.7) },
 		};
 		for (int32 f = 0; f < 4; ++f)
 		{
@@ -137,13 +137,13 @@ namespace
 		static TMap<FName, FWaxGrip> Grips;
 		if (Grips.Num() == 0)
 		{
-			Grips.Add(FName(TEXT("phone")),     WaxSlabGrip(2.58f, FVector(-12.7, -17.8, -2.4), FVector(20.2, -20.2, -20.2), FVector(15.4, -15.4, -15.4)));
-			Grips.Add(FName(TEXT("tablet")),    WaxSlabGrip(2.47f, FVector(-24.7, -8.9, -4.3), FVector(21.1, -21.1, -21.1), FVector(15.7, -15.7, -15.7)));
-			Grips.Add(FName(TEXT("clipboard")), WaxSlabGrip(2.60f, FVector(-26.2, -7.7, -4.5), FVector(21.3, -21.3, -21.3), FVector(15.7, -15.7, -15.7)));
-			Grips.Add(FName(TEXT("book")),      WaxSlabGrip(2.50f, FVector(-17.3, 3.9, -12.7), FVector(20.4, -20.4, -20.4), FVector(21.8, -21.8, -21.8)));
+			Grips.Add(FName(TEXT("phone")),     WaxSlabGrip(2.58f, FVector(-10.7, -7.8, -8.2), FVector(20.9, -20.9, -20.9), FVector(15.7, -15.7, -15.7)));
+			Grips.Add(FName(TEXT("tablet")),    WaxSlabGrip(2.47f, FVector(-28.0, 7.7, -8.9), FVector(22.6, -22.6, -22.6), FVector(16.0, -16.0, -16.0)));
+			Grips.Add(FName(TEXT("clipboard")), WaxSlabGrip(2.60f, FVector(-29.5, 9.2, -8.9), FVector(22.9, -22.9, -22.9), FVector(16.0, -16.0, -16.0)));
+			Grips.Add(FName(TEXT("book")),      WaxSlabGrip(2.50f, FVector(-35.4, 27.8, -11.9), FVector(12.9, -12.9, -12.9), FVector(18.3, -18.3, -18.3)));
 			// the box is carried at the chest; in a hand it would rest on the fingers like a slab
-			Grips.Add(FName(TEXT("box")),       WaxSlabGrip(2.50f, FVector(-24.7, -8.9, -4.3), FVector(21.1, -21.1, -21.1), FVector(15.7, -15.7, -15.7)));
-			FWaxGrip Headset = WaxSlabGrip(0.f, FVector(-9.5, -15.2, -5.9), FVector(15.5, -15.5, -15.5), FVector(11.3, -11.3, -11.3));
+			Grips.Add(FName(TEXT("box")),       WaxSlabGrip(2.50f, FVector(-28.0, 7.7, -8.9), FVector(22.6, -22.6, -22.6), FVector(16.0, -16.0, -16.0)));
+			FWaxGrip Headset = WaxSlabGrip(0.f, FVector(-5.4, -7.7, -11.8), FVector(15.7, -15.7, -15.7), FVector(11.2, -11.2, -11.2));
 			Headset.bHang = true;
 			Headset.HangPoint = FVector(-12.f, 0.f, 10.6f);     // the top strap's top: 12 cm behind the visor, 10.6 above the band
 			Headset.HangTangent = FVector::ForwardVector;      // the top strap runs front to back

@@ -1,9 +1,9 @@
 """Design the Wax Hall holds: how a reenactor's hand closes on each prop (World/WTAWaxStageActor.cpp, the
 FWaxGrip table) - numbers, not guesses.
 
-Everything is in the stage's palm frame (PalmFrame): +X along the fingers from the wrist toward the middle
-knuckle, +Y out of the palm on the thumb's side, +Z across the palm, the origin 7 cm along the fingers from the
-wrist; centimetres; the right hand (the stage mirrors the left in Z). palm.json (probe_palm.py) holds the
+Everything is in the stage's palm frame (PalmFrame, from the hand bone's own axes): +X along the fingers from
+the wrist, +Y out of the palm, +Z across the palm toward the little finger, the origin 7 cm along the fingers from
+the wrist; centimetres; the right hand (the stage mirrors the left in Z). palm.json (probe_palm.py) holds the
 MetaHuman body's finger joints in that frame from its reference pose, each with its own axes, and the props
 are read from the prepared HandProps.glb (bl/props.py).
 
