@@ -7,8 +7,10 @@ machine: Tools/win/setup_project.ps1 (import_meshes, surfaces, data_tables, buil
     python3 build_client.py --client clients/xrlibraries            # everything (Blender's bpy must import)
     python3 build_client.py --client clients/acme --only screens,props,data
 
-Steps, in order: textures (the friezes), screens, props, seats, library, museum, exterior, data, prepare, ini.
-A client pack is a copy of clients/xrlibraries with its own words and content folder; the campus is the same.
+Steps, in order: textures (the friezes), screens, slides (the talks' slides), props, seats, library, museum,
+exterior, data, prepare, voices (the talks read aloud; needs the Kokoro model, skipped when it is not there), ini.
+A client pack is a copy of clients/xrlibraries with its own words and content folder (and its own talks.json for the
+talks and classes); the campus is the same.
 """
 import argparse
 import json
@@ -24,6 +26,7 @@ PY = sys.executable
 STEPS = [
     ("textures", [PY, "bl/textures.py", "frieze"]),
     ("screens", [PY, "bl/screens.py"]),
+    ("slides", [PY, "bl/slides.py"]),
     ("props", [PY, "bl/props.py"]),
     ("seats", [PY, "bl/seats.py"]),
     ("library", [PY, "bl/library.py", "--ue"]),
@@ -32,8 +35,10 @@ STEPS = [
     ("exterior", [PY, "bl/exterior.py"]),
     ("data", [PY, "unreal/Pipeline/data/build_data.py"]),
     ("prepare", [PY, "unreal/Pipeline/blender/prepare_for_unreal.py", "--", "HandProps", "Seats", "ReadingRoom", "Museum", "Outside"]),
+    ("voices", [PY, "unreal/Tools/voice/make_talk_voices.py"]),
     ("ini", None),
 ]
+OPTIONAL = {"voices"}      # a failure here does not stop the build (the slides still run on their own clock)
 
 
 def write_ini(pack):
@@ -83,9 +88,9 @@ def main():
         with open(log, "w", encoding="utf-8") as fh:
             proc = subprocess.run(cmd, cwd=ROOT, env=env, stdout=fh, stderr=subprocess.STDOUT)
         ok = proc.returncode == 0
-        results.append((name, ok, os.path.relpath(log, ROOT), time.time() - t0))
-        print("%-15s %s  %5.0f s  %s" % (name, "ok " if ok else "FAILED", time.time() - t0, os.path.relpath(log, ROOT)), flush=True)
-        if not ok:
+        results.append((name, ok or name in OPTIONAL, os.path.relpath(log, ROOT), time.time() - t0))
+        print("%-15s %s  %5.0f s  %s" % (name, "ok " if ok else ("skipped" if name in OPTIONAL else "FAILED"), time.time() - t0, os.path.relpath(log, ROOT)), flush=True)
+        if not ok and name not in OPTIONAL:
             break
     failed = [r for r in results if not r[1]]
     print("done:", "all %d steps ok" % len(results) if not failed else "%s failed, see its log" % failed[0][0], flush=True)

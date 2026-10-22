@@ -43,6 +43,7 @@
 class AWTACharacter;
 class UInputAction;
 class UInputMappingContext;
+class UWTACertificateWidget;
 class UWTAChatWidget;
 class UWTAHudWidget;
 class UWTAInteractionComponent;
@@ -83,6 +84,10 @@ public:
 	/** Intro / pause menu. */
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
 	TObjectPtr<UWTAMenuWidget> Menu;
+
+	/** The certificate a passed class shows (made on first use, replaced each time). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
+	TObjectPtr<UWTACertificateWidget> Certificate;
 
 	// --- Input objects (created in code, see the header comment) -----------
 
@@ -178,6 +183,18 @@ public:
 	/** Open the chat with DT_Staff[StaffId] (greets once per staff, shows the chips). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void OpenStaffChat(FName StaffId);
+
+	/** Open a class's quiz (DT_Talks[TalkId].Quiz) from its first question. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void OpenQuiz(FName TalkId);
+
+	/** The class is passed: keep the certificate (progress, the row's badge) and show it made out to Name. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowCertificate(FName TalkId, const FString& Name);
+
+	/** Today, the way a certificate writes it ("22 October 2026"). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	static FString CertificateDate();
 
 	/** Close the top-most open thing (Menu, Chat, Panel, then end the tour). Returns true if something closed. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")

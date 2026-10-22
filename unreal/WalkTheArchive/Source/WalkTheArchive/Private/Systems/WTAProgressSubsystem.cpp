@@ -126,6 +126,83 @@ void UWTAProgressSubsystem::NoteWaxScene(FName SceneId)
 	CheckBadges();
 }
 
+void UWTAProgressSubsystem::NoteTalkHeard(FName TalkId)
+{
+	if (TalkId.IsNone() || SaveData == nullptr)
+	{
+		return;
+	}
+	if (!SaveData->TalksHeard.Contains(TalkId))
+	{
+		SaveData->TalksHeard.Add(TalkId);
+		Save();
+	}
+	AwardBadge(WTABadge::Listener());
+}
+
+void UWTAProgressSubsystem::NoteCertificate(FName TalkId, const FString& Name)
+{
+	if (TalkId.IsNone() || SaveData == nullptr)
+	{
+		return;
+	}
+	const int32 Index = SaveData->Certificates.IndexOfByKey(TalkId);
+	if (Index == INDEX_NONE)
+	{
+		SaveData->Certificates.Add(TalkId);
+		SaveData->CertificateNames.Add(Name);
+	}
+	else if (SaveData->CertificateNames.IsValidIndex(Index))
+	{
+		SaveData->CertificateNames[Index] = Name;
+	}
+	if (!Name.IsEmpty())
+	{
+		SaveData->VisitorName = Name;
+	}
+	Save();
+	const UWTAContentSubsystem* Content = GetGameInstance() ? GetGameInstance()->GetSubsystem<UWTAContentSubsystem>() : nullptr;
+	const FWTATalkRow* Row = Content != nullptr ? Content->FindTalk(TalkId) : nullptr;
+	if (Row != nullptr && !Row->BadgeId.IsNone())
+	{
+		AwardBadge(Row->BadgeId);
+	}
+}
+
+bool UWTAProgressSubsystem::HasHeardTalk(FName TalkId) const
+{
+	return SaveData != nullptr && SaveData->TalksHeard.Contains(TalkId);
+}
+
+bool UWTAProgressSubsystem::HasCertificate(FName TalkId) const
+{
+	return SaveData != nullptr && SaveData->Certificates.Contains(TalkId);
+}
+
+FString UWTAProgressSubsystem::CertificateName(FName TalkId) const
+{
+	if (SaveData == nullptr)
+	{
+		return FString();
+	}
+	const int32 Index = SaveData->Certificates.IndexOfByKey(TalkId);
+	return SaveData->CertificateNames.IsValidIndex(Index) ? SaveData->CertificateNames[Index] : FString();
+}
+
+FString UWTAProgressSubsystem::GetVisitorName() const
+{
+	return SaveData != nullptr ? SaveData->VisitorName : FString();
+}
+
+void UWTAProgressSubsystem::SetVisitorName(const FString& Name)
+{
+	if (SaveData != nullptr && SaveData->VisitorName != Name)
+	{
+		SaveData->VisitorName = Name;
+		Save();
+	}
+}
+
 void UWTAProgressSubsystem::NoteDistance(float Cm)
 {
 	if (SaveData == nullptr || !FMath::IsFinite(Cm) || Cm <= 0.f)

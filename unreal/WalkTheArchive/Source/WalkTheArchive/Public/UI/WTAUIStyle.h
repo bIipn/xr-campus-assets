@@ -72,6 +72,15 @@ namespace WTAStyle
 		return FCoreStyle::GetDefaultFontStyle(FName(TEXT("Mono")), Size);
 	}
 
+	/**
+	 * The campus's own faces, loaded from <project>/Fonts (committed TTFs, staged with the build): Cormorant
+	 * Garamond for the certificate's and the slides' serif, Great Vibes for a name written by hand. Roboto when a
+	 * file is missing, so nothing depends on them.
+	 */
+	WALKTHEARCHIVE_API FSlateFontInfo Serif(int32 Size, bool bBold = false);
+	WALKTHEARCHIVE_API FSlateFontInfo SerifItalic(int32 Size);
+	WALKTHEARCHIVE_API FSlateFontInfo Script(int32 Size);
+
 	/** Small caps for kickers and section labels: bold Roboto with wide letter spacing (museum-label style). */
 	inline FSlateFontInfo Kicker(int32 Size)
 	{

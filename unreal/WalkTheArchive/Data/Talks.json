@@ -1,0 +1,496 @@
+[
+ {
+  "Name": "welcome",
+  "Venue": "forecourt",
+  "Kind": "talk",
+  "Title": "Welcome to the XR Libraries Campus",
+  "Subtitle": "A short talk in the forecourt theatre",
+  "Speaker": "Lena Ortiz",
+  "SpeakerShort": "Lena",
+  "SpeakerRole": "Campus docent",
+  "Person": "wax-2018a-dir",
+  "Staff": "None",
+  "Slides": [
+   {
+    "Title": "Welcome to the XR Libraries Campus",
+    "Points": [
+     "A short talk in the forecourt theatre"
+    ],
+    "Say": "Hello, and welcome! Find a seat in the theatre. I'm Lena, one of the campus docents, and in the next few minutes I'll show you what this place is and where to go first.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_01.T_Slide_welcome_01",
+    "Clip": "welcome-01",
+    "Seconds": 14.1
+   },
+   {
+    "Title": "One campus, built from a library's story",
+    "Points": [
+     "Virtual, augmented and mixed reality in libraries and schools",
+     "Every exhibit comes from public sources",
+     "Sit down almost anywhere to read and listen"
+    ],
+    "Say": "This campus tells the story of XR Libraries, which brings virtual, augmented and mixed reality into libraries and schools. Every exhibit here is built from public sources, and you can sit down and listen almost anywhere.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_02.T_Slide_welcome_02",
+    "Clip": "welcome-02",
+    "Seconds": 14.8
+   },
+   {
+    "Title": "Since 2016",
+    "Points": [
+     "More than 200 VR systems in California public libraries",
+     "More than 90 California libraries by 2017, then Nevada",
+     "More than 1,100 headsets in Nevada's libraries"
+    ],
+    "Say": "XR Libraries began in 2016 with more than two hundred virtual reality systems in California public libraries. By 2017 the program reached more than ninety California libraries, and Nevada followed, where its homepage now counts more than eleven hundred headsets.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_03.T_Slide_welcome_03",
+    "Clip": "welcome-03",
+    "Seconds": 16.4
+   },
+   {
+    "Title": "The museum, behind me",
+    "Points": [
+     "Gallery 1: headsets in libraries",
+     "Gallery 2: learning that works",
+     "Gallery 3: stories worth saving",
+     "The Wax Hall: twelve scenes that come to life"
+    ],
+    "Say": "Behind me is the museum. Three galleries walk you through headsets in libraries, learning that works, and stories worth saving. At the far end, the Wax Hall acts out the whole story in twelve scenes that come to life when you walk up.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_04.T_Slide_welcome_04",
+    "Clip": "welcome-04",
+    "Seconds": 17.5
+   },
+   {
+    "Title": "The Reading Room",
+    "Points": [
+     "Books you can open and read",
+     "Rosa, the reference librarian, answers your questions",
+     "A spiral stair to the gallery"
+    ],
+    "Say": "To the left of the lobby is the reading room, with books you can open and read, and Rosa, the reference librarian, who will help you find anything.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_05.T_Slide_welcome_05",
+    "Clip": "welcome-05",
+    "Seconds": 11.8
+   },
+   {
+    "Title": "The Workshop School",
+    "Points": [
+     "Paint in the air, run a lab test, build a model",
+     "Room 104 is the XR Classroom: take a class",
+     "Pass the quiz and earn a certificate"
+    ],
+    "Say": "To the right is the Workshop School. Paint in the air, run a lab test, build a model, and in Room 104 you can take a real class, finish with a short quiz, and earn a certificate with your name on it.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_06.T_Slide_welcome_06",
+    "Clip": "welcome-06",
+    "Seconds": 17.2
+   },
+   {
+    "Title": "Talks all day",
+    "Points": [
+     "The auditorium: through the lobby, Hall R, then north",
+     "The forecourt theatre: right here",
+     "Sit down and the next talk begins"
+    ],
+    "Say": "Through the lobby and the hall on the right is the new auditorium, where talks run all day. And whenever you're outside, this theatre is open: just sit down and the next talk begins.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_07.T_Slide_welcome_07",
+    "Clip": "welcome-07",
+    "Seconds": 14.1
+   },
+   {
+    "Title": "Time for recess",
+    "Points": [
+     "The Recess Yard, behind the school",
+     "A coaster, a sky drop and an ocean dive",
+     "Hidden XR tokens to find"
+    ],
+    "Say": "And when you need a break, the Recess Yard behind the school has a coaster, a sky drop and an ocean dive, plus hidden XR tokens to find.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_08.T_Slide_welcome_08",
+    "Clip": "welcome-08",
+    "Seconds": 11.8
+   },
+   {
+    "Title": "Enjoy your visit",
+    "Points": [
+     "Press M for the map",
+     "Sit down anywhere to read and listen",
+     "Ask any of the staff a question"
+    ],
+    "Say": "That's it from me. Press M for the map any time, sit down whenever you like, and enjoy your visit.",
+    "Slide": "/Game/WTA/Slides/T_Slide_welcome_09.T_Slide_welcome_09",
+    "Clip": "welcome-09",
+    "Seconds": 8.7
+   }
+  ],
+  "Quiz": [],
+  "PassCount": 0,
+  "Certificate": {
+   "Title": "",
+   "Line": "",
+   "Place": "",
+   "Signer": "",
+   "SignerRole": "",
+   "Org": "",
+   "Note": ""
+  },
+  "BadgeId": "None"
+ },
+ {
+  "Name": "next-reality",
+  "Venue": "auditorium",
+  "Kind": "talk",
+  "Title": "Libraries and the Next Reality",
+  "Subtitle": "How XR came to public libraries",
+  "Speaker": "Theo Grant",
+  "SpeakerShort": "Theo",
+  "SpeakerRole": "Guest speaker",
+  "Person": "wax-2019a-lib",
+  "Staff": "None",
+  "Slides": [
+   {
+    "Title": "Libraries and the Next Reality",
+    "Points": [
+     "How XR came to public libraries"
+    ],
+    "Say": "Good afternoon, and thank you for coming. Today's talk is about how virtual and augmented reality found a home in public libraries, and what that means for the people who walk through their doors.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_01.T_Slide_next_reality_01",
+    "Clip": "next-reality-01",
+    "Seconds": 14.1
+   },
+   {
+    "Title": "Why libraries?",
+    "Points": [
+     "Free, public and close to home",
+     "Equitable access to immersive technology",
+     "Staff who teach, not just lend"
+    ],
+    "Say": "Why libraries? Because a library is free, public and close to home. XR Libraries' stated goal is equitable access to immersive technology for all communities, and libraries already have the one thing a headset can't supply: people who teach.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_02.T_Slide_next_reality_02",
+    "Clip": "next-reality-02",
+    "Seconds": 16.0
+   },
+   {
+    "Title": "2016: the first stations",
+    "Points": [
+     "The California Virtual Reality Experience",
+     "VR stations piloted in Marin County's libraries",
+     "More than 200 systems in California public libraries"
+    ],
+    "Say": "It began in 2016 with the California Virtual Reality Experience, which piloted VR stations in Marin County's libraries. More than two hundred VR systems went into California public libraries, which the program's website calls the largest VR installation in public libraries.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_03.T_Slide_next_reality_03",
+    "Clip": "next-reality-03",
+    "Seconds": 16.8
+   },
+   {
+    "Title": "2017: Nevada follows",
+    "Points": [
+     "22 headsets in 11 libraries",
+     "Science and technology content",
+     "A model from Marin County"
+    ],
+    "Say": "In 2017, Nevada's state library put its first headsets in public libraries: twenty-two headsets in eleven libraries, with science and technology content, following a program at the Marin County Free Library.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_04.T_Slide_next_reality_04",
+    "Clip": "next-reality-04",
+    "Seconds": 12.9
+   },
+   {
+    "Title": "Playbooks, not just apps",
+    "Points": [
+     "More than 300 XR apps catalogued",
+     "Astronomy and history to mindfulness and music",
+     "Themed playbooks, pre-installed"
+    ],
+    "Say": "A headset is only as good as what's on it. XR Libraries catalogs more than three hundred apps, from astronomy and history to mindfulness and music, and bundles them into themed playbooks that come pre-installed on library headsets.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_05.T_Slide_next_reality_05",
+    "Clip": "next-reality-05",
+    "Seconds": 15.6
+   },
+   {
+    "Title": "Careers you can try on",
+    "Points": [
+     "Project SANDI, from 2020",
+     "A $13.8 million federal grant",
+     "Trades, healthcare, IT, manufacturing, logistics"
+    ],
+    "Say": "During the 2020 downturn, Project SANDI used a thirteen point eight million dollar federal grant to let people explore careers in VR: skilled trades, healthcare, IT, advanced manufacturing and logistics.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_06.T_Slide_next_reality_06",
+    "Clip": "next-reality-06",
+    "Seconds": 12.5
+   },
+   {
+    "Title": "Training where people live",
+    "Points": [
+     "A 12-week dialysis technician course",
+     "Finished from a town of about 300",
+     "No travel to a training center"
+    ],
+    "Say": "Training can reach people where they live. A remote twelve-week dialysis technician certification let a single mother in a town of about three hundred people train without traveling, pass her certification, and set her sights on nursing.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_07.T_Slide_next_reality_07",
+    "Clip": "next-reality-07",
+    "Seconds": 15.2
+   },
+   {
+    "Title": "Stories worth saving",
+    "Points": [
+     "Students rebuild their own history",
+     "A tribe keeps its language and its data",
+     "Children's art kept in 3D"
+    ],
+    "Say": "XR also saves stories. Marin City students rebuilt the World War Two shipyards of their own neighborhood, a Cheyenne project preserves language and cultural knowledge while the tribe keeps control of its data, and art by children in Ukraine lives on in an immersive exhibition.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_08.T_Slide_next_reality_08",
+    "Clip": "next-reality-08",
+    "Seconds": 18.3
+   },
+   {
+    "Title": "1,100 headsets and counting",
+    "Points": [
+     "Nevada's community college and public libraries",
+     "Installed with Lifeliqe",
+     "Counted on the XR Libraries homepage"
+    ],
+    "Say": "In Nevada, XR Libraries and Lifeliqe installed headsets in community college and public libraries, and the XR Libraries homepage now counts more than eleven hundred of them.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_09.T_Slide_next_reality_09",
+    "Clip": "next-reality-09",
+    "Seconds": 11.4
+   },
+   {
+    "Title": "What comes next",
+    "Points": [
+     "Your library's own stories, in 3D",
+     "Classes that end in a certificate",
+     "A campus like this one, for anyone"
+    ],
+    "Say": "So what comes next? Libraries telling their own stories in 3D, classes that end in a certificate, and campuses like this one that any library can fill with its own collection. Thank you for listening. Room 104 has a class starting whenever you sit down.",
+    "Slide": "/Game/WTA/Slides/T_Slide_next_reality_10.T_Slide_next_reality_10",
+    "Clip": "next-reality-10",
+    "Seconds": 18.3
+   }
+  ],
+  "Quiz": [],
+  "PassCount": 0,
+  "Certificate": {
+   "Title": "",
+   "Line": "",
+   "Place": "",
+   "Signer": "",
+   "SignerRole": "",
+   "Org": "",
+   "Note": ""
+  },
+  "BadgeId": "None"
+ },
+ {
+  "Name": "intro-vr",
+  "Venue": "classroom",
+  "Kind": "class",
+  "Title": "Intro to Virtual Reality",
+  "Subtitle": "Room 104 · XR Classroom",
+  "Speaker": "Mr. Hale",
+  "SpeakerShort": "Mr. Hale",
+  "SpeakerRole": "Workshop teacher",
+  "Person": "hale",
+  "Staff": "hale",
+  "Slides": [
+   {
+    "Title": "Intro to Virtual Reality",
+    "Points": [
+     "Room 104 · XR Classroom"
+    ],
+    "Say": "Welcome to class! I'm Mr. Hale. In the next few minutes you'll learn what virtual reality is, how a headset works, and how to use one safely. Stay for the quiz at the end and you'll leave with a certificate.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_01.T_Slide_intro_vr_01",
+    "Clip": "intro-vr-01",
+    "Seconds": 16.4
+   },
+   {
+    "Title": "VR, AR and MR",
+    "Points": [
+     "Virtual reality: a whole new world replaces the room",
+     "Augmented reality: digital things on top of the real world",
+     "Mixed reality: digital things that know where your room is"
+    ],
+    "Say": "First, three words you'll hear a lot. Virtual reality replaces the room around you with a whole new world. Augmented reality puts digital things on top of the real world, like a phone app. Mixed reality goes one step further: the digital things know where your walls and tables are.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_02.T_Slide_intro_vr_02",
+    "Clip": "intro-vr-02",
+    "Seconds": 20.2
+   },
+   {
+    "Title": "Inside a headset",
+    "Points": [
+     "Two small screens, one for each eye",
+     "Lenses make the screens fill your view",
+     "Each eye sees a slightly different picture: depth"
+    ],
+    "Say": "Inside a headset are two small screens, one for each eye, and lenses that make them fill your view. Each eye gets a slightly different picture, the same way your eyes do in real life, and that is what makes things look deep.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_03.T_Slide_intro_vr_03",
+    "Clip": "intro-vr-03",
+    "Seconds": 17.5
+   },
+   {
+    "Title": "Tracking: 3DoF and 6DoF",
+    "Points": [
+     "3DoF: it knows when you turn your head",
+     "6DoF: it also knows when you step, lean or crouch",
+     "Inside-out tracking: cameras on the headset watch the room"
+    ],
+    "Say": "Headsets track you. Three degrees of freedom means it knows when you turn your head. Six degrees of freedom means it also knows when you step, lean or crouch. Most standalone headsets today use inside-out tracking: cameras on the headset watch the room.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_04.T_Slide_intro_vr_04",
+    "Clip": "intro-vr-04",
+    "Seconds": 17.5
+   },
+   {
+    "Title": "Standalone or PC VR",
+    "Points": [
+     "Standalone: the computer is inside the headset",
+     "PC VR: linked to a gaming computer",
+     "Most library programs use standalone headsets"
+    ],
+    "Say": "A standalone headset has its computer built in, so there are no cables. PC VR links the headset to a gaming computer for bigger, more detailed worlds. Most library programs use standalone headsets, like Meta Quest and Pico.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_05.T_Slide_intro_vr_05",
+    "Clip": "intro-vr-05",
+    "Seconds": 15.6
+   },
+   {
+    "Title": "Smooth and sharp",
+    "Points": [
+     "The picture is redrawn 72 to 120 times a second",
+     "The faster it follows your head, the more comfortable you are",
+     "A wide view feels natural"
+    ],
+    "Say": "To feel real, the picture has to be smooth. Headsets redraw the image seventy-two to one hundred and twenty times a second, and the faster the picture follows your head, the more comfortable you will be.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_06.T_Slide_intro_vr_06",
+    "Clip": "intro-vr-06",
+    "Seconds": 14.8
+   },
+   {
+    "Title": "Comfort first",
+    "Points": [
+     "Start seated, in short sessions",
+     "Teleport or snap turn if smooth motion feels off",
+     "Feel unwell? Take the headset off right away"
+    ],
+    "Say": "Some people feel queasy in VR, especially when the world moves but their body does not. Start seated with short sessions, use teleport or snap turning if smooth motion bothers you, and take the headset off right away if you feel unwell.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_07.T_Slide_intro_vr_07",
+    "Clip": "intro-vr-07",
+    "Seconds": 17.2
+   },
+   {
+    "Title": "Safety: draw your boundary",
+    "Points": [
+     "Draw a boundary before you play",
+     "Clear the space of chairs, tables and people",
+     "Wrist straps on the controllers"
+    ],
+    "Say": "Before you play, draw a boundary, sometimes called a guardian. The headset shows a wall when you get close to the edge. Clear the space of chairs, tables and people, and slip the controller straps over your wrists.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_08.T_Slide_intro_vr_08",
+    "Clip": "intro-vr-08",
+    "Seconds": 15.6
+   },
+   {
+    "Title": "Sharing headsets",
+    "Points": [
+     "Wipe the face pad and controllers between users",
+     "Lenses: only a dry microfiber cloth",
+     "Keep the lenses out of direct sunlight"
+    ],
+    "Say": "Libraries share headsets, so clean them between users: wipe the face pad and the controllers, and polish the lenses only with a dry microfiber cloth. And keep the lenses out of direct sunlight: they focus it like a magnifying glass and can burn the screens.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_09.T_Slide_intro_vr_09",
+    "Clip": "intro-vr-09",
+    "Seconds": 18.3
+   },
+   {
+    "Title": "What VR is good for",
+    "Points": [
+     "Visit places you can't reach",
+     "Practice skills where mistakes are safe",
+     "Tell your community's own stories"
+    ],
+    "Say": "So what is VR good for? Visiting places you can't reach, practicing skills where mistakes are safe, and telling your community's own stories. That's the lesson. Now let's see what you remember: the quiz is on your screen.",
+    "Slide": "/Game/WTA/Slides/T_Slide_intro_vr_10.T_Slide_intro_vr_10",
+    "Clip": "intro-vr-10",
+    "Seconds": 15.6
+   }
+  ],
+  "Quiz": [
+   {
+    "Question": "Which one replaces the whole room around you with a new world?",
+    "Options": [
+     "Augmented reality",
+     "Virtual reality",
+     "Mixed reality",
+     "A phone camera"
+    ],
+    "Answer": 1,
+    "Why": "Virtual reality replaces what you see. Augmented and mixed reality add digital things to the real world.",
+    "Clip": "intro-vr-01"
+   },
+   {
+    "Question": "Why does each eye see a slightly different picture in a headset?",
+    "Options": [
+     "To save battery",
+     "To give a sense of depth",
+     "To make the text bigger",
+     "Because the lenses are different"
+    ],
+    "Answer": 1,
+    "Why": "Two slightly different views are how your brain sees depth, in real life and in VR.",
+    "Clip": "intro-vr-02"
+   },
+   {
+    "Question": "What does six degrees of freedom (6DoF) add to 3DoF?",
+    "Options": [
+     "Better sound",
+     "Tracking when you step, lean or crouch",
+     "A wider screen",
+     "A longer battery"
+    ],
+    "Answer": 1,
+    "Why": "3DoF follows your head turning. 6DoF also follows you moving through space.",
+    "Clip": "intro-vr-03"
+   },
+   {
+    "Question": "What should you do before you start playing?",
+    "Options": [
+     "Turn the brightness all the way up",
+     "Draw a boundary and clear the space",
+     "Stand on a chair for a better view",
+     "Hold the controllers by their straps"
+    ],
+    "Answer": 1,
+    "Why": "The boundary warns you before you walk into something, and a clear space keeps you and others safe.",
+    "Clip": "intro-vr-04"
+   },
+   {
+    "Question": "Smooth motion makes you feel queasy. What helps?",
+    "Options": [
+     "Spin around faster",
+     "Teleport or snap turn, and take a break",
+     "Play longer to get used to it",
+     "Close one eye"
+    ],
+    "Answer": 1,
+    "Why": "Teleport and snap turning cut the mismatch between what you see and what you feel. Stop if you feel unwell.",
+    "Clip": "intro-vr-05"
+   },
+   {
+    "Question": "How should you clean the lenses of a shared headset?",
+    "Options": [
+     "With an alcohol wipe",
+     "With a dry microfiber cloth",
+     "With soap and water",
+     "Leave them in the sun to dry"
+    ],
+    "Answer": 1,
+    "Why": "Lens coatings scratch and dissolve easily: only a dry microfiber cloth, and never direct sunlight on the lenses.",
+    "Clip": "intro-vr-06"
+   }
+  ],
+  "PassCount": 5,
+  "Certificate": {
+   "Title": "Certificate of Completion",
+   "Line": "has completed the class",
+   "Place": "Room 104 · XR Classroom",
+   "Signer": "Mr. Hale",
+   "SignerRole": "Workshop teacher",
+   "Org": "XR Libraries Campus",
+   "Note": "A Walk the Archive campus. A record of learning, not an accredited qualification."
+  },
+  "BadgeId": "certified-vr"
+ }
+]

@@ -36,6 +36,7 @@ OUT_DIR = os.path.join(PIPELINE_DIR, "out")
 MESH_DIR = os.path.join(OUT_DIR, "ue")                                       # <Asset>.glb + manifest.json
 MESH_MANIFEST = os.path.join(MESH_DIR, "manifest.json")
 ART_DIR = os.path.join(OUT_DIR, "campus", "art")                             # <id>.png
+SLIDES_DIR = os.path.join(OUT_DIR, "slides")                                 # <talk>/<nn>.png (bl/slides.py)
 CAMPUS_LIGHTS_JSON = os.path.join(OUT_DIR, "campus", "lights.json")
 READING_ROOM_LIGHTS_JSON = os.path.join(OUT_DIR, "reading_room", "lights.json")
 MUSEUM_LIGHTS_JSON = os.path.join(OUT_DIR, "museum", "lights.json")          # bl/museum.py (the neoclassical museum)
@@ -49,6 +50,7 @@ STRUCTS_JSON = os.path.join(UNREAL_DIR, "contract", "structs.json")
 CONTENT_ROOT = "/Game/WTA"
 CAMPUS_PATH = CONTENT_ROOT + "/Campus"
 ART_PATH = CONTENT_ROOT + "/Art"
+SLIDES_PATH = CONTENT_ROOT + "/Slides"
 DATA_PATH = CONTENT_ROOT + "/Data"
 MAPS_PATH = CONTENT_ROOT + "/Maps"
 MATERIALS_PATH = CONTENT_ROOT + "/Materials"
@@ -90,6 +92,15 @@ def art_asset_name(art_id):
 
 def art_asset_path(art_id):
     return ART_PATH + "/" + art_asset_name(art_id)
+
+
+def slide_asset_name(talk_id, number):
+    """T_Slide_<talk>_<nn> (hyphens as underscores), the name DT_Talks rows point at."""
+    return "T_Slide_%s_%02d" % (talk_id.replace("-", "_"), int(number))
+
+
+def slide_asset_path(talk_id, number):
+    return SLIDES_PATH + "/" + slide_asset_name(talk_id, number)
 
 
 def table_asset_path(table):

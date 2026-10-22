@@ -48,6 +48,14 @@
     "FWTAStationRow": {"row": true, "table": "DT_Stations", "file": "Stations.json", "doc": "Hands-on stations (sieve, titration, pendulum, bench, diorama). Steps = step titles; Panel = the intro paragraphs shown in the station panel.",
       "fields": [["Room", "Name"], ["Kicker", "Text"], ["Title", "Text"], ["Subtitle", "Text"], ["GoLabel", "Text"], ["Steps", "Array<Text>"], ["Panel", "Array<Text>"], ["bUsesHands", "Bool"], ["Location", "Vector"], ["View", "View"]]},
     "FWTARideRow": {"row": true, "table": "DT_Rides", "file": "Rides.json",
-      "fields": [["DisplayName", "Text"], ["Kicker", "Text"], ["CardText", "Text"], ["CardNote", "Text"], ["About", "Text"], ["Stats", "Text"], ["Safety", "Text"], ["BadgeId", "Name"], ["Location", "Vector"], ["ExitView", "View"]]}
+      "fields": [["DisplayName", "Text"], ["Kicker", "Text"], ["CardText", "Text"], ["CardNote", "Text"], ["About", "Text"], ["Stats", "Text"], ["Safety", "Text"], ["BadgeId", "Name"], ["Location", "Vector"], ["ExitView", "View"]]},
+    "FWTATalkSlide": {"row": false, "doc": "One slide of a talk or class: what the screens show while the speaker says Say. Slide = the slide image (/Game/WTA/Slides/T_Slide_<talk>_<nn>, bl/slides.py); Clip = the line's voice id (/Game/WTA/Audio/VO_talk_<clip>); Seconds = how long the slide stays up when there is no clip.",
+      "fields": [["Title", "Text"], ["Points", "Array<Text>"], ["Say", "Text"], ["Slide", "SoftTexture"], ["Clip", "Name"], ["Seconds", "Float"]]},
+    "FWTAQuizQuestion": {"row": false, "doc": "One multiple-choice question of a class's quiz. Answer = index into Options; Why = shown after answering; Clip = voice id (VO_quiz_<clip>).",
+      "fields": [["Question", "Text"], ["Options", "Array<Text>"], ["Answer", "Int"], ["Why", "Text"], ["Clip", "Name"]]},
+    "FWTACertificate": {"row": false, "doc": "The certificate a class gives for passing its quiz: the visitor's name goes between Title and Line.",
+      "fields": [["Title", "Text"], ["Line", "Text"], ["Place", "Text"], ["Signer", "Text"], ["SignerRole", "Text"], ["Org", "Text"], ["Note", "Text"]]},
+    "FWTATalkRow": {"row": true, "table": "DT_Talks", "file": "Talks.json", "doc": "Talks and classes (Pipeline/content/talks.json, or the client pack's own). Venue = the room the builders made (screen__<venue>, spot__<venue>_f<yaw>, seat__<venue>_*). Kind = talk | class. Person = the MetaHuman who speaks (a wta_people id); Staff = a staff member standing in as the speaker (hidden on their rounds while teaching). A class has a Quiz; answering PassCount questions right earns the Certificate and BadgeId.",
+      "fields": [["Venue", "Name"], ["Kind", "Name"], ["Title", "Text"], ["Subtitle", "Text"], ["Speaker", "Text"], ["SpeakerShort", "Text"], ["SpeakerRole", "Text"], ["Person", "Name"], ["Staff", "Name"], ["Slides", "Array<FWTATalkSlide>"], ["Quiz", "Array<FWTAQuizQuestion>"], ["PassCount", "Int"], ["Certificate", "FWTACertificate"], ["BadgeId", "Name"]]}
   }
 }

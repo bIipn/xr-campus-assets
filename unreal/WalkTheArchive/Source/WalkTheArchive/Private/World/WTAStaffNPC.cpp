@@ -24,6 +24,7 @@
 #include "Animation/AnimSequence.h"
 #include "UObject/ConstructorHelpers.h"
 #include "World/WTAPeopleLibrary.h"
+#include "World/WTAWaxAnimInstance.h"
 
 AWTAStaffNPC::AWTAStaffNPC()
 {
@@ -214,6 +215,58 @@ bool AWTAStaffNPC::IsTalking() const
 {
 	const UWorld* World = GetWorld();
 	return World != nullptr && TalkUntil > World->GetTimeSeconds();
+}
+
+AActor* AWTAStaffNPC::GetMetaHuman() const
+{
+	return MetaHumanChild != nullptr ? MetaHumanChild->GetChildActor() : nullptr;
+}
+
+void AWTAStaffNPC::BeginTeaching(const FVector& Feet, float Yaw)
+{
+	if (!bTeaching)
+	{
+		HomeLocation = GetActorLocation();
+		HomeRotationBefore = HomeRotation;
+		bTeaching = true;
+		const float HalfHeight = GetCapsuleComponent() != nullptr ? GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 90.f;
+		const FVector Centre = Feet + FVector(0.f, 0.f, HalfHeight + 1.f);
+		if (FVector::DistSquared(Centre, GetActorLocation()) > 1.f)
+		{
+			SetActorLocation(Centre, false, nullptr, ETeleportType::TeleportPhysics);
+		}
+		HomeRotation = FRotator(0.f, Yaw, 0.f);
+		SetActorRotation(HomeRotation);
+	}
+	// Our animation instance on the body: the talk plays its gestures through it.
+	if (USkeletalMeshComponent* Body = UWTAPeopleLibrary::FindBody(GetMetaHuman()))
+	{
+		if (Cast<UWTAWaxAnimInstance>(Body->GetAnimInstance()) == nullptr)
+		{
+			Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+			Body->SetAnimInstanceClass(UWTAWaxAnimInstance::StaticClass());
+		}
+	}
+}
+
+void AWTAStaffNPC::StopTeaching()
+{
+	if (!bTeaching)
+	{
+		return;
+	}
+	bTeaching = false;
+	HomeRotation = HomeRotationBefore;
+	if (FVector::DistSquared(HomeLocation, GetActorLocation()) > 1.f)
+	{
+		SetActorLocation(HomeLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	}
+	SetActorRotation(HomeRotation);
+	// The plain living idle again.
+	if (AActor* Child = GetMetaHuman())
+	{
+		UWTAPeopleLibrary::PlayPose(Child, IdleAnimation.LoadSynchronous(), true, UWTAPeopleLibrary::PersonPhase(StaffId) * 10.f);
+	}
 }
 
 void AWTAStaffNPC::Tick(float DeltaSeconds)

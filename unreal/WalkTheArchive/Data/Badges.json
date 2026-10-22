@@ -73,5 +73,15 @@
   "Name": "historian",
   "DisplayName": "Living Historian",
   "How": "Watch 6 scenes come to life in the Wax Hall"
+ },
+ {
+  "Name": "listener",
+  "DisplayName": "Good Listener",
+  "How": "Hear a talk through to the end, in the auditorium or the forecourt theatre"
+ },
+ {
+  "Name": "certified-vr",
+  "DisplayName": "Certified: Intro to VR",
+  "How": "Pass the Intro to VR quiz in Room 104"
  }
 ]

@@ -20,6 +20,10 @@
 //             check what opens (exhibit card, book, station, ride card, chat, token collected), turn a book's pages,
 //             Esc closes it
 //   wax       stand in front of each Wax Hall scene, press E with nothing under the crosshair: the scene's story opens
+//   talks     every talk and class (DT_Talks): the speaker on the spot and the title slide on the screens; sit on a seat
+//             of its venue, the talk starts (slide 1, the voice reading, a caption); the next slide shows; a class is
+//             run to its end, the quiz opens, every question is answered right, a name is typed, the certificate
+//             shows and saves its picture, the badges arrive; standing up stops it
 //   ui        T starts the tour and walks to the first stop, T walks on, Esc ends it; M places; Enter chat; badges
 //   graphics  the menu's Medium and Epic presets apply (checked), then the levels found at the start come back
 //   fps       average and worst frame time over 3 s at five places
@@ -94,8 +98,10 @@ private:
 	void AddWalkPhase();
 	void AddInteractPhase();
 	void AddWaxPhase();
-	/** Every seat: the crosshair says Sit, E sits the player at the seated eye height with the view clear, Space stands them back up. */
+	/** Every seat (up to a few per room): the crosshair says Sit, E sits the player at the seated eye height with the view clear, Space stands them back up. */
 	void AddSeatsPhase();
+	/** Every talk and class: see the header. */
+	void AddTalksPhase();
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
 	void AddActingPhase();
 	/** Only when named: walks up to a spread of exhibits and checks each one's light rises as you arrive

@@ -25,6 +25,10 @@
 #include "World/WTAStaffNPC.h"
 #include "World/WTAStationActor.h"
 #include "World/WTAStatueActor.h"
+#include "World/WTATalkActor.h"
+#include "UI/WTACertificateWidget.h"
+#include "Components/EditableTextBox.h"
+#include "HAL/FileManager.h"
 #include "World/WTATokenActor.h"
 #include "World/WTAWaxStageActor.h"
 #include "Camera/CameraActor.h"
@@ -422,6 +426,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("seats")))
 	{
 		AddSeatsPhase();
+	}
+	if (Want(TEXT("talks")))
+	{
+		AddTalksPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -2185,10 +2193,31 @@ void UWTAPlayTest::AddSeatsPhase()
 			Seats.Add(*It);
 		}
 	}
-	Seats.Sort([](const AWTASeatActor& A, const AWTASeatActor& B) { return A.GetName() < B.GetName(); });
+	Seats.Sort([](const AWTASeatActor& A, const AWTASeatActor& B) { return A.SeatId.LexicalLess(B.SeatId); });
+	// A few per room: the auditorium and the theatre hold a hundred seats each, built from one chair.
+	constexpr int32 MaxPerRoom = 6;
+	{
+		TMap<FString, int32> PerRoom;
+		TArray<AWTASeatActor*> Kept;
+		for (AWTASeatActor* Seat : Seats)
+		{
+			FString Room, Rest;
+			if (!Seat->SeatId.ToString().Split(TEXT("_"), &Room, &Rest))
+			{
+				Room = Seat->SeatId.ToString();
+			}
+			int32& Count = PerRoom.FindOrAdd(Room);
+			if (Count < MaxPerRoom)
+			{
+				Kept.Add(Seat);
+				++Count;
+			}
+		}
+		Seats = Kept;
+	}
 	Steps.Add({ TEXT("seats start"), [this, Count = Seats.Num()]() -> float
 	{
-		Report(TEXT("seats"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("seats"), FString::Printf(TEXT("%d to sit on"), Count));
+		Report(TEXT("seats"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("seats"), FString::Printf(TEXT("%d to sit on (up to %d a room)"), Count, MaxPerRoom));
 		return 0.f;
 	} });
 	TSet<FString> RoomsShot;
@@ -2941,4 +2970,391 @@ void UWTAPlayTest::AddFacesPhase()
 		}
 		return 0.3f;
 	} });
+}
+
+// ---------------------------------------------------------------------------
+// talks: every talk and class
+// ---------------------------------------------------------------------------
+
+void UWTAPlayTest::AddTalksPhase()
+{
+	TArray<AWTATalkActor*> Talks;
+	for (TActorIterator<AWTATalkActor> It(GetWorld()); It; ++It)
+	{
+		if (*It != nullptr)
+		{
+			Talks.Add(*It);
+		}
+	}
+	Talks.Sort([](const AWTATalkActor& A, const AWTATalkActor& B) { return A.TalkId.LexicalLess(B.TalkId); });
+	Steps.Add({ TEXT("talks start"), [this, Count = Talks.Num()]() -> float
+	{
+		Report(TEXT("talks"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("talks"), FString::Printf(TEXT("%d talks and classes in the level"), Count));
+		return 0.f;
+	} });
+
+	for (AWTATalkActor* Talk : Talks)
+	{
+		const TWeakObjectPtr<AWTATalkActor> Weak(Talk);
+		const FString Id = Talk->TalkId.ToString();
+		const FString Name = FString::Printf(TEXT("talk %s"), *Id);
+		const FString Tag = Id.Replace(TEXT("-"), TEXT("_"));
+		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		const TSharedRef<TWeakObjectPtr<AWTASeatActor>> Seat = MakeShared<TWeakObjectPtr<AWTASeatActor>>();
+
+		// 1. The venue is built: a row, screens, a speaker; the title slide is up. A shot of the speaker at rest.
+		Steps.Add({ Name + TEXT(" venue"), [this, Weak, Name, Ok, Seat, Tag]() -> float
+		{
+			*Ok = false;
+			AWTATalkActor* Target = Weak.Get();
+			if (Target == nullptr)
+			{
+				Report(TEXT("talks"), EResult::Skip, Name, TEXT("gone"));
+				return 0.f;
+			}
+			CloseAll();
+			if (AWTACharacter* Me = Player())
+			{
+				if (Me->IsSeated())
+				{
+					Me->StandUp(false);
+				}
+			}
+			const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+			const FWTATalkRow* Row = Content ? Content->FindTalk(Target->TalkId) : nullptr;
+			if (!Target->HasRow() || Row == nullptr)
+			{
+				Report(TEXT("talks"), EResult::Fail, Name + TEXT(" has a row"), TEXT("no DT_Talks row"));
+				return 0.f;
+			}
+			// one of the venue's seats, the first by name
+			TArray<AWTASeatActor*> Seats;
+			for (TActorIterator<AWTASeatActor> It(GetWorld()); It; ++It)
+			{
+				if (*It != nullptr && AWTATalkActor::VenueOfSeat((*It)->SeatId) == Target->GetVenue())
+				{
+					Seats.Add(*It);
+				}
+			}
+			Seats.Sort([](const AWTASeatActor& A, const AWTASeatActor& B) { return A.SeatId.LexicalLess(B.SeatId); });
+			*Seat = Seats.Num() > 0 ? Seats[Seats.Num() / 2] : nullptr;
+			const AActor* Speaker = Target->GetSpeaker();
+			const bool bScreens = Target->NumScreens() > 0;
+			const bool bSeats = Seats.Num() > 0;
+			*Ok = bScreens && bSeats;
+			Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" venue is built"),
+				FString::Printf(TEXT("'%s' in %s: %d slides, %d screens, %d seats, speaker %s (%s), state %d"), *Row->Title.ToString(),
+					*Target->GetVenue().ToString(), Target->NumSlides(), Target->NumScreens(), Seats.Num(),
+					Speaker != nullptr ? *Speaker->GetName() : TEXT("none"), Row->Staff.IsNone() ? *Row->Person.ToString() : *Row->Staff.ToString(),
+					static_cast<int32>(Target->GetState())));
+			if (Speaker == nullptr)
+			{
+				Report(TEXT("talks"), EResult::Info, Name + TEXT(" speaker"), TEXT("no speaker on the spot (the person is not built, or the staff member is not in the level)"));
+			}
+			// the speaker from a few steps in front, looking back at the lectern, no HUD
+			FWTAView View;
+			const FVector Forward = FRotator(0.f, Target->SpeakerYaw, 0.f).Vector();
+			View.Location = Target->GetSpot() + Forward * 260.f + FVector(0.f, 0.f, 150.f);
+			View.Yaw = Target->SpeakerYaw + 180.f;
+			View.Pitch = -4.f;
+			View.bValid = true;
+			StandAt(View);
+			return 0.8f;
+		} });
+		Steps.Add({ Name + TEXT(" speaker shot"), [this, Ok, Tag]() -> float
+		{
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("talk_%s_speaker"), *Tag), false);
+				return 0.3f;
+			}
+			return 0.f;
+		} });
+
+		// 2. Sit on a seat of the venue: the talk starts.
+		Steps.Add({ Name + TEXT(" to a seat"), [this, Ok, Seat, Name]() -> float
+		{
+			AWTASeatActor* Target = Seat->Get();
+			if (!*Ok || Target == nullptr)
+			{
+				return 0.f;
+			}
+			FWTAView View;
+			if (!IWTAInteractable::Execute_GetViewSpot(Target, View) || !View.bValid)
+			{
+				*Ok = false;
+				Report(TEXT("talks"), EResult::Fail, Name + TEXT(" seat"), TEXT("the seat has no view spot"));
+				return 0.f;
+			}
+			StandAt(View);
+			return 0.5f;
+		} });
+		Steps.Add({ Name + TEXT(" hover"), [this, Ok, Seat]() -> float
+		{
+			AWTASeatActor* Target = Seat->Get();
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Target == nullptr || Controller == nullptr || Controller->Interaction == nullptr)
+			{
+				return 0.f;
+			}
+			if (Controller->Interaction->GetHovered() != Target)
+			{
+				FWTAView Aim;
+				if (FindAimView(Target, Aim))
+				{
+					StandAt(Aim);
+					return 0.45f;
+				}
+			}
+			return 0.f;
+		} });
+		const TSharedRef<bool> KeyWasDown = MakeShared<bool>(false);
+		Steps.Add({ Name + TEXT(" sit"), [this, Ok, Seat, KeyWasDown]() -> float
+		{
+			AWTASeatActor* Target = Seat->Get();
+			AWTAPlayerController* Controller = PC();
+			*KeyWasDown = false;
+			if (!*Ok || Target == nullptr || Controller == nullptr)
+			{
+				return 0.f;
+			}
+			// E when the crosshair is on the seat; through the seat itself when it missed (the seats phase checks hovering)
+			if (Controller->Interaction != nullptr && Controller->Interaction->GetHovered() == Target)
+			{
+				KeyDown(EKeys::E);
+				*KeyWasDown = true;
+				return 0.12f;
+			}
+			IWTAInteractable::Execute_Interact(Target, Controller);
+			return 0.12f;
+		} });
+		Steps.Add({ Name + TEXT(" sit up"), [this, KeyWasDown]() -> float
+		{
+			if (*KeyWasDown)
+			{
+				KeyUp(EKeys::E);
+			}
+			return 1.2f;
+		} });
+		Steps.Add({ Name + TEXT(" playing"), [this, Weak, Ok, Seat, Name, Tag]() -> float
+		{
+			AWTATalkActor* Target = Weak.Get();
+			AWTACharacter* Me = Player();
+			if (!*Ok || Target == nullptr || Me == nullptr)
+			{
+				return 0.f;
+			}
+			const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+			const FWTATalkRow* Row = Content ? Content->FindTalk(Target->TalkId) : nullptr;
+			UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
+			const bool bSeated = Me->IsSeated() && Me->GetSeat() == Seat->Get();
+			const bool bPlaying = Target->GetState() == EWTATalkState::Playing && Target->GetSlideIndex() == 0;
+			const FName Clip = Row != nullptr && Row->Slides.Num() > 0 ? Row->Slides[0].Clip : NAME_None;
+			const bool bHasClip = Voice != nullptr && !Clip.IsNone() && Voice->HasClip(AWTATalkActor::VoiceKindTalk, Clip);
+			const bool bReading = bHasClip && Voice->IsReadingCard(AWTATalkActor::VoiceKindTalk, Clip);
+			*Ok = bSeated && bPlaying && (!bHasClip || bReading);
+			Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" starts when you sit"),
+				FString::Printf(TEXT("%s; state %d, slide %d; narration %s"), bSeated ? TEXT("seated") : TEXT("not seated"),
+					static_cast<int32>(Target->GetState()), Target->GetSlideIndex() + 1,
+					bHasClip ? (bReading ? TEXT("reading") : TEXT("imported but silent")) : TEXT("not imported (the slide runs on its clock)")));
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("talk_%s_seated"), *Tag), true);
+				return 0.4f;
+			}
+			return 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" next slide"), [this, Weak, Ok]() -> float
+		{
+			if (!*Ok || Weak.Get() == nullptr)
+			{
+				return 0.f;
+			}
+			Weak->GoToSlide(1);
+			return 1.0f;
+		} });
+		Steps.Add({ Name + TEXT(" slide 2"), [this, Weak, Ok, Name, Tag]() -> float
+		{
+			AWTATalkActor* Target = Weak.Get();
+			if (!*Ok || Target == nullptr)
+			{
+				return 0.f;
+			}
+			const bool bOn = Target->GetState() == EWTATalkState::Playing && Target->GetSlideIndex() == 1;
+			Report(TEXT("talks"), bOn ? EResult::Pass : EResult::Fail, Name + TEXT(" moves on to its next slide"),
+				FString::Printf(TEXT("state %d, slide %d of %d"), static_cast<int32>(Target->GetState()), Target->GetSlideIndex() + 1, Target->NumSlides()));
+			Shot(FString::Printf(TEXT("talk_%s_slide2"), *Tag), false);
+			return 0.4f;
+		} });
+
+		// 3. A class: straight to its end, the quiz opens, answer every question right, the certificate.
+		const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		const FWTATalkRow* Row = Content ? Content->FindTalk(Talk->TalkId) : nullptr;
+		if (Row != nullptr && Row->IsClass() && Row->Quiz.Num() > 0)
+		{
+			const FName TalkId = Talk->TalkId;
+			Steps.Add({ Name + TEXT(" to the end"), [this, Weak, Ok]() -> float
+			{
+				if (!*Ok || Weak.Get() == nullptr)
+				{
+					return 0.f;
+				}
+				Weak->GoToSlide(Weak->NumSlides());
+				return 2.6f;                                      // the quiz opens 1.5 s after the last line
+			} });
+			Steps.Add({ Name + TEXT(" quiz opens"), [this, Weak, Ok, Name, Tag, TalkId]() -> float
+			{
+				AWTATalkActor* Target = Weak.Get();
+				AWTAPlayerController* Controller = PC();
+				if (!*Ok || Target == nullptr || Controller == nullptr || Controller->Panel == nullptr)
+				{
+					return 0.f;
+				}
+				const bool bDone = Target->GetState() == EWTATalkState::Done;
+				const bool bQuiz = Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Quiz && Controller->Panel->GetCurrentId() == TalkId;
+				const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+				const bool bHeard = Progress != nullptr && Progress->HasHeardTalk(TalkId) && Progress->HasBadge(WTABadge::Listener());
+				*Ok = bDone && bQuiz;
+				Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" ends in its quiz"),
+					FString::Printf(TEXT("state %d; the panel shows %s; heard and the Listener badge: %s"), static_cast<int32>(Target->GetState()),
+						bQuiz ? TEXT("the quiz") : TEXT("something else"), bHeard ? TEXT("yes") : TEXT("no")));
+				if (*Ok)
+				{
+					Shot(FString::Printf(TEXT("talk_%s_quiz"), *Tag), true);
+					return 0.4f;
+				}
+				return 0.f;
+			} });
+			for (int32 Q = 0; Q < Row->Quiz.Num(); ++Q)
+			{
+				const int32 Right = Row->Quiz[Q].Answer;
+				Steps.Add({ Name + FString::Printf(TEXT(" answer %d"), Q + 1), [this, Ok, TalkId, Q, Right]() -> float
+				{
+					AWTAPlayerController* Controller = PC();
+					if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+					{
+						return 0.f;
+					}
+					Controller->Panel->HandleAction(FName(TEXT("Answer")), TalkId, Right);
+					return Q == 0 ? 0.5f : 0.2f;
+				} });
+				if (Q == 0)
+				{
+					Steps.Add({ Name + TEXT(" answered shot"), [this, Ok, Tag]() -> float
+					{
+						if (*Ok)
+						{
+							Shot(FString::Printf(TEXT("talk_%s_answered"), *Tag), true);
+							return 0.3f;
+						}
+						return 0.f;
+					} });
+				}
+				Steps.Add({ Name + FString::Printf(TEXT(" next %d"), Q + 1), [this, Ok, TalkId, Q]() -> float
+				{
+					AWTAPlayerController* Controller = PC();
+					if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+					{
+						return 0.f;
+					}
+					Controller->Panel->HandleAction(FName(TEXT("QuizNext")), TalkId, Q + 1);
+					return 0.3f;
+				} });
+			}
+			Steps.Add({ Name + TEXT(" result"), [this, Ok, Name, Tag, TalkId, Total = Row->Quiz.Num()]() -> float
+			{
+				AWTAPlayerController* Controller = PC();
+				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+				{
+					return 0.f;
+				}
+				UWTAPanelWidget* Panel = Controller->Panel;
+				const int32 Score = Panel->QuizScore();
+				const bool bNameBox = Panel->NameBox != nullptr;
+				*Ok = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Quiz && Score == Total && bNameBox;
+				Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" scores the quiz"),
+					FString::Printf(TEXT("%d of %d right; %s"), Score, Total, bNameBox ? TEXT("the name box is up") : TEXT("no name box (not a pass?)")));
+				if (*Ok)
+				{
+					Panel->NameBox->SetText(FText::FromString(TEXT("QA Visitor")));
+					Shot(FString::Printf(TEXT("talk_%s_passed"), *Tag), true);
+					return 0.4f;
+				}
+				return 0.f;
+			} });
+			Steps.Add({ Name + TEXT(" certificate"), [this, Ok, TalkId]() -> float
+			{
+				AWTAPlayerController* Controller = PC();
+				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+				{
+					return 0.f;
+				}
+				Controller->Panel->HandleAction(FName(TEXT("Certificate")), TalkId, -1);
+				return 0.9f;
+			} });
+			Steps.Add({ Name + TEXT(" certificate shows"), [this, Ok, Name, Tag, TalkId]() -> float
+			{
+				AWTAPlayerController* Controller = PC();
+				if (!*Ok || Controller == nullptr)
+				{
+					return 0.f;
+				}
+				const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+				const FWTATalkRow* Class = Data ? Data->FindTalk(TalkId) : nullptr;
+				const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+				const bool bOpen = Controller->Certificate != nullptr && Controller->Certificate->IsOpen();
+				const bool bKept = Progress != nullptr && Progress->HasCertificate(TalkId) && Progress->CertificateName(TalkId) == TEXT("QA Visitor");
+				const bool bBadge = Class == nullptr || Class->BadgeId.IsNone() || (Progress != nullptr && Progress->HasBadge(Class->BadgeId));
+				FString Picture;
+				if (bOpen)
+				{
+					Picture = Controller->Certificate->SavePicture();
+				}
+				const bool bPicture = !Picture.IsEmpty() && IFileManager::Get().FileSize(*Picture) > 10000;
+				*Ok = bOpen && bKept && bBadge && bPicture;
+				Report(TEXT("talks"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" gives a certificate"),
+					FString::Printf(TEXT("%s; kept in progress: %s; badge %s: %s; picture %s"), bOpen ? TEXT("shown") : TEXT("not shown"),
+						bKept ? TEXT("yes") : TEXT("no"), Class != nullptr ? *Class->BadgeId.ToString() : TEXT("-"), bBadge ? TEXT("yes") : TEXT("no"),
+						bPicture ? *Picture : TEXT("not written")));
+				if (bOpen)
+				{
+					Shot(FString::Printf(TEXT("talk_%s_certificate"), *Tag), true);
+					return 0.4f;
+				}
+				return 0.f;
+			} });
+		}
+
+		// 4. Stand up: the talk stops and the caption goes.
+		Steps.Add({ Name + TEXT(" stand"), [this, Weak, Ok]() -> float
+		{
+			CloseAll();
+			if (!*Ok || Weak.Get() == nullptr)
+			{
+				return 0.f;
+			}
+			if (AWTACharacter* Me = Player())
+			{
+				if (Me->IsSeated())
+				{
+					Me->StandUp(true);
+				}
+			}
+			return 0.5f;
+		} });
+		Steps.Add({ Name + TEXT(" stopped"), [this, Weak, Ok, Name]() -> float
+		{
+			AWTATalkActor* Target = Weak.Get();
+			if (!*Ok || Target == nullptr)
+			{
+				return 0.f;
+			}
+			const bool bStopped = Target->GetState() != EWTATalkState::Playing && Target->GetState() != EWTATalkState::Waiting;
+			const UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
+			const bool bQuiet = Voice == nullptr || !Voice->IsReading();
+			Report(TEXT("talks"), bStopped && bQuiet ? EResult::Pass : EResult::Fail, Name + TEXT(" stops when you stand up"),
+				FString::Printf(TEXT("state %d, the voice %s"), static_cast<int32>(Target->GetState()), bQuiet ? TEXT("quiet") : TEXT("still reading")));
+			return 0.f;
+		} });
+	}
 }

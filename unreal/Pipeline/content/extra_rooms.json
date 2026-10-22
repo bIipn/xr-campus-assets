@@ -15,11 +15,33 @@
     "wing": "outside",
     "x0": -40.0, "x1": 40.0, "z0": 12.6, "z1": 70.0, "y0": -1.0, "y1": 20.0,
     "outdoor": true,
-    "info": {"k": "The Grounds", "n": "The Forecourt", "y": "Up the steps and through the colonnade"},
+    "info": {"k": "The Grounds", "n": "The Forecourt Theatre", "y": "Sit on a bench and the next talk begins"},
     "label": "F",
     "goPlace": "forecourt",
-    "place": {"label": "The Forecourt", "names": ["forecourt", "outside", "grounds", "front steps", "portico", "colonnade", "fountain", "meadow"],
+    "place": {"label": "The Forecourt Theatre", "names": ["forecourt", "outside", "grounds", "front steps", "portico", "colonnade", "fountain", "meadow",
+                                                    "theatre", "theater", "outdoor theatre", "amphitheatre", "amphitheater", "stage", "benches"],
               "view": {"x": 0, "z": 24.0, "y": -0.75, "yaw": 0, "pitch": 0.08},
-              "say": "the forecourt", "directions": "out through the rotunda and the front doors, down the steps."}
+              "say": "the forecourt theatre", "directions": "out through the rotunda and the front doors, down the steps."}
+  },
+  {
+    "id": "talksFoyer",
+    "wing": "museum",
+    "x0": 6.55, "x1": 11.5, "z0": -13.65, "z1": -4.6, "y0": 0.0, "y1": 4.4,
+    "outdoor": false,
+    "info": {"k": "Talks", "n": "The Auditorium Foyer", "y": "Talks run all day · The doors are ahead"},
+    "label": "",
+    "goPlace": "auditorium"
+  },
+  {
+    "id": "auditorium",
+    "wing": "museum",
+    "x0": 7.0, "x1": 29.3, "z0": -39.3, "z1": -13.65, "y0": -2.2, "y1": 8.0,
+    "outdoor": false,
+    "info": {"k": "Talks", "n": "The Auditorium", "y": "Take a seat and the talk begins"},
+    "label": "TALKS",
+    "goPlace": "auditorium",
+    "place": {"label": "The Auditorium", "names": ["auditorium", "talks", "talk", "lecture hall", "lecture", "presentation", "speaker", "slides"],
+              "view": {"x": 18.0, "y": 0.0, "z": -16.2, "yaw": 0, "pitch": -0.12},
+              "say": "the auditorium", "directions": "through the lobby's right-hand door into Hall R, then through the doorway on your left and up the foyer."}
   }
 ]

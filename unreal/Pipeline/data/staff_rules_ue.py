@@ -159,7 +159,8 @@ RULES = [
       **offer('OpenBadges', 'None', 'Show me the hints')),
     # 27 badges (the five this build can award: UWTAProgressSubsystem)
     R('R027', 27, 27, 'There are {n:badges} badges. In this build you can earn First Steps, Museum Explorer, Bookworm, '
-      'Ask Away and Living Historian; the workshop, ride, soccer and token badges arrive with those features in later '
+      'Ask Away, Living Historian, Good Listener (hear a talk to the end) and Certified: Intro to VR (pass the quiz in '
+      'Room 104); the workshop, ride, soccer and token badges arrive with those features in later '
       'builds.', ['{rx:badges}'], **offer('OpenBadges', 'None', 'Show me the badges')),
     # 28 the Wax Hall (not when asking the way)
     R('R028', 28, 28, '{fact:wax}', ['{rx:wax}'], Not=['{travel}'],

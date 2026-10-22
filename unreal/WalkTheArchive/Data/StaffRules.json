@@ -593,7 +593,7 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "There are 15 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away and Living Historian; the workshop, ride, soccer and token badges arrive with those features in later builds.",
+  "Answer": "There are 17 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end) and Certified: Intro to VR (pass the quiz in Room 104); the workshop, ride, soccer and token badges arrive with those features in later builds.",
   "Action": "OpenBadges",
   "ActionArg": "None",
   "bOffer": true,

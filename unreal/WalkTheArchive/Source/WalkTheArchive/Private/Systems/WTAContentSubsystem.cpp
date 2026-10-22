@@ -81,6 +81,7 @@ void UWTAContentSubsystem::ReloadTables()
 	WaxScenesTable  = LoadTable(Settings->WaxScenes,  TEXT("WaxScenes"),  FWTAWaxSceneRow::StaticStruct());
 	StationsTable   = LoadTable(Settings->Stations,   TEXT("Stations"),   FWTAStationRow::StaticStruct());
 	RidesTable      = LoadTable(Settings->Rides,      TEXT("Rides"),      FWTARideRow::StaticStruct());
+	TalksTable      = LoadTable(Settings->Talks,      TEXT("Talks"),      FWTATalkRow::StaticStruct());
 }
 
 UDataTable* UWTAContentSubsystem::GetTable(EWTATable Table) const
@@ -104,6 +105,7 @@ UDataTable* UWTAContentSubsystem::GetTable(EWTATable Table) const
 	case EWTATable::WaxScenes:  return WaxScenesTable;
 	case EWTATable::Stations:   return StationsTable;
 	case EWTATable::Rides:      return RidesTable;
+	case EWTATable::Talks:      return TalksTable;
 	default:                    return nullptr;
 	}
 }
@@ -154,6 +156,23 @@ TArray<FName> UWTAContentSubsystem::GetWaxExhibitIds() const
 		}
 	}
 	return Ids;
+}
+
+FName UWTAContentSubsystem::FindTalkForVenue(FName Venue) const
+{
+	if (TalksTable == nullptr || Venue.IsNone())
+	{
+		return NAME_None;
+	}
+	for (const TPair<FName, uint8*>& Pair : TalksTable->GetRowMap())
+	{
+		const FWTATalkRow* Row = reinterpret_cast<const FWTATalkRow*>(Pair.Value);
+		if (Row != nullptr && Row->Venue == Venue)
+		{
+			return Pair.Key;
+		}
+	}
+	return NAME_None;
 }
 
 TArray<FName> UWTAContentSubsystem::GetTourStopIds() const

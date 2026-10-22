@@ -11,6 +11,9 @@
 //   ShowRide     kicker, name, card text, note, Close
 //   ShowBadges   every DT_Badges row (name + "Unlocked" or How), token list with hints, "Start over" (Action "Reset")
 //   ShowPlaces   every DT_Places row as a GoPlace button (M key)
+//   ShowQuiz     a class's quiz (DT_Talks), one question at a time: the options as buttons (Action "Answer"), then
+//                the right answer marked and why, "Next question"; the result card scores it and, when passed, asks
+//                for a name and makes the certificate (Action "Certificate" -> AWTAPlayerController::ShowCertificate)
 // Buttons go through HandleAction: internal verbs (Prev, Next, Close, Page, Link, Reset) are handled here, anything
 // else is passed to AWTAPlayerController::RunAction. Left/Right arrow keys = Prev/Next, Escape = Close.
 
@@ -36,6 +39,7 @@ class UTextBlock;
 class UTexture2D;
 class UVerticalBox;
 class UWTAActionButton;
+class UEditableTextBox;
 
 /** What the panel is showing. */
 UENUM(BlueprintType)
@@ -47,7 +51,8 @@ enum class EWTAPanelMode : uint8
 	Station,
 	Ride,
 	Badges,
-	Places
+	Places,
+	Quiz
 };
 
 UCLASS()
@@ -80,6 +85,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowPlaces();
 
+	/** A class's quiz from its first question (DT_Talks[TalkId].Quiz); earlier answers are forgotten. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowQuiz(FName TalkId);
+
+	/** Question Index of the quiz: unanswered (Chosen -1) as option buttons, else marked with the right answer and why. */
+	void ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen);
+
+	/** The score, and the name box and certificate button when it is a pass. */
+	void ShowQuizResult(FName TalkId);
+
+	/** Right answers given so far. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	int32 QuizScore() const;
+
+	/** The name typed for the certificate (the result card), trimmed; empty when none. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FString QuizName() const;
+
 	/** Hide the panel (does not touch the input mode; the controller does). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void Close();
@@ -99,6 +122,8 @@ public:
 	int32 GetCurrentPage() const { return CurrentPage; }
 
 protected:
+	friend class UWTAPlayTest;
+
 	virtual void NativeOnInitialized() override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
@@ -150,8 +175,9 @@ protected:
 
 	void SetOpen(bool bNewOpen);
 
-	/** The card's narration clip: "exhibit"/"station"/"ride" and CurrentId, or none when it cannot be read. */
+	/** The card's narration clip: "exhibit"/"station"/"ride" and CurrentId, "quiz" and the question's clip, or none. */
 	FName VoiceKind() const;
+	FName VoiceId() const;
 
 	/** Shows the Listen button when this card has a clip, labelled for whether it is being read. */
 	UFUNCTION()
@@ -173,6 +199,10 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> ListenButton;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> CloseButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> PageText;
+	/** The quiz result card's name box (null outside it). */
+	UPROPERTY(Transient) TObjectPtr<UEditableTextBox> NameBox;
+	/** The quiz: the answer chosen per question (-1 = not yet). */
+	TArray<int32> QuizAnswers;
 
 	EWTAPanelMode Mode = EWTAPanelMode::None;
 	FName CurrentId;

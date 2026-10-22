@@ -82,6 +82,9 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Data Tables")
 	TSoftObjectPtr<UDataTable> Rides;
 
+	UPROPERTY(Config, EditAnywhere, Category = "Data Tables")
+	TSoftObjectPtr<UDataTable> Talks;
+
 	// --- Player ------------------------------------------------------------
 
 	/** Where the player stands when the game starts: the forecourt (0, 2400, 87), facing the museum's portico. */

@@ -17,6 +17,9 @@ class USoundBase;
 /** Fired when the voice starts, stops or reaches the end of a clip, so a Listen button can relabel itself. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWTAVoiceChanged);
 
+/** Fired when a clip reaches its own end (not when something else stops it): a talk moves to its next slide on it. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWTAVoiceClipFinished, FName, Kind, FName, Id);
+
 UCLASS()
 class WALKTHEARCHIVE_API UWTAVoiceSubsystem : public UGameInstanceSubsystem
 {
@@ -25,6 +28,9 @@ class WALKTHEARCHIVE_API UWTAVoiceSubsystem : public UGameInstanceSubsystem
 public:
 	UPROPERTY(BlueprintAssignable, Category = "WTA|Voice")
 	FWTAVoiceChanged OnVoiceChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "WTA|Voice")
+	FWTAVoiceClipFinished OnClipFinished;
 
 	UFUNCTION(BlueprintPure, Category = "WTA|Voice", meta = (WorldContext = "WorldContextObject"))
 	static UWTAVoiceSubsystem* Get(const UObject* WorldContextObject);
@@ -40,6 +46,10 @@ public:
 	/** Reads the card aloud, stopping whatever was being read. False when there is no clip. */
 	UFUNCTION(BlueprintCallable, Category = "WTA|Voice")
 	bool Read(FName Kind, FName Id);
+
+	/** The clip's length in seconds (0 when there is none), so a caption can pace itself to the voice. */
+	UFUNCTION(BlueprintPure, Category = "WTA|Voice")
+	float ClipSeconds(FName Kind, FName Id);
 
 	/** Stops reading (no-op when nothing is). */
 	UFUNCTION(BlueprintCallable, Category = "WTA|Voice")

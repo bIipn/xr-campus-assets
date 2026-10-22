@@ -4,6 +4,7 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
+#include "Components/EditableTextBox.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/Image.h"
@@ -47,6 +48,11 @@ namespace
 	const FName NAME_VoiceExhibit(TEXT("exhibit"));
 	const FName NAME_VoiceStation(TEXT("station"));
 	const FName NAME_VoiceRide(TEXT("ride"));
+	const FName NAME_VoiceQuiz(TEXT("quiz"));
+	const FName NAME_PanelAnswer(TEXT("Answer"));
+	const FName NAME_PanelQuizNext(TEXT("QuizNext"));
+	const FName NAME_PanelQuizRetry(TEXT("QuizRetry"));
+	const FName NAME_PanelCertificate(TEXT("Certificate"));
 
 	const FName NAME_PanelBlockPara(TEXT("Para"));
 	const FName NAME_PanelBlockList(TEXT("List"));
@@ -573,8 +579,156 @@ void UWTAPanelWidget::ShowPlaces()
 	EndCard(false, false, FText::GetEmpty());
 }
 
+// ---------------------------------------------------------------------------
+// The quiz
+// ---------------------------------------------------------------------------
+
+void UWTAPanelWidget::ShowQuiz(FName TalkId)
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(TalkId) : nullptr;
+	QuizAnswers.Reset();
+	if (Row != nullptr)
+	{
+		QuizAnswers.Init(-1, Row->Quiz.Num());
+	}
+	ShowQuizQuestion(TalkId, 0, -1);
+}
+
+void UWTAPanelWidget::ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen)
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(TalkId) : nullptr;
+	NameBox = nullptr;
+	if (Row == nullptr || !Row->Quiz.IsValidIndex(Index))
+	{
+		BeginCard(EWTAPanelMode::Quiz, TalkId, PanelText(TEXT("Quiz")), FText::FromName(TalkId));
+		CurrentPage = 0;
+		NumPages = 0;
+		AddParagraph(PanelText(TEXT("This class has no quiz.")));
+		EndCard(false, false, FText::GetEmpty());
+		return;
+	}
+	const FWTAQuizQuestion& Q = Row->Quiz[Index];
+	if (QuizAnswers.Num() != Row->Quiz.Num())
+	{
+		QuizAnswers.Init(-1, Row->Quiz.Num());
+	}
+	CurrentPage = Index;
+	NumPages = Row->Quiz.Num();
+	BeginCard(EWTAPanelMode::Quiz, TalkId, FText::Format(PanelText(TEXT("Quiz · {0}")), Row->Title),
+		FText::Format(PanelText(TEXT("Question {0} of {1}")), FText::AsNumber(Index + 1), FText::AsNumber(NumPages)));
+	AddParagraph(Q.Question);
+	if (Chosen < 0)
+	{
+		// The options as buttons, letters first.
+		for (int32 i = 0; i < Q.Options.Num(); ++i)
+		{
+			const FText Label = FText::Format(PanelText(TEXT("{0}.  {1}")), FText::FromString(FString::Chr(static_cast<TCHAR>(TEXT('A') + i))), Q.Options[i]);
+			AddButton(Label, NAME_PanelAnswer, TalkId, i, false);
+		}
+	}
+	else
+	{
+		const bool bRight = Chosen == Q.Answer;
+		for (int32 i = 0; i < Q.Options.Num(); ++i)
+		{
+			const TCHAR* Mark = i == Q.Answer ? TEXT("✓  ") : (i == Chosen ? TEXT("✗  ") : TEXT("    "));
+			const FLinearColor Colour = i == Q.Answer ? WTAStyle::FromHex(0x2f6b3a) : (i == Chosen ? WTAStyle::FromHex(0x9b3a2e) : WTAStyle::CardInkDim());
+			AddText(FText::Format(PanelText(TEXT("{0}{1}.  {2}")), FText::FromString(Mark), FText::FromString(FString::Chr(static_cast<TCHAR>(TEXT('A') + i))), Q.Options[i]),
+				WTAStyle::Font(17, i == Q.Answer || i == Chosen), Colour);
+		}
+		AddSection(PanelText(bRight ? TEXT("Right") : TEXT("Not quite")));
+		AddParagraph(Q.Why);
+		const bool bLast = Index + 1 >= NumPages;
+		AddButton(PanelText(bLast ? TEXT("See your result") : TEXT("Next question")), NAME_PanelQuizNext, TalkId, Index + 1, true);
+	}
+	EndCard(false, false, FText::Format(PanelText(TEXT("{0} right so far")), FText::AsNumber(QuizScore())));
+	// The teacher reads the question out, as they read the slides.
+	if (Chosen < 0)
+	{
+		if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+		{
+			if (!Q.Clip.IsNone() && Voice->HasClip(NAME_VoiceQuiz, Q.Clip))
+			{
+				Voice->Read(NAME_VoiceQuiz, Q.Clip);
+				RefreshListenButton();
+			}
+		}
+	}
+}
+
+int32 UWTAPanelWidget::QuizScore() const
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(CurrentId) : nullptr;
+	if (Row == nullptr)
+	{
+		return 0;
+	}
+	int32 Score = 0;
+	for (int32 i = 0; i < Row->Quiz.Num() && i < QuizAnswers.Num(); ++i)
+	{
+		if (QuizAnswers[i] == Row->Quiz[i].Answer)
+		{
+			++Score;
+		}
+	}
+	return Score;
+}
+
+FString UWTAPanelWidget::QuizName() const
+{
+	return NameBox != nullptr ? NameBox->GetText().ToString().TrimStartAndEnd() : FString();
+}
+
+void UWTAPanelWidget::ShowQuizResult(FName TalkId)
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(TalkId) : nullptr;
+	NameBox = nullptr;
+	if (Row == nullptr)
+	{
+		return;
+	}
+	const int32 Score = QuizScore();
+	const int32 Need = FMath::Clamp(Row->PassCount, 1, FMath::Max(1, Row->Quiz.Num()));
+	const bool bPassed = Score >= Need;
+	CurrentPage = Row->Quiz.Num();
+	NumPages = Row->Quiz.Num();
+	BeginCard(EWTAPanelMode::Quiz, TalkId, FText::Format(PanelText(TEXT("Quiz · {0}")), Row->Title),
+		PanelText(bPassed ? TEXT("You passed") : TEXT("Not this time")));
+	AddText(FText::Format(PanelText(TEXT("{0} of {1} right")), FText::AsNumber(Score), FText::AsNumber(Row->Quiz.Num())), WTAStyle::Font(40, true), WTAStyle::BrassDark());
+	if (bPassed)
+	{
+		AddParagraph(FText::Format(PanelText(TEXT("{0} says well done. Put your name on the certificate and it is yours to keep.")), Row->SpeakerShort.IsEmpty() ? Row->Speaker : Row->SpeakerShort));
+		AddSection(PanelText(TEXT("Your name, as it should read")));
+		NameBox = WidgetTree->ConstructWidget<UEditableTextBox>(UEditableTextBox::StaticClass());
+		NameBox->SetHintText(PanelText(TEXT("Type your name")));
+		FString Remembered;
+		if (const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
+		{
+			Remembered = Progress->GetVisitorName();
+		}
+		NameBox->SetText(FText::FromString(Remembered));
+		PanelAddRow(Content, NameBox, FMargin(0.f, 0.f, 0.f, 12.f));
+		AddButton(PanelText(TEXT("Make my certificate")), NAME_PanelCertificate, TalkId, -1, true);
+	}
+	else
+	{
+		AddParagraph(FText::Format(PanelText(TEXT("You need {0} right to pass. The class runs again whenever you sit down; or try the questions again now.")), FText::AsNumber(Need)));
+		AddButton(PanelText(TEXT("Try again")), NAME_PanelQuizRetry, TalkId, -1, true);
+	}
+	EndCard(false, false, FText::GetEmpty());
+	if (NameBox != nullptr)
+	{
+		NameBox->SetKeyboardFocus();
+	}
+}
+
 void UWTAPanelWidget::Close()
 {
+	NameBox = nullptr;
 	// Closing the card stops the voice: nothing should still be read once the card is gone.
 	if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
 	{
@@ -613,15 +767,65 @@ void UWTAPanelWidget::HandleAction(FName Action, FName Arg, int32 Index)
 		if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
 		{
 			const FName Kind = VoiceKind();
-			if (Voice->IsReadingCard(Kind, CurrentId))
+			const FName Id = VoiceId();
+			if (Voice->IsReadingCard(Kind, Id))
 			{
 				Voice->Stop();
 			}
 			else
 			{
-				Voice->Read(Kind, CurrentId);
+				Voice->Read(Kind, Id);
 			}
 			RefreshListenButton();
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelAnswer)
+	{
+		if (Mode == EWTAPanelMode::Quiz && QuizAnswers.IsValidIndex(CurrentPage))
+		{
+			QuizAnswers[CurrentPage] = Index;
+			ShowQuizQuestion(CurrentId, CurrentPage, Index);
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelQuizNext)
+	{
+		if (Mode == EWTAPanelMode::Quiz)
+		{
+			if (Index < NumPages)
+			{
+				ShowQuizQuestion(CurrentId, Index, -1);
+			}
+			else
+			{
+				ShowQuizResult(CurrentId);
+			}
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelQuizRetry)
+	{
+		if (Mode == EWTAPanelMode::Quiz)
+		{
+			ShowQuiz(CurrentId);
+		}
+		return;
+	}
+
+	if (Action == NAME_PanelCertificate)
+	{
+		if (Mode == EWTAPanelMode::Quiz && PC != nullptr)
+		{
+			FString Name = QuizName();
+			if (Name.IsEmpty())
+			{
+				Name = TEXT("A Visitor");
+			}
+			PC->ShowCertificate(CurrentId, Name);
 		}
 		return;
 	}
@@ -796,8 +1000,20 @@ FName UWTAPanelWidget::VoiceKind() const
 	case EWTAPanelMode::Exhibit: return NAME_VoiceExhibit;
 	case EWTAPanelMode::Station: return NAME_VoiceStation;
 	case EWTAPanelMode::Ride:    return NAME_VoiceRide;
+	case EWTAPanelMode::Quiz:    return NAME_VoiceQuiz;
 	default:                     return NAME_None;
 	}
+}
+
+FName UWTAPanelWidget::VoiceId() const
+{
+	if (Mode != EWTAPanelMode::Quiz)
+	{
+		return CurrentId;
+	}
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(CurrentId) : nullptr;
+	return Row != nullptr && Row->Quiz.IsValidIndex(CurrentPage) ? Row->Quiz[CurrentPage].Clip : NAME_None;
 }
 
 void UWTAPanelWidget::RefreshListenButton()
@@ -808,11 +1024,12 @@ void UWTAPanelWidget::RefreshListenButton()
 	}
 	UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this);
 	const FName Kind = VoiceKind();
-	const bool bCanRead = Voice != nullptr && !Kind.IsNone() && Voice->HasClip(Kind, CurrentId);
+	const FName Id = VoiceId();
+	const bool bCanRead = Voice != nullptr && !Kind.IsNone() && !Id.IsNone() && Voice->HasClip(Kind, Id);
 	ListenButton->SetVisibility(bCanRead ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	if (bCanRead)
 	{
-		const bool bReading = Voice->IsReadingCard(Kind, CurrentId);
+		const bool bReading = Voice->IsReadingCard(Kind, Id);
 		WTAWidgets::SetButtonLabel(ListenButton, PanelText(bReading ? TEXT("Stop") : TEXT("Listen")));
 		// One listener, however many cards open: the voice relabels this button when a clip ends.
 		Voice->OnVoiceChanged.RemoveDynamic(this, &UWTAPanelWidget::RefreshListenButton);

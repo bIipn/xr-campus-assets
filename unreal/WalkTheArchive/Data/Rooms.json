@@ -275,8 +275,8 @@
  {
   "Name": "world",
   "Kicker": "Room 104",
-  "DisplayName": "World Builder Studio",
-  "Sub": "How a world like this gets built",
+  "DisplayName": "XR Classroom",
+  "Sub": "Take a seat: class, quiz, certificate · Layer table at the back",
   "Wing": "school",
   "BoundsMin": {
    "X": 2400.0,
@@ -338,8 +338,8 @@
  {
   "Name": "forecourt",
   "Kicker": "The Grounds",
-  "DisplayName": "The Forecourt",
-  "Sub": "Up the steps and through the colonnade",
+  "DisplayName": "The Forecourt Theatre",
+  "Sub": "Sit on a bench and the next talk begins",
   "Wing": "outside",
   "BoundsMin": {
    "X": -4000.0,
@@ -355,5 +355,47 @@
   "StaffId": "None",
   "MapLabel": "F",
   "GoPlace": "forecourt"
+ },
+ {
+  "Name": "talksFoyer",
+  "Kicker": "Talks",
+  "DisplayName": "The Auditorium Foyer",
+  "Sub": "Talks run all day · The doors are ahead",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": 655.0,
+   "Y": -1365.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 1150.0,
+   "Y": -460.0,
+   "Z": 440.0
+  },
+  "bOutdoor": false,
+  "StaffId": "None",
+  "MapLabel": "",
+  "GoPlace": "auditorium"
+ },
+ {
+  "Name": "auditorium",
+  "Kicker": "Talks",
+  "DisplayName": "The Auditorium",
+  "Sub": "Take a seat and the talk begins",
+  "Wing": "museum",
+  "BoundsMin": {
+   "X": 700.0,
+   "Y": -3930.0,
+   "Z": -220.0
+  },
+  "BoundsMax": {
+   "X": 2930.0,
+   "Y": -1365.0,
+   "Z": 800.0
+  },
+  "bOutdoor": false,
+  "StaffId": "None",
+  "MapLabel": "TALKS",
+  "GoPlace": "auditorium"
  }
 ]

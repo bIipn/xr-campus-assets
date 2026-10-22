@@ -34,6 +34,7 @@ UWTASettings::UWTASettings()
 	WaxScenes  = TableRef(TEXT("WaxScenes"));
 	Stations   = TableRef(TEXT("Stations"));
 	Rides      = TableRef(TEXT("Rides"));
+	Talks      = TableRef(TEXT("Talks"));
 
 	// The forecourt: on the stone path 6 m short of the museum's steps (the grounds lie 0.75 m below the floors),
 	// looking north at the portico (web yaw 0 = UE yaw -90). DefaultGame.ini can override it.

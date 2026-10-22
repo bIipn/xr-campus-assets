@@ -32,7 +32,8 @@ enum class EWTATable : uint8
 	Tokens,
 	WaxScenes,
 	Stations,
-	Rides
+	Rides,
+	Talks
 };
 
 UCLASS()
@@ -82,6 +83,11 @@ public:
 	const FWTAWaxSceneRow*  FindWaxScene(FName Id) const  { return FindRowIn<FWTAWaxSceneRow>(WaxScenesTable, Id); }
 	const FWTAStationRow*   FindStation(FName Id) const   { return FindRowIn<FWTAStationRow>(StationsTable, Id); }
 	const FWTARideRow*      FindRide(FName Id) const      { return FindRowIn<FWTARideRow>(RidesTable, Id); }
+	const FWTATalkRow*      FindTalk(FName Id) const      { return FindRowIn<FWTATalkRow>(TalksTable, Id); }
+
+	/** The talk or class held in a venue (the first DT_Talks row whose Venue matches), or none. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FName FindTalkForVenue(FName Venue) const;
 
 	/** Gallery exhibit ids (bWax false: the 15 exhibits + the Freedom board) in table order. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
@@ -149,4 +155,5 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UDataTable> WaxScenesTable;
 	UPROPERTY(Transient) TObjectPtr<UDataTable> StationsTable;
 	UPROPERTY(Transient) TObjectPtr<UDataTable> RidesTable;
+	UPROPERTY(Transient) TObjectPtr<UDataTable> TalksTable;
 };

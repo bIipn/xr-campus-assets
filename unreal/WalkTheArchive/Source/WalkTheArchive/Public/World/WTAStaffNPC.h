@@ -95,6 +95,24 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	bool IsTalking() const;
 
+	/** The spawned MetaHuman (null while the placeholder body stands in). */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	AActor* GetMetaHuman() const;
+
+	/**
+	 * Teaching a class (AWTATalkActor): the NPC steps onto the speaker's spot (Feet, world; facing Yaw) and its
+	 * body takes the wax animation instance, so the talk can play gestures with crossfades. Idempotent while
+	 * teaching; StopTeaching puts the NPC back on its own spot with its own idle.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	void BeginTeaching(const FVector& Feet, float Yaw);
+
+	UFUNCTION(BlueprintCallable, Category = "WTA|People")
+	void StopTeaching();
+
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	bool IsTeaching() const { return bTeaching; }
+
 	// IWTAInteractable
 	virtual FText GetInteractLabel_Implementation() const override;
 	virtual void Interact_Implementation(AWTAPlayerController* InController) override;
@@ -109,4 +127,9 @@ protected:
 
 	/** Rotation to return to when the player walks away. */
 	FRotator HomeRotation = FRotator::ZeroRotator;
+
+	/** Where the NPC stood before a class took it to the speaker's spot. */
+	FVector HomeLocation = FVector::ZeroVector;
+	FRotator HomeRotationBefore = FRotator::ZeroRotator;
+	bool bTeaching = false;
 };

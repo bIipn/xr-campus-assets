@@ -14,6 +14,9 @@
   AWTASeatActor      one per seat__<id>_f<yaw> mesh under the campus folders (a chair's cushion, a bench's seat,
                      from the Blender builders): at the top of its bounds, facing world yaw <yaw>, pick box the
                      seat's size; no JSON, the meshes are the list
+  AWTATalkActor      one per Talks.json row, on the venue's speaker spot (the mesh spot__<venue>_f<yaw>: at the
+                     bottom of its bounds, the speaker facing world yaw <yaw>); a row whose venue has no spot
+                     mesh is skipped and reported
 Properties are set with set_editor_property using the snake_case names from the contract. Every actor is
 tagged WTA_Setup / WTA_actors and filed under WTA/<Kind>.
 """
@@ -262,6 +265,7 @@ def spawn_statues(report):
 
 
 SEAT_RE = re.compile(r"^seat__(.+?)_f(\d+)$")
+SPOT_RE = re.compile(r"^spot__(.+?)_f(\d+)$")
 
 
 def spawn_seats(report):
@@ -293,13 +297,45 @@ def spawn_seats(report):
     return failed_props
 
 
+def spawn_talks(report):
+    """One AWTATalkActor per Talks.json row at its venue's spot__<venue>_f<yaw> mesh (feet on the floor there)."""
+    failed_props, count, skipped = [], 0, []
+    spots = {}
+    for path, mesh in util.static_meshes_under(paths.CAMPUS_PATH, cached=True):
+        m = SPOT_RE.match(util.object_name(mesh))
+        if m and m.group(1) not in spots:
+            spots[m.group(1)] = (mesh, float(int(m.group(2)) % 360))
+    for row in util.data_rows("Talks.json"):
+        venue = row.get("Venue") or ""
+        if venue not in spots:
+            skipped.append("%s (no spot__%s mesh)" % (row["Name"], venue))
+            log.warn("talk %s: no spot mesh for venue '%s'; the venue's builder has not run" % (row["Name"], venue))
+            continue
+        mesh, yaw = spots[venue]
+        bounds = util.mesh_bounds(mesh)
+        if bounds is None:
+            skipped.append("%s (spot bounds)" % row["Name"])
+            continue
+        (cx, cy, cz), (_ex, _ey, ez) = bounds
+        _a, failed = spawn_wta("WTATalkActor", (cx, cy, cz - ez), yaw, "Talk_%s" % row["Name"], "Talks", {
+            "talk_id": row["Name"],
+            "speaker_yaw": yaw,
+        })
+        failed_props += failed
+        count += 1
+    report["talks"] = count
+    if skipped:
+        report["talks_skipped"] = skipped
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
-               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats):
+               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

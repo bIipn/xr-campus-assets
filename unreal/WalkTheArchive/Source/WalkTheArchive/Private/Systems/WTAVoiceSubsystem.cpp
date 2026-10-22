@@ -86,7 +86,20 @@ void UWTAVoiceSubsystem::Stop()
 
 void UWTAVoiceSubsystem::HandleFinished()
 {
+	const FName Kind = ReadingKind;
+	const FName Id = ReadingId;
 	Stop();
+	OnClipFinished.Broadcast(Kind, Id);
+}
+
+float UWTAVoiceSubsystem::ClipSeconds(FName Kind, FName Id)
+{
+	if (!HasClip(Kind, Id))
+	{
+		return 0.f;
+	}
+	const USoundBase* Clip = Clips.FindRef(ClipPath(Kind, Id));
+	return Clip != nullptr ? Clip->GetDuration() : 0.f;
 }
 
 bool UWTAVoiceSubsystem::IsReading() const

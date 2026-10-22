@@ -196,6 +196,7 @@ void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
 	DipVelocity = 0.f;
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+	OnSeatChanged.Broadcast(InSeat, true);
 }
 
 void AWTACharacter::StandUp(bool bReturn)
@@ -205,6 +206,7 @@ void AWTACharacter::StandUp(bool bReturn)
 		return;
 	}
 	bSeated = false;
+	AActor* WasSeat = Seat.Get();
 	Seat = nullptr;
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	UCharacterMovementComponent* Move = GetCharacterMovement();
@@ -229,6 +231,7 @@ void AWTACharacter::StandUp(bool bReturn)
 	Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - CapsuleHalfHeight));
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+	OnSeatChanged.Broadcast(WasSeat, false);
 }
 
 void AWTACharacter::TeleportToView(const FWTAView& View)

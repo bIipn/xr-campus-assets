@@ -24,3 +24,9 @@ unreal/Pipeline/out/exterior/Outside.glb
 unreal/Tools/holds/holds.json
 unreal/Tools/holds/hold_*.png
 assets/build_*.log
+
+# Talk and quiz voice lines (unreal/Tools/voice/make_talk_voices.py): regenerated from talks.json, copied to the Unreal machine
+unreal/Pipeline/out/voice/
+
+# slide previews are for looking at here; the PNGs are what Unreal imports
+unreal/Pipeline/out/slides/*/preview_*.jpg

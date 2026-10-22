@@ -744,6 +744,143 @@ struct WALKTHEARCHIVE_API FWTARideRow : public FTableRowBase
 	FWTAView ExitView;
 };
 
+/**
+ * One slide of a talk or class: what the screens show while the speaker says Say. Slide = the slide image
+ * (/Game/WTA/Slides/T_Slide_<talk>_<nn>, drawn by bl/slides.py); Clip = the line's voice id (the clip is
+ * /Game/WTA/Audio/VO_talk_<Clip>); Seconds = how long the slide stays up when there is no clip.
+ */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTATalkSlide
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Title;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FText> Points;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Say;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TSoftObjectPtr<UTexture2D> Slide;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Clip;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	float Seconds = 8.f;
+};
+
+/** One multiple-choice question of a class's quiz. Answer = index into Options; Why = shown after answering. */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAQuizQuestion
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Question;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FText> Options;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	int32 Answer = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Why;
+
+	/** Voice id: the question read aloud is /Game/WTA/Audio/VO_quiz_<Clip>. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Clip;
+};
+
+/** The certificate a class gives for passing its quiz; the visitor's name goes between Title and Line. */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTACertificate
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Title;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Line;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Place;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Signer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText SignerRole;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Org;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Note;
+};
+
+/**
+ * DT_Talks: a talk or a class (Pipeline/content/talks.json, or the client pack's own). Venue = the room the
+ * builders made: its screens are the meshes screen__<Venue>[_l|_r], the speaker stands on spot__<Venue>_f<yaw>,
+ * its seats are seat__<Venue>_*. Kind = talk | class. Person = the MetaHuman who speaks (a wta_people id) and
+ * Staff = a staff member who teaches it instead (the NPC walks to the spot while the class runs). A class has
+ * a Quiz; PassCount right answers earn the Certificate and BadgeId. AWTATalkActor runs it when a visitor sits.
+ */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTATalkRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Venue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Kind;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Title;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Subtitle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Speaker;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText SpeakerShort;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText SpeakerRole;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Person;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName Staff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTATalkSlide> Slides;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FWTAQuizQuestion> Quiz;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	int32 PassCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FWTACertificate Certificate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName BadgeId;
+
+	bool IsClass() const { return Kind == FName(TEXT("class")); }
+};
+
 // ---------------------------------------------------------------------------
 // The action vocabulary (CONTRACT.md section 4.8). Shared by tour stops, staff rules and buttons.
 // Returned as functions so the FNames are built after the engine's name table exists.
@@ -764,6 +901,10 @@ namespace WTAAction
 	inline FName StartTour()   { static const FName N(TEXT("StartTour"));   return N; }
 	/** Open the badges list; no arg. */
 	inline FName OpenBadges()  { static const FName N(TEXT("OpenBadges"));  return N; }
+	/** Open a class's quiz; arg = DT_Talks row. */
+	inline FName OpenQuiz()    { static const FName N(TEXT("OpenQuiz"));    return N; }
+	/** Start (or restart) a talk from its first slide; arg = DT_Talks row. Sitting in its venue does the same. */
+	inline FName StartTalk()   { static const FName N(TEXT("StartTalk"));   return N; }
 }
 
 /** Badge ids from DT_Badges that the C++ awards itself (the rest are phase 1+ features). */

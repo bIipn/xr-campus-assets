@@ -508,27 +508,32 @@
  },
  {
   "Name": "worldroom",
-  "Label": "Room 104: World Builder Studio",
+  "Label": "Room 104: XR Classroom",
   "Aliases": [
+   "xr classroom",
+   "classroom",
+   "class",
+   "room 104",
+   "intro to vr",
+   "quiz",
+   "certificate",
+   "course",
    "world builder studio",
    "world builder",
-   "room 104",
-   "world building",
-   "game design",
-   "game room"
+   "layer table"
   ],
   "View": {
    "Location": {
-    "X": 2900.0,
-    "Y": 60.0,
+    "X": 2620.0,
+    "Y": 260.0,
     "Z": 162.0
    },
-   "Yaw": 90.0,
-   "Pitch": -10.313,
+   "Yaw": 0.0,
+   "Pitch": -3.438,
    "bValid": true
   },
-  "Directions": "Room 104: World Builder Studio, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right.",
-  "Say": "Room 104: World Builder Studio"
+  "Directions": "Room 104, the XR Classroom: through the doorway on the right side of the lobby and down the school hall. It is the second door on the right.",
+  "Say": "Room 104: XR Classroom"
  },
  {
   "Name": "diorama",
@@ -977,7 +982,7 @@
  },
  {
   "Name": "forecourt",
-  "Label": "The Forecourt",
+  "Label": "The Forecourt Theatre",
   "Aliases": [
    "forecourt",
    "outside",
@@ -986,7 +991,14 @@
    "portico",
    "colonnade",
    "fountain",
-   "meadow"
+   "meadow",
+   "theatre",
+   "theater",
+   "outdoor theatre",
+   "amphitheatre",
+   "amphitheater",
+   "stage",
+   "benches"
   ],
   "View": {
    "Location": {
@@ -999,6 +1011,32 @@
    "bValid": true
   },
   "Directions": "out through the rotunda and the front doors, down the steps.",
-  "Say": "the forecourt"
+  "Say": "the forecourt theatre"
+ },
+ {
+  "Name": "auditorium",
+  "Label": "The Auditorium",
+  "Aliases": [
+   "auditorium",
+   "talks",
+   "talk",
+   "lecture hall",
+   "lecture",
+   "presentation",
+   "speaker",
+   "slides"
+  ],
+  "View": {
+   "Location": {
+    "X": 1800.0,
+    "Y": -1620.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  },
+  "Directions": "through the lobby's right-hand door into Hall R, then through the doorway on your left and up the foyer.",
+  "Say": "the auditorium"
  }
 ]

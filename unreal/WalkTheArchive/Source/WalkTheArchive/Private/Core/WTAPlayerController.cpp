@@ -16,11 +16,13 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
+#include "UI/WTACertificateWidget.h"
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
 #include "World/WTAExhibitActor.h"
+#include "World/WTATalkActor.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Engine/GameViewportClient.h"
@@ -601,11 +603,82 @@ void AWTAPlayerController::OpenStaffChat(FName StaffId)
 	Chat->FocusInput();
 }
 
+void AWTAPlayerController::OpenQuiz(FName TalkId)
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	if (Panel == nullptr || Content == nullptr || Content->FindTalk(TalkId) == nullptr)
+	{
+		UE_LOG(LogWTA, Warning, TEXT("OpenQuiz: no talk '%s'"), *TalkId.ToString());
+		return;
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	if (Certificate != nullptr && Certificate->IsOpen())
+	{
+		Certificate->Close();
+	}
+	Panel->ShowQuiz(TalkId);
+	SetUIMode(true);
+}
+
+FString AWTAPlayerController::CertificateDate()
+{
+	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
+		TEXT("July"), TEXT("August"), TEXT("September"), TEXT("October"), TEXT("November"), TEXT("December") };
+	const FDateTime Now = FDateTime::Now();
+	return FString::Printf(TEXT("%d %s %d"), Now.GetDay(), Months[FMath::Clamp(Now.GetMonth() - 1, 0, 11)], Now.GetYear());
+}
+
+void AWTAPlayerController::ShowCertificate(FName TalkId, const FString& Name)
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Row = Content != nullptr ? Content->FindTalk(TalkId) : nullptr;
+	if (Row == nullptr)
+	{
+		UE_LOG(LogWTA, Warning, TEXT("ShowCertificate: no talk '%s'"), *TalkId.ToString());
+		return;
+	}
+	if (UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
+	{
+		Progress->NoteCertificate(TalkId, Name);
+	}
+	if (Panel != nullptr && Panel->IsOpen())
+	{
+		Panel->Close();
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	if (Certificate != nullptr)
+	{
+		Certificate->RemoveFromParent();
+		Certificate = nullptr;
+	}
+	Certificate = CreateWidget<UWTACertificateWidget>(this, UWTACertificateWidget::StaticClass());
+	if (Certificate == nullptr)
+	{
+		return;
+	}
+	Certificate->Build(*Row, TalkId, Name, CertificateDate(), false);
+	Certificate->AddToViewport(15);
+	SetUIMode(true);
+	UE_LOG(LogWTA, Log, TEXT("Certificate: '%s' made out to %s"), *Row->Title.ToString(), *Name);
+}
+
 bool AWTAPlayerController::CloseTopPanel()
 {
 	if (Menu != nullptr && Menu->IsOpen())
 	{
 		Menu->Close();
+		SetUIMode(IsAnyPanelOpen());
+		return true;
+	}
+	if (Certificate != nullptr && Certificate->IsOpen())
+	{
+		Certificate->Close();
 		SetUIMode(IsAnyPanelOpen());
 		return true;
 	}
@@ -652,7 +725,8 @@ void AWTAPlayerController::ToggleMenu()
 
 bool AWTAPlayerController::IsAnyPanelOpen() const
 {
-	return (Panel != nullptr && Panel->IsOpen()) || (Chat != nullptr && Chat->IsOpen()) || (Menu != nullptr && Menu->IsOpen());
+	return (Panel != nullptr && Panel->IsOpen()) || (Chat != nullptr && Chat->IsOpen()) || (Menu != nullptr && Menu->IsOpen())
+		|| (Certificate != nullptr && Certificate->IsOpen());
 }
 
 // --- HUD messages ------------------------------------------------------------------
@@ -870,6 +944,23 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	else if (Action == WTAAction::OpenBadges())
 	{
 		OpenBadges();
+	}
+	else if (Action == WTAAction::OpenQuiz())
+	{
+		OpenQuiz(Arg);
+	}
+	else if (Action == WTAAction::StartTalk())
+	{
+		const FWTATalkRow* Talk = Content ? Content->FindTalk(Arg) : nullptr;
+		AWTATalkActor* Stage = Talk != nullptr ? AWTATalkActor::FindForVenue(this, Talk->Venue) : nullptr;
+		if (Stage != nullptr)
+		{
+			Stage->Start();
+		}
+		else
+		{
+			UE_LOG(LogWTA, Warning, TEXT("RunAction: no talk actor for '%s'"), *Arg.ToString());
+		}
 	}
 	else
 	{

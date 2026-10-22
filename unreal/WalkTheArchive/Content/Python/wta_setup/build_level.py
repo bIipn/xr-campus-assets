@@ -58,6 +58,13 @@ def spawn_meshes():
                                       folder="Campus/" + asset)
             if tag:
                 labels_tagged.append(label)
+            if tag and tag[0] == "spot":
+                # a speaker's spot (spot__<venue>_f<yaw>) only tells the actors step where the speaker stands
+                try:
+                    actor.set_actor_hidden_in_game(True)
+                    actor.set_actor_enable_collision(False)
+                except Exception:
+                    pass
             # Static mobility keeps Nanite and Lumen happy; it is the StaticMeshActor default.
             try:
                 comp = actor.get_editor_property("static_mesh_component")

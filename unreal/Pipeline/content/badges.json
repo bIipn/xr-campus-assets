@@ -73,5 +73,15 @@
     "id": "historian",
     "name": "Living Historian",
     "how": "Watch 6 scenes come to life in the Wax Hall"
+  },
+  {
+    "id": "listener",
+    "name": "Good Listener",
+    "how": "Hear a talk through to the end, in the auditorium or the forecourt theatre"
+  },
+  {
+    "id": "certified-vr",
+    "name": "Certified: Intro to VR",
+    "how": "Pass the Intro to VR quiz in Room 104"
   }
 ]

@@ -34,4 +34,19 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
 	float WalkedCm = 0.f;
+
+	/** Talks and classes heard through to their last slide (DT_Talks ids). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FName> TalksHeard;
+
+	/** Classes passed (DT_Talks ids), and the name each certificate was made out to, in the same order. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FName> Certificates;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FString> CertificateNames;
+
+	/** The name the visitor last typed for a certificate, offered again next time. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
+	FString VisitorName;
 };

@@ -24,6 +24,7 @@ UNREAL = os.path.abspath(os.path.join(HERE, '..', '..'))
 CONTENT = os.path.join(UNREAL, 'Pipeline', 'content')
 LAYOUT = os.path.join(UNREAL, 'Pipeline', 'layout', 'layout.json')
 ART_DIR = os.path.join(UNREAL, 'Pipeline', 'out', 'campus', 'art')
+SLIDES_DIR = os.path.join(UNREAL, 'Pipeline', 'out', 'slides')
 STRUCTS = os.path.join(UNREAL, 'contract', 'structs.json')
 OUT = os.path.join(UNREAL, 'WalkTheArchive', 'Data')
 EYE_CM = 162.0
@@ -197,6 +198,10 @@ def build_books():
     return rows
 
 
+# Rooms the Unreal campus changed from the web build (rooms.json is the web's, extracted from parts/*.js).
+UE_ROOM_INFO = {'world': {'k': 'Room 104', 'n': 'XR Classroom', 'y': 'Take a seat: class, quiz, certificate · Layer table at the back'}}
+
+
 def build_rooms(L):
     lay = {r['id']: r for r in L['rooms']}
     maps = {m['id']: m for m in load('map_rooms.json')}
@@ -205,7 +210,7 @@ def build_rooms(L):
     rows = []
     for r in load('rooms.json'):
         lr = lay[r['id']]
-        info = r.get('info') or {}
+        info = UE_ROOM_INFO.get(r['id']) or r.get('info') or {}
         if r.get('gal') and r['gal'] in galleries:
             # Gallery rooms carry no info of their own; the web HUD (ui.js setRoom) shows the gallery's label,
             # name and years instead ("Gallery 1 of 3", "Headsets in Libraries", "2016 to 2022").
@@ -261,13 +266,26 @@ def place_say(p):
     return UE_SAY.get(p['id'], p['label'])
 
 
+# Places the Unreal campus changed: Room 104 is a classroom you sit in, seen from the back row toward the board.
+UE_PLACE = {'worldroom': {'label': 'Room 104: XR Classroom',
+                          'names': ['xr classroom', 'classroom', 'class', 'room 104', 'intro to vr', 'quiz', 'certificate', 'course',
+                                    'world builder studio', 'world builder', 'layer table'],
+                          'view': {'x': 26.2, 'z': 2.6, 'yaw': -math.pi / 2, 'pitch': -0.06},
+                          'directions': 'Room 104, the XR Classroom: through the doorway on the right side of the lobby and down '
+                                        'the school hall. It is the second door on the right.'}}
+
+
 def build_places(L):
     dirs = {d['placeId']: d['text'] for d in load('staff_answers.json')['directions']}
     stations = {s['id']: s for s in L['stations']}
     stacks = {s['subject']: s for s in L['library']['stacks']}
     rows = []
     for p in load('places.json'):
-        if p['id'] in L['places']:
+        if p['id'] in UE_PLACE:
+            p = dict(p, **{k: v for k, v in UE_PLACE[p['id']].items() if k not in ('view', 'directions')}, view=UE_PLACE[p['id']]['view'])
+        if p['id'] in UE_PLACE:
+            v = view_from_web(p['view'])
+        elif p['id'] in L['places']:
             v = view_from_layout(L['places'][p['id']])
         elif p.get('view'):
             v = view_from_web(p['view'])
@@ -280,7 +298,7 @@ def build_places(L):
         else:
             v = no_view()
         say = place_say(p)
-        directions = txt(dirs.get(p['id']))
+        directions = txt(UE_PLACE.get(p['id'], {}).get('directions') or dirs.get(p['id']))
         if directions.startswith(p['label']):
             # the web's directions() opened with the label where it had no 'say' ("The Reading Room, through ...")
             directions = say + directions[len(p['label']):]
@@ -337,11 +355,22 @@ def build_tour(L):
     return rows
 
 
+# Staff the Unreal campus moved: Mr. Hale teaches in Room 104, the XR Classroom (bl/classroom.py puts the
+# teacher's spot at the board's left, facing the desks); you talk to him from the front row. Campus metres.
+UE_STAFF = {'hale': {'pos': (33.0, 0.3), 'yaw_deg': 180.0, 'view': {'x': 31.3, 'z': 0.5, 'yaw': -math.pi / 2, 'pitch': 0.0}}}
+
+
 def build_staff(L):
     lay = {s['id']: s for s in L['staff']}
     rows = []
     for s in load('staff.json'):
-        ls = lay[s['id']]
+        ls = dict(lay[s['id']])
+        if s['id'] in UE_STAFF:
+            u = UE_STAFF[s['id']]
+            ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]
+            ls['ue_yaw_deg'] = u['yaw_deg']
+            ls['view'] = {'ue': {'location_cm': [u['view']['x'] * 100.0, u['view']['z'] * 100.0, EYE_CM],
+                                 'rotation_deg': {'pitch': round(math.degrees(u['view']['pitch']), 3), 'yaw': ue_yaw(u['view']['yaw']), 'roll': 0.0}}}
         look = s.get('look') or {}
         notes = 'Rocketbox %s; body %s; top %s; bottom %s; skin %s; hair %s %s%s' % (
             look.get('av'), look.get('body'), look.get('top'), look.get('bottom'), look.get('skin'), look.get('hair'),
@@ -751,6 +780,56 @@ def build_rides(L):
     return rows
 
 
+# ---------- talks and classes (content/talks.json, or the client pack's own) ----------
+def talks_source():
+    pack = os.environ.get('WTA_CLIENT')
+    if pack and os.path.exists(os.path.join(pack, 'talks.json')):
+        return os.path.join(pack, 'talks.json')
+    return os.path.join(CONTENT, 'talks.json')
+
+
+def slide_ref(talk_id, n):
+    """/Game/WTA/Slides/T_Slide_<talk>_<nn> when bl/slides.py drew that slide (import_art imports them)."""
+    name = 'T_Slide_%s_%02d' % (talk_id.replace('-', '_'), n)
+    if os.path.exists(os.path.join(SLIDES_DIR, talk_id, '%02d.png' % n)):
+        return '/Game/WTA/Slides/%s.%s' % (name, name)
+    return ''
+
+
+def build_talks():
+    with open(talks_source(), encoding='utf-8') as f:
+        talks = json.load(f)['talks']
+    rows = []
+    for t in talks:
+        assert t['venue'] in ('forecourt', 'auditorium', 'classroom') or t['venue'].isidentifier(), t['venue']
+        assert t.get('kind', 'talk') in ('talk', 'class'), t['id']
+        sp = t.get('speaker') or {}
+        slides = []
+        for i, sl in enumerate(t['slides']):
+            words = len(sl['say'].split())
+            slides.append({'Title': txt(sl['title']), 'Points': [txt(x) for x in sl.get('points') or []], 'Say': txt(sl['say']),
+                           'Slide': slide_ref(t['id'], i + 1), 'Clip': '%s-%02d' % (t['id'], i + 1),
+                           # without a voice clip a slide stays up as long as reading it aloud would take
+                           'Seconds': round(max(4.0, words / 2.6 + 1.0), 1)})
+        quiz = t.get('quiz') or {}
+        qs = []
+        for i, q in enumerate(quiz.get('questions') or []):
+            assert 0 <= int(q['answer']) < len(q['options']), '%s quiz %d: answer out of range' % (t['id'], i + 1)
+            qs.append({'Question': txt(q['q']), 'Options': [txt(o) for o in q['options']], 'Answer': int(q['answer']),
+                       'Why': txt(q.get('why')), 'Clip': '%s-%02d' % (t['id'], i + 1)})
+        assert (t.get('kind') == 'class') == bool(qs), '%s: a class has a quiz and a talk has none' % t['id']
+        c = t.get('certificate') or {}
+        rows.append({'Name': t['id'], 'Venue': t['venue'], 'Kind': t.get('kind', 'talk'), 'Title': txt(t['title']),
+                     'Subtitle': txt(t.get('subtitle')), 'Speaker': txt(sp.get('name')), 'SpeakerShort': txt(sp.get('short') or sp.get('name')),
+                     'SpeakerRole': txt(sp.get('role')), 'Person': sp.get('person') or 'None', 'Staff': sp.get('staff') or 'None',
+                     'Slides': slides, 'Quiz': qs, 'PassCount': int(quiz.get('pass', len(qs))),
+                     'Certificate': {'Title': txt(c.get('title')), 'Line': txt(c.get('line')), 'Place': txt(c.get('place')),
+                                     'Signer': txt(c.get('signer')), 'SignerRole': txt(c.get('signer_role')), 'Org': txt(c.get('org')),
+                                     'Note': txt(c.get('note'))},
+                     'BadgeId': t.get('badge') or 'None'})
+    return rows
+
+
 # ---------- validation against the contract ----------
 TYPES = {'Name': str, 'Text': str, 'String': str, 'Int': int, 'Float': (int, float), 'Bool': bool,
          'SoftTexture': str, 'SoftClass': str, 'SoftObject': str}
@@ -798,7 +877,7 @@ def main():
         'FWTAPlaceRow': build_places(L), 'FWTATourStopRow': build_tour(L), 'FWTAStaffRow': build_staff(L),
         'FWTAStaffRuleRow': None, 'FWTAFactRow': build_facts(), 'FWTALessonRow': build_lessons(),
         'FWTABadgeRow': build_badges(), 'FWTATokenRow': build_tokens(L), 'FWTAWaxSceneRow': build_wax(L),
-        'FWTAStationRow': build_stations(L), 'FWTARideRow': build_rides(L),
+        'FWTAStationRow': build_stations(L), 'FWTARideRow': build_rides(L), 'FWTATalkRow': build_talks(),
     }
     # The staff rules come last: their placeholders read the other tables.
     tables['FWTAStaffRuleRow'], replaced, unruled = build_staff_rules(tables)

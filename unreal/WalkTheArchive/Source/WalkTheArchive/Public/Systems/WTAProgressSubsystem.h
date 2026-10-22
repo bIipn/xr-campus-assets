@@ -76,6 +76,31 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void NoteStationFinished(FName StationId);
 
+	/** A talk or class was heard through to its last slide: the Listener badge. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void NoteTalkHeard(FName TalkId);
+
+	/** A class's quiz was passed and a certificate made out to Name: the row's badge, and the certificate is kept. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void NoteCertificate(FName TalkId, const FString& Name);
+
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool HasHeardTalk(FName TalkId) const;
+
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool HasCertificate(FName TalkId) const;
+
+	/** The name a class's certificate was made out to (empty when none). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FString CertificateName(FName TalkId) const;
+
+	/** The name the visitor last gave for a certificate (empty until they do). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FString GetVisitorName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetVisitorName(const FString& Name);
+
 	// --- Queries ---
 
 	UFUNCTION(BlueprintPure, Category = "WTA")

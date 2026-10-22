@@ -15,6 +15,9 @@
 
 class UCameraComponent;
 
+/** The player sat down on Seat (bSeated) or stood up from it. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWTASeatChanged, AActor*, Seat, bool, bSeated);
+
 UCLASS(Blueprintable)
 class WALKTHEARCHIVE_API AWTACharacter : public ACharacter
 {
@@ -119,6 +122,10 @@ public:
 	/** The eye above the seat's top when sitting: 120 cm off the floor on a 45 cm chair. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")
 	float SeatEyeHeight = 75.f;
+
+	/** Fired after SitAt and StandUp (a talk starts when its venue's seat is taken). */
+	UPROPERTY(BlueprintAssignable, Category = "WTA")
+	FWTASeatChanged OnSeatChanged;
 
 protected:
 	virtual void BeginPlay() override;
