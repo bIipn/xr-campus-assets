@@ -12,8 +12,10 @@ test/harness.py + web/export_campus.py ──► out/campus/*.glb, art/*.png, li
 bl/library.py --ue ──► assets/lib_ue/library.blend ──► blender/export_reading_room.py ──► out/reading_room/ReadingRoom.glb, lights.json
 bl/museum.py ──► out/museum/Museum.glb, lights.json      (the neoclassical museum: galleries, lobby, halls, rotunda, portico)
 bl/exterior.py ──► out/exterior/Outside.glb, lights.json  (the grounds: terrain, path, fountain, trees, the other shells)
+bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
-out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
+bl/seats.py ──► out/props/Seats.glb                        (settees down the Wax Hall aisle, every seat a tagged mesh)
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
 The Wax Hall's carried props leave the web export as a wing of their own: `web/export_campus.py` writes every
@@ -25,7 +27,20 @@ fingers, +Y out of the palm); `World/WTAWaxStageActor.cpp` rides them on the han
 them the way `unreal/Tools/holds/design_holds.py` worked out from the body's finger joints (`Tools/holds/probe_palm.py`
 -> `palm.json`) and these meshes: the fingers flat under the prop, the thumb pressed on its top, the headset hanging
 by its top strap. Rerun the designer after changing a prop model and paste its table into the stage actor. Neither
-wing is scenery: `build_level.py` skips `prop__` meshes and the stages spawn them.
+wing is scenery: `build_level.py` skips `prop__` meshes and the stages spawn them. In the engine the hold is then
+made real: each prop's box (or the strap's tube) is handed to the anim layer, which curls the fingers from the
+designed pose until they touch it (so every body size closes right), the arm is IK'd to where a person holds that
+thing to use it (a stance from the shoulders, the prop turned to face the eyes), the head looks at it, the box is
+carried with a hand flat on each side, and the headset swings on its strap as a damped pendulum.
+
+Seats: a sitting place is a mesh named `seat__<id>_f<yaw>` (a chair's cushion, half a bench's slab, a settee's
+seat; `<yaw>` the Unreal yaw a sitter faces, `atan2(dz, dx)` in campus axes) - `bl/library.py` tags its reading
+chairs, `bl/museum.py` its gallery benches, `bl/seats.py` builds the Wax Hall settees - and `wta_setup/actors.py`
+puts an `AWTASeatActor` at the top of each such mesh, so there is no seat table to keep.
+
+Surfaces: `content/surfaces.json` names the CC0 texture sets (ambientCG) and which builder material in which asset
+takes which set; `wta_setup/surfaces.py` imports them from the textures folder on the machine and swaps the
+campus meshes' materials for world-aligned instances. The textures stay out of the repo and the GLBs.
 
 The Museum and Outside assets are no longer the web export: `bl/museum.py` rebuilds the museum in Blender (marble floors,
 Corinthian columns, coffered vaults with glazed laylights, a domed rotunda and a six-column portico with steps down to

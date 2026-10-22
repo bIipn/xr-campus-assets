@@ -132,7 +132,7 @@ One action vocabulary for tour stops, staff answers and buttons (`FName`, `None`
 - One entry script `unreal/WalkTheArchive/Scripts/setup_project.py`, run as
   `UnrealEditor-Cmd <uproject> -ExecutePythonScript=<abs path to setup_project.py> -unattended -nopause -nosplash -stdout -FullStdOutLogOutput`
   with an optional env var `WTA_STEPS` (comma list, default all) — steps in order:
-  `probe`, `import_meshes`, `import_art`, `data_tables`, `build_level`, `lighting`, `actors`, `navmesh`, `project_settings`, `verify`.
+  `probe`, `import_meshes`, `import_art`, `surfaces`, `data_tables`, `build_level`, `lighting`, `actors`, `navmesh`, `project_settings`, `verify`.
   Every step is idempotent (safe to re-run) and prints exactly one line `WTA_RESULT {json}` with `step`, `ok`, counts and errors.
 - The repo root is found from the script path (`…/unreal/WalkTheArchive/Scripts/` → three levels up), never hard-coded.
 

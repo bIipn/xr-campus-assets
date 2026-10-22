@@ -97,10 +97,11 @@ then runs `UnrealEditor-Cmd <uproject> -ExecutePythonScript=unreal/WalkTheArchiv
 | `probe` | Checks the engine, Python and that the C++ module loaded |
 | `import_meshes` | Imports the 9 campus meshes (`unreal/Pipeline/out/ue/*.glb`) with Nanite and walkable collision (double-sided, so no wall can be walked through from behind) |
 | `import_art` | Imports the exhibit artwork |
+| `surfaces` | Real surfaces on the built rooms: imports the CC0 texture sets listed in `unreal/Pipeline/content/surfaces.json` from the textures folder (`WTA_TEXTURES`, default `C:\dev\wta_assets\textures`; `C:\dev\wta_tools\download_textures.ps1` fetches them from ambientCG), builds the world-aligned `M_WTA_Surface` master once and one instance per set, and puts them on the campus meshes' material slots by builder material name. Run it again after any `import_meshes` of a listed asset, which brings the glTF materials back |
 | `data_tables` | Builds the 17 data tables (exhibits, books, tour, staff answers, …) |
 | `build_level` | Creates `/Game/WTA/Maps/L_Campus`, places the campus, player start and game mode |
 | `lighting` | Sun, sky, clouds, fog, exposure, every interior light (school ceiling panels and museum downlights included), the exhibit spotlights, and glowing fixtures, screens and windows calibrated to the camera exposure |
-| `actors` | Rooms, exhibits, books, stations, rides, tokens, staff and Wax Hall stages |
+| `actors` | Rooms, exhibits, books, stations, rides, tokens, staff, Wax Hall stages, the marble statues, and a seat on every `seat__` mesh (the chairs, benches and settees from the Blender builders) |
 | `navmesh` | Walkable area for click-to-walk (the game builds missing nav tiles at start: `RuntimeGeneration=Dynamic`) |
 | `project_settings` | Startup map, game mode and the data-table settings in the ini files |
 | `verify` | Counts everything against the data and requests screenshots into `unreal/WalkTheArchive/Saved/WTA_Shots/` (a headless run may exit before they land) |
