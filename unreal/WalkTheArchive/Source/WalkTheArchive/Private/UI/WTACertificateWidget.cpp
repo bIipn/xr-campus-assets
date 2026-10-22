@@ -106,10 +106,13 @@ void UWTACertificateWidget::Build(const FWTATalkRow& Talk, FName InTalkId, const
 	UBorder* Scrim = WTAWidgets::MakePlate(Tree, WTAStyle::Scrim(), FMargin(0.f));
 	Tree->RootWidget = Scrim;
 
+	// The sheet and its buttons sit in the middle of the screen (an overlay slot centres them, as the panel's card is).
+	UOverlay* Layers = Tree->ConstructWidget<UOverlay>(UOverlay::StaticClass());
+	Scrim->SetContent(Layers);
 	UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
-	Scrim->SetContent(Column);
-	Scrim->SetHorizontalAlignment(HAlign_Center);
-	Scrim->SetVerticalAlignment(VAlign_Center);
+	UOverlaySlot* ColumnSlot = Layers->AddChildToOverlay(Column);
+	ColumnSlot->SetHorizontalAlignment(HAlign_Center);
+	ColumnSlot->SetVerticalAlignment(VAlign_Center);
 
 	UVerticalBoxSlot* SheetSlot = Column->AddChildToVerticalBox(MakeSheet(ScreenScale));
 	SheetSlot->SetHorizontalAlignment(HAlign_Center);
