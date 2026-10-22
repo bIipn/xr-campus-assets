@@ -112,6 +112,8 @@ namespace
 		 */
 		bool bArm = false;
 		FVector Stance = FVector::ZeroVector;
+		/** Degrees the prop is tipped up beyond facing the eyes square on: people hold a screen more upright than the line to their eyes. */
+		float UprightDeg = 0.f;
 		bool bLook = false;
 		FVector LookPoint = FVector::ZeroVector;
 		bool bTwoHands = false;
@@ -148,10 +150,11 @@ namespace
 		return Grip;
 	}
 
-	FWaxGrip& WaxStance(FWaxGrip& Grip, const FVector& Stance, const FVector& LookPoint)
+	FWaxGrip& WaxStance(FWaxGrip& Grip, const FVector& Stance, float UprightDeg, const FVector& LookPoint)
 	{
 		Grip.bArm = true;
 		Grip.Stance = Stance;
+		Grip.UprightDeg = UprightDeg;
 		Grip.bLook = true;
 		Grip.LookPoint = LookPoint;
 		return Grip;
@@ -165,13 +168,13 @@ namespace
 			// each prop: how it lies in the palm, the thumb's swing over it, its box, and where a person holds it
 			// to use it (the palm from the middle of the shoulders, and the point the eyes go to)
 			FWaxGrip Phone = WaxSlabGrip(2.58f, FVector(-10.7, -7.8, -8.2), FVector(20.9, -20.9, -20.9), FVector(15.7, -15.7, -15.7), FVector(8.5, 0.45, 0.0), FVector(7.5, 0.45, 3.8));
-			Grips.Add(FName(TEXT("phone")),     WaxStance(Phone, FVector(24.f, 8.f, -22.f), FVector(8.5, 1.0, 0.0)));
+			Grips.Add(FName(TEXT("phone")),     WaxStance(Phone, FVector(22.f, 8.f, -16.f), 28.f, FVector(8.5, 1.0, 0.0)));
 			FWaxGrip Tablet = WaxSlabGrip(2.47f, FVector(-28.0, 7.7, -8.9), FVector(22.6, -22.6, -22.6), FVector(16.0, -16.0, -16.0), FVector(10.5, 0.4, 0.0), FVector(12.0, 0.4, 8.5));
-			Grips.Add(FName(TEXT("tablet")),    WaxStance(Tablet, FVector(28.f, 10.f, -32.f), FVector(11.0, 1.0, 0.0)));
+			Grips.Add(FName(TEXT("tablet")),    WaxStance(Tablet, FVector(28.f, 10.f, -32.f), 14.f, FVector(11.0, 1.0, 0.0)));
 			FWaxGrip Clipboard = WaxSlabGrip(2.60f, FVector(-29.5, 9.2, -8.9), FVector(22.9, -22.9, -22.9), FVector(16.0, -16.0, -16.0), FVector(13.0, 0.5, 0.0), FVector(16.0, 0.6, 11.5));
-			Grips.Add(FName(TEXT("clipboard")), WaxStance(Clipboard, FVector(28.f, 8.f, -32.f), FVector(14.0, 1.0, 0.0)));
+			Grips.Add(FName(TEXT("clipboard")), WaxStance(Clipboard, FVector(28.f, 8.f, -32.f), 10.f, FVector(14.0, 1.0, 0.0)));
 			FWaxGrip Book = WaxSlabGrip(2.50f, FVector(-35.4, 27.8, -11.9), FVector(12.9, -12.9, -12.9), FVector(18.3, -18.3, -18.3), FVector(9.5, 1.2, 0.0), FVector(10.0, 1.2, 13.4));
-			Grips.Add(FName(TEXT("book")),      WaxStance(Book, FVector(26.f, 6.f, -36.f), FVector(9.5, 3.0, 0.0)));
+			Grips.Add(FName(TEXT("book")),      WaxStance(Book, FVector(26.f, 6.f, -36.f), 4.f, FVector(9.5, 3.0, 0.0)));
 			// the box is carried at the chest with a hand flat on each side (SetKeyGrip); in one hand it would rest like a slab
 			FWaxGrip Box = WaxSlabGrip(2.50f, FVector(-28.0, 7.7, -8.9), FVector(22.6, -22.6, -22.6), FVector(16.0, -16.0, -16.0), FVector::ZeroVector, FVector(16.0, 20.0, 14.0));
 			Box.bTwoHands = true;
@@ -363,6 +366,15 @@ namespace
 		if (!F.Normalize(KINDA_SMALL_NUMBER))
 		{
 			F = FVector::CrossProduct(N, Right).GetSafeNormal();
+		}
+		if (!FMath::IsNearlyZero(Grip.UprightDeg))
+		{
+			// tip the prop up toward the face: turn F and N about the across axis (N x F, the person's right when the
+			// fingers point forward and the face up) so the fingers rise and the face comes back
+			const FVector Across = FVector::CrossProduct(N, F).GetSafeNormal();
+			const FQuat Tip(Across, FMath::DegreesToRadians(Grip.UprightDeg));
+			F = Tip.RotateVector(F);
+			N = Tip.RotateVector(N);
 		}
 		return FTransform(FMatrix(F, N, FVector::CrossProduct(F, N), O));
 	}
@@ -941,36 +953,46 @@ bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWr
 		return false;                            // not there yet, or on its way somewhere else
 	}
 	const FWTAWaxPropKey& Key = Prop.Keys[Resting];
-	if (Key.Socket != HandL && Key.Socket != HandR)
+	static const FName Chest(TEXT("chest"));
+	const FWaxGrip* Grip = WaxGrip(Prop.Kind);
+	// a box carried at the chest is in both hands; the right one stands for it here
+	const bool bCarried = Key.Socket == Chest && Grip != nullptr && Grip->bTwoHands;
+	if (Key.Socket != HandL && Key.Socket != HandR && !bCarried)
 	{
 		return false;
 	}
+	const FName Socket = bCarried ? HandR : Key.Socket;
 	const FFigurePlay* Play = FindPlay(Key.Figure);
 	AActor* Figure = Play != nullptr ? Play->Figure.Get() : nullptr;
 	const USkeletalMeshComponent* Body = IsValid(Figure) ? UWTAPeopleLibrary::FindBody(Figure) : nullptr;
-	if (Body == nullptr)
+	if (Body == nullptr || Body->GetBoneIndex(Socket) == INDEX_NONE)
 	{
 		return false;
 	}
-	OutWrist = Body->GetSocketLocation(Key.Socket);
+	OutWrist = Body->GetSocketLocation(Socket);
 	OutFigure = Figure->GetActorLocation();
-	if (!PalmFrame(Body, Key.Socket == HandR, OutPalm))
+	if (!PalmFrame(Body, Socket == HandR, OutPalm))
 	{
-		OutPalm = Body->GetSocketTransform(Key.Socket, RTS_World);
+		OutPalm = Body->GetSocketTransform(Socket, RTS_World);
 	}
-	// where the prop meets the hand: a hanging prop's tube, otherwise the point of it the palm frame holds
+	// where the prop meets the hand: a hanging prop's tube, a carried box's side under the palm, otherwise the
+	// point of it the palm frame holds
 	OutProp = PropParts[Index]->GetComponentLocation();
-	if (const FWaxGrip* Grip = WaxGrip(Prop.Kind))
+	if (bCarried)
+	{
+		OutProp = OutPalm.GetLocation();
+	}
+	else if (Grip != nullptr)
 	{
 		FVector Contact = Grip->bHang ? Grip->Tube : Grip->Hold.GetLocation();
-		if (Key.Socket != HandR)
+		if (Socket != HandR)
 		{
 			Contact.Z = -Contact.Z;
 		}
 		OutProp = OutPalm.TransformPosition(Contact);
 	}
-	OutGrip = Play->Anim.IsValid() ? Play->Anim->GetGrip(Key.Socket == HandR) : 0.f;
-	OutSocket = Key.Socket;
+	OutGrip = Play->Anim.IsValid() ? Play->Anim->GetGrip(Socket == HandR) : 0.f;
+	OutSocket = Socket;
 	return true;
 }
 
