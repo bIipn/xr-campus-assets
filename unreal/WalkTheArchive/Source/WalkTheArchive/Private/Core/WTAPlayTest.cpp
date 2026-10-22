@@ -371,6 +371,7 @@ void UWTAPlayTest::Run(const FString& Phases)
 	// "only=<text>" keeps the people (faces, people) whose name contains <text>; several may be given.
 	PeopleFilter.Reset();
 	float SpeedDown = -1.f;
+	bool bFresh = false;
 	for (int32 i = Wanted.Num() - 1; i >= 0; --i)
 	{
 		if (Wanted[i].StartsWith(TEXT("only=")))
@@ -383,9 +384,26 @@ void UWTAPlayTest::Run(const FString& Phases)
 			SpeedDown = FCString::Atof(*Wanted[i].Mid(10));
 			Wanted.RemoveAt(i);
 		}
+		else if (Wanted[i] == TEXT("fresh"))
+		{
+			bFresh = true;                                 // start from no progress: badges, stations, certificates all forgotten
+			Wanted.RemoveAt(i);
+		}
 	}
 	const bool bAll = Wanted.Num() == 0 || Wanted.Contains(TEXT("all"));
 	auto Want = [&](const TCHAR* Phase) { return bAll || Wanted.Contains(Phase); };
+	if (bFresh)
+	{
+		Steps.Add({ TEXT("fresh"), [this]() -> float
+		{
+			if (UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
+			{
+				Progress->ResetProgress();
+				Report(TEXT("save"), EResult::Info, TEXT("progress reset"), FString::Printf(TEXT("%d of %d badges"), Progress->NumBadges(), Progress->TotalBadges()));
+			}
+			return 0.2f;
+		} });
+	}
 	if (SpeedDown > 0.f)
 	{
 		Steps.Add({ TEXT("speed down"), [this, SpeedDown]() -> float
