@@ -3684,6 +3684,9 @@ void UWTAPlayTest::AddPhotoPhase()
 	// Photo mode: P (TakePostcard) frames the view and writes Saved/Postcards/<place>_<time>.png with the frame on;
 	// a QA shot of the frame while it is up, then the file must be there and be a real picture.
 	const TSharedRef<FString> File = MakeShared<FString>();
+	// The first seconds of a run still compile shaders and stream textures (and the editor writes "Preparing ..."
+	// on the screen); a postcard taken then is not what a visitor would get.
+	Steps.Add({ TEXT("photo settle"), [this]() -> float { CloseAll(); return 4.f; } });
 	Steps.Add({ TEXT("photo take"), [this, File]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
