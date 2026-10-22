@@ -6,7 +6,7 @@
 // role belongs to AWTAPlayerController. It owns the four widgets (HUD, Panel, Chat, Menu), owns the interaction
 // component, creates the Enhanced Input objects in code, and exposes the UFUNCTIONs that actors and subsystems
 // call: OpenExhibit, StepExhibit, OpenBook, OpenStation, OpenRide, OpenBadges, OpenQuiz, OpenCourse, OpenStaffChat, CloseTopPanel,
-// ToggleMenu, ShowToast, ShowCaption, ShowHint, RunAction, GoToView, GoToPlace, SetUIMode.
+// ToggleMenu, ShowToast, ShowCaption, ShowHint, RunAction, GoToView, GoToPlace, SetUIMode, TakePostcard.
 // Subsystems never touch widgets directly; they broadcast delegates and the controller updates the HUD.
 //
 // Panels are exclusive: opening one closes the others (chat closes the panel, the panel closes the chat, the menu
@@ -26,7 +26,7 @@
 //   Interact        LMB, E, Gamepad X         Back        Escape, Gamepad B
 //   ToggleCursor    Tab                       TourNext    T
 //   Places          M                         Chat        Enter
-// Handlers: OnMove/OnLook/OnJump/OnSprint/OnSprintEnd/OnInteract/OnBack/OnToggleCursor/OnTourNext/OnPlaces/OnChat.
+// Handlers: OnMove/OnLook/OnJump/OnSprint/OnSprintEnd/OnInteract/OnBack/OnToggleCursor/OnTourNext/OnPlaces/OnChat/OnPhoto.
 // Config/DefaultInput.ini must keep the engine defaults (EnhancedPlayerInput + EnhancedInputComponent).
 //
 // GoToView(View, bWalk=true) walks the character to the floor point under View.Location (SimpleMoveToLocation),
@@ -44,6 +44,7 @@ class AWTACharacter;
 class UInputAction;
 class UInputMappingContext;
 class UWTACertificateWidget;
+class UWTAPostcardWidget;
 class UWTAChatWidget;
 class UWTAHudWidget;
 class UWTAInteractionComponent;
@@ -89,6 +90,10 @@ public:
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
 	TObjectPtr<UWTACertificateWidget> Certificate;
 
+	/** The postcard frame photo mode shows for the moment the picture is taken (made on first use). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
+	TObjectPtr<UWTAPostcardWidget> Postcard;
+
 	// --- Input objects (created in code, see the header comment) -----------
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
@@ -127,6 +132,9 @@ public:
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
 	TObjectPtr<UInputAction> ChatAction;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> PhotoAction;
 
 	// --- Feel --------------------------------------------------------------
 
@@ -200,6 +208,16 @@ public:
 	/** Today, the way a certificate writes it ("22 October 2026"). */
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	static FString CertificateDate();
+
+	/** Photo mode (P): frame the view as a postcard of the room you are in and write it, with the frame, to
+	    Saved/Postcards/<place>_<time>.png (the HUD hidden for that frame; a toast says where it went). Returns
+	    the file it will write, or empty when a panel, the chat or the menu is open. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	FString TakePostcard();
+
+	/** The last postcard written this run (empty until one is). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FString GetLastPostcard() const { return LastPostcard; }
 
 	/** Close the top-most open thing (Menu, Chat, Panel, then end the tour). Returns true if something closed. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
@@ -345,6 +363,7 @@ protected:
 	void OnTourNext(const FInputActionValue& Value);
 	void OnPlaces(const FInputActionValue& Value);
 	void OnChat(const FInputActionValue& Value);
+	void OnPhoto(const FInputActionValue& Value);
 
 	// Delegate sinks (subsystems and the interaction component broadcast; the controller updates the HUD).
 	UFUNCTION()
@@ -402,6 +421,11 @@ protected:
 	float ChatShotSeconds = 2.5f;
 	bool bChatShotClicked = false;
 	FTimerHandle ChatShotTimer;
+
+	/** TakePostcard: the frame comes down and the HUD comes back a few frames after the picture is requested. */
+	void FinishPostcard();
+	FTimerHandle PostcardTimer;
+	FString LastPostcard;
 
 	/** WTAPlayTest: the scripted play test, created on first use. */
 	UPROPERTY(Transient)

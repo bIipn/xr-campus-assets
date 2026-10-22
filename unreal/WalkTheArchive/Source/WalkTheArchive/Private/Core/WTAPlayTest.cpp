@@ -14,8 +14,10 @@
 #include "Systems/WTATourSubsystem.h"
 #include "Systems/WTAVoiceSubsystem.h"
 #include "UI/WTAChatWidget.h"
+#include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
+#include "UI/WTAPostcardWidget.h"
 #include "World/WTAAttractComponent.h"
 #include "World/WTABookActor.h"
 #include "World/WTAExhibitActor.h"
@@ -461,6 +463,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("course")))
 	{
 		AddCoursePhase();
+	}
+	if (Want(TEXT("photo")))
+	{
+		AddPhotoPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3671,6 +3677,50 @@ void UWTAPlayTest::AddCoursePhase()
 		} });
 		Steps.Add({ Name + TEXT(" close"), [this]() -> float { CloseAll(); return 0.3f; } });
 	}
+}
+
+void UWTAPlayTest::AddPhotoPhase()
+{
+	// Photo mode: P (TakePostcard) frames the view and writes Saved/Postcards/<place>_<time>.png with the frame on;
+	// a QA shot of the frame while it is up, then the file must be there and be a real picture.
+	const TSharedRef<FString> File = MakeShared<FString>();
+	Steps.Add({ TEXT("photo take"), [this, File]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (Controller == nullptr)
+		{
+			return 0.f;
+		}
+		CloseAll();
+		*File = Controller->TakePostcard();
+		Report(TEXT("photo"), File->IsEmpty() ? EResult::Fail : EResult::Pass, TEXT("P takes a postcard"),
+			File->IsEmpty() ? TEXT("TakePostcard returned nothing (a panel open?)") : FString::Printf(TEXT("writing %s"), **File));
+		return File->IsEmpty() ? 0.f : 0.12f;
+	} });
+	Steps.Add({ TEXT("photo frame shot"), [this, File]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bFrame = Controller != nullptr && Controller->Postcard != nullptr && Controller->Postcard->IsShowing();
+		const bool bHudHidden = Controller != nullptr && Controller->Hud != nullptr && Controller->Hud->GetVisibility() == ESlateVisibility::Collapsed;
+		Report(TEXT("photo"), bFrame && bHudHidden ? EResult::Pass : EResult::Fail, TEXT("the frame is up for the picture"),
+			FString::Printf(TEXT("frame %s, HUD %s"), bFrame ? TEXT("showing") : TEXT("not showing"), bHudHidden ? TEXT("hidden") : TEXT("still on")));
+		if (bFrame)
+		{
+			Shot(TEXT("postcard_frame"), true);
+		}
+		return 1.2f;
+	} });
+	Steps.Add({ TEXT("photo file"), [this, File]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const int64 Size = File->IsEmpty() ? -1 : IFileManager::Get().FileSize(**File);
+		const bool bHudBack = Controller != nullptr && Controller->Hud != nullptr && Controller->Hud->GetVisibility() != ESlateVisibility::Collapsed;
+		const bool bFrameDown = Controller == nullptr || Controller->Postcard == nullptr || !Controller->Postcard->IsShowing();
+		const bool bOk = Size > 50000 && bHudBack && bFrameDown;
+		Report(TEXT("photo"), bOk ? EResult::Pass : EResult::Fail, TEXT("the postcard is written"),
+			FString::Printf(TEXT("%s (%lld bytes); HUD %s; frame %s"), **File, Size, bHudBack ? TEXT("back") : TEXT("still hidden"), bFrameDown ? TEXT("down") : TEXT("still up")));
+		return 0.f;
+	} });
 }
 
 void UWTAPlayTest::AddQuizPhase()

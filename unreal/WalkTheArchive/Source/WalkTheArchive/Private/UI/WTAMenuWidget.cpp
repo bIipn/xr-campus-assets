@@ -131,7 +131,7 @@ void UWTAMenuWidget::NativeOnInitialized()
 
 	// Controls line.
 	UTextBlock* Controls = WTAWidgets::MakeText(Tree,
-		FText::FromString(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 Esc menu")),
+		FText::FromString(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 Esc menu")),
 		WTAStyle::Font(11), WTAStyle::BoneDim(), true);
 	Controls->SetJustification(ETextJustify::Center);
 	Column->AddChildToVerticalBox(Controls);

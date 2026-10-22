@@ -17,6 +17,7 @@
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
 #include "UI/WTACertificateWidget.h"
+#include "UI/WTAPostcardWidget.h"
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
@@ -38,6 +39,7 @@
 #include "InputModifiers.h"
 #include "InputTriggers.h"
 #include "Misc/FileHelper.h"
+#include "HAL/FileManager.h"
 #include "Misc/Paths.h"
 #include "NavigationSystem.h"
 #include "TimerManager.h"
@@ -211,6 +213,7 @@ void AWTAPlayerController::SetupInputComponent()
 	Input->BindAction(TourNextAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnTourNext);
 	Input->BindAction(PlacesAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnPlaces);
 	Input->BindAction(ChatAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnChat);
+	Input->BindAction(PhotoAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnPhoto);
 }
 
 void AWTAPlayerController::Tick(float DeltaSeconds)
@@ -318,6 +321,7 @@ void AWTAPlayerController::CreateInputObjects()
 	TourNextAction     = MakeAction(this, TEXT("IA_TourNext"), EInputActionValueType::Boolean);
 	PlacesAction       = MakeAction(this, TEXT("IA_Places"), EInputActionValueType::Boolean);
 	ChatAction         = MakeAction(this, TEXT("IA_Chat"), EInputActionValueType::Boolean);
+	PhotoAction        = MakeAction(this, TEXT("IA_Photo"), EInputActionValueType::Boolean);
 
 	// Move: X = right, Y = forward. W/S go through a swizzle into Y; S and A are negated.
 	AddSwizzle(this, MappingContext->MapKey(MoveAction, EKeys::W));
@@ -353,6 +357,8 @@ void AWTAPlayerController::CreateInputObjects()
 	MappingContext->MapKey(TourNextAction, EKeys::T);
 	MappingContext->MapKey(PlacesAction, EKeys::M);
 	MappingContext->MapKey(ChatAction, EKeys::Enter);
+	MappingContext->MapKey(PhotoAction, EKeys::P);
+	MappingContext->MapKey(PhotoAction, EKeys::Gamepad_FaceButton_Top);
 }
 
 void AWTAPlayerController::CreateWidgets()
@@ -1534,6 +1540,77 @@ void AWTAPlayerController::OnPlaces(const FInputActionValue& Value)
 		return;
 	}
 	OpenPlaces();
+}
+
+void AWTAPlayerController::OnPhoto(const FInputActionValue& Value)
+{
+	TakePostcard();
+}
+
+FString AWTAPlayerController::TakePostcard()
+{
+	if (IsAnyPanelOpen() || (Postcard != nullptr && Postcard->IsShowing()))
+	{
+		return FString();
+	}
+	if (Postcard == nullptr)
+	{
+		Postcard = CreateWidget<UWTAPostcardWidget>(this, UWTAPostcardWidget::StaticClass());
+		if (Postcard == nullptr)
+		{
+			return FString();
+		}
+		Postcard->Build();
+		Postcard->AddToViewport(40);
+	}
+	const UWTASettings* Settings = UWTASettings::Get();
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	const UWTARoomSubsystem* Rooms = UWTARoomSubsystem::Get(this);
+	const FWTARoomRow* Room = Content != nullptr && Rooms != nullptr ? Content->FindRoom(Rooms->GetCurrentRoom()) : nullptr;
+	const FString Campus = Settings != nullptr ? Settings->CampusTitle : TEXT("Walk the Archive");
+	const FString Client = Settings != nullptr ? Settings->ClientName : FString();
+	const FText Place = Room != nullptr ? Room->DisplayName : FText::FromString(Campus);
+	const FText Kicker = Room != nullptr ? Room->Kicker : FText::GetEmpty();
+
+	// Saved/Postcards/<place>_<time>.png: the place as a file name, letters and digits only.
+	FString Safe;
+	for (const TCHAR C : Place.ToString())
+	{
+		if (FChar::IsAlnum(C)) { Safe.AppendChar(C); }
+		else if ((C == TEXT(' ') || C == TEXT('-')) && !Safe.EndsWith(TEXT("_"))) { Safe.AppendChar(TEXT('_')); }
+	}
+	Safe = Safe.TrimChar(TEXT('_'));
+	if (Safe.IsEmpty())
+	{
+		Safe = TEXT("postcard");
+	}
+	const FString File = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Postcards"),
+		FString::Printf(TEXT("%s_%s.png"), *Safe, *FDateTime::Now().ToString(TEXT("%Y%m%d-%H%M%S")))));
+	IFileManager::Get().MakeDirectory(*FPaths::GetPath(File), true);
+
+	Postcard->Show(Place, Kicker, CertificateDate(), Client, Campus);
+	if (Hud != nullptr)
+	{
+		Hud->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	FScreenshotRequest::RequestScreenshot(File, true, false);
+	LastPostcard = File;
+	UE_LOG(LogWTA, Display, TEXT("WTA postcard %s"), *File);
+	GetWorldTimerManager().SetTimer(PostcardTimer, this, &AWTAPlayerController::FinishPostcard, 0.35f, false);
+	return File;
+}
+
+void AWTAPlayerController::FinishPostcard()
+{
+	if (Postcard != nullptr)
+	{
+		Postcard->Hide();
+	}
+	if (Hud != nullptr)
+	{
+		Hud->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	ShowToast(FText::FromString(FString::Printf(TEXT("Postcard saved to %s"), *LastPostcard)), 6.f);
 }
 
 void AWTAPlayerController::OnChat(const FInputActionValue& Value)
