@@ -17,7 +17,7 @@ bl/auditorium.py ──► out/auditorium/Auditorium.glb, lights.json, layout.js
 bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json     (Room 104 as the XR Classroom: smartboard, desks, signs)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
-bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches, the school hall's benches)
+bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
 out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
@@ -39,7 +39,7 @@ carried with a hand flat on each side, and the headset swings on its strap as a 
 
 Seats: a sitting place is a mesh named `seat__<id>_f<yaw>` (a chair's cushion, half a bench's slab, a settee's
 seat; `<yaw>` the Unreal yaw a sitter faces, `atan2(dz, dx)` in campus axes) - `bl/library.py` tags its reading
-chairs, `bl/museum.py` its gallery benches, `bl/seats.py` the Wax Hall settees, six park benches round the yard's plaza and a bench against each wall of the school hall - and `wta_setup/actors.py`
+chairs, `bl/museum.py` its gallery benches, `bl/seats.py` the Wax Hall settees and six park benches round the yard's plaza (the school hall is lockers wall to wall, so none there) - and `wta_setup/actors.py`
 puts an `AWTASeatActor` at the top of each such mesh, so there is no seat table to keep.
 
 The talk venues: three places where a speaker gives a talk with slides, built so the talks-and-classes system can

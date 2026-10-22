@@ -5,8 +5,9 @@ yaw a sitter faces (atan2(dz, dx) in campus axes), the frames and backs untagged
     The Wax Hall: a double-sided settee in the middle of the aisle between each pair of facing stages, a seat
     toward each side, so a visitor can sit and watch a whole scene play from either side.
     The Recess Yard: six park benches (cast-iron ends, painted slats) round the rim of the round plaza, each
-    facing its middle, in the gaps between the paths that leave it.
-    The Workshop School's hall: an oak bench on a steel frame against each long wall, between the room doors.
+    facing its middle, in the gaps between the paths that leave it and clear of Coach Rae's spot on its west rim.
+    (The Workshop School's hall is lined with lockers on both walls between the doors, so it gets no bench;
+    hall_bench() waits for a wall that has room.)
 
     python3 bl/seats.py   ->  unreal/Pipeline/out/props/Seats.glb  (then prepare_for_unreal.py -- Seats)
 """
@@ -33,11 +34,10 @@ WAX_ROWS = (-48.1, -54.0, -59.9, -65.8, -71.7)
 PLAZA = (52.0, -1.5)
 PLAZA_R = 6.0
 PLAZA_PATHS = (180.0, -115.0, 0.0, 86.0, 134.0)        # the school door, the coaster, the pitch, the dive, the playground
-BENCH_BEARINGS = (-80.0, -35.0, 43.0, 110.0, 157.0, 212.0)
-# the school hall (x 12..34, z -4.8..-1.2; campus z runs south) and its doors (the studio and the lab through the north
-# wall at x 19 and 29, the blueprint room and Room 104 through the south wall at the same x): a bench against each
-# wall between the doors, facing into the hall
-HALL_BENCHES = ((24.0, -4.45, (0.0, 1.0)), (24.0, -1.55, (0.0, -1.0)))
+BENCH_BEARINGS = (-80.0, -35.0, 43.0, 101.0, 119.0, 212.0)   # 157 is where Coach Rae stands
+# the school hall (x 12..34, z -4.8..-1.2; campus z runs south) has lockers 0.42 m deep along both walls between its
+# doors, so no bench fits against them; this is where one would go if a wall is ever cleared
+HALL_BENCHES = ()
 
 
 def mats():

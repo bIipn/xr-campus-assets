@@ -334,10 +334,8 @@
   "Seats": {
    "file": "Seats.glb",
    "source": "unreal/Pipeline/out/props/Seats.glb",
-   "meshes": 23,
+   "meshes": 19,
    "tagged": [
-    "seat__school_h1_f90",
-    "seat__school_h2_f270",
     "seat__wax1a_f180",
     "seat__wax1b_f0",
     "seat__wax2a_f180",
@@ -349,12 +347,12 @@
     "seat__yard_p1_f100",
     "seat__yard_p2_f145",
     "seat__yard_p3_f223",
-    "seat__yard_p4_f290",
-    "seat__yard_p5_f337",
+    "seat__yard_p4_f281",
+    "seat__yard_p5_f299",
     "seat__yard_p6_f32"
    ],
-   "triangles": 4064,
-   "bytes": 359960
+   "triangles": 3800,
+   "bytes": 326520
   },
   "Auditorium": {
    "file": "Auditorium.glb",
