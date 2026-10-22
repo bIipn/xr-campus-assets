@@ -154,19 +154,42 @@ LIGHTS = []
 
 
 # ---------------------------------------------------------------- terrain
+# The ground has a hole under the auditorium (bl/auditorium.py sinks its rows to an orchestra 1.6 m below grade; the
+# hall's own floor, walls and shell close it): the hall's inner footprint, so the grass still runs under its walls.
+GROUND_HOLES = [(6.75, 20.75, -31.0, -14.10)]
+
+
+def cell_minus_holes(xa, xb, za, zb):
+    """The parts of the cell (xa..xb, za..zb) outside GROUND_HOLES, as rectangles."""
+    parts = [(xa, xb, za, zb)]
+    for (hx0, hx1, hz0, hz1) in GROUND_HOLES:
+        out = []
+        for (x0, x1, z0, z1) in parts:
+            if x1 <= hx0 or x0 >= hx1 or z1 <= hz0 or z0 >= hz1:
+                out.append((x0, x1, z0, z1)); continue
+            if x0 < hx0: out.append((x0, hx0, z0, z1))                    # the strip west of the hole
+            if x1 > hx1: out.append((hx1, x1, z0, z1))                    # east of it
+            mx0, mx1 = max(x0, hx0), min(x1, hx1)
+            if z0 < hz0: out.append((mx0, mx1, z0, hz0))                  # south of it (between the strips)
+            if z1 > hz1: out.append((mx0, mx1, hz1, z1))                  # north of it
+        parts = out
+    return parts
+
+
 def build_terrain():
     """An inner grid (2 m cells) over the campus with the forecourt bowl shaped into it, and a coarse flat apron out
-    to 320 m. Cells in the bowl take the meadow material."""
+    to 320 m. Cells in the bowl take the meadow material; cells over a GROUND_HOLE keep only what lies outside it."""
     gr = builder('ground', 'grass', tile=3.0); md = builder('meadow', 'meadow', tile=3.0)
     X0, X1, Z0, Z1, C = -70.0, 130.0, -110.0, 90.0, 2.0
     nx, nz = int((X1 - X0) / C), int((Z1 - Z0) / C)
     for i in range(nx):
         for j in range(nz):
             xa, za = X0 + i * C, Z0 + j * C
-            pts = [(xa, za), (xa + C, za), (xa + C, za + C), (xa, za + C)]
-            hs = [gh(x, z) for (x, z) in pts]
-            b = md if min(hs) < -0.05 else gr
-            b.face([P(x, h - 0.012, z) for ((x, z), h) in zip(pts, hs)][::-1], D(0, 1, 0))
+            for (x0, x1, z0, z1) in cell_minus_holes(xa, xa + C, za, za + C):
+                pts = [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]
+                hs = [gh(x, z) for (x, z) in pts]
+                b = md if min(hs) < -0.05 else gr
+                b.face([P(x, h - 0.012, z) for ((x, z), h) in zip(pts, hs)][::-1], D(0, 1, 0))
     # the apron: eight flat panels around the inner grid, out to the far edge
     far = builder('ground', 'grass', tile=3.0)
     FX0, FX1, FZ0, FZ1 = -290.0, 350.0, -328.0, 312.0

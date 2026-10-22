@@ -231,8 +231,8 @@
     "seat__forecourt_w6b05_f322",
     "spot__forecourt_f90"
    ],
-   "triangles": 170040,
-   "bytes": 40159640
+   "triangles": 169964,
+   "bytes": 40158320
   },
   "Yard": {
    "file": "Yard.glb",
