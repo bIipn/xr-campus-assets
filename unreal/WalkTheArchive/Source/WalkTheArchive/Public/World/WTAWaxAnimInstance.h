@@ -16,21 +16,56 @@
 class UAnimSequence;
 
 /**
+ * The shape of what a hand holds, in the hand's palm frame (+X along the fingers, +Y out of the palm, +Z across;
+ * cm): a box (Frame = its centre and axes, Half = its half extents) or a tube along Frame's Z axis of Radius.
+ * The fingers close on it until their flesh touches it (contact IK).
+ */
+struct FWTAHoldShape
+{
+	enum EKind : uint8 { None, Box, Tube };
+	EKind Kind = None;
+	FTransform Frame = FTransform::Identity;
+	FVector Half = FVector::ZeroVector;
+	float Radius = 0.f;
+
+	/** Signed distance from a point in the palm frame to the shape's surface (negative inside). */
+	float Distance(const FVector& PalmPoint) const;
+};
+
+/**
  * How a hand closes on a prop: for each finger (index, middle, ring, little) and the thumb, the rotation of its
  * three joints from the knuckle out, each a rotation vector in degrees about the joint's own axes (direction =
  * the axis, length = the angle). Applied over the body's reference pose, not the clip's fingers, so a hold looks
  * the same whatever the clip does with the hand. The same values fit both hands (the MetaHuman rig mirrors the
  * joint frames). AWTAWaxStageActor keeps a table of them per prop kind.
+ *
+ * With bContact and a Shape, the four fingers' vectors and the thumb's second and third are not used as given:
+ * each joint, from the knuckle out, curls about its hinge from open until the flesh beyond it meets the shape,
+ * so the hand fits the object whatever its size and whatever body it is (the thumb's first joint keeps its
+ * designed vector, which swings the thumb over the prop).
  */
 struct FWTAHandPose
 {
 	FVector Joint[5][3] = {};
+	FWTAHoldShape Shape;
+	bool bContact = false;
 
 	bool IsSet() const
 	{
 		for (int32 f = 0; f < 5; ++f) { for (int32 j = 0; j < 3; ++j) { if (!Joint[f][j].IsNearlyZero()) { return true; } } }
-		return false;
+		return bContact;
 	}
+};
+
+/**
+ * Where a hand should be: the hand bone's transform in the body's component space, and where the elbow should
+ * point (the two-bone IK's joint target). Weight 0 leaves the arm to the clip.
+ */
+struct FWTAHandTarget
+{
+	FTransform Hand = FTransform::Identity;
+	FVector Elbow = FVector::ZeroVector;
+	float Weight = 0.f;
 };
 
 /** One clip being sampled: the sequence, where in it we are, how fast, and whether it wraps. */
@@ -80,13 +115,26 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 	float Grip[2] = { 0.f, 0.f };
 	float GripTarget[2] = { 0.f, 0.f };
 	FWTAHandPose Pose[2];
+	/** Where each hand is asked to be (component space) and how far the arm is given to it, eased like Grip. */
+	FWTAHandTarget HandTarget[2];
+	float IKWeight[2] = { 0.f, 0.f };
+	/** What the head turns to look at (component space), and how far it is given to that, eased. */
+	FVector LookTarget = FVector::ZeroVector;
+	float LookWeight = 0.f;
+	float LookWeightTarget = 0.f;
 
 	/**
 	 * After the clips: every bone below a wrist keeps the reference pose's length (the retargeted clips squash
 	 * the hands) and the metacarpals its rotation; each gripping hand's finger joints turn from the reference
-	 * pose into Pose, blended by Grip (local space).
+	 * pose into Pose, blended by Grip (local space); a pose with a shape closes the fingers on it (SolveContact).
 	 */
 	void ApplyGrip(FPoseContext& Output) const;
+	/** Fills a hand pose's finger vectors by curling each joint from open until the flesh beyond it meets the shape. */
+	void SolveContact(const FBoneContainer& Bones, int32 Hand, FWTAHandPose& InOut) const;
+	/** Two-bone IK on each arm with a weighted hand target: upper arm and forearm turn so the hand lands on it, and takes its rotation. */
+	void ApplyArmIK(FPoseContext& Output) const;
+	/** Turns the neck and head toward LookTarget, by LookWeight (yaw and pitch limited to what a neck does). */
+	void ApplyLookAt(FPoseContext& Output) const;
 };
 
 UCLASS()
@@ -112,9 +160,37 @@ public:
 	 */
 	void SetGrip(bool bRightHand, float Amount, const FWTAHandPose& Pose);
 
+	/**
+	 * Asks one arm to put its hand at HandCS (the hand bone's transform in the body's component space), the
+	 * elbow pointing toward ElbowCS, with Weight 0..1 (0 = the clip's arm). Eased like the grip.
+	 */
+	void SetHandTarget(bool bRightHand, float Weight, const FTransform& HandCS, const FVector& ElbowCS);
+
+	/** Asks the head to look at TargetCS (component space) with Weight 0..1. Eased. */
+	void SetLookAt(float Weight, const FVector& TargetCS);
+
 	/** How far closed a hand was asked to be (for QA). */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
 	float GetGrip(bool bRightHand) const { return PendingGrip[bRightHand ? 1 : 0]; }
+
+	/** How far closed a hand is right now, after the easing (the stage blends a prop between the clip's hand and the held one by it). */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	float GetEasedGrip(bool bRightHand) const { return EasedGrip[bRightHand ? 1 : 0]; }
+
+	/** How far an arm is given to its hand target right now, after the easing. */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	float GetEasedIK(bool bRightHand) const { return EasedIK[bRightHand ? 1 : 0]; }
+
+	/** What a hand was last asked for (component space; Weight 0 = nothing), for QA. */
+	const FWTAHandTarget& GetHandTarget(bool bRightHand) const { return PendingHand[bRightHand ? 1 : 0]; }
+
+	/** How far the head was asked to look at its target, and where that is (component space), for QA. */
+	float GetLookWeight() const { return PendingLookWeight; }
+	const FVector& GetLookTarget() const { return PendingLook; }
+
+	/** How far the head is given to its look target right now, after the easing. */
+	UFUNCTION(BlueprintPure, Category = "WTA|People")
+	float GetEasedLook() const { return EasedLook; }
 
 	/** The clip playing now (null before the first PlayClip). */
 	UFUNCTION(BlueprintPure, Category = "WTA|People")
@@ -148,4 +224,11 @@ protected:
 	uint32 PendingSerial = 0;
 	float PendingGrip[2] = { 0.f, 0.f };
 	FWTAHandPose PendingPose[2];
+	FWTAHandTarget PendingHand[2];
+	float PendingLookWeight = 0.f;
+	FVector PendingLook = FVector::ZeroVector;
+	/** The proxy's eased values, copied back on the game thread each PreUpdate. */
+	float EasedGrip[2] = { 0.f, 0.f };
+	float EasedIK[2] = { 0.f, 0.f };
+	float EasedLook = 0.f;
 };

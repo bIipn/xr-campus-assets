@@ -176,14 +176,34 @@ protected:
 	/** Advances ActTime, starts each figure's current beat, and turns figures toward their beat's yaw. */
 	void UpdateBeats(float DeltaSeconds);
 
-	/** Puts every prop where its keys say it is at ActTime, and closes the hands that hold one. */
-	void UpdateProps();
+	/**
+	 * Puts every prop where its keys say it is at ActTime, closes the hands that hold one, and asks the arms
+	 * and head for the hold's stance (SetKeyGrip). DeltaSeconds > 0 (the late tick, once a frame) also steps the
+	 * hanging props' pendulums.
+	 */
+	void UpdateProps(float DeltaSeconds);
 
 public:
 	/** Puts the props where the hands are after the bodies have animated this frame (UWTAWaxPropTick). */
-	void PlaceProps();
+	void PlaceProps(float DeltaSeconds);
+
+	/** A hanging prop's swing on its strap: a damped pendulum about the tube in the hand, driven by the hand. */
+	struct FWaxSwing
+	{
+		float Angle = 0.f;                           // radians about the tube, 0 = hanging straight down
+		float Rate = 0.f;                            // radians per second
+		FVector Pivot = FVector::ZeroVector;         // the tube last frame (world)
+		FVector Velocity = FVector::ZeroVector;      // its velocity last frame
+		int32 Frames = 0;                            // how much history there is (0, 1, 2)
+		int32 Key = INDEX_NONE;                      // the key it hangs at (a new key starts afresh)
+	};
 
 protected:
+	/** One per row prop, in the row's order. */
+	TArray<FWaxSwing> PropSwing;
+
+	/** The palm frame (PalmFrame) of the hand a key names, and which hand; false for a key not in a hand. */
+	bool HandPalm(const FWTAWaxPropKey& Key, FTransform& OutPalm, bool& bOutRight) const;
 
 	/** The key a prop sits at (Resting) at ActTime and, while it travels, the key it is on its way to and how far. */
 	void PropKeysAt(const FWTAWaxProp& Prop, int32& Resting, int32& Arriving, float& Alpha) const;
@@ -192,9 +212,13 @@ protected:
 	 * World transform of one prop key: in a figure's hand (the prop's own frame set in the palm, see the .cpp),
 	 * on its head or chest, or standing in the stage's frame. Kind picks how the prop sits in a hand.
 	 */
-	bool PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, bool bModelled, FTransform& Out) const;
+	bool PropKeyTransform(const FWTAWaxPropKey& Key, FName Kind, bool bModelled, FTransform& Out, float SwingRad = 0.f) const;
 
-	/** Closes (or opens) the hand a key names round a prop of Kind: 0 gives the hand back to its clip. */
+	/**
+	 * Closes (or opens) the hand a key names round a prop of Kind, with the prop's shape for the fingers to
+	 * close on, and asks the arm to hold it where the kind's stance says and the head to look at it; a chest key
+	 * of a two-handed kind (the box) puts both hands flat on its sides. Scale 0 gives it all back to the clip.
+	 */
 	void SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float Scale) const;
 
 	/**
@@ -251,6 +275,9 @@ protected:
 		float TurnLength = 0.f;
 	};
 	TArray<FFigurePlay> Plays;
+
+	/** The play of the figure a key names (the scene's short name or the row person id), or null. */
+	const FFigurePlay* FindPlay(FName Figure) const;
 
 	/** Clips already loaded, by action name (an action that failed to load is remembered as null). */
 	UPROPERTY(Transient)
