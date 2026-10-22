@@ -186,6 +186,10 @@ protected:
 	/** A wax scene's caption lines as a numbered list. */
 	void AddSceneLines(const TArray<FWTAWaxLine>& Lines);
 
+	/** One checklist line (green and bold when done) with, when ButtonLabel is set, a compact button at its right
+	    end bound to HandleAction (the course card's stations: "Go" opens the station). */
+	void AddChecklistRow(const FText& Line, bool bDone, const FText& ButtonLabel, FName Action, FName Arg);
+
 	/** DT_Sources rows as compact chips that wrap (Action "Link", Arg = the source id). */
 	void AddSourceChips(const TArray<FName>& SourceIds);
 

@@ -654,10 +654,7 @@ void UWTAPanelWidget::ShowCourse(FName TalkId)
 		return;
 	}
 	BeginCard(EWTAPanelMode::Course, TalkId, PanelText(TEXT("The Training Wing · Course")), Row->Title);
-	if (!Row->Subtitle.IsEmpty())
-	{
-		AddText(Row->Subtitle, WTAStyle::Italic(17), WTAStyle::CardInk());
-	}
+	SetHeaderExtras(FText::GetEmpty(), Row->Subtitle);
 	if (!Row->Intro.IsEmpty())
 	{
 		AddParagraph(Row->Intro);
@@ -666,7 +663,7 @@ void UWTAPanelWidget::ShowCourse(FName TalkId)
 	{
 		AddText(FText::Format(PanelText(TEXT("— {0}, {1}")), Row->Speaker, Row->SpeakerRole), WTAStyle::Italic(15), WTAStyle::CardInkDim());
 	}
-	AddHeading(PanelText(TEXT("Stations")));
+	AddSection(PanelText(TEXT("Stations")));
 	int32 Done = 0;
 	for (int32 i = 0; i < Row->Stations.Num(); ++i)
 	{
@@ -675,12 +672,8 @@ void UWTAPanelWidget::ShowCourse(FName TalkId)
 		const bool bDone = Progress != nullptr && Progress->HasFinishedStation(StationId);
 		Done += bDone ? 1 : 0;
 		const FText Title = Station != nullptr ? Station->Title : FText::FromName(StationId);
-		AddText(FText::Format(PanelText(TEXT("{0}  {1}. {2}")), FText::FromString(bDone ? TEXT("✓") : TEXT("○")), FText::AsNumber(i + 1), Title),
-			WTAStyle::Font(17, bDone), bDone ? WTAStyle::FromHex(0x2f6b3a) : WTAStyle::CardInk());
-		if (!bDone)
-		{
-			AddButton(FText::Format(PanelText(TEXT("Go to {0}")), Title), WTAAction::OpenStation(), StationId, -1, false);
-		}
+		AddChecklistRow(FText::Format(PanelText(TEXT("{0}  {1}. {2}")), FText::FromString(bDone ? TEXT("✓") : TEXT("○")), FText::AsNumber(i + 1), Title),
+			bDone, bDone ? FText::GetEmpty() : PanelText(TEXT("Go")), WTAAction::OpenStation(), StationId);
 	}
 	NumPages = Row->Stations.Num();
 	CurrentPage = Done;
@@ -1462,6 +1455,29 @@ void UWTAPanelWidget::AddFact(const FText& Label, const FText& Value)
 	ValueSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 
 	PanelAddRow(Content, Line, FMargin(0.f, 0.f, 0.f, 10.f));
+}
+
+void UWTAPanelWidget::AddChecklistRow(const FText& Line, bool bDone, const FText& ButtonLabel, FName Action, FName Arg)
+{
+	if (Content == nullptr)
+	{
+		return;
+	}
+	UHorizontalBox* Row = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	UTextBlock* Text = WTAWidgets::MakeText(WidgetTree, Line, WTAStyle::Font(17, bDone), bDone ? WTAStyle::FromHex(0x2f6b3a) : WTAStyle::CardInk(), true);
+	UHorizontalBoxSlot* TextSlot = Row->AddChildToHorizontalBox(Text);
+	TextSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	TextSlot->SetVerticalAlignment(VAlign_Center);
+	if (!ButtonLabel.IsEmpty())
+	{
+		UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, ButtonLabel, Action, Arg, -1, WTAStyle::CardButton(), WTAStyle::Font(14), WTAStyle::CardInk());
+		Button->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
+		UHorizontalBoxSlot* ButtonSlot = Row->AddChildToHorizontalBox(Button);
+		ButtonSlot->SetSize(FSlateChildSize(ESlateSizeRule::Automatic));
+		ButtonSlot->SetVerticalAlignment(VAlign_Center);
+		ButtonSlot->SetPadding(FMargin(12.f, 0.f, 0.f, 0.f));
+	}
+	PanelAddRow(Content, Row, FMargin(0.f, 0.f, 0.f, 8.f));
 }
 
 void UWTAPanelWidget::AddSceneLines(const TArray<FWTAWaxLine>& Lines)

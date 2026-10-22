@@ -3646,11 +3646,12 @@ void UWTAPlayTest::AddCoursePhase()
 		{
 			if (*Ok)
 			{
-				Shot(FString::Printf(TEXT("course_%s_certified"), *Tag), true);
+				Shot(FString::Printf(TEXT("course_%s_certified"), *Tag), true);    // taken at the end of the frame: close in the next step
+				return 0.3f;
 			}
-			CloseAll();
-			return 0.3f;
+			return 0.f;
 		} });
+		Steps.Add({ Name + TEXT(" close"), [this]() -> float { CloseAll(); return 0.3f; } });
 	}
 }
 
