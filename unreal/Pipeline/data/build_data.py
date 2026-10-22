@@ -744,11 +744,21 @@ def build_wax(L):
     return rows
 
 
+# Stations the Unreal campus moved: the layer table stands at the back of Room 104 since the classroom refit
+# (content/refits.json), seen from its south end, the beanbags behind you.
+UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}}}
+
+
 def build_stations(L):
     lay = {s['id']: s for s in L['stations']}
     rows = []
     for s in load('stations.json'):
-        ls, card = lay[s['id']], s.get('card') or {}
+        ls, card = dict(lay[s['id']]), s.get('card') or {}
+        if s['id'] in UE_STATION:
+            u = UE_STATION[s['id']]
+            ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]
+            ls['view'] = {'ue': {'location_cm': [u['view']['x'] * 100.0, u['view']['z'] * 100.0, EYE_CM],
+                                 'rotation_deg': {'pitch': math.degrees(u['view']['pitch']), 'yaw': ue_yaw(u['view']['yaw']), 'roll': 0.0}}}
         rows.append({'Name': s['id'], 'Room': s['room'], 'Kicker': txt(s.get('kick') or card.get('k')), 'Title': txt(card.get('t')),
                      'Subtitle': txt(card.get('m')), 'GoLabel': txt(card.get('go')), 'Steps': [txt(x) for x in s.get('stepTitles') or []],
                      # the panel's paragraphs, without the live status lines of a running test ("Swinging… The photogate ...")
