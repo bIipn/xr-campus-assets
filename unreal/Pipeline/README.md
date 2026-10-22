@@ -49,7 +49,10 @@ stands (a 0.3 m quad 1 cm above the floor; the yaw is the Unreal yaw the speaker
 `seat__<venue>_<id>_f<yaw>` so the venue knows its audience; `out/<builder>/layout.json` (the theatre's is
 `out/exterior/theatre_layout.json`) gives the rooms, entries, the spot, the screens' centres and sizes, a camera and
 the seat count, and `lights.json` the fixtures by the names the lighting step knows (`downlight`, `stage`, `step`,
-`foyer`, `sconce`, `panel` (AREA), `screen`, `theatre`, `post`; the lectern's reading lamp is only a glowing shade).
+`foyer`, `sconce`, `panel` (AREA), `screen`, `theatre`, `post`; the lectern's reading lamp is only a glowing shade;
+the `stage` fixtures become aimed SpotLights, the rest bulbs). A room sunk below grade needs a hole in the grounds:
+`GROUND_HOLES` in `bl/exterior.py` cuts the auditorium's footprint out of the terrain grid (the grass still runs
+under its walls), or the lawn shows through its floor.
 - **The Forecourt Theatre** (`forecourt`, `bl/exterior.py`): the fountain plaza became an open-air theatre at the foot
   of the museum's steps. A stepped stone stage (a half disc about (0, 20.4) with a straight back, top at -0.35) with a
   lectern; the speaker faces the grounds with the portico behind. Two slide screens (`screen__forecourt_l`, `_r`, 4 x
