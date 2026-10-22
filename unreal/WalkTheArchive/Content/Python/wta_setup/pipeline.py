@@ -15,6 +15,7 @@ from . import log
 # lets build_level place what exists; a failed probe (no C++) or a failed level creation blocks the rest.
 DEPENDS_ON = {
     "data_tables": ["probe"],
+    "surfaces": ["import_meshes"],
     "lighting": ["build_level"],
     "actors": ["probe", "build_level"],
     "navmesh": ["build_level"],

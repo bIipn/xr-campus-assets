@@ -12,6 +12,7 @@ STEPS = [
     "probe",
     "import_meshes",
     "import_art",
+    "surfaces",
     "data_tables",
     "build_level",
     "lighting",

@@ -1,0 +1,55 @@
+{
+  "about": "Real surfaces for the built rooms: CC0 PBR texture sets (ambientCG, 2K JPG) on the builders' materials. wta_setup/surfaces.py imports the sets from the textures folder (WTA_TEXTURES, else this path), builds M_WTA_Surface (world-aligned, so any mesh takes them at the right scale) with one instance per set, and puts that instance on every campus static mesh material slot whose glTF material name is listed under its asset. size_cm is how big one repeat of the texture is in the world; tint multiplies the colour; metallic is 0..1.",
+  "textures": "C:/dev/wta_assets/textures",
+  "sets": {
+    "WoodFloor051": {"size_cm": 220},
+    "Wood026": {"size_cm": 160},
+    "Wood027": {"size_cm": 160},
+    "Leather037": {"size_cm": 90},
+    "Metal034": {"size_cm": 60, "metallic": 1.0, "roughness_scale": 0.7},
+    "PaintedPlaster017": {"size_cm": 250},
+    "Carpet016": {"size_cm": 150},
+    "Marble012": {"size_cm": 240, "roughness_scale": 0.6},
+    "Marble016": {"size_cm": 240, "roughness_scale": 0.6},
+    "Tiles040": {"size_cm": 240},
+    "Concrete034": {"size_cm": 300},
+    "Fabric030": {"size_cm": 90},
+    "Bricks051": {"size_cm": 200},
+    "PavingStones128": {"size_cm": 220},
+    "Grass005": {"size_cm": 260},
+    "Plaster001": {"size_cm": 320}
+  },
+  "materials": {
+    "ReadingRoom": {
+      "walnut_v": {"set": "Wood026", "tint": [0.62, 0.46, 0.34]},
+      "oak": {"set": "Wood027"},
+      "floor": {"set": "WoodFloor051"},
+      "leather_v": {"set": "Leather037"},
+      "brass_v": {"set": "Metal034"},
+      "plaster": {"set": "PaintedPlaster017", "tint": [0.90, 0.87, 0.80]},
+      "plaster_v": {"set": "PaintedPlaster017", "tint": [0.90, 0.87, 0.80]},
+      "rug": {"set": "Carpet016", "tint": [0.55, 0.30, 0.28]},
+      "marble_w": {"set": "Marble012"},
+      "marble_b": {"set": "Marble016"}
+    },
+    "Museum": {
+      "lime": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]},
+      "stone": {"set": "Marble012", "tint": [0.92, 0.90, 0.86]},
+      "marble_w": {"set": "Marble012"},
+      "marble_b": {"set": "Marble016"},
+      "gilt": {"set": "Metal034"},
+      "dark": {"set": "Wood027", "tint": [0.45, 0.40, 0.36]}
+    },
+    "Outside": {
+      "grass": {"set": "Grass005"},
+      "meadow": {"set": "Grass005", "tint": [0.95, 0.95, 0.80]},
+      "stone": {"set": "PavingStones128"},
+      "lime": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]}
+    },
+    "Seats": {
+      "settee_walnut": {"set": "Wood027", "tint": [0.55, 0.42, 0.34]},
+      "settee_leather": {"set": "Leather037", "tint": [0.70, 0.32, 0.34]},
+      "settee_brass": {"set": "Metal034"}
+    }
+  }
+}
