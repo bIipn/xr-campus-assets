@@ -1049,6 +1049,41 @@ FString AWTAWaxStageActor::DescribeHold(int32 Index) const
 	return Out;
 }
 
+bool AWTAWaxStageActor::ArmOnTarget(int32 Index, float& OutCm, float& OutDeg, float& OutWeight) const
+{
+	static const FName HandR(TEXT("hand_r"));
+	FVector Prop, Wrist, Figure;
+	float Grip = 0.f;
+	FName Socket;
+	FTransform Palm;
+	if (!PropInHand(Index, Prop, Wrist, Figure, Grip, Socket, Palm))
+	{
+		return false;
+	}
+	int32 Resting = INDEX_NONE, Arriving = INDEX_NONE;
+	float Alpha = 0.f;
+	PropKeysAt(Scene.Props[Index], Resting, Arriving, Alpha);
+	const FFigurePlay* Play = Scene.Props[Index].Keys.IsValidIndex(Resting) ? FindPlay(Scene.Props[Index].Keys[Resting].Figure) : nullptr;
+	AActor* Actor = Play != nullptr ? Play->Figure.Get() : nullptr;
+	const USkeletalMeshComponent* Body = IsValid(Actor) ? UWTAPeopleLibrary::FindBody(Actor) : nullptr;
+	if (Body == nullptr || !Play->Anim.IsValid())
+	{
+		return false;
+	}
+	const bool bRight = Socket == HandR;
+	const FWTAHandTarget& Target = Play->Anim->GetHandTarget(bRight);
+	if (Target.Weight <= 0.f)
+	{
+		return false;
+	}
+	const FTransform TargetWorld = Target.Hand * Body->GetComponentTransform();
+	const FTransform HandWorld = Body->GetSocketTransform(Socket, RTS_World);
+	OutCm = static_cast<float>(FVector::Dist(HandWorld.GetLocation(), TargetWorld.GetLocation()));
+	OutDeg = FMath::RadiansToDegrees(static_cast<float>(HandWorld.GetRotation().AngularDistance(TargetWorld.GetRotation())));
+	OutWeight = Play->Anim->GetEasedIK(bRight);
+	return true;
+}
+
 float AWTAWaxStageActor::PropSecondsBeforeLeaving(int32 Index) const
 {
 	if (!Scene.Props.IsValidIndex(Index) || Scene.Props[Index].Keys.Num() < 2)

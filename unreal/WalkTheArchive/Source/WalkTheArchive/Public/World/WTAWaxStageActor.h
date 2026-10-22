@@ -202,6 +202,15 @@ protected:
 	/** One per row prop, in the row's order. */
 	TArray<FWaxSwing> PropSwing;
 
+public:
+	/**
+	 * For a prop resting in a hand whose kind has a stance: how far the hand bone is from where the arm was
+	 * asked to put it (cm and degrees) and how far the arm is given to that (0..1). False when there is no
+	 * stance to reach (nothing in that hand, or a kind the clip's arm carries).
+	 */
+	bool ArmOnTarget(int32 Index, float& OutCm, float& OutDeg, float& OutWeight) const;
+
+protected:
 	/** The palm frame (PalmFrame) of the hand a key names, and which hand; false for a key not in a hand. */
 	bool HandPalm(const FWTAWaxPropKey& Key, FTransform& OutPalm, bool& bOutRight) const;
 

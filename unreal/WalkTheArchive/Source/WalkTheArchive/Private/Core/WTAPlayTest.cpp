@@ -2026,31 +2026,47 @@ void UWTAPlayTest::AddWaxPhase()
 			}
 			const FVector F = Palm.GetUnitAxis(EAxis::X), N = Palm.GetUnitAxis(EAxis::Y), Z = Palm.GetUnitAxis(EAxis::Z);
 			const FVector Look = Palm.GetLocation() + F * 3.f + N * 4.f;
-			// candidate directions, best first: three-quarter views from either edge of the hand (the thumb on top
-			// of the prop and the fingers under it both show), then the open side, the edges and the end
-			const FVector Candidates[] = { (N - Z + F * 0.4f).GetSafeNormal(), (N + Z + F * 0.4f).GetSafeNormal(), (N + F).GetSafeNormal(), N,
-				(N - Z).GetSafeNormal(), (N + Z).GetSafeNormal(), F, (F + Z).GetSafeNormal(), (F - Z).GetSafeNormal(), Z, -Z, (N - F).GetSafeNormal(), -N };
 			const FVector Away = (Palm.GetLocation() - (Figure + FVector(0.f, 0.f, 130.f))).GetSafeNormal2D();
-			const float Dist = 70.f;
+			const FVector Side = FVector::CrossProduct(Away, FVector::UpVector).GetSafeNormal();
+			// Candidate views, each a direction from the prop, a distance and how much it is preferred when clear:
+			// over either shoulder, the way the person sees what they hold (the screen, the thumb, the fingers);
+			// high three-quarter views from either edge of the hand; then the older set - the open side of the
+			// palm, the edges and the end - for a hand the stance does not place.
+			struct FView { FVector Dir; float Dist; float Base; };
+			TArray<FView> Views;
+			for (float S : { 1.f, -1.f })
+			{
+				const FVector Over = -Away * 55.f + FVector::UpVector * 50.f + Side * (32.f * S);
+				Views.Add({ Over.GetSafeNormal(), static_cast<float>(Over.Size()), 1.0f });
+			}
+			for (float S : { 1.f, -1.f })
+			{
+				Views.Add({ (Z * S + FVector::UpVector * 0.9f + N * 0.3f + Away * 0.4f).GetSafeNormal(), 70.f, 0.7f });
+			}
+			for (const FVector& Dir : { (N - Z + F * 0.4f).GetSafeNormal(), (N + Z + F * 0.4f).GetSafeNormal(), (N + F).GetSafeNormal(), N,
+				(N - Z).GetSafeNormal(), (N + Z).GetSafeNormal(), F, (F + Z).GetSafeNormal(), (F - Z).GetSafeNormal(), Z, -Z, (N - F).GetSafeNormal(), -N })
+			{
+				Views.Add({ Dir, 70.f, 0.f });
+			}
 			FCollisionQueryParams Params(FName(TEXT("WTAHandCamera")), true);
 			Params.AddIgnoredActor(Stage);
-			FVector Eye = Look + N * Dist;
+			FVector Eye = Look + N * 70.f;
 			float Best = -10.f;
 			int32 Order = 0;
-			for (const FVector& Dir : Candidates)
+			for (const FView& View : Views)
 			{
-				const FVector Try = Look + Dir * Dist;
+				const FVector Try = Look + View.Dir * View.Dist;
 				FHitResult Hit;
-				const bool bBlocked = World->LineTraceSingleByChannel(Hit, Look + Dir * 6.f, Try, ECC_Visibility, Params);
-				// a clear view, away from the figure's chest, of the palm's open side, not from under the hand,
-				// earlier in the list on a tie
-				const float Score = (bBlocked ? -4.f : 0.f) + static_cast<float>(FVector::DotProduct(Dir, Away)) + 0.3f * static_cast<float>(FVector::DotProduct(Dir, N))
-					- 0.8f * FMath::Max(0.f, -static_cast<float>(Dir.Z)) - 0.02f * Order;
+				const bool bBlocked = World->LineTraceSingleByChannel(Hit, Look + View.Dir * 6.f, Try, ECC_Visibility, Params);
+				// a clear view, preferred ones first, away from the figure's chest, of the palm's open side, not
+				// from under the hand, earlier in the list on a tie
+				const float Score = (bBlocked ? -4.f : 0.f) + View.Base + 0.5f * static_cast<float>(FVector::DotProduct(View.Dir, Away)) + 0.3f * static_cast<float>(FVector::DotProduct(View.Dir, N))
+					- 0.8f * FMath::Max(0.f, -static_cast<float>(View.Dir.Z)) - 0.02f * Order;
 				++Order;
 				if (Score > Best)
 				{
 					Best = Score;
-					Eye = bBlocked ? Look + Dir * FMath::Max(25.f, Hit.Distance * 0.8f) : Try;
+					Eye = bBlocked ? Look + View.Dir * FMath::Max(25.f, Hit.Distance * 0.8f) : Try;
 				}
 			}
 			FaceCamera->SetActorLocationAndRotation(Eye, (Look - Eye).Rotation());
@@ -2092,10 +2108,19 @@ void UWTAPlayTest::AddWaxPhase()
 					continue;
 				}
 				const float Gap = static_cast<float>(FVector::Dist(Prop, Wrist));
-				const bool bPlaced = Gap < 25.f, bClosed = Grip > 0.2f;
+				// a prop with a stance: the arm must have brought the hand to it (within 3 cm and 10 degrees)
+				float ArmCm = 0.f, ArmDeg = 0.f, ArmWeight = 0.f;
+				const bool bStance = Stage->ArmOnTarget(i, ArmCm, ArmDeg, ArmWeight);
+				const bool bReached = !bStance || (ArmWeight > 0.95f && ArmCm < 3.f && ArmDeg < 10.f);
+				const bool bPlaced = Gap < 25.f && bReached, bClosed = Grip > 0.2f;
 				Held += 1; Placed += bPlaced ? 1 : 0; Closed += bClosed ? 1 : 0;
 				if (Held == 1) { *HeldIndex = i; }
-				Notes += FString::Printf(TEXT("%s prop %d %.0f cm from the wrist, grip %.2f; "), *Socket.ToString(), i, Gap, Grip);
+				Notes += FString::Printf(TEXT("%s prop %d %.0f cm from the wrist, grip %.2f"), *Socket.ToString(), i, Gap, Grip);
+				if (bStance)
+				{
+					Notes += FString::Printf(TEXT(", arm %.2f at %.1f cm / %.0f deg from its stance"), ArmWeight, ArmCm, ArmDeg);
+				}
+				Notes += TEXT("; ");
 				Report(TEXT("wax"), EResult::Info, Name + TEXT(" hold"), Stage->DescribeHold(i));
 			}
 			if (Held == 0)
