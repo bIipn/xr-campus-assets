@@ -91,6 +91,21 @@ python unreal/Pipeline/blender/prepare_for_unreal.py [-- Museum Outside]   # -> 
 The web test harness needs `three@0.170.0` and the `@fontsource` packages in `test/node_modules`, plus
 `three@0.170.0` and `@dimforge/rapier3d-compat@0.14.0` in `test/nm2/node_modules`.
 
+## Talks and classes
+
+`content/talks.json` (or a client pack's own `talks.json`) holds every talk and class: its venue, its speaker, the slides
+with what the speaker says on each, and for a class the quiz, the pass mark and the certificate. From it:
+`bl/slides.py` draws the slides (`out/slides/<talk>/<nn>.png`, 2048 x 1024, in the campus's own look: the title slide,
+content slides with the exhibit art or a line drawing beside the points, a closing slide), the `import_art` setup step
+imports them as `/Game/WTA/Slides/T_Slide_<talk>_<nn>`; `unreal/Tools/voice/make_talk_voices.py` reads every line and
+quiz question aloud in the speaker's Kokoro voice (`out/voice/VO_talk_<talk>_<nn>.wav`, `VO_quiz_<talk>_<nn>.wav`, copied
+to the Unreal machine's voiceover folder and imported by `wta_voice`); `data/build_data.py` writes `DT_Talks`. In the
+engine `AWTATalkActor` (placed by the `actors` step on the venue's `spot__<venue>_f<yaw>` mesh) puts the slides on the
+venue's `screen__<venue>` meshes, stands the speaker on the spot (a reenactor, or the staff member who teaches), and
+runs the talk while a visitor sits on one of the venue's seats (`seat__<venue>_*`): the line read aloud with its
+sentences as captions, the speaker gesturing and looking at the listener; a class ends in its quiz and a certificate.
+`build_client.py` runs the slides and (when the Kokoro model is on the machine) the voices with everything else.
+
 ## What is in `out/ue/`
 
 | Asset | Meshes | Triangles | Notes |
