@@ -2042,8 +2042,10 @@ void UWTAPlayTest::AddWaxPhase()
 				const FVector Try = Look + Dir * Dist;
 				FHitResult Hit;
 				const bool bBlocked = World->LineTraceSingleByChannel(Hit, Look + Dir * 6.f, Try, ECC_Visibility, Params);
-				// a clear view, away from the figure's chest, of the palm's open side, earlier in the list on a tie
-				const float Score = (bBlocked ? -4.f : 0.f) + static_cast<float>(FVector::DotProduct(Dir, Away)) + 0.3f * static_cast<float>(FVector::DotProduct(Dir, N)) - 0.02f * Order;
+				// a clear view, away from the figure's chest, of the palm's open side, not from under the hand,
+				// earlier in the list on a tie
+				const float Score = (bBlocked ? -4.f : 0.f) + static_cast<float>(FVector::DotProduct(Dir, Away)) + 0.3f * static_cast<float>(FVector::DotProduct(Dir, N))
+					- 0.8f * FMath::Max(0.f, -static_cast<float>(Dir.Z)) - 0.02f * Order;
 				++Order;
 				if (Score > Best)
 				{
@@ -2053,7 +2055,8 @@ void UWTAPlayTest::AddWaxPhase()
 			}
 			FaceCamera->SetActorLocationAndRotation(Eye, (Look - Eye).Rotation());
 		};
-		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, HeldOne, HeldIndex, FindStage, AimAtHand]() -> float
+		TSharedRef<int32> Polls = MakeShared<int32>(0);
+		Steps.Add({ TEXT("wax hands ") + Name, [this, Name, HeldOne, HeldIndex, Polls, FindStage, AimAtHand]() -> float
 		{
 			*HeldOne = false;
 			*HeldIndex = INDEX_NONE;
@@ -2061,6 +2064,20 @@ void UWTAPlayTest::AddWaxPhase()
 			if (Stage == nullptr)
 			{
 				return 0.f;
+			}
+			// wait for a moment when a prop sits in a hand and will stay there through the close-up (one loop at most)
+			bool bSettled = false;
+			for (int32 i = 0; i < Stage->NumProps() && !bSettled; ++i)
+			{
+				FVector Prop, Wrist, Figure;
+				float Grip = 0.f;
+				FName Socket;
+				FTransform PalmOf;
+				bSettled = Stage->PropInHand(i, Prop, Wrist, Figure, Grip, Socket, PalmOf) && Stage->PropSecondsBeforeLeaving(i) > 1.2f && Grip > 0.95f;
+			}
+			if (!bSettled && (*Polls)++ < 70)
+			{
+				return -0.25f;
 			}
 			int32 Held = 0, Placed = 0, Closed = 0;
 			FString Notes;
@@ -2079,6 +2096,7 @@ void UWTAPlayTest::AddWaxPhase()
 				Held += 1; Placed += bPlaced ? 1 : 0; Closed += bClosed ? 1 : 0;
 				if (Held == 1) { *HeldIndex = i; }
 				Notes += FString::Printf(TEXT("%s prop %d %.0f cm from the wrist, grip %.2f; "), *Socket.ToString(), i, Gap, Grip);
+				Report(TEXT("wax"), EResult::Info, Name + TEXT(" hold"), Stage->DescribeHold(i));
 			}
 			if (Held == 0)
 			{

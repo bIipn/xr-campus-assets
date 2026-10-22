@@ -127,6 +127,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
 	bool PropInHand(int32 Index, FVector& OutProp, FVector& OutWrist, FVector& OutFigure, float& OutGrip, FName& OutSocket, FTransform& OutPalm) const;
 
+	/**
+	 * For QA: the hold of prop Index in numbers, in the hand's palm frame (cm): where the prop's origin and
+	 * axes sit, where the finger joints are, how closed the hand is and which LOD the body shows. Empty when
+	 * the prop is not in a hand.
+	 */
+	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
+	FString DescribeHold(int32 Index) const;
+
+	/** For QA: seconds until the prop leaves where it rests for its next key (a long time when it never does). */
+	UFUNCTION(BlueprintPure, Category = "WTA|Wax")
+	float PropSecondsBeforeLeaving(int32 Index) const;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;

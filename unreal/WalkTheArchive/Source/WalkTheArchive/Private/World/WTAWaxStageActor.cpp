@@ -769,6 +769,91 @@ bool AWTAWaxStageActor::PropInHand(int32 Index, FVector& OutProp, FVector& OutWr
 	return false;
 }
 
+FString AWTAWaxStageActor::DescribeHold(int32 Index) const
+{
+	static const FName HandL(TEXT("hand_l"));
+	static const FName HandR(TEXT("hand_r"));
+	FVector Prop, Wrist, Figure;
+	float Grip = 0.f;
+	FName Socket;
+	FTransform Palm;
+	if (!PropInHand(Index, Prop, Wrist, Figure, Grip, Socket, Palm) || !Scene.Props.IsValidIndex(Index) || !PropParts.IsValidIndex(Index) || PropParts[Index] == nullptr)
+	{
+		return FString();
+	}
+	const FWTAWaxPropKey* Key = nullptr;
+	{
+		int32 Resting = INDEX_NONE, Arriving = INDEX_NONE;
+		float Alpha = 0.f;
+		PropKeysAt(Scene.Props[Index], Resting, Arriving, Alpha);
+		Key = Scene.Props[Index].Keys.IsValidIndex(Resting) ? &Scene.Props[Index].Keys[Resting] : nullptr;
+	}
+	const USkeletalMeshComponent* Body = nullptr;
+	for (const FFigurePlay& Play : Plays)
+	{
+		if (Key == nullptr || !Scene.Figures.IsValidIndex(Play.FigureIndex))
+		{
+			continue;
+		}
+		const FString Person = Scene.Figures[Play.FigureIndex].Person.ToString();
+		const FString Short = FString::Printf(TEXT("%s-%s"), *SceneId.ToString(), *Key->Figure.ToString());
+		if (Person == Short || Person == Key->Figure.ToString())
+		{
+			AActor* Actor = Play.Figure.Get();
+			Body = IsValid(Actor) ? UWTAPeopleLibrary::FindBody(Actor) : nullptr;
+			break;
+		}
+	}
+	auto InPalm = [&Palm](const FVector& World) { return Palm.InverseTransformPosition(World); };
+	auto Fmt = [](const FVector& V) { return FString::Printf(TEXT("(%.1f, %.1f, %.1f)"), V.X, V.Y, V.Z); };
+	const FTransform PropWorld = PropParts[Index]->GetComponentTransform();
+	FString Out = FString::Printf(TEXT("%s %s grip %.2f: prop origin %s X %s Y %s; "), *Scene.Props[Index].Kind.ToString(), *Socket.ToString(), Grip,
+		*Fmt(InPalm(PropWorld.GetLocation())), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::X))), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::Y))));
+	if (Body != nullptr)
+	{
+		const TCHAR* Side = Socket == HandR ? TEXT("r") : TEXT("l");
+		for (const TCHAR* Finger : { TEXT("index"), TEXT("middle"), TEXT("thumb") })
+		{
+			Out += Finger;
+			for (int32 j = 1; j <= 3; ++j)
+			{
+				const FName Bone(*FString::Printf(TEXT("%s_%02d_%s"), Finger, j, Side));
+				if (Body->GetBoneIndex(Bone) != INDEX_NONE)
+				{
+					Out += TEXT(" ") + Fmt(InPalm(Body->GetSocketLocation(Bone)));
+				}
+			}
+			Out += TEXT("; ");
+		}
+		Out += FString::Printf(TEXT("lod %d, %d bones in the pose"), Body->GetPredictedLODLevel(), Body->GetNumComponentSpaceTransforms());
+	}
+	return Out;
+}
+
+float AWTAWaxStageActor::PropSecondsBeforeLeaving(int32 Index) const
+{
+	if (!Scene.Props.IsValidIndex(Index) || Scene.Props[Index].Keys.Num() < 2)
+	{
+		return 1.e6f;
+	}
+	const FWTAWaxProp& Prop = Scene.Props[Index];
+	int32 Resting = INDEX_NONE, Arriving = INDEX_NONE;
+	float Alpha = 0.f;
+	PropKeysAt(Prop, Resting, Arriving, Alpha);
+	if (Arriving != INDEX_NONE)
+	{
+		return 0.f;
+	}
+	float LoopSeconds = Scene.LoopSeconds > 0.f ? Scene.LoopSeconds : 14.f;
+	const int32 Next = (Resting + 1) % Prop.Keys.Num();
+	float Leaves = Prop.Keys[Next].Time - FMath::Max(0.05f, Prop.Keys[Next].Blend);
+	if (Leaves < ActTime)
+	{
+		Leaves += LoopSeconds;
+	}
+	return Leaves - ActTime;
+}
+
 void AWTAWaxStageActor::SetKeyGrip(const FWTAWaxPropKey& Key, FName Kind, float Scale) const
 {
 	static const FName HandL(TEXT("hand_l"));
