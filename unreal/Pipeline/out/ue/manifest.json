@@ -210,8 +210,8 @@
     "prop__phone",
     "prop__tablet"
    ],
-   "triangles": 4300,
-   "bytes": 280212
+   "triangles": 4304,
+   "bytes": 463856
   },
   "Seats": {
    "file": "Seats.glb",

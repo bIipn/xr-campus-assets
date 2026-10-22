@@ -38,6 +38,8 @@ def mats():
     material('glass_dark', color=(0.02, 0.02, 0.025, 1), roughness=0.06)
     material('paper', color=(0.93, 0.92, 0.88, 1), roughness=0.9)
     material('page', color=(0.96, 0.95, 0.90, 1), roughness=0.92)
+    material('page_left', col='page_left', roughness=0.92, uvmap='UVMap')      # the open book's print (bl/screens.py)
+    material('page_right', col='page_right', roughness=0.92, uvmap='UVMap')
     material('board', color=(0.42, 0.30, 0.18, 1), roughness=0.82)
     material('cover', color=(0.42, 0.07, 0.07, 1), roughness=0.55)
     material('metal', color=(0.72, 0.72, 0.74, 1), roughness=0.3, metallic=1.0)
@@ -63,18 +65,20 @@ def box(name, cx, cy, cz, sx, sy, sz, mat, bevel=0.0, segs=3, rot=(0, 0, 0)):
     return o
 
 
-def screen(name, cx, cy, cz, sx, sz, mat):
-    """A lit screen: one quad at y = cy facing -y (out of the palm), sx along x and sz across, mapped so the
-    texture's top is toward +x (away from the hand) and its right toward -z - portrait as the thing is held."""
+def screen(name, cx, cy, cz, sx, sz, mat, rot=(0, 0, 0)):
+    """A printed or lit face: one quad centred at (cx, cy, cz) facing -y (out of the palm), sx along x and sz across,
+    turned by rot like a box, mapped so the texture's top is toward +x (away from the hand) and its right toward -z
+    - portrait, the way the thing is held and read."""
     import bmesh
     bm = bmesh.new(); uv = bm.loops.layers.uv.new('UVMap')          # the cubes' own layer name, so it is UV0 after the join
     hx, hz = sx / 2, sz / 2
-    corners = [((cx - hx, cy, cz + hz), (0, 0)), ((cx - hx, cy, cz - hz), (1, 0)), ((cx + hx, cy, cz - hz), (1, 1)), ((cx + hx, cy, cz + hz), (0, 1))]
+    corners = [((-hx, 0.0, hz), (0, 0)), ((-hx, 0.0, -hz), (1, 0)), ((hx, 0.0, -hz), (1, 1)), ((hx, 0.0, hz), (0, 1))]
     vs = [bm.verts.new(c) for c, _ in corners]
     f = bm.faces.new(vs)
     for l, (_, t) in zip(f.loops, corners): l[uv].uv = t
     me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
     o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
+    o.location = (cx, cy, cz); o.rotation_euler = rot
     o.data.materials.append(L.MATS[mat])
     PARTS.append(o)
     return o
@@ -160,6 +164,9 @@ def book():
         box('cover', c.x, c.y, c.z, 0.198, 0.0035, 0.138, 'cover', bevel=0.0012, segs=2, rot=(tilt, 0, 0))
         c = tilted((0.0, -0.0035 - 0.009, s * 0.064))
         box('pages', c.x, c.y, c.z, 0.190, 0.018, 0.128, 'page', rot=(tilt, 0, 0))
+        # the open pages' print: a quad a hair above the paper; s = -1 is the reader's right-hand page
+        c = tilted((0.0, -0.0035 - 0.018 - 0.0003, s * 0.064))
+        screen('print', c.x, c.y, c.z, 0.186, 0.124, 'page_right' if s < 0 else 'page_left', rot=(tilt, 0, 0))
     box('spine', 0.095, -0.006, 0.0, 0.198, 0.012, 0.016, 'cover', bevel=0.002, segs=2)
     return finish('prop__book')
 
