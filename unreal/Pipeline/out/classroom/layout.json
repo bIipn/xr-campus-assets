@@ -1,0 +1,69 @@
+{
+ "source": "bl/classroom.py",
+ "units": "campus metres (x east, y up, z south); Unreal = (x*100, z*100, y*100)",
+ "venue": "classroom",
+ "rooms": [
+  {
+   "id": "classroom",
+   "label": "Room 104 \u00b7 XR Classroom",
+   "x0": 24.0,
+   "x1": 34.0,
+   "z0": -1.25,
+   "z1": 7.0,
+   "floor_y": 0.0,
+   "ceiling_y": 3.6
+  }
+ ],
+ "entries": [
+  {
+   "what": "the hall door",
+   "x": 29.0,
+   "y": 0.0,
+   "z": -1.25,
+   "width": 1.8
+  }
+ ],
+ "speaker_spot": {
+  "x": 33.0,
+  "y": 0.0,
+  "z": 0.3,
+  "yaw": 180
+ },
+ "screens": [
+  {
+   "name": "screen__classroom",
+   "centre": [
+    33.951,
+    1.864,
+    2.6
+   ],
+   "size_m": [
+    3.0,
+    1.6875
+   ],
+   "faces": [
+    -1,
+    0,
+    0
+   ]
+  }
+ ],
+ "teacher_desk": {
+  "x": 32.87,
+  "z": 5.3,
+  "top_y": 0.765
+ },
+ "camera": {
+  "eye": [
+   25.2,
+   1.55,
+   0.2
+  ],
+  "target": [
+   34.0,
+   1.6,
+   3.2
+  ]
+ },
+ "seats": 18
+}

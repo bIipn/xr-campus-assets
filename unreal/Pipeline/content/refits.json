@@ -1,0 +1,15 @@
+{
+ "about": "Changes to the web-exported wings that unreal/Pipeline/blender/prepare_for_unreal.py makes while it prepares them for Unreal: 'drop' removes meshes (Blender object names as the glTF import gives them, regular expressions matched whole), 'move' carries a group of meshes as one piece: it turns them by rotate_deg about the campus vertical through pivot (campus x, z; +90 turns something facing campus -z, north, to face campus -x, west) and puts the pivot at 'to' (campus x, z), dy metres higher. Campus axes: x east, y up, z south; the import maps campus (x, y, z) to Blender (x, -z, y).",
+ "School": {
+  "note": "Room 104 becomes the XR Classroom (bl/classroom.py adds the smartboard, the desks and chairs, the teacher's desk and the new door sign): the computers desk, its stools and computers, the outdated 'Built in a browser' panel and the old door sign and the faces of the hall's blade sign go (bl/classroom.py puts new ones in their place); the layer table moves to the back of the room, the beanbags to the back-left corner and the World Builder book onto the teacher's desk. The mural (the layer table's station sign), the free-tools shelf, the token and the window stay.",
+  "drop": ["Mesh_330", "Mesh_404", "Mesh_331(\\.\\d+)?", "Mesh_34[1-9]", "Mesh_35[0-5]", "Mesh_335", "Mesh_336", "Mesh_21", "Mesh_35", "Mesh_36"],
+  "move": [
+   {"what": "the layer table, turned so its label faces the class",
+    "meshes": ["Mesh_337", "Mesh_338", "Mesh_339", "Mesh_405"], "pivot": [29.0, 2.9], "rotate_deg": -90, "to": [25.9, 2.9]},
+   {"what": "the beanbags, to the back-left corner",
+    "meshes": ["Mesh_333", "Mesh_334"], "pivot": [32.75, -0.5], "rotate_deg": 0, "to": [25.45, -0.45]},
+   {"what": "the World Builder book with its stand and label, onto the teacher's desk facing the class",
+    "meshes": ["book__world-builder", "Mesh_376", "Mesh_377", "Mesh_378"], "pivot": [27.8, 6.5], "rotate_deg": 90, "to": [32.78, 5.3]}
+  ]
+ }
+}

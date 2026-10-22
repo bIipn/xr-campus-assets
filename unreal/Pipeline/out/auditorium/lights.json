@@ -1,0 +1,864 @@
+{
+ "source": "bl/auditorium.py",
+ "units": "metres, three.js campus axes (y up)",
+ "lights": [
+  {
+   "name": "foyer",
+   "type": "POINT",
+   "campus_pos_m": [
+    9.025,
+    3.6,
+    -7.4
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 700,
+   "color_linear": [
+    1.0,
+    0.86,
+    0.68
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "foyer",
+   "type": "POINT",
+   "campus_pos_m": [
+    9.025,
+    3.6,
+    -11.2
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 700,
+   "color_linear": [
+    1.0,
+    0.86,
+    0.68
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    9.55,
+    6.0,
+    -16.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    12.35,
+    6.0,
+    -16.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    15.15,
+    6.0,
+    -16.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    17.95,
+    6.0,
+    -16.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    9.55,
+    6.0,
+    -20.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    12.35,
+    6.0,
+    -20.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    15.15,
+    6.0,
+    -20.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    17.95,
+    6.0,
+    -20.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    9.55,
+    6.0,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    12.35,
+    6.0,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    15.15,
+    6.0,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "downlight",
+   "type": "POINT",
+   "campus_pos_m": [
+    17.95,
+    6.0,
+    -24.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.93,
+    0.82
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "stage",
+   "type": "POINT",
+   "campus_pos_m": [
+    10.75,
+    5.5,
+    -27.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 350,
+   "color_linear": [
+    1.0,
+    0.9,
+    0.78
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "stage",
+   "type": "POINT",
+   "campus_pos_m": [
+    13.75,
+    5.5,
+    -27.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 350,
+   "color_linear": [
+    1.0,
+    0.9,
+    0.78
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "stage",
+   "type": "POINT",
+   "campus_pos_m": [
+    16.75,
+    5.5,
+    -27.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 350,
+   "color_linear": [
+    1.0,
+    0.9,
+    0.78
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.05,
+    4.4,
+    -16.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    20.45,
+    4.4,
+    -16.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.05,
+    4.4,
+    -20.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    20.45,
+    4.4,
+    -20.6
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.05,
+    4.4,
+    -24.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "sconce",
+   "type": "POINT",
+   "campus_pos_m": [
+    20.45,
+    4.4,
+    -24.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 120,
+   "color_linear": [
+    1.0,
+    0.84,
+    0.62
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.53,
+    -1.53,
+    -26.696
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.97,
+    -1.53,
+    -26.696
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.528,
+    -1.33,
+    -25.675
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.972,
+    -1.33,
+    -25.675
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.527,
+    -1.13,
+    -24.663
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.973,
+    -1.13,
+    -24.663
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.526,
+    -0.93,
+    -23.657
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.974,
+    -0.93,
+    -23.657
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.525,
+    -0.73,
+    -22.657
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.975,
+    -0.73,
+    -22.657
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.523,
+    -0.53,
+    -21.662
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.977,
+    -0.53,
+    -21.662
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.522,
+    -0.33,
+    -20.671
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.978,
+    -0.33,
+    -20.671
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    7.522,
+    -0.13,
+    -19.683
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "step",
+   "type": "POINT",
+   "campus_pos_m": [
+    19.978,
+    -0.13,
+    -19.683
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 4,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.55
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  }
+ ]
+}

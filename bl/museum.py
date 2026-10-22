@@ -59,6 +59,11 @@ HALL = ((-12.0, -6.0), (6.0, 12.0)); HZ0, HZ1 = -4.6, -1.4
 # last 45 cm (bl/library.py), and two faces in one plane flicker. The floor still runs to -12.
 HALL_WALLS = ((-11.55, -6.0), (6.0, 12.0))
 SIDE_DOOR = (-4.2, -1.8)          # lobby -> halls, 2.4 x 3.1 at x = +-6
+# Hall R's north wall opens into the talks wing's foyer (bl/auditorium.py): a 2.2 x 2.8 m door through a wall
+# from the hall's face (z -4.6) to the foyer's (FOYER_FACE, built by bl/auditorium.py); the museum builds the hall's
+# face and the door's reveal through the whole thickness
+HALL_R_DOOR = (7.9, 10.1, 2.8)
+FOYER_FACE = -4.95
 # the rotunda and the front
 RC = (0.0, 5.8)                   # centre (x, z)
 RI, RO = 5.0, 5.8                 # inner and outer radius
@@ -376,10 +381,28 @@ def halls():
     bs = builder('aedicule', 'stone', tile=2.0); bc = builder('capitals', 'gilt'); bb = builder('bases', 'stone', tile=2.0)
     for (xa, xb) in HALL_WALLS:
         for (z, out) in ((HZ0, (0, 1)), (HZ1, (0, -1))):
-            wall_face(wl, (xa, z), (xb, z), out, DADO_H - 0.02, HALL_H, nu=3, nv=1)
-            dado_run((xa, z), (xb, z), out)
+            door = HALL_R_DOOR if (xa > 0 and z == HZ0) else None
+            if door:
+                # the wall with the door to the talks wing's foyer: the hall's face (no solidify: the reveal is
+                # drawn through to the foyer's face instead), the jambs and the soffit
+                dx0, dx1, dh = door
+                hw = builder('hall_r_north', 'lime', tile=3.0)
+                wall_with_door(hw, (xa, DADO_H - 0.02, z), (1, 0, 0), (0, 1, 0), (0, 0, 1), 0.0, xb - xa, HALL_H - (DADO_H - 0.02),
+                               dx0 - xa, dx1 - xa, dh - (DADO_H - 0.02), solid=False)
+                for x in (dx0, dx1):
+                    hw.face([P(x, 0.0, z), P(x, 0.0, FOYER_FACE), P(x, dh, FOYER_FACE), P(x, dh, z)], D(1 if x == dx0 else -1, 0, 0))
+                hw.face([P(dx0, dh, z), P(dx1, dh, z), P(dx1, dh, FOYER_FACE), P(dx0, dh, FOYER_FACE)], D(0, -1, 0))
+                for (a, c) in (((xa, z), (dx0 - 0.16, z)), ((dx1 + 0.16, z), (xb, z))):
+                    dado_run(a, c, out)
+                # a moulded surround: jambs, a head and a little cornice under the hall's own
+                for x in (dx0 - 0.08, dx1 + 0.08):
+                    bs.box(x, dh / 2, z + 0.05, 0.16, dh, 0.10, seg=1.5)
+                run_boxes(bs, (dx0 - 0.18, z), (dx1 + 0.18, z), out, [(dh, dh + 0.16, 0.10), (dh + 0.16, dh + 0.24, 0.15)])
+            else:
+                wall_face(wl, (xa, z), (xb, z), out, DADO_H - 0.02, HALL_H, nu=3, nv=1)
+                dado_run((xa, z), (xb, z), out)
             run_boxes(bs, (xa, z), (xb, z), out, [(HALL_H - 0.30, HALL_H - 0.22, 0.10), (HALL_H - 0.22, HALL_H - 0.12, 0.16), (HALL_H - 0.12, HALL_H, 0.22)])
-            for x in (xa + 0.6, (xa + xb) / 2, xb - 0.6):
+            for x in ((xa + 0.6, xb - 0.6) if door else (xa + 0.6, (xa + xb) / 2, xb - 0.6)):
                 pilaster(bs, bc, bb, (x, z), out, 0.36, HALL_H - 0.30, depth=0.10)
         coffered_flat(builder('ceiling', 'lime', tile=3.0), gold, xa, xb, HZ0, HZ1, HALL_H, 3, 2, rib=0.26, depth=0.18, inset=0.09)
         xm = (xa + xb) / 2

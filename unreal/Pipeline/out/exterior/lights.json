@@ -8,7 +8,7 @@
    "campus_pos_m": [
     -2.5,
     2.7,
-    22.0
+    37.6
    ],
    "campus_dir": [
     0,
@@ -30,7 +30,7 @@
    "campus_pos_m": [
     2.5,
     2.7,
-    22.0
+    37.6
    ],
    "campus_dir": [
     0,
@@ -52,7 +52,7 @@
    "campus_pos_m": [
     -2.5,
     2.7,
-    29.0
+    61.0
    ],
    "campus_dir": [
     0,
@@ -74,95 +74,7 @@
    "campus_pos_m": [
     2.5,
     2.7,
-    29.0
-   ],
-   "campus_dir": [
-    0,
-    -1,
-    0
-   ],
-   "blender_watts": 150,
-   "color_linear": [
-    1.0,
-    0.82,
-    0.58
-   ],
-   "radius_m": 0.08,
-   "area_size_m": null
-  },
-  {
-   "name": "post",
-   "type": "POINT",
-   "campus_pos_m": [
-    -2.5,
-    2.7,
-    45.0
-   ],
-   "campus_dir": [
-    0,
-    -1,
-    0
-   ],
-   "blender_watts": 150,
-   "color_linear": [
-    1.0,
-    0.82,
-    0.58
-   ],
-   "radius_m": 0.08,
-   "area_size_m": null
-  },
-  {
-   "name": "post",
-   "type": "POINT",
-   "campus_pos_m": [
-    2.5,
-    2.7,
-    45.0
-   ],
-   "campus_dir": [
-    0,
-    -1,
-    0
-   ],
-   "blender_watts": 150,
-   "color_linear": [
-    1.0,
-    0.82,
-    0.58
-   ],
-   "radius_m": 0.08,
-   "area_size_m": null
-  },
-  {
-   "name": "post",
-   "type": "POINT",
-   "campus_pos_m": [
-    -2.5,
-    2.7,
-    56.0
-   ],
-   "campus_dir": [
-    0,
-    -1,
-    0
-   ],
-   "blender_watts": 150,
-   "color_linear": [
-    1.0,
-    0.82,
-    0.58
-   ],
-   "radius_m": 0.08,
-   "area_size_m": null
-  },
-  {
-   "name": "post",
-   "type": "POINT",
-   "campus_pos_m": [
-    2.5,
-    2.7,
-    56.0
+    61.0
    ],
    "campus_dir": [
     0,
@@ -184,7 +96,7 @@
    "campus_pos_m": [
     -6.9,
     2.7,
-    30.0
+    46.0
    ],
    "campus_dir": [
     0,
@@ -206,7 +118,7 @@
    "campus_pos_m": [
     -6.9,
     2.7,
-    38.0
+    54.0
    ],
    "campus_dir": [
     0,
@@ -228,7 +140,7 @@
    "campus_pos_m": [
     6.9,
     2.7,
-    30.0
+    46.0
    ],
    "campus_dir": [
     0,
@@ -250,7 +162,95 @@
    "campus_pos_m": [
     6.9,
     2.7,
-    38.0
+    54.0
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 150,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.58
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "theatre",
+   "type": "POINT",
+   "campus_pos_m": [
+    -2.35,
+    2.7,
+    33.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 150,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.58
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "theatre",
+   "type": "POINT",
+   "campus_pos_m": [
+    2.35,
+    2.7,
+    33.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 150,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.58
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "theatre",
+   "type": "POINT",
+   "campus_pos_m": [
+    -11.279,
+    2.7,
+    27.448
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 150,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.58
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
+   "name": "theatre",
+   "type": "POINT",
+   "campus_pos_m": [
+    11.279,
+    2.7,
+    27.448
    ],
    "campus_dir": [
     0,
