@@ -22,6 +22,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
 #include "Data/WTATypes.h"
 #include "WTAWaxStageActor.generated.h"
@@ -32,6 +33,21 @@ class UStaticMesh;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UWTAWaxAnimInstance;
+
+/**
+ * The stage's second tick: after every body has animated this frame (TG_PostUpdateWork), it puts the props
+ * where the hands are now. The stage itself ticks before the bodies (it decides what they evaluate), which
+ * would leave a prop a frame behind a moving hand.
+ */
+UCLASS()
+class WALKTHEARCHIVE_API UWTAWaxPropTick : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:
+	UWTAWaxPropTick();
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+};
 
 UCLASS(Blueprintable)
 class WALKTHEARCHIVE_API AWTAWaxStageActor : public AActor
@@ -160,8 +176,14 @@ protected:
 	/** Advances ActTime, starts each figure's current beat, and turns figures toward their beat's yaw. */
 	void UpdateBeats(float DeltaSeconds);
 
-	/** Puts every prop where its keys say it is at ActTime. */
+	/** Puts every prop where its keys say it is at ActTime, and closes the hands that hold one. */
 	void UpdateProps();
+
+public:
+	/** Puts the props where the hands are after the bodies have animated this frame (UWTAWaxPropTick). */
+	void PlaceProps();
+
+protected:
 
 	/** The key a prop sits at (Resting) at ActTime and, while it travels, the key it is on its way to and how far. */
 	void PropKeysAt(const FWTAWaxProp& Prop, int32& Resting, int32& Arriving, float& Alpha) const;
@@ -237,6 +259,9 @@ protected:
 	/** One component per row prop, in the row's order. */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UStaticMeshComponent>> PropParts;
+	/** Places the props again once the bodies have animated (UWTAWaxPropTick). */
+	UPROPERTY()
+	TObjectPtr<UWTAWaxPropTick> LateTick;
 
 	/** Per row prop: true when it shows a modelled mesh (HandProps or the web's own), false for a stand-in block. */
 	TArray<bool> PropModelled;

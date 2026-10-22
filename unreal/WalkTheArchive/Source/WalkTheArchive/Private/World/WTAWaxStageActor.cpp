@@ -251,10 +251,27 @@ namespace
 	}
 }
 
+UWTAWaxPropTick::UWTAWaxPropTick()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+	PrimaryComponentTick.TickGroup = TG_PostUpdateWork;
+}
+
+void UWTAWaxPropTick::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (AWTAWaxStageActor* Stage = Cast<AWTAWaxStageActor>(GetOwner()))
+	{
+		Stage->PlaceProps();
+	}
+}
+
 AWTAWaxStageActor::AWTAWaxStageActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	LateTick = CreateDefaultSubobject<UWTAWaxPropTick>(TEXT("LateTick"));
 
 	// The watch zone: overlaps pawns only.
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
@@ -798,8 +815,11 @@ FString AWTAWaxStageActor::DescribeHold(int32 Index) const
 	auto InPalm = [&Palm](const FVector& World) { return Palm.InverseTransformPosition(World); };
 	auto Fmt = [](const FVector& V) { return FString::Printf(TEXT("(%.1f, %.1f, %.1f)"), V.X, V.Y, V.Z); };
 	const FTransform PropWorld = PropParts[Index]->GetComponentTransform();
-	FString Out = FString::Printf(TEXT("%s %s grip %.2f: prop origin %s X %s Y %s; "), *Scene.Props[Index].Kind.ToString(), *Socket.ToString(), Grip,
-		*Fmt(InPalm(PropWorld.GetLocation())), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::X))), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::Y))));
+	FTransform Expected;
+	const bool bExpected = Key != nullptr && PropKeyTransform(*Key, Scene.Props[Index].Kind, PropModelled.IsValidIndex(Index) && PropModelled[Index], Expected);
+	FString Out = FString::Printf(TEXT("%s %s grip %.2f: prop origin %s X %s Y %s, placed %.1f cm from where the hand is now; "), *Scene.Props[Index].Kind.ToString(), *Socket.ToString(), Grip,
+		*Fmt(InPalm(PropWorld.GetLocation())), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::X))), *Fmt(Palm.InverseTransformVectorNoScale(PropWorld.GetUnitAxis(EAxis::Y))),
+		bExpected ? FVector::Dist(PropWorld.GetLocation(), Expected.GetLocation()) : -1.f);
 	if (Body != nullptr)
 	{
 		const TCHAR* Side = Socket == HandR ? TEXT("r") : TEXT("l");
@@ -909,6 +929,14 @@ void AWTAWaxStageActor::PropKeysAt(const FWTAWaxProp& Prop, int32& Resting, int3
 			Arriving = k;
 			Alpha = Since / Travel;
 		}
+	}
+}
+
+void AWTAWaxStageActor::PlaceProps()
+{
+	if (bHasScene && bActing && Plays.Num() > 0)
+	{
+		UpdateProps();
 	}
 }
 
