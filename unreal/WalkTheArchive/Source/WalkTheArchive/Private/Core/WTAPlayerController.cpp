@@ -1226,6 +1226,14 @@ void AWTAPlayerController::OnMove(const FInputActionValue& Value)
 	}
 	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
+		if (PlayerCharacter->IsSeated())
+		{
+			if (!Value.Get<FVector2D>().IsNearlyZero())
+			{
+				PlayerCharacter->StandUp(true);        // a step off the seat; the walk starts from the next input
+			}
+			return;
+		}
 		PlayerCharacter->AddMoveInput(Value.Get<FVector2D>());
 		bHasPendingView = false;
 		bFaceTravelDirection = false;
@@ -1276,6 +1284,11 @@ void AWTAPlayerController::OnJump(const FInputActionValue& Value)
 	}
 	if (AWTACharacter* PlayerCharacter = GetWTACharacter())
 	{
+		if (PlayerCharacter->IsSeated())
+		{
+			PlayerCharacter->StandUp(true);
+			return;
+		}
 		PlayerCharacter->Jump();
 	}
 }
@@ -1316,6 +1329,12 @@ void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 	}
 	if (Interaction->TryInteract())
 	{
+		return;
+	}
+	// Sitting with nothing under the crosshair: E stands up.
+	if (AWTACharacter* Seated = GetWTACharacter(); Seated != nullptr && Seated->IsSeated())
+	{
+		Seated->StandUp(true);
 		return;
 	}
 	// Standing in a wax scene with nothing under the crosshair: E opens that scene's story.

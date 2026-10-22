@@ -95,6 +95,31 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void AddMoveInput(FVector2D Axis);
 
+	// --- Sitting -----------------------------------------------------------------
+
+	/**
+	 * Sits down on Seat: the capsule shortens and stands on the floor under the sit point, the eye settles
+	 * SeatEyeHeight above SeatTop facing Yaw, and movement is locked. Looking and every interaction keep working.
+	 * Where the player stood is kept, so standing up puts them back on the floor there.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SitAt(AActor* Seat, const FVector& SeatTop, float Yaw);
+
+	/** Stands up: the capsule and movement come back; bReturn puts the player back where they sat down from. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void StandUp(bool bReturn = true);
+
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool IsSeated() const { return bSeated; }
+
+	/** The seat sat on (null when standing). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	AActor* GetSeat() const { return Seat.Get(); }
+
+	/** The eye above the seat's top when sitting: 120 cm off the floor on a 45 cm chair. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA|Feel")
+	float SeatEyeHeight = 75.f;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -105,6 +130,13 @@ protected:
 
 	/** Adds the XY distance moved this frame to UWTAProgressSubsystem::NoteDistance. */
 	void NoteDistanceWalked();
+
+	bool bSeated = false;
+	TWeakObjectPtr<AActor> Seat;
+	/** The capsule's location before sitting down, to stand back up at. */
+	FVector StandLocation = FVector::ZeroVector;
+	/** The camera's height over the capsule centre while seated. */
+	float SeatedCameraZ = 0.f;
 
 	float BobPhase = 0.f;
 	/** 0..1 bob strength, eased toward the measured ground speed (web PLAYER.amp). */

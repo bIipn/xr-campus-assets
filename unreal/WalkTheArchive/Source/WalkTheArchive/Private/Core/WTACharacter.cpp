@@ -145,11 +145,101 @@ bool AWTACharacter::IsAutoWalking() const
 	return bAutoWalking;
 }
 
+void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
+{
+	StopWalking();
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Capsule == nullptr || Move == nullptr)
+	{
+		return;
+	}
+	if (!bSeated)
+	{
+		StandLocation = GetActorLocation();
+	}
+	bSeated = true;
+	Seat = InSeat;
+
+	// The floor under the seat: traced a knee's length in front of the sit point, where no cushion or frame is
+	// in the way; a chair's 45 cm when nothing answers.
+	const FVector Forward = FRotator(0.f, Yaw, 0.f).Vector();
+	float FloorZ = SeatTop.Z - 45.f;
+	FHitResult Hit;
+	FCollisionQueryParams Params(FName(TEXT("WTASeatFloor")), false, this);
+	if (InSeat != nullptr)
+	{
+		Params.AddIgnoredActor(InSeat);
+	}
+	if (GetWorld() != nullptr && GetWorld()->LineTraceSingleByChannel(Hit, SeatTop + Forward * 40.f - FVector(0.f, 0.f, 2.f), SeatTop + Forward * 40.f - FVector(0.f, 0.f, 160.f), ECC_Visibility, Params))
+	{
+		FloorZ = static_cast<float>(Hit.Location.Z);
+	}
+
+	// A seated capsule: 120 cm tall, standing on the floor at the sit point, with the eye at its seated height.
+	constexpr float SeatedHalfHeight = 60.f;
+	Move->DisableMovement();
+	Move->Velocity = FVector::ZeroVector;
+	Capsule->SetCapsuleHalfHeight(SeatedHalfHeight);
+	const FVector Centre(SeatTop.X, SeatTop.Y, FloorZ + SeatedHalfHeight + 1.f);
+	SetActorLocation(Centre, false, nullptr, ETeleportType::TeleportPhysics);
+	SeatedCameraZ = SeatTop.Z + SeatEyeHeight - Centre.Z;
+	Camera->SetRelativeLocation(FVector(0.f, 0.f, SeatedCameraZ));
+	if (AController* OwnController = GetController())
+	{
+		OwnController->SetControlRotation(FRotator(-8.f, Yaw, 0.f));
+	}
+	SetActorRotation(FRotator(0.f, Yaw, 0.f));
+	BobPhase = 0.f;
+	BobAmount = 0.f;
+	DipOffset = 0.f;
+	DipVelocity = 0.f;
+	LastFrameLocation = GetActorLocation();
+	bHasLastFrameLocation = true;
+}
+
+void AWTACharacter::StandUp(bool bReturn)
+{
+	if (!bSeated)
+	{
+		return;
+	}
+	bSeated = false;
+	Seat = nullptr;
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Capsule != nullptr)
+	{
+		Capsule->SetCapsuleHalfHeight(CapsuleHalfHeight);
+	}
+	if (bReturn)
+	{
+		SetActorLocation(StandLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	}
+	if (Move != nullptr)
+	{
+		Move->SetMovementMode(MOVE_Walking);
+		Move->Velocity = FVector::ZeroVector;
+	}
+	if (AController* OwnController = GetController())
+	{
+		const FRotator Now = OwnController->GetControlRotation();
+		OwnController->SetControlRotation(FRotator(0.f, Now.Yaw, 0.f));
+	}
+	Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - CapsuleHalfHeight));
+	LastFrameLocation = GetActorLocation();
+	bHasLastFrameLocation = true;
+}
+
 void AWTACharacter::TeleportToView(const FWTAView& View)
 {
 	if (!View.bValid)
 	{
 		return;
+	}
+	if (bSeated)
+	{
+		StandUp(false);                            // a tour stop or a place: the seat is left behind
 	}
 	StopWalking();
 	// View.Location is the eye; the capsule centre sits EyeHeight below it plus the half height.
@@ -214,6 +304,11 @@ void AWTACharacter::AddMoveInput(FVector2D Axis)
 
 void AWTACharacter::UpdateCameraOffset(float DeltaSeconds)
 {
+	if (bSeated)
+	{
+		Camera->SetRelativeLocation(FVector(0.f, 0.f, SeatedCameraZ));
+		return;
+	}
 	if (Camera == nullptr || DeltaSeconds <= 0.f)
 	{
 		return;

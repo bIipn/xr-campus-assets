@@ -86,6 +86,7 @@ The pick volume is a `UBoxComponent` named `PickBox` (root), collision preset th
 | `AWTARoomVolume` (not interactable) | `FName RoomId`, `FVector Extent` (half size cm) | on player overlap → `UWTARoomSubsystem::EnterRoom(RoomId)` |
 | `AWTAWaxStageActor` (not interactable) | `FName SceneId`, `FVector TriggerExtent` | at BeginPlay spawns the row's built `Figures` (MetaHuman reenactors, posed and frozen like wax figures); while the player is inside: plays the scene's captions (`Lines`) on the HUD in a loop; later plays `Sequence` |
 | `AWTAStatueActor` (not interactable) | `FName Person`, `FName Action`, `float Phase` | at BeginPlay spawns the person's MetaHuman held in the clip's pose, every surface in `M_WTA_Marble`, hair hidden: a marble statue (rows in `Pipeline/content/statues.json`, not a DataTable) |
+| `AWTASeatActor` (parent `AWTAPickActor`) | `FName SeatId`, `float SeatYaw`, `FVector PickExtent` | sit the player down (`AWTACharacter::SitAt`: a 120 cm capsule on the floor under the sit point, the eye 75 cm over the seat, movement locked, looking and interacting still work); E on it again, Space or a move stands them up. One per `seat__<id>_f<yaw>` mesh (the Blender builders' cushions and bench seats), at the top of its bounds |
 
 ### 4.6 Systems (`Systems/`)
 | Class | Parent | Must have |

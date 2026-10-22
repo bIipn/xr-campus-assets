@@ -7,7 +7,7 @@ when you import meshes as assets). So before Unreal sees them, this pass:
     lands in the right place when spawned at Unreal (0, 0, 0)),
   * joins untagged meshes that share a material into one mesh per material (fewer, bigger meshes:
     ideal for Nanite and quick to place),
-  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__)
+  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__)
     as their own meshes with their tag as the name,
   * drops vertex colours that only carried baked lighting,
   * names materials M_<Asset>_... and textures T_<Asset>_... so Unreal's Content Browser is readable.
@@ -40,7 +40,7 @@ SOURCES = [
     ('Props', 'unreal/Pipeline/out/campus/props.glb'),          # the Wax Hall's carried props, one mesh each, in their own frames
     ('HandProps', 'unreal/Pipeline/out/props/HandProps.glb'),   # bl/props.py: the held props as real objects, one mesh per kind
 ]
-TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop)__')
+TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat)__')
 
 
 def tag_of(o):

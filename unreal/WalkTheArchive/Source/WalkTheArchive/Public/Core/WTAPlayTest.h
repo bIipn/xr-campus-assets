@@ -94,6 +94,8 @@ private:
 	void AddWalkPhase();
 	void AddInteractPhase();
 	void AddWaxPhase();
+	/** Every seat: the crosshair says Sit, E sits the player at the seated eye height with the view clear, Space stands them back up. */
+	void AddSeatsPhase();
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
 	void AddActingPhase();
 	/** Only when named: walks up to a spread of exhibits and checks each one's light rises as you arrive

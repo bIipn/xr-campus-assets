@@ -21,6 +21,7 @@
 #include "World/WTAExhibitActor.h"
 #include "World/WTAPeopleLibrary.h"
 #include "World/WTARideActor.h"
+#include "World/WTASeatActor.h"
 #include "World/WTAStaffNPC.h"
 #include "World/WTAStationActor.h"
 #include "World/WTAStatueActor.h"
@@ -40,6 +41,7 @@
 #include "Engine/SkinnedAsset.h"
 #include "ReferenceSkeleton.h"
 #include "Engine/World.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Materials/MaterialInterface.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
@@ -416,6 +418,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("wax")))
 	{
 		AddWaxPhase();
+	}
+	if (Want(TEXT("seats")))
+	{
+		AddSeatsPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -805,6 +811,10 @@ void UWTAPlayTest::AddInteractPhase()
 		{
 			++Collected;   // collected tokens hide
 			continue;
+		}
+		if (Actor->IsA<AWTASeatActor>())
+		{
+			continue;      // the seats phase sits on every one of them
 		}
 		// "only=<text>" keeps the interactables whose row id or actor name contains <text>.
 		if (PeopleFilter.Num() > 0)
@@ -2156,6 +2166,198 @@ void UWTAPlayTest::AddWaxPhase()
 				C->SetViewTargetWithBlend(C->GetPawn(), 0.f);
 			}
 			return 0.1f;
+		} });
+	}
+}
+
+// --- seats -----------------------------------------------------------------------------------
+
+void UWTAPlayTest::AddSeatsPhase()
+{
+	// Every seat: stand in front of it, the crosshair must say Sit, E must sit the player down with the eye at
+	// the seated height over the sit point and the view ahead clear, then Space must stand them back up on the
+	// floor where they stood. A shot of the view from the first seat in each room.
+	TArray<AWTASeatActor*> Seats;
+	for (TActorIterator<AWTASeatActor> It(GetWorld()); It; ++It)
+	{
+		if (*It != nullptr && !(*It)->IsHidden())
+		{
+			Seats.Add(*It);
+		}
+	}
+	Seats.Sort([](const AWTASeatActor& A, const AWTASeatActor& B) { return A.GetName() < B.GetName(); });
+	Steps.Add({ TEXT("seats start"), [this, Count = Seats.Num()]() -> float
+	{
+		Report(TEXT("seats"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("seats"), FString::Printf(TEXT("%d to sit on"), Count));
+		return 0.f;
+	} });
+	TSet<FString> RoomsShot;
+	int32 Index = 0;
+	for (AWTASeatActor* Seat : Seats)
+	{
+		const TWeakObjectPtr<AWTASeatActor> Weak(Seat);
+		const FString Name = FString::Printf(TEXT("seat %s"), *Seat->SeatId.ToString());
+		// the room is the seat id's first word (lib_chair_03 -> lib)
+		FString Room, Rest;
+		if (!Seat->SeatId.ToString().Split(TEXT("_"), &Room, &Rest))
+		{
+			Room = Seat->SeatId.ToString();
+		}
+		const bool bShot = !RoomsShot.Contains(Room);
+		RoomsShot.Add(Room);
+		const FString ShotName = FString::Printf(TEXT("seat_%02d_%s"), Index++, *Room);
+		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		const TSharedRef<FVector> StoodAt = MakeShared<FVector>(FVector::ZeroVector);
+
+		Steps.Add({ Name + TEXT(" stand"), [this, Weak, Name, Ok, StoodAt]() -> float
+		{
+			*Ok = false;
+			AWTASeatActor* Target = Weak.Get();
+			AWTACharacter* Me = Player();
+			if (Target == nullptr || Me == nullptr)
+			{
+				Report(TEXT("seats"), EResult::Skip, Name, TEXT("gone"));
+				return 0.f;
+			}
+			CloseAll();
+			if (Me->IsSeated())
+			{
+				Me->StandUp(false);
+			}
+			FWTAView View;
+			if (!IWTAInteractable::Execute_GetViewSpot(Target, View) || !View.bValid)
+			{
+				Report(TEXT("seats"), EResult::Fail, Name, TEXT("no view spot"));
+				return 0.f;
+			}
+			StandAt(View);
+			*StoodAt = Me->GetActorLocation();
+			*Ok = true;
+			return 0.5f;
+		} });
+		Steps.Add({ Name + TEXT(" hover"), [this, Weak, Name, Ok]() -> float
+		{
+			AWTASeatActor* Target = Weak.Get();
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Target == nullptr || Controller == nullptr || Controller->Interaction == nullptr)
+			{
+				return 0.f;
+			}
+			if (Controller->Interaction->GetHovered() != Target)
+			{
+				FWTAView Aim;
+				if (FindAimView(Target, Aim))
+				{
+					StandAt(Aim);
+					return 0.45f;
+				}
+			}
+			return 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" E"), [this, Weak, Name, Ok]() -> float
+		{
+			AWTASeatActor* Target = Weak.Get();
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Target == nullptr || Controller == nullptr || Controller->Interaction == nullptr)
+			{
+				return 0.f;
+			}
+			const AActor* Hovered = Controller->Interaction->GetHovered();
+			const FString Label = Hovered != nullptr && Hovered->Implements<UWTAInteractable>() ? IWTAInteractable::Execute_GetInteractLabel(Hovered).ToString() : FString();
+			if (Hovered != Target || Label != TEXT("Sit"))
+			{
+				*Ok = false;
+				Report(TEXT("seats"), EResult::Fail, Name + TEXT(" says Sit"), FString::Printf(TEXT("the crosshair has \"%s\" on %s; %s"), *Label, Hovered != nullptr ? *Hovered->GetName() : TEXT("nothing"), *DescribeAim(Target)));
+				return 0.f;
+			}
+			KeyDown(EKeys::E);
+			return 0.12f;
+		} });
+		Steps.Add({ Name + TEXT(" E up"), [this, Ok]() -> float
+		{
+			if (*Ok)
+			{
+				KeyUp(EKeys::E);
+			}
+			return 0.6f;
+		} });
+		Steps.Add({ Name + TEXT(" seated"), [this, Weak, Name, Ok, bShot, ShotName]() -> float
+		{
+			AWTASeatActor* Target = Weak.Get();
+			AWTACharacter* Me = Player();
+			if (!*Ok || Target == nullptr || Me == nullptr)
+			{
+				return 0.f;
+			}
+			const FVector Eye = Me->GetEyeLocation();
+			const FVector Sit = Target->GetSitPoint();
+			const float Over = static_cast<float>(Eye.Z - Sit.Z);
+			const float Off = static_cast<float>(FVector::Dist2D(Eye, Sit));
+			// the view ahead: nothing within a metre of the eyes in the direction the seat faces
+			const FVector Forward = FRotator(0.f, Target->SeatYaw, 0.f).Vector();
+			FHitResult Hit;
+			FCollisionQueryParams Params(FName(TEXT("WTASeatView")), false, Me);
+			Params.AddIgnoredActor(Target);
+			const bool bBlocked = GetWorld()->LineTraceSingleByChannel(Hit, Eye, Eye + Forward * 100.f, ECC_Visibility, Params);
+			const bool bSeated = Me->IsSeated() && Me->GetSeat() == Target;
+			const bool bHeight = FMath::Abs(Over - Me->SeatEyeHeight) < 6.f;
+			const bool bOnIt = Off < 12.f;
+			*Ok = bSeated && bHeight && bOnIt && !bBlocked;
+			Report(TEXT("seats"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" sits you down"),
+				FString::Printf(TEXT("%s, eye %.0f cm over the seat (wanted %.0f), %.0f cm off its middle, the view ahead %s"),
+					bSeated ? TEXT("seated") : TEXT("not seated"), Over, Me->SeatEyeHeight, Off,
+					bBlocked ? *FString::Printf(TEXT("blocked at %.0f cm by %s"), Hit.Distance, Hit.GetActor() != nullptr ? *Hit.GetActor()->GetName() : TEXT("something")) : TEXT("clear")));
+			if (*Ok && bShot)
+			{
+				Shot(ShotName, false);
+				return 0.3f;
+			}
+			return 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" look"), [this, Weak, Ok]() -> float
+		{
+			// look around from the seat: a turn to the side still works while seated
+			AWTASeatActor* Target = Weak.Get();
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Target == nullptr || Controller == nullptr)
+			{
+				return 0.f;
+			}
+			Controller->SetControlRotation(FRotator(-10.f, Target->SeatYaw + 50.f, 0.f));
+			return 0.25f;
+		} });
+		Steps.Add({ Name + TEXT(" space"), [this, Ok]() -> float
+		{
+			if (*Ok)
+			{
+				KeyDown(EKeys::SpaceBar);
+			}
+			return 0.12f;
+		} });
+		Steps.Add({ Name + TEXT(" space up"), [this, Ok]() -> float
+		{
+			if (*Ok)
+			{
+				KeyUp(EKeys::SpaceBar);
+			}
+			return 0.6f;
+		} });
+		Steps.Add({ Name + TEXT(" stood"), [this, Weak, Name, Ok, StoodAt]() -> float
+		{
+			AWTASeatActor* Target = Weak.Get();
+			AWTACharacter* Me = Player();
+			if (!*Ok || Target == nullptr || Me == nullptr)
+			{
+				return 0.f;
+			}
+			const FVector P = Me->GetActorLocation();
+			const float Away = static_cast<float>(FVector::Dist2D(P, *StoodAt));
+			const float Rise = static_cast<float>(P.Z - StoodAt->Z);
+			const bool bStanding = !Me->IsSeated() && Me->GetCharacterMovement() != nullptr && Me->GetCharacterMovement()->MovementMode == MOVE_Walking;
+			const bool bBack = Away < 15.f && FMath::Abs(Rise) < 15.f;
+			Report(TEXT("seats"), bStanding && bBack ? EResult::Pass : EResult::Fail, Name + TEXT(" Space stands you up"),
+				FString::Printf(TEXT("%s, %.0f cm from where you sat down from, %.0f cm %s"), bStanding ? TEXT("standing") : TEXT("not standing"), Away, FMath::Abs(Rise), Rise >= 0.f ? TEXT("higher") : TEXT("lower")));
+			return 0.f;
 		} });
 	}
 }

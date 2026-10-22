@@ -11,9 +11,14 @@
   AWTAWaxStageActor  one per WaxScenes.json row, trigger (280, 200, 200) in front of the stage
   AWTAStatueActor    one per Pipeline/content/statues.json entry (the marble statues: a MetaHuman held in a mocap
                      pose, every surface in M_WTA_Marble, which this step builds when missing)
+  AWTASeatActor      one per seat__<id>_f<yaw> mesh under the campus folders (a chair's cushion, a bench's seat,
+                     from the Blender builders): at the top of its bounds, facing world yaw <yaw>, pick box the
+                     seat's size; no JSON, the meshes are the list
 Properties are set with set_editor_property using the snake_case names from the contract. Every actor is
 tagged WTA_Setup / WTA_actors and filed under WTA/<Kind>.
 """
+import re
+
 import unreal
 
 from . import log
@@ -256,13 +261,45 @@ def spawn_statues(report):
     return failed_props
 
 
+SEAT_RE = re.compile(r"^seat__(.+?)_f(\d+)$")
+
+
+def spawn_seats(report):
+    """One AWTASeatActor per seat__<id>_f<yaw> static mesh: the sit point is the top of the mesh's bounds."""
+    failed_props, count, skipped = [], 0, []
+    seen = set()
+    for path, mesh in util.static_meshes_under(paths.CAMPUS_PATH, cached=True):
+        name = util.object_name(mesh)
+        m = SEAT_RE.match(name)
+        if not m or name in seen:
+            continue
+        seen.add(name)
+        bounds = util.mesh_bounds(mesh)
+        if bounds is None:
+            skipped.append(name)
+            continue
+        (cx, cy, cz), (ex, ey, ez) = bounds
+        seat_id, yaw = m.group(1), float(int(m.group(2)) % 360)
+        _a, failed = spawn_wta("WTASeatActor", (cx, cy, cz + ez), yaw, "Seat_%s" % seat_id, "Seats", {
+            "seat_id": seat_id,
+            "seat_yaw": yaw,
+            "pick_extent": half_extent(max(ex, 22.0), max(ey, 22.0), 18.0),
+        })
+        failed_props += failed
+        count += 1
+    report["seats"] = count
+    if skipped:
+        report["seats_skipped"] = skipped
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
-               spawn_staff, spawn_wax_stages, spawn_statues):
+               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))
