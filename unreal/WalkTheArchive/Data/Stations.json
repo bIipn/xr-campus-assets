@@ -227,6 +227,216 @@
   }
  },
  {
+  "Name": "dx-hygiene",
+  "Room": "training",
+  "Kicker": "The Training Wing · Dialysis Technician",
+  "Title": "Hand hygiene and PPE",
+  "Subtitle": "Where every treatment begins and ends",
+  "GoLabel": "Start at the sink",
+  "Steps": [
+   "Why hygiene comes first",
+   "Wash",
+   "Gloves and gown",
+   "The clean and the dirty"
+  ],
+  "StepTexts": [
+   "A dialysis patient's bloodstream is opened at every treatment, so the single most effective protection against infection is clean hands. Every session begins and ends at this sink.",
+   "Wet your hands, soap them, and scrub for at least twenty seconds: palms, backs, between the fingers and under the nails. Rinse, dry with a paper towel, and use the towel to turn off the tap.",
+   "Gloves go on last and come off first. A gown and a face shield protect you wherever a line could spray. Change gloves between every patient and every task.",
+   "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
+  ],
+  "Panel": [
+   "A dialysis patient's bloodstream is opened at every treatment, so the single most effective protection against infection is clean hands. Every session begins and ends at this sink.",
+   "Wet your hands, soap them, and scrub for at least twenty seconds: palms, backs, between the fingers and under the nails. Rinse, dry with a paper towel, and use the towel to turn off the tap.",
+   "Gloves go on last and come off first. A gown and a face shield protect you wherever a line could spray. Change gloves between every patient and every task.",
+   "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 2400.0,
+   "Y": -1430.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 2400.0,
+    "Y": -1560.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -14.324,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "dx-machine",
+  "Room": "training",
+  "Kicker": "The Training Wing · Dialysis Technician",
+  "Title": "The dialysis machine",
+  "Subtitle": "Prime it, fit the dialyzer, check the prescription",
+  "GoLabel": "Start at the machine",
+  "Steps": [
+   "What the machine does",
+   "Power on and self-test",
+   "Prime the lines",
+   "Fit the dialyzer",
+   "Check the prescription"
+  ],
+  "StepTexts": [
+   "A pump moves the patient's blood through the dialyzer, where waste and extra water pass into the dialysate, and the cleaned blood returns. The machine watches pressures, temperature and conductivity the whole time.",
+   "Turn the machine on and let it run its own checks: the alarms, the pumps, the air detector. A machine that fails a check is not used that day.",
+   "Hang the saline, thread the blood lines through the pump and the air detector, and prime them until no bubbles remain. Air in the line is the alarm you never want to hear.",
+   "The cartridge is the artificial kidney: thousands of hollow fibres in a clear case. Fit it in its holder, connect the lines and check that it is the type the order asks for.",
+   "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
+  ],
+  "Panel": [
+   "A pump moves the patient's blood through the dialyzer, where waste and extra water pass into the dialysate, and the cleaned blood returns. The machine watches pressures, temperature and conductivity the whole time.",
+   "Turn the machine on and let it run its own checks: the alarms, the pumps, the air detector. A machine that fails a check is not used that day.",
+   "Hang the saline, thread the blood lines through the pump and the air detector, and prime them until no bubbles remain. Air in the line is the alarm you never want to hear.",
+   "The cartridge is the artificial kidney: thousands of hollow fibres in a clear case. Fit it in its holder, connect the lines and check that it is the type the order asks for.",
+   "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 2850.0,
+   "Y": -2450.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 2850.0,
+    "Y": -2300.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -8.594,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "dx-chair",
+  "Room": "training",
+  "Kicker": "The Training Wing · Dialysis Technician",
+  "Title": "The patient chair and vitals",
+  "Subtitle": "Weight, blood pressure, the access, and watching",
+  "GoLabel": "Start at the chair",
+  "Steps": [
+   "Weigh in",
+   "Blood pressure and temperature",
+   "The access",
+   "Watch the patient"
+  ],
+  "StepTexts": [
+   "A patient's weight before treatment tells you how much fluid to remove, so the scale is the first stop. Record it against their dry weight.",
+   "Take them seated and record them. A change from the patient's usual is reported before treatment starts, not after.",
+   "The fistula, graft or catheter is the patient's lifeline. Look at it, listen for the thrill and the bruit, and keep it clean. Only trained hands connect to it.",
+   "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
+  ],
+  "Panel": [
+   "A patient's weight before treatment tells you how much fluid to remove, so the scale is the first stop. Record it against their dry weight.",
+   "Take them seated and record them. A change from the patient's usual is reported before treatment starts, not after.",
+   "The fistula, graft or catheter is the patient's lifeline. Look at it, listen for the thrill and the bruit, and keep it clean. Only trained hands connect to it.",
+   "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 3050.0,
+   "Y": -2450.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 3050.0,
+    "Y": -2300.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -11.459,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "dx-water",
+  "Room": "training",
+  "Kicker": "The Training Wing · Dialysis Technician",
+  "Title": "Water treatment",
+  "Subtitle": "Carbon, softener, reverse osmosis, and the log",
+  "GoLabel": "Start at the water panel",
+  "Steps": [
+   "Why water matters",
+   "The treatment chain",
+   "The checks",
+   "Log it"
+  ],
+  "StepTexts": [
+   "A patient meets hundreds of litres of dialysate a week, so the water it is made from has to be cleaner than drinking water. This panel is where that is checked.",
+   "The carbon tanks take out chlorine and chloramine, the softener takes out hardness, and reverse osmosis takes out nearly everything else. Each stage protects the next.",
+   "Each shift: the chlorine test after the carbon tanks, the conductivity and the pressure on the RO unit, and the temperature. A failed test stops treatment until it is fixed.",
+   "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
+  ],
+  "Panel": [
+   "A patient meets hundreds of litres of dialysate a week, so the water it is made from has to be cleaner than drinking water. This panel is where that is checked.",
+   "The carbon tanks take out chlorine and chloramine, the softener takes out hardness, and reverse osmosis takes out nearly everything else. Each stage protects the next.",
+   "Each shift: the chlorine test after the carbon tanks, the conductivity and the pressure on the RO unit, and the temperature. A failed test stops treatment until it is fixed.",
+   "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 2550.0,
+   "Y": -2630.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 2550.0,
+    "Y": -2480.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -5.73,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "dx-charting",
+  "Room": "training",
+  "Kicker": "The Training Wing · Dialysis Technician",
+  "Title": "Charting the session",
+  "Subtitle": "The flowsheet, written as you go",
+  "GoLabel": "Start at the desk",
+  "Steps": [
+   "The flowsheet",
+   "Record as you go",
+   "Hand over"
+  ],
+  "StepTexts": [
+   "Every treatment has a record: the vitals, the machine settings, the alarms, and what was done about each one.",
+   "Numbers written at the time are right. Numbers written at the end of the shift are guesses. Chart each check when you make it.",
+   "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
+  ],
+  "Panel": [
+   "Every treatment has a record: the vitals, the machine settings, the alarms, and what was done about each one.",
+   "Numbers written at the time are right. Numbers written at the end of the shift are guesses. Chart each check when you make it.",
+   "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
+  ],
+  "bUsesHands": false,
+  "Location": {
+   "X": 3330.0,
+   "Y": -1750.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 3190.0,
+    "Y": -1750.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -11.459,
+   "bValid": true
+  }
+ },
+ {
   "Name": "easel",
   "Room": "studio",
   "Kicker": "Room 101 · 3D Art Studio",

@@ -83,5 +83,15 @@
   "Name": "certified-vr",
   "DisplayName": "Certified: Intro to VR",
   "How": "Pass the Intro to VR quiz in Room 104"
+ },
+ {
+  "Name": "trainee",
+  "DisplayName": "Trainee",
+  "How": "Finish a station in the Training Wing"
+ },
+ {
+  "Name": "certified-dialysis",
+  "DisplayName": "Certified: Dialysis Foundations",
+  "How": "Finish the five stations of the Training Wing and pass the quiz at the course desk"
  }
 ]

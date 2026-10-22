@@ -298,8 +298,9 @@ def spawn_seats(report):
 
 
 def spawn_talks(report):
-    """One AWTATalkActor per Talks.json row at its venue's spot__<venue>_f<yaw> mesh (feet on the floor there)."""
-    failed_props, count, skipped = [], 0, []
+    """One AWTATalkActor per Talks.json row at its venue's spot__<venue>_f<yaw> mesh (feet on the floor there);
+    a row of kind course gets an AWTACourseActor instead (the course lead's desk, no slides or screen)."""
+    failed_props, count, courses, skipped = [], 0, 0, []
     spots = {}
     for path, mesh in util.static_meshes_under(paths.CAMPUS_PATH, cached=True):
         m = SPOT_RE.match(util.object_name(mesh))
@@ -317,13 +318,19 @@ def spawn_talks(report):
             skipped.append("%s (spot bounds)" % row["Name"])
             continue
         (cx, cy, cz), (_ex, _ey, ez) = bounds
-        _a, failed = spawn_wta("WTATalkActor", (cx, cy, cz - ez), yaw, "Talk_%s" % row["Name"], "Talks", {
+        is_course = (row.get("Kind") or "") == "course"
+        _a, failed = spawn_wta("WTACourseActor" if is_course else "WTATalkActor", (cx, cy, cz - ez), yaw,
+                               "%s_%s" % ("Course" if is_course else "Talk", row["Name"]), "Talks", {
             "talk_id": row["Name"],
             "speaker_yaw": yaw,
         })
         failed_props += failed
-        count += 1
+        if is_course:
+            courses += 1
+        else:
+            count += 1
     report["talks"] = count
+    report["courses"] = courses
     if skipped:
         report["talks_skipped"] = skipped
     return failed_props

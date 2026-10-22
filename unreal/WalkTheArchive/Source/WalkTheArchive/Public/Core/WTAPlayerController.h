@@ -5,7 +5,7 @@
 // The web build had one `ui.js` that every system called into (open a card, toast, walk somewhere). In Unreal that
 // role belongs to AWTAPlayerController. It owns the four widgets (HUD, Panel, Chat, Menu), owns the interaction
 // component, creates the Enhanced Input objects in code, and exposes the UFUNCTIONs that actors and subsystems
-// call: OpenExhibit, StepExhibit, OpenBook, OpenStation, OpenRide, OpenBadges, OpenStaffChat, CloseTopPanel,
+// call: OpenExhibit, StepExhibit, OpenBook, OpenStation, OpenRide, OpenBadges, OpenQuiz, OpenCourse, OpenStaffChat, CloseTopPanel,
 // ToggleMenu, ShowToast, ShowCaption, ShowHint, RunAction, GoToView, GoToPlace, SetUIMode.
 // Subsystems never touch widgets directly; they broadcast delegates and the controller updates the HUD.
 //
@@ -188,6 +188,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void OpenQuiz(FName TalkId);
 
+	/** Open a course's card (DT_Talks[TalkId] of kind course): the welcome, the station checklist, the quiz once
+	    every station is finished. Course actors call it; so does RunAction("OpenCourse", TalkId). */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void OpenCourse(FName TalkId);
+
 	/** The class is passed: keep the certificate (progress, the row's badge) and show it made out to Name. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowCertificate(FName TalkId, const FString& Name);
@@ -238,7 +243,8 @@ public:
 
 	// --- Actions and travel ------------------------------------------------
 
-	/** Run one action of the shared vocabulary (GoPlace, OpenItem, OpenBook, OpenStation, OpenRide, StartTour, OpenBadges). */
+	/** Run one action of the shared vocabulary (GoPlace, OpenItem, OpenBook, OpenStation, OpenRide, StartTour, OpenBadges,
+	    OpenQuiz, OpenCourse, StartTalk). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void RunAction(FName Action, FName Arg);
 

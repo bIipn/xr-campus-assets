@@ -241,5 +241,205 @@
       "Read about it"
     ],
     "toasts": []
+  },
+  {
+    "id": "dx-hygiene",
+    "card": {
+      "k": "The Training Wing · Dialysis Technician",
+      "t": "Hand hygiene and PPE",
+      "m": "Where every treatment begins and ends",
+      "go": "Start at the sink"
+    },
+    "file": "the Training Wing (bl/training.py)",
+    "lines": "",
+    "room": "training",
+    "kick": "The Training Wing · Dialysis Technician",
+    "usesHands": false,
+    "stepTitles": [
+      "Why hygiene comes first",
+      "Wash",
+      "Gloves and gown",
+      "The clean and the dirty"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A dialysis patient's bloodstream is opened at every treatment, so the single most effective protection against infection is clean hands. Every session begins and ends at this sink."
+      },
+      {
+        "kind": "stp",
+        "text": "Wet your hands, soap them, and scrub for at least twenty seconds: palms, backs, between the fingers and under the nails. Rinse, dry with a paper towel, and use the towel to turn off the tap."
+      },
+      {
+        "kind": "stp",
+        "text": "Gloves go on last and come off first. A gown and a face shield protect you wherever a line could spray. Change gloves between every patient and every task."
+      },
+      {
+        "kind": "stp",
+        "text": "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "dx-machine",
+    "card": {
+      "k": "The Training Wing · Dialysis Technician",
+      "t": "The dialysis machine",
+      "m": "Prime it, fit the dialyzer, check the prescription",
+      "go": "Start at the machine"
+    },
+    "file": "the Training Wing (bl/training.py)",
+    "lines": "",
+    "room": "training",
+    "kick": "The Training Wing · Dialysis Technician",
+    "usesHands": false,
+    "stepTitles": [
+      "What the machine does",
+      "Power on and self-test",
+      "Prime the lines",
+      "Fit the dialyzer",
+      "Check the prescription"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A pump moves the patient's blood through the dialyzer, where waste and extra water pass into the dialysate, and the cleaned blood returns. The machine watches pressures, temperature and conductivity the whole time."
+      },
+      {
+        "kind": "stp",
+        "text": "Turn the machine on and let it run its own checks: the alarms, the pumps, the air detector. A machine that fails a check is not used that day."
+      },
+      {
+        "kind": "stp",
+        "text": "Hang the saline, thread the blood lines through the pump and the air detector, and prime them until no bubbles remain. Air in the line is the alarm you never want to hear."
+      },
+      {
+        "kind": "stp",
+        "text": "The cartridge is the artificial kidney: thousands of hollow fibres in a clear case. Fit it in its holder, connect the lines and check that it is the type the order asks for."
+      },
+      {
+        "kind": "stp",
+        "text": "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "dx-chair",
+    "card": {
+      "k": "The Training Wing · Dialysis Technician",
+      "t": "The patient chair and vitals",
+      "m": "Weight, blood pressure, the access, and watching",
+      "go": "Start at the chair"
+    },
+    "file": "the Training Wing (bl/training.py)",
+    "lines": "",
+    "room": "training",
+    "kick": "The Training Wing · Dialysis Technician",
+    "usesHands": false,
+    "stepTitles": [
+      "Weigh in",
+      "Blood pressure and temperature",
+      "The access",
+      "Watch the patient"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A patient's weight before treatment tells you how much fluid to remove, so the scale is the first stop. Record it against their dry weight."
+      },
+      {
+        "kind": "stp",
+        "text": "Take them seated and record them. A change from the patient's usual is reported before treatment starts, not after."
+      },
+      {
+        "kind": "stp",
+        "text": "The fistula, graft or catheter is the patient's lifeline. Look at it, listen for the thrill and the bruit, and keep it clean. Only trained hands connect to it."
+      },
+      {
+        "kind": "stp",
+        "text": "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "dx-water",
+    "card": {
+      "k": "The Training Wing · Dialysis Technician",
+      "t": "Water treatment",
+      "m": "Carbon, softener, reverse osmosis, and the log",
+      "go": "Start at the water panel"
+    },
+    "file": "the Training Wing (bl/training.py)",
+    "lines": "",
+    "room": "training",
+    "kick": "The Training Wing · Dialysis Technician",
+    "usesHands": false,
+    "stepTitles": [
+      "Why water matters",
+      "The treatment chain",
+      "The checks",
+      "Log it"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A patient meets hundreds of litres of dialysate a week, so the water it is made from has to be cleaner than drinking water. This panel is where that is checked."
+      },
+      {
+        "kind": "stp",
+        "text": "The carbon tanks take out chlorine and chloramine, the softener takes out hardness, and reverse osmosis takes out nearly everything else. Each stage protects the next."
+      },
+      {
+        "kind": "stp",
+        "text": "Each shift: the chlorine test after the carbon tanks, the conductivity and the pressure on the RO unit, and the temperature. A failed test stops treatment until it is fixed."
+      },
+      {
+        "kind": "stp",
+        "text": "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "dx-charting",
+    "card": {
+      "k": "The Training Wing · Dialysis Technician",
+      "t": "Charting the session",
+      "m": "The flowsheet, written as you go",
+      "go": "Start at the desk"
+    },
+    "file": "the Training Wing (bl/training.py)",
+    "lines": "",
+    "room": "training",
+    "kick": "The Training Wing · Dialysis Technician",
+    "usesHands": false,
+    "stepTitles": [
+      "The flowsheet",
+      "Record as you go",
+      "Hand over"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "Every treatment has a record: the vitals, the machine settings, the alarms, and what was done about each one."
+      },
+      {
+        "kind": "stp",
+        "text": "Numbers written at the time are right. Numbers written at the end of the shift are guesses. Chart each check when you make it."
+      },
+      {
+        "kind": "stp",
+        "text": "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
   }
 ]

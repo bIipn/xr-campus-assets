@@ -1,5 +1,5 @@
 """Reads every talk and class aloud: one WAV per slide line in the speaker's own voice, named the way the engine
-finds them (VO_talk_<talk>_<nn>.wav, the id's hyphens as underscores), plus each class's quiz questions
+finds them (VO_talk_<talk>_<nn>.wav, the id's hyphens as underscores; a course's welcome is its _01), plus each class's quiz questions
 (VO_quiz_<talk>_<nn>.wav) so a visitor can listen instead of read, and every station's steps in the campus's
 reading voice (VO_station_<station>_<nn>.wav, from WalkTheArchive/Data/Stations.json: the words on the step card).
 
@@ -33,6 +33,10 @@ def lines_for(talks, only):
         if only and talk['id'] not in only:
             continue
         voice = talk.get('speaker', {}).get('voice', 'af_heart')
+        if talk.get('kind') == 'course':
+            # a course has no slides: its lead's welcome is the one talk clip, read when the course card opens
+            if talk.get('intro'):
+                yield clip_name('talk', '%s-01' % talk['id']), talk['intro'], voice
         for i, slide in enumerate(talk.get('slides', [])):
             yield clip_name('talk', '%s-%02d' % (talk['id'], i + 1)), slide['say'], voice
         quiz = talk.get('quiz') or {}

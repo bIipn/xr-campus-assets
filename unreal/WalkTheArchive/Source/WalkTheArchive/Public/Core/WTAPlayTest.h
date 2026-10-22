@@ -108,6 +108,8 @@ private:
 	void AddQuizPhase();
 	/** Every station: its card opens on the overview, Start shows step 1, every step follows, Finish notes it finished (ticked, badge). */
 	void AddStationsPhase();
+	/** course: each course's desk, card, stations finished through the card's Go buttons, quiz and certificate. */
+	void AddCoursePhase();
 	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
 	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */

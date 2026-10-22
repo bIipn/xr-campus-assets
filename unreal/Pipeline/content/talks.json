@@ -1,5 +1,5 @@
 {
-  "_doc": "Talks and classes. A talk is a speaker reenactor with slides and a script read aloud: one slide per line, the line is what the speaker says while it shows. A class is a talk with a quiz after the last slide and a certificate for passing it. The venue names the room the builders made (bl/exterior.py: forecourt, bl/auditorium.py: auditorium, bl/classroom.py: classroom), which holds the screens (screen__<venue>), the speaker's spot (spot__<venue>_f<yaw>) and the seats (seat__<venue>_*). bl/slides.py draws the slides from these words, the voice tool reads each line aloud in the speaker's voice (Kokoro: af_*, am_*, bf_*, bm_*), data/build_data.py writes the DT_Talks rows. A client pack swaps every word here by putting its own talks.json next to its campus.json. Facts in the talks come from the campus's sourced exhibits and facts (content/exhibits.json, content/facts.json); the class teaches general VR know-how. Speakers are made-up docents, never real people.",
+  "_doc": "Talks and classes. A talk is a speaker reenactor with slides and a script read aloud: one slide per line, the line is what the speaker says while it shows. A class is a talk with a quiz after the last slide and a certificate for passing it. The venue names the room the builders made (bl/exterior.py: forecourt, bl/auditorium.py: auditorium, bl/classroom.py: classroom), which holds the screens (screen__<venue>), the speaker's spot (spot__<venue>_f<yaw>) and the seats (seat__<venue>_*). bl/slides.py draws the slides from these words, the voice tool reads each line aloud in the speaker's voice (Kokoro: af_*, am_*, bf_*, bm_*), data/build_data.py writes the DT_Talks rows. A client pack swaps every word here by putting its own talks.json next to its campus.json. Facts in the talks come from the campus's sourced exhibits and facts (content/exhibits.json, content/facts.json); the class teaches general VR know-how. A course (kind course, bl/training.py's training wing) has no slides: its stations are the DT_Stations ids a visitor finishes before its quiz unlocks at the course desk (spot__<venue>), its intro is what the course lead says there, and the certificate follows the quiz as for a class. Speakers are made-up docents, never real people.",
   "talks": [
     {
       "id": "welcome",
@@ -115,6 +115,48 @@
         "note": "A Walk the Archive campus. A record of learning, not an accredited qualification."
       },
       "badge": "certified-vr"
+    },
+    {
+      "id": "dialysis", "venue": "training", "kind": "course",
+      "title": "Dialysis Technician: Foundations",
+      "subtitle": "Five stations, a quiz, a certificate",
+      "speaker": {"name": "Nia Okafor", "short": "Nia", "role": "Course lead, RN", "person": "wax-2020-nurse", "voice": "af_sarah"},
+      "stations": ["dx-hygiene", "dx-machine", "dx-chair", "dx-water", "dx-charting"],
+      "slides": [],
+      "intro": "Welcome to the Training Wing. This course walks you through the five things a dialysis technician does every shift: hand hygiene, the machine, the patient chair, the water and the chart. Finish all five stations, then come back to this desk for the quiz. Pass it and the certificate is yours.",
+      "quiz": {
+        "pass": 5,
+        "questions": [
+          {"q": "What is the single most effective protection against infection in the dialysis unit?",
+           "options": ["A face mask", "Clean hands", "Shorter treatments", "A warmer room"], "answer": 1,
+           "why": "Clean hands. Every session begins and ends at the sink; gloves and gowns come on top of that, never instead of it."},
+          {"q": "When do gloves go on, and when do they come off?",
+           "options": ["On first, off first", "On first, off last", "On last, off first", "On last, off last"], "answer": 2,
+           "why": "Gloves go on last, after the gown, and come off first, so nothing you touched with them touches you."},
+          {"q": "What does the dialyzer do?",
+           "options": ["Pumps the blood", "Takes waste and extra water out of the blood", "Warms the dialysate", "Measures blood pressure"], "answer": 1,
+           "why": "The dialyzer is the artificial kidney: waste and extra water pass from the blood into the dialysate through thousands of hollow fibres."},
+          {"q": "Why is a patient weighed before treatment?",
+           "options": ["To set the chair height", "To choose the dialyzer size", "To know how much fluid to remove", "To check the scale"], "answer": 2,
+           "why": "The weight against the patient's dry weight tells you how much fluid the treatment has to remove."},
+          {"q": "Which stage of the water treatment takes out chlorine and chloramine?",
+           "options": ["The carbon tanks", "The softener", "Reverse osmosis", "The conductivity meter"], "answer": 0,
+           "why": "The carbon tanks. The softener takes out hardness and reverse osmosis takes out nearly everything else."},
+          {"q": "When do you write a reading on the flowsheet?",
+           "options": ["At the end of the shift", "When the patient asks", "As you take it", "Once a week"], "answer": 2,
+           "why": "As you take it. Numbers written at the time are right; numbers written at the end are guesses."}
+        ]
+      },
+      "certificate": {
+        "title": "Certificate of Completion",
+        "line": "has completed the course",
+        "place": "The Training Wing",
+        "signer": "Nia Okafor, RN",
+        "signer_role": "Course lead",
+        "org": "XR Libraries Campus",
+        "note": "A Walk the Archive campus. A record of learning, not a clinical qualification."
+      },
+      "badge": "certified-dialysis"
     }
   ]
 }

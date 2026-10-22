@@ -14,6 +14,9 @@
 //   ShowRide     kicker, name, card text, note, Close
 //   ShowBadges   every DT_Badges row (name + "Unlocked" or How), token list with hints, "Start over" (Action "Reset")
 //   ShowPlaces   every DT_Places row as a GoPlace button (M key)
+//   ShowCourse   a course (DT_Talks kind course): the lead's welcome read aloud, its stations as a checklist ticked
+//                from the progress with a Go button each (Action "OpenStation"), "Take the quiz" (Action "OpenQuiz")
+//                once all are finished, "Certified" once passed
 //   ShowQuiz     a class's quiz (DT_Talks), one question at a time: the options as buttons (Action "Answer"), then
 //                the right answer marked and why, "Next question"; the result card scores it and, when passed, asks
 //                for a name and makes the certificate (Action "Certificate" -> AWTAPlayerController::ShowCertificate)
@@ -55,7 +58,8 @@ enum class EWTAPanelMode : uint8
 	Ride,
 	Badges,
 	Places,
-	Quiz
+	Quiz,
+	Course
 };
 
 UCLASS()
@@ -95,6 +99,11 @@ public:
 	/** A class's quiz from its first question (DT_Talks[TalkId].Quiz); earlier answers are forgotten. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowQuiz(FName TalkId);
+
+	/** A course's card (DT_Talks[TalkId] of kind course): the lead's welcome, the stations as a checklist with a Go
+	    button each (Action "OpenStation"), and "Take the quiz" (Action "OpenQuiz") once every station is finished. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowCourse(FName TalkId);
 
 	/** Question Index of the quiz: unanswered (Chosen -1) as option buttons, else marked with the right answer and why. */
 	void ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen);

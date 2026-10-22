@@ -882,7 +882,16 @@ struct WALKTHEARCHIVE_API FWTATalkRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FName BadgeId;
 
+	/** A course's stations (DT_Stations ids), all to be finished before its quiz opens at the course desk. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	TArray<FName> Stations;
+
+	/** What the course lead says at the desk (read aloud as VO_talk_<id>_01). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Intro;
+
 	bool IsClass() const { return Kind == FName(TEXT("class")); }
+	bool IsCourse() const { return Kind == FName(TEXT("course")); }
 };
 
 // ---------------------------------------------------------------------------
@@ -907,6 +916,8 @@ namespace WTAAction
 	inline FName OpenBadges()  { static const FName N(TEXT("OpenBadges"));  return N; }
 	/** Open a class's quiz; arg = DT_Talks row. */
 	inline FName OpenQuiz()    { static const FName N(TEXT("OpenQuiz"));    return N; }
+	/** A course's card (DT_Talks row of kind course): Arg = the talk id. */
+	inline FName OpenCourse()  { static const FName N(TEXT("OpenCourse"));  return N; }
 	/** Start (or restart) a talk from its first slide; arg = DT_Talks row. Sitting in its venue does the same. */
 	inline FName StartTalk()   { static const FName N(TEXT("StartTalk"));   return N; }
 }

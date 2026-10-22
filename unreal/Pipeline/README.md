@@ -147,6 +147,13 @@ runs the talk while a visitor sits on one of the venue's seats (`seat__<venue>_*
 sentences as captions, the speaker gesturing and looking at the listener; a class ends in its quiz and a certificate.
 `build_client.py` runs the slides and (when the Kokoro model is on the machine) the voices with everything else.
 
+A row of kind `course` is a class taught by doing rather than listening: no slides, but `stations` (ids from
+`content/stations.json`, step-by-step cards in its room) and an `intro` the course lead says. The engine puts an
+`AWTACourseActor` on its venue's spot instead of a talk actor: the lead (the row's `person`) idles at the desk, E opens
+the course card with the welcome (`VO_talk_<id>_01`, the one talk clip a course has), the stations as a checklist with
+a Go button each, and once every station is finished the quiz, the certificate and the badge, as for a class. The
+first course is Dialysis Technician: Foundations in the Training Wing (`dx-*` stations, `certified-dialysis`).
+
 ## A client pack, and the sheet a library fills in
 
 `clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit

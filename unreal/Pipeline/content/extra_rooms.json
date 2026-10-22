@@ -43,5 +43,17 @@
     "place": {"label": "The Auditorium", "names": ["auditorium", "talks", "talk", "lecture hall", "lecture", "presentation", "speaker", "slides"],
               "view": {"x": 13.75, "y": 0.0, "z": -16.0, "yaw": 0, "pitch": -0.1},
               "say": "the auditorium", "directions": "through the lobby's right-hand door into Hall R, out through the door at its far end, across the foyer and through the portal."}
+  },
+  {
+    "id": "training",
+    "wing": "school",
+    "x0": 21.2, "x1": 34.0, "z0": -27.0, "z1": -13.6, "y0": 0.0, "y1": 3.6,
+    "outdoor": false,
+    "info": {"k": "Training", "n": "The Training Wing", "y": "Five stations, then the quiz at the desk"},
+    "label": "TRAINING",
+    "goPlace": "training",
+    "place": {"label": "The Training Wing", "names": ["training", "training wing", "course", "dialysis", "clinic", "workforce", "stations"],
+              "view": {"x": 27.6, "y": 0.0, "z": -15.2, "yaw": 0, "pitch": -0.08},
+              "say": "the training wing", "directions": "through the auditorium's side door at the back of the hall, or in from the yard by the door north of the school."}
   }
 ]

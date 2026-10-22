@@ -397,5 +397,26 @@
   "StaffId": "None",
   "MapLabel": "TALKS",
   "GoPlace": "auditorium"
+ },
+ {
+  "Name": "training",
+  "Kicker": "Training",
+  "DisplayName": "The Training Wing",
+  "Sub": "Five stations, then the quiz at the desk",
+  "Wing": "school",
+  "BoundsMin": {
+   "X": 2120.0,
+   "Y": -2700.0,
+   "Z": 0.0
+  },
+  "BoundsMax": {
+   "X": 3400.0,
+   "Y": -1360.0,
+   "Z": 360.0
+  },
+  "bOutdoor": false,
+  "StaffId": "None",
+  "MapLabel": "TRAINING",
+  "GoPlace": "training"
  }
 ]

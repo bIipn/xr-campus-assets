@@ -157,10 +157,12 @@ RULES = [
       'the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding '
       'opens in a later build. Look at a token and press E or click to collect it.', ['{rx:tokens}'],
       **offer('OpenBadges', 'None', 'Show me the hints')),
-    # 27 badges (the five this build can award: UWTAProgressSubsystem)
+    # 27 badges (the ones this build can award: UWTAProgressSubsystem)
     R('R027', 27, 27, 'There are {n:badges} badges. In this build you can earn First Steps, Museum Explorer, Bookworm, '
-      'Ask Away, Living Historian, Good Listener (hear a talk to the end) and Certified: Intro to VR (pass the quiz in '
-      'Room 104); the workshop, ride, soccer and token badges arrive with those features in later '
+      'Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: '
+      'Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), '
+      'Trainee (finish a station in the Training Wing) and Certified: Dialysis Foundations (finish its five stations '
+      'and pass the quiz at the course desk); the ride, soccer and token badges arrive with those features in later '
       'builds.', ['{rx:badges}'], **offer('OpenBadges', 'None', 'Show me the badges')),
     # 28 the Wax Hall (not when asking the way)
     R('R028', 28, 28, '{fact:wax}', ['{rx:wax}'], Not=['{travel}'],

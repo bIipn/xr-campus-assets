@@ -623,6 +623,27 @@ void AWTAPlayerController::OpenQuiz(FName TalkId)
 	SetUIMode(true);
 }
 
+void AWTAPlayerController::OpenCourse(FName TalkId)
+{
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	const FWTATalkRow* Talk = Content ? Content->FindTalk(TalkId) : nullptr;
+	if (Panel == nullptr || Talk == nullptr || !Talk->IsCourse())
+	{
+		UE_LOG(LogWTA, Warning, TEXT("OpenCourse: no course '%s'"), *TalkId.ToString());
+		return;
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	if (Certificate != nullptr && Certificate->IsOpen())
+	{
+		Certificate->Close();
+	}
+	Panel->ShowCourse(TalkId);
+	SetUIMode(true);
+}
+
 FString AWTAPlayerController::CertificateDate()
 {
 	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
@@ -948,6 +969,10 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	else if (Action == WTAAction::OpenQuiz())
 	{
 		OpenQuiz(Arg);
+	}
+	else if (Action == WTAAction::OpenCourse())
+	{
+		OpenCourse(Arg);
 	}
 	else if (Action == WTAAction::StartTalk())
 	{

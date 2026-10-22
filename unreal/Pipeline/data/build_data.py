@@ -746,7 +746,13 @@ def build_wax(L):
 
 # Stations the Unreal campus moved: the layer table stands at the back of Room 104 since the classroom refit
 # (content/refits.json), seen from its south end, the beanbags behind you.
-UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}}}
+UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}},
+              # the Training Wing's stations (bl/training.py; out/training/layout.json has the built anchors and views)
+              'dx-hygiene': {'pos': (24.0, -14.3), 'view': {'x': 24.0, 'z': -15.6, 'yaw': math.pi, 'pitch': -0.25}},
+              'dx-machine': {'pos': (28.5, -24.5), 'view': {'x': 28.5, 'z': -23.0, 'yaw': 0.0, 'pitch': -0.15}},
+              'dx-chair': {'pos': (30.5, -24.5), 'view': {'x': 30.5, 'z': -23.0, 'yaw': 0.0, 'pitch': -0.2}},
+              'dx-water': {'pos': (25.5, -26.3), 'view': {'x': 25.5, 'z': -24.8, 'yaw': 0.0, 'pitch': -0.1}},
+              'dx-charting': {'pos': (33.3, -17.5), 'view': {'x': 31.9, 'z': -17.5, 'yaw': -math.pi / 2, 'pitch': -0.2}}}
 
 
 # The steps a visitor walks through at each station (the panel shows one at a time and reads it aloud; the last
@@ -784,7 +790,9 @@ def build_stations(L):
     lay = {s['id']: s for s in L['stations']}
     rows = []
     for s in load('stations.json'):
-        ls, card = dict(lay[s['id']]), s.get('card') or {}
+        # the web's stations are in layout.json; the Unreal-only ones (the training wing) are placed by UE_STATION
+        ls, card = dict(lay.get(s['id']) or {'ue_location_cm': [0.0, 0.0, 90.0], 'view': {}}), s.get('card') or {}
+        assert s['id'] in lay or s['id'] in UE_STATION, 'station %s has no place: not in layout.json nor UE_STATION' % s['id']
         if s['id'] in UE_STATION:
             u = UE_STATION[s['id']]
             ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]
@@ -846,8 +854,8 @@ def build_talks():
         talks = json.load(f)['talks']
     rows = []
     for t in talks:
-        assert t['venue'] in ('forecourt', 'auditorium', 'classroom') or t['venue'].isidentifier(), t['venue']
-        assert t.get('kind', 'talk') in ('talk', 'class'), t['id']
+        assert t['venue'] in ('forecourt', 'auditorium', 'classroom', 'training') or t['venue'].isidentifier(), t['venue']
+        assert t.get('kind', 'talk') in ('talk', 'class', 'course'), t['id']
         sp = t.get('speaker') or {}
         slides = []
         for i, sl in enumerate(t['slides']):
@@ -862,7 +870,9 @@ def build_talks():
             assert 0 <= int(q['answer']) < len(q['options']), '%s quiz %d: answer out of range' % (t['id'], i + 1)
             qs.append({'Question': txt(q['q']), 'Options': [txt(o) for o in q['options']], 'Answer': int(q['answer']),
                        'Why': txt(q.get('why')), 'Clip': '%s-%02d' % (t['id'], i + 1)})
-        assert (t.get('kind') == 'class') == bool(qs), '%s: a class has a quiz and a talk has none' % t['id']
+        assert (t.get('kind') in ('class', 'course')) == bool(qs), '%s: a class or course has a quiz and a talk has none' % t['id']
+        assert (t.get('kind') == 'course') == bool(t.get('stations')), '%s: a course has stations and nothing else does' % t['id']
+        assert t.get('kind') != 'course' or not slides, '%s: a course has no slides' % t['id']
         c = t.get('certificate') or {}
         rows.append({'Name': t['id'], 'Venue': t['venue'], 'Kind': t.get('kind', 'talk'), 'Title': txt(t['title']),
                      'Subtitle': txt(t.get('subtitle')), 'Speaker': txt(sp.get('name')), 'SpeakerShort': txt(sp.get('short') or sp.get('name')),
@@ -871,7 +881,7 @@ def build_talks():
                      'Certificate': {'Title': txt(c.get('title')), 'Line': txt(c.get('line')), 'Place': txt(c.get('place')),
                                      'Signer': txt(c.get('signer')), 'SignerRole': txt(c.get('signer_role')), 'Org': txt(c.get('org')),
                                      'Note': txt(c.get('note'))},
-                     'BadgeId': t.get('badge') or 'None'})
+                     'BadgeId': t.get('badge') or 'None', 'Stations': list(t.get('stations') or []), 'Intro': txt(t.get('intro'))})
     return rows
 
 

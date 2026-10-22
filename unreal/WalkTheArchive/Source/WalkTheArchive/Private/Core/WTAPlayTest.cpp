@@ -25,6 +25,7 @@
 #include "World/WTAStaffNPC.h"
 #include "World/WTAStationActor.h"
 #include "World/WTAStatueActor.h"
+#include "World/WTACourseActor.h"
 #include "World/WTATalkActor.h"
 #include "UI/WTACertificateWidget.h"
 #include "Components/EditableTextBox.h"
@@ -438,6 +439,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("stations")))
 	{
 		AddStationsPhase();
+	}
+	if (Want(TEXT("course")))
+	{
+		AddCoursePhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3442,13 +3447,21 @@ void UWTAPlayTest::AddStationsPhase()
 					Report(TEXT("stations"), EResult::Pass, FString::Printf(TEXT("%s shows step %d"), *Name, Step),
 						FString::Printf(TEXT("'%s' of %d"), *Title.ToString(), NumSteps));
 				}
-				if (bTakeShot && Step == 1)
-				{
-					Shot(FString::Printf(TEXT("station_%s_step1"), *StationId.ToString()), true);
-					return 0.4f;
-				}
-				return 0.15f;
+				return bTakeShot && Step == 1 ? 0.5f : 0.15f;
 			} });
+			if (bTakeShot && Step == 1)
+			{
+				// a frame or two after the card is built, so the wrapped text has its height before the picture
+				Steps.Add({ Name + TEXT(" step 1 shot"), [this, Ok, StationId]() -> float
+				{
+					if (*Ok)
+					{
+						Shot(FString::Printf(TEXT("station_%s_step1"), *StationId.ToString()), true);
+						return 0.3f;
+					}
+					return 0.f;
+				} });
+			}
 		}
 		Steps.Add({ Name + TEXT(" finish"), [this, Ok, Name, StationId]() -> float
 		{
@@ -3465,6 +3478,176 @@ void UWTAPlayTest::AddStationsPhase()
 			*Ok = bDone && bOverview;
 			Report(TEXT("stations"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" finishes"),
 				FString::Printf(TEXT("remembered as finished: %s; back on the overview: %s"), bDone ? TEXT("yes") : TEXT("no"), bOverview ? TEXT("yes") : TEXT("no")));
+			CloseAll();
+			return 0.3f;
+		} });
+	}
+}
+
+void UWTAPlayTest::AddCoursePhase()
+{
+	// Every DT_Talks row of kind course: its desk in the level (an AWTACourseActor with the lead at it), the card
+	// (OpenCourse), each of its stations finished through the station card, the card again with every station
+	// ticked and the quiz button up, the quiz answered right, the certificate, then the card once more saying so.
+	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+	TArray<FName> Courses;
+	if (Content != nullptr)
+	{
+		for (const FName& Id : Content->GetRowNames(EWTATable::Talks))
+		{
+			const FWTATalkRow* Row = Content->FindTalk(Id);
+			if (Row != nullptr && Row->IsCourse())
+			{
+				Courses.Add(Id);
+			}
+		}
+	}
+	Courses.Sort([](const FName& A, const FName& B) { return A.LexicalLess(B); });
+	Steps.Add({ TEXT("course start"), [this, Count = Courses.Num()]() -> float
+	{
+		Report(TEXT("course"), Count > 0 ? EResult::Info : EResult::Fail, TEXT("courses"), FString::Printf(TEXT("%d courses in DT_Talks"), Count));
+		return 0.f;
+	} });
+	for (const FName& TalkId : Courses)
+	{
+		const FWTATalkRow* Row = Content->FindTalk(TalkId);
+		const FString Name = FString::Printf(TEXT("course %s"), *TalkId.ToString());
+		const FString Tag = TalkId.ToString().Replace(TEXT("-"), TEXT("_"));
+		const TArray<FName> Stations = Row->Stations;
+		const FName Venue = Row->Venue;
+		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		Steps.Add({ Name + TEXT(" desk"), [this, Name, Venue]() -> float
+		{
+			AWTACourseActor* Desk = AWTACourseActor::FindForVenue(this, Venue);
+			if (Desk == nullptr)
+			{
+				Report(TEXT("course"), EResult::Info, Name + TEXT(" desk"), FString::Printf(TEXT("no course desk at venue '%s' (its wing's builder has not run); the card still works"), *Venue.ToString()));
+				return 0.f;
+			}
+			const FString Label = IWTAInteractable::Execute_GetInteractLabel(Desk).ToString();
+			const bool bLabel = Label.StartsWith(TEXT("Course"));
+			Report(TEXT("course"), bLabel ? EResult::Pass : EResult::Fail, Name + TEXT(" desk"),
+				FString::Printf(TEXT("%s at %s says \"%s\"; lead %s"), *Desk->GetName(), *Venue.ToString(), *Label,
+					Desk->GetLead() != nullptr ? *Desk->GetLead()->GetName() : TEXT("not built (person missing)")));
+			return 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" open"), [this, Ok, Name, TalkId, Total = Stations.Num()]() -> float
+		{
+			*Ok = false;
+			AWTAPlayerController* Controller = PC();
+			if (Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			CloseAll();
+			Controller->OpenCourse(TalkId);
+			UWTAPanelWidget* Panel = Controller->Panel;
+			const bool bOpen = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Course && Panel->GetCurrentId() == TalkId;
+			*Ok = bOpen && Total > 0;
+			Report(TEXT("course"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" opens"),
+				bOpen ? FString::Printf(TEXT("%d of %d stations ticked"), Panel->GetCurrentPage(), Total) : TEXT("the course card did not open"));
+			return *Ok ? 0.5f : 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" card shot"), [this, Ok, Tag]() -> float
+		{
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("course_%s_card"), *Tag), true);
+				return 0.3f;
+			}
+			return 0.f;
+		} });
+		for (const FName& StationId : Stations)
+		{
+			Steps.Add({ FString::Printf(TEXT("%s finish %s"), *Name, *StationId.ToString()), [this, Ok, Name, StationId]() -> float
+			{
+				AWTAPlayerController* Controller = PC();
+				UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+				if (!*Ok || Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+				{
+					return 0.f;
+				}
+				UWTAPanelWidget* Panel = Controller->Panel;
+				// the Go button's action, then the station's own Finish
+				Panel->HandleAction(WTAAction::OpenStation(), StationId, -1);
+				const bool bStation = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Station && Panel->GetCurrentId() == StationId;
+				if (bStation)
+				{
+					Panel->HandleAction(FName("StationFinish"), StationId, 0);
+				}
+				const bool bDone = Progress->HasFinishedStation(StationId);
+				if (!bStation || !bDone)
+				{
+					*Ok = false;
+				}
+				Report(TEXT("course"), bStation && bDone ? EResult::Pass : EResult::Fail, FString::Printf(TEXT("%s finishes %s"), *Name, *StationId.ToString()),
+					bStation ? (bDone ? TEXT("Go opened the station; finished") : TEXT("the station opened but is not remembered as finished")) : TEXT("Go did not open the station card"));
+				return 0.2f;
+			} });
+		}
+		Steps.Add({ Name + TEXT(" all ticked"), [this, Ok, Name, TalkId, Total = Stations.Num()]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			CloseAll();
+			Controller->OpenCourse(TalkId);
+			UWTAPanelWidget* Panel = Controller->Panel;
+			const int32 Done = Panel->GetCurrentPage();
+			*Ok = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Course && Done == Total;
+			Report(TEXT("course"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" ticks every station"),
+				FString::Printf(TEXT("%d of %d ticked on the card"), Done, Total));
+			return *Ok ? 0.5f : 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" ticked shot"), [this, Ok, Tag]() -> float
+		{
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("course_%s_ticked"), *Tag), true);
+				return 0.3f;
+			}
+			return 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" quiz"), [this, Ok, Name, TalkId]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr)
+			{
+				return 0.f;
+			}
+			UWTAPanelWidget* Panel = Controller->Panel;
+			Panel->HandleAction(WTAAction::OpenQuiz(), TalkId, -1);        // the card's "Take the quiz" button
+			*Ok = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Quiz && Panel->GetCurrentId() == TalkId;
+			Report(TEXT("course"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" opens its quiz"), *Ok ? TEXT("question 1 is up") : TEXT("the quiz card did not open from the course card"));
+			return *Ok ? 0.4f : 0.f;
+		} });
+		AddQuizSteps(TEXT("course"), Name, TalkId, Row->Quiz, Ok, Tag);
+		Steps.Add({ Name + TEXT(" certified"), [this, Ok, Name, TalkId]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+			if (!*Ok || Controller == nullptr || Controller->Panel == nullptr || Progress == nullptr)
+			{
+				return 0.f;
+			}
+			CloseAll();
+			Controller->OpenCourse(TalkId);
+			UWTAPanelWidget* Panel = Controller->Panel;
+			const bool bCard = Panel->IsOpen() && Panel->GetMode() == EWTAPanelMode::Course && Panel->GetCurrentId() == TalkId;
+			const bool bCert = Progress->HasCertificate(TalkId);
+			*Ok = bCard && bCert;
+			Report(TEXT("course"), *Ok ? EResult::Pass : EResult::Fail, Name + TEXT(" card says certified"),
+				FString::Printf(TEXT("card %s; certificate kept: %s"), bCard ? TEXT("open") : TEXT("not open"), bCert ? TEXT("yes") : TEXT("no")));
+			return *Ok ? 0.5f : 0.f;
+		} });
+		Steps.Add({ Name + TEXT(" certified shot"), [this, Ok, Tag]() -> float
+		{
+			if (*Ok)
+			{
+				Shot(FString::Printf(TEXT("course_%s_certified"), *Tag), true);
+			}
 			CloseAll();
 			return 0.3f;
 		} });

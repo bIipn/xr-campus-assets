@@ -83,5 +83,15 @@
     "id": "certified-vr",
     "name": "Certified: Intro to VR",
     "how": "Pass the Intro to VR quiz in Room 104"
+  },
+  {
+    "id": "trainee",
+    "name": "Trainee",
+    "how": "Finish a station in the Training Wing"
+  },
+  {
+    "id": "certified-dialysis",
+    "name": "Certified: Dialysis Foundations",
+    "how": "Finish the five stations of the Training Wing and pass the quiz at the course desk"
   }
 ]

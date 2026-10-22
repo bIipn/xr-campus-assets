@@ -49,6 +49,7 @@ namespace
 	const FName NAME_VoiceStation(TEXT("station"));
 	const FName NAME_VoiceRide(TEXT("ride"));
 	const FName NAME_VoiceQuiz(TEXT("quiz"));
+	const FName NAME_VoiceTalk(TEXT("talk"));
 	const FName NAME_PanelAnswer(TEXT("Answer"));
 	const FName NAME_PanelQuizNext(TEXT("QuizNext"));
 	const FName NAME_PanelQuizRetry(TEXT("QuizRetry"));
@@ -638,6 +639,84 @@ void UWTAPanelWidget::ShowQuiz(FName TalkId)
 	ShowQuizQuestion(TalkId, 0, -1);
 }
 
+void UWTAPanelWidget::ShowCourse(FName TalkId)
+{
+	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
+	const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
+	const FWTATalkRow* Row = Data ? Data->FindTalk(TalkId) : nullptr;
+	CurrentPage = 0;
+	NumPages = 0;
+	if (Row == nullptr)
+	{
+		BeginCard(EWTAPanelMode::Course, TalkId, PanelText(TEXT("Course")), FText::FromName(TalkId));
+		AddParagraph(PanelText(TEXT("This course is not set up yet.")));
+		EndCard(false, false, FText::GetEmpty());
+		return;
+	}
+	BeginCard(EWTAPanelMode::Course, TalkId, PanelText(TEXT("The Training Wing · Course")), Row->Title);
+	if (!Row->Subtitle.IsEmpty())
+	{
+		AddText(Row->Subtitle, WTAStyle::Italic(17), WTAStyle::CardInk());
+	}
+	if (!Row->Intro.IsEmpty())
+	{
+		AddParagraph(Row->Intro);
+	}
+	if (!Row->Speaker.IsEmpty())
+	{
+		AddText(FText::Format(PanelText(TEXT("— {0}, {1}")), Row->Speaker, Row->SpeakerRole), WTAStyle::Italic(15), WTAStyle::CardInkDim());
+	}
+	AddHeading(PanelText(TEXT("Stations")));
+	int32 Done = 0;
+	for (int32 i = 0; i < Row->Stations.Num(); ++i)
+	{
+		const FName StationId = Row->Stations[i];
+		const FWTAStationRow* Station = Data->FindStation(StationId);
+		const bool bDone = Progress != nullptr && Progress->HasFinishedStation(StationId);
+		Done += bDone ? 1 : 0;
+		const FText Title = Station != nullptr ? Station->Title : FText::FromName(StationId);
+		AddText(FText::Format(PanelText(TEXT("{0}  {1}. {2}")), FText::FromString(bDone ? TEXT("✓") : TEXT("○")), FText::AsNumber(i + 1), Title),
+			WTAStyle::Font(17, bDone), bDone ? WTAStyle::FromHex(0x2f6b3a) : WTAStyle::CardInk());
+		if (!bDone)
+		{
+			AddButton(FText::Format(PanelText(TEXT("Go to {0}")), Title), WTAAction::OpenStation(), StationId, -1, false);
+		}
+	}
+	NumPages = Row->Stations.Num();
+	CurrentPage = Done;
+	const bool bAllDone = Row->Stations.Num() > 0 && Done == Row->Stations.Num();
+	if (Progress != nullptr && Progress->HasCertificate(TalkId))
+	{
+		AddSection(PanelText(TEXT("Certified")));
+		AddParagraph(FText::Format(PanelText(TEXT("The certificate is made out to {0}. Take the quiz again any time.")), FText::FromString(Progress->CertificateName(TalkId))));
+		AddButton(PanelText(TEXT("Take the quiz again")), WTAAction::OpenQuiz(), TalkId, -1, false);
+	}
+	else if (bAllDone)
+	{
+		AddSection(PanelText(TEXT("All five done")));
+		AddButton(PanelText(TEXT("Take the quiz")), WTAAction::OpenQuiz(), TalkId, -1, true);
+	}
+	else
+	{
+		AddNote(FText::Format(PanelText(TEXT("{0} of {1} stations finished. Finish them all, then come back here for the quiz.")),
+			FText::AsNumber(Done), FText::AsNumber(Row->Stations.Num())));
+	}
+	EndCard(false, false, FText::GetEmpty());
+	// The lead says their welcome once, when the card opens on a course not yet finished.
+	if (!bAllDone)
+	{
+		if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
+		{
+			const FName Clip = VoiceId();
+			if (!Clip.IsNone() && Voice->HasClip(NAME_VoiceTalk, Clip) && !Voice->IsReadingCard(NAME_VoiceTalk, Clip))
+			{
+				Voice->Read(NAME_VoiceTalk, Clip);
+				RefreshListenButton();
+			}
+		}
+	}
+}
+
 void UWTAPanelWidget::ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen)
 {
 	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
@@ -1077,6 +1156,7 @@ FName UWTAPanelWidget::VoiceKind() const
 	case EWTAPanelMode::Station: return NAME_VoiceStation;
 	case EWTAPanelMode::Ride:    return NAME_VoiceRide;
 	case EWTAPanelMode::Quiz:    return NAME_VoiceQuiz;
+	case EWTAPanelMode::Course:  return NAME_VoiceTalk;
 	default:                     return NAME_None;
 	}
 }
@@ -1087,6 +1167,10 @@ FName UWTAPanelWidget::VoiceId() const
 	{
 		// the overview reads the station's own clip (VO_station_<id>), a step its own (VO_station_<id>_<nn>)
 		return CurrentPage > 0 ? FName(*FString::Printf(TEXT("%s-%02d"), *CurrentId.ToString(), CurrentPage)) : CurrentId;
+	}
+	if (Mode == EWTAPanelMode::Course)
+	{
+		return FName(*FString::Printf(TEXT("%s-01"), *CurrentId.ToString()));    // the lead's welcome: VO_talk_<id>_01
 	}
 	if (Mode != EWTAPanelMode::Quiz)
 	{

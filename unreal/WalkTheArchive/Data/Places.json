@@ -1038,5 +1038,30 @@
   },
   "Directions": "through the lobby's right-hand door into Hall R, out through the door at its far end, across the foyer and through the portal.",
   "Say": "the auditorium"
+ },
+ {
+  "Name": "training",
+  "Label": "The Training Wing",
+  "Aliases": [
+   "training",
+   "training wing",
+   "course",
+   "dialysis",
+   "clinic",
+   "workforce",
+   "stations"
+  ],
+  "View": {
+   "Location": {
+    "X": 2760.0,
+    "Y": -1520.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -4.584,
+   "bValid": true
+  },
+  "Directions": "through the auditorium's side door at the back of the hall, or in from the yard by the door north of the school.",
+  "Say": "the training wing"
  }
 ]

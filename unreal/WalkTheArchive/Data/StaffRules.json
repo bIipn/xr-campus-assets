@@ -593,7 +593,7 @@
   "MaxWords": 0,
   "StaffOnly": [],
   "StaffNot": [],
-  "Answer": "There are 17 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end) and Certified: Intro to VR (pass the quiz in Room 104); the workshop, ride, soccer and token badges arrive with those features in later builds.",
+  "Answer": "There are 19 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), Trainee (finish a station in the Training Wing) and Certified: Dialysis Foundations (finish its five stations and pass the quiz at the course desk); the ride, soccer and token badges arrive with those features in later builds.",
   "Action": "OpenBadges",
   "ActionArg": "None",
   "bOffer": true,
