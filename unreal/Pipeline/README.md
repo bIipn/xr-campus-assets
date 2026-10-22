@@ -11,11 +11,15 @@ parts/*.js ──► content/extract_content.mjs ──► content/*.json ──
 test/harness.py + web/export_campus.py ──► out/campus/*.glb, art/*.png, lights.json
 bl/library.py --ue ──► assets/lib_ue/library.blend ──► blender/export_reading_room.py ──► out/reading_room/ReadingRoom.glb, lights.json
 bl/museum.py ──► out/museum/Museum.glb, lights.json      (the neoclassical museum: galleries, lobby, halls, rotunda, portico)
-bl/exterior.py ──► out/exterior/Outside.glb, lights.json  (the grounds: terrain, path, fountain, trees, the other shells)
+bl/exterior.py ──► out/exterior/Outside.glb, lights.json, theatre_layout.json  (the grounds: terrain, the Forecourt Theatre, path,
+                   fountain, trees, the other shells including the talks wing's)
+bl/auditorium.py ──► out/auditorium/Auditorium.glb, lights.json, layout.json  (the talks wing: the foyer and the auditorium)
+bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json     (Room 104 as the XR Classroom: smartboard, desks, signs)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (settees down the Wax Hall aisle, every seat a tagged mesh)
-out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb ──► blender/prepare_for_unreal.py ──► out/ue/<Asset>.glb   (what Unreal imports)
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb
+    ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
 The Wax Hall's carried props leave the web export as a wing of their own: `web/export_campus.py` writes every
@@ -37,6 +41,40 @@ Seats: a sitting place is a mesh named `seat__<id>_f<yaw>` (a chair's cushion, h
 seat; `<yaw>` the Unreal yaw a sitter faces, `atan2(dz, dx)` in campus axes) - `bl/library.py` tags its reading
 chairs, `bl/museum.py` its gallery benches, `bl/seats.py` builds the Wax Hall settees - and `wta_setup/actors.py`
 puts an `AWTASeatActor` at the top of each such mesh, so there is no seat table to keep.
+
+The talk venues: three places where a speaker gives a talk with slides, built so the talks-and-classes system can
+find what it needs by name. Each has `screen__<venue>` slide screens (one 16:9 quad each, UV (0,0) at the bottom-left
+as the audience sees it, its own material the engine replaces), a `spot__<venue>_f<yaw>` floor mark where the speaker
+stands (a 0.3 m quad 1 cm above the floor; the yaw is the Unreal yaw the speaker faces; never shown), and seats named
+`seat__<venue>_<id>_f<yaw>` so the venue knows its audience; `out/<builder>/layout.json` (the theatre's is
+`out/exterior/theatre_layout.json`) gives the rooms, entries, the spot, the screens' centres and sizes, a camera and
+the seat count, and `lights.json` the fixtures by the names the lighting step knows (`downlight`, `stage`, `step`,
+`foyer`, `sconce`, `panel` (AREA), `screen`, `theatre`, `post`; the lectern's reading lamp is only a glowing shade).
+- **The Forecourt Theatre** (`forecourt`, `bl/exterior.py`): the fountain plaza became an open-air theatre at the foot
+  of the museum's steps. A stepped stone stage (a half disc about (0, 20.4) with a straight back, top at -0.35) with a
+  lectern; the speaker faces the grounds with the portico behind. Two slide screens (`screen__forecourt_l`, `_r`, 4 x
+  2.25 m) in small pedimented stone frames either side, turned 22 degrees toward the seats, so the portico's middle
+  stays in view. The cavea: six limestone tiers (1.0 m deep, 0.38 m high) in arcs about the stage from r 6.6 to 12.6,
+  55 degrees either side of the axis; each tier's front edge is a row of seats capped with teak boards (74 tagged
+  pieces), the sitter's feet on the tier below; the path runs through the middle at ground level (a 3.2 m passage),
+  an aisle with half-tier steps climbs each half at 30 degrees; a marble balustrade with pedestals and urns runs along
+  the back, over an ashlar wall in the campus's order (plinth, pilasters, cornice) that faces the grounds.
+  The fountain moved out to z 50 with its round plaza; the allee's first trees and the path's first lamps gave way.
+- **The talks wing** (`auditorium`, `bl/auditorium.py`; Hall R's door is `bl/museum.py`'s, the outer shells
+  `bl/exterior.py`'s): Hall R's north wall has a 2.2 x 2.8 m door into a marble foyer (x 6.7..11.35, z -13.65..-4.95),
+  and through a lettered portal the back of the auditorium (x 6.75..20.75, z -31.0..-14.1): a level cross-aisle at y 0,
+  seven curved rows of upholstered chairs (112, each cushion tagged) stepping 0.2 m down to an orchestra at -1.6, a
+  raised stage at -0.8 with a curved front and steps up at both ends, a lectern at stage left (the speaker at
+  (18.6, -28.9)), an 8 x 4.5 m screen (`screen__auditorium`) in a black masking frame, velvet legs and a valance,
+  walnut slats and plaster, acoustic clouds with downlights, a lighting truss, sconces, a booth window and an exit
+  sign. The wing leans on the galleries' east face and the School's north face, so only its north and east faces and
+  its top show outside; trees that stood in its footprint were dropped.
+- **The XR Classroom** (`classroom`, Room 104 of the School): `content/refits.json` (applied by
+  `prepare_for_unreal.py`) drops the computers desk with its stools, the "Built in a browser" panel and the old signs,
+  and moves the layer table to the back, the beanbags to the back-left corner and the World Builder book onto the
+  teacher's desk; `bl/classroom.py` adds a 3 m smartboard (`screen__classroom`) on the east wall, the teacher's desk
+  and chair by the window, 3 rows of 3 two-seat desks with 18 chairs facing the board, the teacher's spot at the front
+  left, and the door sign and blade sign reading "104 · XR Classroom".
 
 Surfaces: `content/surfaces.json` names the CC0 texture sets (ambientCG) and which builder material in which asset
 takes which set; `wta_setup/surfaces.py` imports them from the textures folder on the machine and swaps the

@@ -1,0 +1,121 @@
+{
+ "source": "bl/exterior.py",
+ "units": "campus metres (x east, y up, z south); Unreal = (x*100, z*100, y*100)",
+ "venue": "forecourt",
+ "rooms": [
+  {
+   "id": "theatre",
+   "label": "The Forecourt Theatre",
+   "x0": -10.57,
+   "x1": 10.57,
+   "z0": 17.75,
+   "z1": 33.4,
+   "floor_y": -0.75,
+   "outdoor": true
+  }
+ ],
+ "entries": [
+  {
+   "what": "from the museum steps",
+   "x": 0.0,
+   "y": -0.75,
+   "z": 18.2
+  },
+  {
+   "what": "the passage through the cavea, from the grounds",
+   "x": 0.0,
+   "y": -0.75,
+   "z": 33.3
+  }
+ ],
+ "speaker_spot": {
+  "x": 0.0,
+  "y": -0.35,
+  "z": 20.65,
+  "yaw": 90
+ },
+ "lectern": {
+  "x": 0.0,
+  "z": 21.25
+ },
+ "stage": {
+  "centre": [
+   0.0,
+   20.4
+  ],
+  "radius": 3.0,
+  "back_z": 18.95,
+  "top_y": -0.35
+ },
+ "cavea": {
+  "centre": [
+   0.0,
+   20.4
+  ],
+  "r0": 6.6,
+  "r_back": 12.6,
+  "tiers": 6,
+  "tier_depth": 1.0,
+  "tier_rise": 0.38,
+  "half_angle_deg": 55.0,
+  "passage_half_width": 1.6,
+  "aisles_deg": [
+   -30.0,
+   30.0
+  ],
+  "aisle_width": 1.2
+ },
+ "screens": [
+  {
+   "name": "screen__forecourt_l",
+   "centre": [
+    -6.999,
+    1.745,
+    20.904
+   ],
+   "size_m": [
+    4.0,
+    2.25
+   ],
+   "faces": [
+    0.3746,
+    0,
+    0.9272
+   ]
+  },
+  {
+   "name": "screen__forecourt_r",
+   "centre": [
+    6.999,
+    1.745,
+    20.904
+   ],
+   "size_m": [
+    4.0,
+    2.25
+   ],
+   "faces": [
+    -0.3746,
+    0,
+    0.9272
+   ]
+  }
+ ],
+ "fountain": [
+  0.0,
+  50.0
+ ],
+ "camera": {
+  "eye": [
+   0.0,
+   3.18,
+   32.4
+  ],
+  "target": [
+   0.0,
+   1.0,
+   19.4
+  ]
+ },
+ "seats": 74
+}

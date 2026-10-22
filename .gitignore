@@ -24,3 +24,9 @@ unreal/Pipeline/out/exterior/Outside.glb
 unreal/Tools/holds/holds.json
 unreal/Tools/holds/hold_*.png
 assets/build_*.log
+
+# Blender builds of the talks wing and the classroom (bl/auditorium.py, bl/classroom.py): only the prepared out/ue copies are kept
+unreal/Pipeline/out/auditorium/Auditorium.glb
+unreal/Pipeline/out/classroom/Classroom.glb
+assets/auditorium/*.blend*
+assets/classroom/*.blend*

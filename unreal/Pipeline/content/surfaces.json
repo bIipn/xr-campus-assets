@@ -44,12 +44,36 @@
       "grass": {"set": "Grass005"},
       "meadow": {"set": "Grass005", "tint": [0.95, 0.95, 0.80]},
       "stone": {"set": "PavingStones128"},
-      "lime": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]}
+      "lime": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]},
+      "th_tier": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]},
+      "th_marble": {"set": "Marble012", "tint": [0.95, 0.93, 0.90]},
+      "teak": {"set": "Wood027", "tint": [0.78, 0.58, 0.40]}
     },
     "Seats": {
       "settee_walnut": {"set": "Wood027", "tint": [0.55, 0.42, 0.34]},
       "settee_leather": {"set": "Leather037", "tint": [0.70, 0.32, 0.34]},
       "settee_brass": {"set": "Metal034"}
+    },
+    "Auditorium": {
+      "lime": {"set": "Plaster001", "tint": [0.93, 0.90, 0.84]},
+      "stone": {"set": "Marble012", "tint": [0.92, 0.90, 0.86]},
+      "marble_w": {"set": "Marble012"},
+      "marble_b": {"set": "Marble016"},
+      "gilt": {"set": "Metal034"},
+      "aud_carpet": {"set": "Carpet016", "tint": [0.55, 0.14, 0.15]},
+      "aud_seatfab": {"set": "Fabric030", "tint": [0.66, 0.13, 0.15]},
+      "aud_velvet": {"set": "Fabric030", "tint": [0.45, 0.07, 0.10]},
+      "aud_fabric_dark": {"set": "Fabric030", "tint": [0.14, 0.14, 0.16]},
+      "aud_slats": {"set": "Wood026", "tint": [0.62, 0.46, 0.34]},
+      "aud_armwood": {"set": "Wood027"},
+      "aud_floor": {"set": "WoodFloor051"},
+      "aud_stagedeck": {"set": "WoodFloor051", "tint": [0.50, 0.40, 0.33]},
+      "aud_plaster": {"set": "PaintedPlaster017", "tint": [0.92, 0.89, 0.83]},
+      "aud_brass": {"set": "Metal034"}
+    },
+    "Classroom": {
+      "cls_oak": {"set": "Wood027", "tint": [0.95, 0.86, 0.74]},
+      "cls_walnut": {"set": "Wood026", "tint": [0.62, 0.46, 0.34]}
     }
   }
 }

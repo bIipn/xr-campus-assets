@@ -7,8 +7,10 @@ when you import meshes as assets). So before Unreal sees them, this pass:
     lands in the right place when spawned at Unreal (0, 0, 0)),
   * joins untagged meshes that share a material into one mesh per material (fewer, bigger meshes:
     ideal for Nanite and quick to place),
-  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__)
-    as their own meshes with their tag as the name,
+  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__, and the
+    talk venues' screen__ slide screens and spot__ speaker marks) as their own meshes with their tag as the name,
+  * applies content/refits.json to the web-exported wings it names (meshes dropped, groups moved), e.g. the
+    School's Room 104 becoming the XR Classroom,
   * drops vertex colours that only carried baked lighting,
   * names materials M_<Asset>_... and textures T_<Asset>_... so Unreal's Content Browser is readable.
 
@@ -40,8 +42,11 @@ SOURCES = [
     ('Props', 'unreal/Pipeline/out/campus/props.glb'),          # the Wax Hall's carried props, one mesh each, in their own frames
     ('HandProps', 'unreal/Pipeline/out/props/HandProps.glb'),   # bl/props.py: the held props as real objects, one mesh per kind
     ('Seats', 'unreal/Pipeline/out/props/Seats.glb'),           # bl/seats.py: settees for the Wax Hall aisle, each seat a tagged mesh
+    ('Auditorium', 'unreal/Pipeline/out/auditorium/Auditorium.glb'),   # bl/auditorium.py: the talks wing (foyer + auditorium)
+    ('Classroom', 'unreal/Pipeline/out/classroom/Classroom.glb'),      # bl/classroom.py: Room 104's smartboard, desks, chairs
 ]
-TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat)__')
+TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot)__')
+REFITS = os.path.join(REPO, 'unreal', 'Pipeline', 'content', 'refits.json')
 
 
 def tag_of(o):
@@ -55,6 +60,43 @@ def tag_of(o):
 
 def clean_name(s):
     return re.sub(r'[^A-Za-z0-9_]+', '_', s).strip('_')[:60] or 'Mesh'
+
+
+def load_refit(name):
+    try:
+        with open(REFITS) as f:
+            return json.load(f).get(name)
+    except (OSError, ValueError):
+        return None
+
+
+def apply_refit(name, meshes):
+    """content/refits.json for this asset, on meshes already baked to world space: drop, then move groups.
+    Returns the meshes that remain and a short report."""
+    import math
+    from mathutils import Matrix, Vector
+    spec = load_refit(name)
+    if not spec:
+        return meshes, None
+    def matches(o, pats):
+        base = o.name
+        return any(re.fullmatch(p, base) for p in pats)
+    dropped = [o for o in meshes if matches(o, spec.get('drop', []))]
+    dropped_names = sorted(o.name for o in dropped)
+    keep = [o for o in meshes if o not in dropped]
+    for o in dropped:
+        bpy.data.objects.remove(o, do_unlink=True)
+    moved = []
+    for mv in spec.get('move', []):
+        group = [o for o in keep if matches(o, [re.escape(m) for m in mv['meshes']])]
+        px, pz = mv['pivot']; tx, tz = mv['to']
+        # campus (x, z) -> Blender (x, -z); a turn about campus +y is the same angle about Blender +Z
+        m = (Matrix.Translation(Vector((tx, -tz, mv.get('dy', 0.0)))) @ Matrix.Rotation(math.radians(mv.get('rotate_deg', 0.0)), 4, 'Z')
+             @ Matrix.Translation(Vector((-px, pz, 0.0))))
+        for o in group:
+            o.data.transform(m)
+        moved.append('%s: %d of %d' % (mv.get('what', mv['meshes'][0]), len(group), len(mv['meshes'])))
+    return keep, {'dropped': dropped_names, 'moved': moved}
 
 
 def process(name, rel):
@@ -74,6 +116,9 @@ def process(name, rel):
             o.data.color_attributes.remove(ca)
     for o in [o for o in bpy.data.objects if o.type != 'MESH']:
         bpy.data.objects.remove(o, do_unlink=True)
+    meshes, refit = apply_refit(name, meshes)
+    if refit:
+        print(name, 'refit:', refit)
     # Group: tagged objects by tag; untagged by (first) material
     groups = {}
     for o in meshes:
@@ -121,8 +166,11 @@ def process(name, rel):
     for o in objs:
         o.data.calc_loop_triangles()
         tris += len(o.data.loop_triangles)
-    return {'file': name + '.glb', 'source': rel, 'meshes': len(objs), 'tagged': sorted(o.name for o in objs if TAG.match(o.name)),
-            'triangles': tris, 'bytes': os.path.getsize(fp)}
+    out = {'file': name + '.glb', 'source': rel, 'meshes': len(objs), 'tagged': sorted(o.name for o in objs if TAG.match(o.name)),
+           'triangles': tris, 'bytes': os.path.getsize(fp)}
+    if refit:
+        out['refit'] = refit
+    return out
 
 
 UNITS = ('metres in glTF (Y up); Unreal import maps glTF (x, y, z) m -> UE (X=x, Y=z, Z=y) cm. '
