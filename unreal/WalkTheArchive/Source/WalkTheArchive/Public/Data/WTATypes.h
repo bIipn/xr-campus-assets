@@ -916,4 +916,6 @@ namespace WTABadge
 	inline FName Curious()    { static const FName N(TEXT("curious"));     return N; }
 	inline FName Hunter()     { static const FName N(TEXT("hunter"));      return N; }
 	inline FName Historian()  { static const FName N(TEXT("historian"));   return N; }
+	/** Heard a talk through to its last slide. */
+	inline FName Listener()   { static const FName N(TEXT("listener"));    return N; }
 }
