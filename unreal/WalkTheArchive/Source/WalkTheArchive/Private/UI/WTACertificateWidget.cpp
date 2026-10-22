@@ -21,7 +21,6 @@
 #include "ImageUtils.h"
 #include "InputCoreTypes.h"
 #include "Misc/Paths.h"
-#include "RenderingThread.h"
 #include "Slate/WidgetRenderer.h"
 #include "UI/WTAActionButton.h"
 #include "UI/WTAUIStyle.h"
@@ -259,7 +258,7 @@ FString UWTACertificateWidget::SavePicture()
 		UE_LOG(LogWTA, Warning, TEXT("Certificate: nothing drawn"));
 		return FString();
 	}
-	FlushRenderingCommands();
+	// (the PNG export reads the target back, which waits for the draw itself)
 	const FString Path = PicturePath(VisitorName, TalkId);
 	IFileManager::Get().MakeDirectory(*FPaths::GetPath(Path), true);
 	TUniquePtr<FArchive> Ar(IFileManager::Get().CreateFileWriter(*Path));
