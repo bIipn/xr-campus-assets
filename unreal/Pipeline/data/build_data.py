@@ -357,7 +357,7 @@ def build_tour(L):
 
 # Staff the Unreal campus moved: Mr. Hale teaches in Room 104, the XR Classroom (bl/classroom.py puts the
 # teacher's spot at the board's left, facing the desks); you talk to him from the front row. Campus metres.
-UE_STAFF = {'hale': {'pos': (33.0, 0.3), 'yaw_deg': 180.0, 'view': {'x': 31.3, 'z': 0.5, 'yaw': -math.pi / 2, 'pitch': 0.0}}}
+UE_STAFF = {'hale': {'pos': (33.0, 0.3), 'yaw_deg': 180.0, 'view': {'x': 32.0, 'z': 0.4, 'yaw': -math.pi / 2, 'pitch': 0.0}}}
 
 
 def build_staff(L):
