@@ -186,7 +186,10 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 {
 	bFigureLaidSeated = bSitting;
 	const float Half = GetCapsuleComponent() ? GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() : CapsuleHalfHeight;
-	Figure->SetRelativeLocation(FVector(0.f, 0.f, -Half));
+	// Standing, the movement keeps the capsule a couple of centimetres over the floor (between its MIN_FLOOR_DIST and
+	// MAX_FLOOR_DIST): the figure stands on the floor itself. Seated, the capsule is put down exactly.
+	const float FloorGap = bSitting ? 0.f : 0.5f * (UCharacterMovementComponent::MIN_FLOOR_DIST + UCharacterMovementComponent::MAX_FLOOR_DIST);
+	Figure->SetRelativeLocation(FVector(0.f, 0.f, -Half - FloorGap));
 	if (bDesignedFigure)
 	{
 		const float JointZ = bSitting ? DesignedJointSeated : DesignedJointStanding;
