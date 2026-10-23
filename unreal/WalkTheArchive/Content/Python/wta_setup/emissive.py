@@ -20,8 +20,9 @@ display-referred one would feed the exposure back into the lighting. Glows also 
 round a light (KEEP_SHADOW: a lamp's shade, which throws the light down in a pool and up in a circle).
 It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards),
 M_WTA_Figure, the people of a guided visit (AWTACharacter's figure), M_WTA_WidgetScreen, the screens VR draws
-the game's own widgets on (AWTAVRScreenActor, the laser's label, the visit's name tags in a headset), and
-M_WTA_Overlay, VR's laser and its dot, drawn over those screens (UWTAVRRig).
+the game's own widgets on (AWTAVRScreenActor, the laser's label, the visit's name tags in a headset),
+M_WTA_Overlay, VR's laser and its dot, drawn over those screens (UWTAVRRig), and M_WTA_Vignette, VR's comfort
+tunnel (a post process the rig closes in while the stick walks).
 """
 import os
 
@@ -62,6 +63,8 @@ FIGURE_MATERIAL = paths.MATERIALS_PATH + "/M_WTA_Figure"
 WIDGET_SCREEN = paths.MATERIALS_PATH + "/M_WTA_WidgetScreen"
 # VR's laser and its dot (UWTAVRRig): a flat colour drawn after the screens, over them
 OVERLAY = paths.MATERIALS_PATH + "/M_WTA_Overlay"
+# VR's comfort tunnel (UWTAVRRig): a post process darkening the edge of the view by its Amount
+VIGNETTE = paths.MATERIALS_PATH + "/M_WTA_Vignette"
 INTERCHANGE_UNLIT = "/InterchangeAssets/gltf/MaterialInstances/MI_Unlit"
 UNLIT_POOL_ALPHA = 0.3
 WHITE_TEXTURE = "/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"
@@ -455,6 +458,76 @@ def build_overlay_material(path=OVERLAY):
     return mat
 
 
+def build_vignette_material(path=VIGNETTE):
+    """VR's comfort tunnel: a post process that darkens the edge of each eye's view by its Amount (0 to 1).
+
+    d = 2 x the distance from the middle of the view (0 there, 1 at an edge's middle, 1.41 in a corner); the
+    darkness rises smoothly from d 0.55 to d 0.95 (smoothstep written out: t = saturate((d - 0.55) / 0.4),
+    t * t * (3 - 2t)), times Amount; Emissive = the scene after tonemapping x (1 - that). After tonemapping, so it
+    darkens the picture as shown (the VR screens with it). The rig sets Amount from the body's speed.
+    """
+    mel = unreal.MaterialEditingLibrary
+    assets = util.assets()
+    if assets.exists(path):
+        mat = assets.load(path)
+        mel.delete_all_material_expressions(mat)
+    else:
+        folder, name = path.rsplit("/", 1)
+        if not assets.directory_exists(folder):
+            assets.make_directory(folder)
+        mat = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, folder, unreal.Material,
+                                                                      unreal.MaterialFactoryNew())
+    props = {"material_domain": util.enum_value("MaterialDomain", "MD_POST_PROCESS")}
+    for member in ("BL_SCENE_COLOR_AFTER_TONEMAPPING", "BL_AFTER_TONEMAPPING", "SCENE_COLOR_AFTER_TONEMAPPING"):
+        location = util.enum_value("BlendableLocation", member)
+        if location is not None:
+            props["blendable_location"] = location
+            break
+    util.set_props(mat, props, label=util.object_name(mat))
+    scene = _expression(mat, "MaterialExpressionSceneTexture", -1300, -200,
+                        {"scene_texture_id": unreal.SceneTextureId.PPI_POST_PROCESS_INPUT0})
+    rgb = _expression(mat, "MaterialExpressionComponentMask", -1050, -200, {"r": True, "g": True, "b": True, "a": False})
+    _connect(scene, "Color", rgb, "")
+    uv = _expression(mat, "MaterialExpressionScreenPosition", -1500, 150)
+    middle = _expression(mat, "MaterialExpressionConstant2Vector", -1500, 300, {"r": 0.5, "g": 0.5})
+    away = _expression(mat, "MaterialExpressionDistance", -1250, 200)
+    _connect(uv, "", away, "A")
+    _connect(middle, "", away, "B")
+    doubled = _expression(mat, "MaterialExpressionMultiply", -1100, 200, {"const_b": 2.0})
+    _connect(away, "", doubled, "A")
+    shifted = _expression(mat, "MaterialExpressionSubtract", -950, 200, {"const_b": 0.55})
+    _connect(doubled, "", shifted, "A")
+    scaled = _expression(mat, "MaterialExpressionMultiply", -800, 200, {"const_b": 2.5})
+    _connect(shifted, "", scaled, "A")
+    t = _expression(mat, "MaterialExpressionSaturate", -650, 200)
+    _connect(scaled, "", t, "")
+    t_squared = _expression(mat, "MaterialExpressionMultiply", -500, 120)
+    _connect(t, "", t_squared, "A")
+    _connect(t, "", t_squared, "B")
+    two_t = _expression(mat, "MaterialExpressionMultiply", -500, 280, {"const_b": 2.0})
+    _connect(t, "", two_t, "A")
+    three_less = _expression(mat, "MaterialExpressionSubtract", -350, 280, {"const_a": 3.0})
+    _connect(two_t, "", three_less, "B")
+    smooth = _expression(mat, "MaterialExpressionMultiply", -200, 200)
+    _connect(t_squared, "", smooth, "A")
+    _connect(three_less, "", smooth, "B")
+    amount = _expression(mat, "MaterialExpressionScalarParameter", -350, 420,
+                         {"parameter_name": "Amount", "default_value": 0.0})
+    dark = _expression(mat, "MaterialExpressionMultiply", -50, 260)
+    _connect(smooth, "", dark, "A")
+    _connect(amount, "", dark, "B")
+    keep = _expression(mat, "MaterialExpressionOneMinus", 100, 260)
+    _connect(dark, "", keep, "")
+    shown = _expression(mat, "MaterialExpressionMultiply", 250, 0)
+    _connect(rgb, "", shown, "A")
+    _connect(keep, "", shown, "B")
+    if not mel.connect_material_property(shown, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR):
+        raise RuntimeError("could not connect the emissive output of " + path)
+    mel.recompile_material(mat)
+    assets.save(mat)
+    return mat
+
+
 def horizon_colour(extent_m):
     """sRGB hex for the horizon ring this wide, or None."""
     width = max(extent_m[0], extent_m[2])
@@ -566,4 +639,9 @@ def run(report):
         report["overlay_material"] = OVERLAY
     except Exception as exc:
         errors.append("overlay material failed: %s" % exc)
+    try:
+        build_vignette_material()
+        report["vignette_material"] = VIGNETTE
+    except Exception as exc:
+        errors.append("vignette material failed: %s" % exc)
     return errors

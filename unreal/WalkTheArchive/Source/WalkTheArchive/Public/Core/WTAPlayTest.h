@@ -64,6 +64,7 @@ class ACameraActor;
 class AWTACharacter;
 class AWTAPlayerController;
 class UUserWidget;
+class UWidget;
 
 UCLASS(ClassGroup = (WTA))
 class WALKTHEARCHIVE_API UWTAPlayTest : public UActorComponent
@@ -146,8 +147,10 @@ private:
 	/** vr: see the header. */
 	void AddVRPhase();
 	/** The centre, in the widget's own pixels, of Root's visible button whose action is Action (the smallest, when
-	    several are: a scrim's close button fills the screen). */
-	bool FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& OutPixel) const;
+	    several are: a scrim's close button fills the screen), and whose Index is Index unless that is INDEX_NONE. */
+	bool FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& OutPixel, int32 Index = INDEX_NONE) const;
+	/** The centre of a drawn widget in its screen's pixels (its last cached geometry). */
+	bool WidgetPixel(const UWidget* Widget, FVector2D& OutPixel) const;
 	/** Turn the view to look at Target (the simulation's laser goes where the view looks). */
 	void AimAt(const FVector& Target);
 	/** The other person's pawn in a visit (the first one that is not this player's). */

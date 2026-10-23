@@ -29,6 +29,8 @@ namespace
 	const FName NAME_MenuTour(TEXT("Tour"));
 	const FName NAME_MenuVisit(TEXT("Visit"));
 	const FName NAME_MenuVR(TEXT("VR"));
+	const FName NAME_MenuTunnel(TEXT("Tunnel"));
+	const FName NAME_MenuSeated(TEXT("Seated"));
 	const FName NAME_MenuGraphics(TEXT("Graphics"));
 	const FName NAME_MenuQuit(TEXT("Quit"));
 
@@ -120,6 +122,24 @@ void UWTAMenuWidget::NativeOnInitialized()
 	VRButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 	VRButton->SetVisibility(ESlateVisibility::Collapsed);
 	Column->AddChildToVerticalBox(VRButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+
+	// In VR: comfort, side by side (RefreshVR labels them with their state).
+	ComfortRow = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	UTextBlock* TunnelLabel = nullptr;
+	TunnelButton = MakeMenuButton(Tree, FText::GetEmpty(), NAME_MenuTunnel, -1, WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::Bone(), &TunnelLabel);
+	TunnelText = TunnelLabel;
+	TunnelButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
+	UHorizontalBoxSlot* TunnelSlot = ComfortRow->AddChildToHorizontalBox(TunnelButton);
+	TunnelSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	UTextBlock* SeatedLabel = nullptr;
+	SeatedButton = MakeMenuButton(Tree, FText::GetEmpty(), NAME_MenuSeated, -1, WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::Bone(), &SeatedLabel);
+	SeatedText = SeatedLabel;
+	SeatedButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
+	UHorizontalBoxSlot* SeatedSlot = ComfortRow->AddChildToHorizontalBox(SeatedButton);
+	SeatedSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	SeatedSlot->SetPadding(FMargin(10.f, 0.f, 0.f, 0.f));
+	ComfortRow->SetVisibility(ESlateVisibility::Collapsed);
+	Column->AddChildToVerticalBox(ComfortRow)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
 	Column->AddChildToVerticalBox(Tree->ConstructWidget<USpacer>(USpacer::StaticClass()))->SetPadding(FMargin(0.f, 0.f, 0.f, 14.f));
 
 	// Graphics presets.
@@ -190,6 +210,25 @@ void UWTAMenuWidget::RefreshVR()
 	if (VRText != nullptr)
 	{
 		VRText->SetText(WTAText(bVR ? TEXT("Leave VR") : TEXT("Enter VR")));
+	}
+	if (ComfortRow != nullptr)
+	{
+		ComfortRow->SetVisibility(bVR ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+		const bool bTunnel = PC != nullptr && PC->IsComfortTunnel();
+		const bool bSeated = PC != nullptr && PC->IsSeatedPlay();
+		if (TunnelText != nullptr)
+		{
+			TunnelText->SetText(FText::Format(WTAText(TEXT("Comfort tunnel \u00B7 {0}")), WTAText(bTunnel ? TEXT("on") : TEXT("off"))));
+		}
+		if (SeatedText != nullptr)
+		{
+			SeatedText->SetText(FText::Format(WTAText(TEXT("Seated play \u00B7 {0}")), WTAText(bSeated ? TEXT("on") : TEXT("off"))));
+		}
+		// Seated play lifts a headset's view; the desktop simulation has no head to lift.
+		if (SeatedButton != nullptr)
+		{
+			SeatedButton->SetVisibility(PC != nullptr && PC->IsVRHeadset() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+		}
 	}
 	if (ControlsText != nullptr)
 	{
@@ -262,6 +301,22 @@ void UWTAMenuWidget::HandleAction(FName Action, FName Arg, int32 Index)
 			PC->CloseTopPanel();
 			PC->ToggleVR();
 		}
+	}
+	else if (Action == NAME_MenuTunnel)
+	{
+		if (PC != nullptr)
+		{
+			PC->SetComfortTunnel(!PC->IsComfortTunnel());
+		}
+		RefreshVR();
+	}
+	else if (Action == NAME_MenuSeated)
+	{
+		if (PC != nullptr)
+		{
+			PC->SetSeatedPlay(!PC->IsSeatedPlay());
+		}
+		RefreshVR();
 	}
 	else if (Action == NAME_MenuGraphics)
 	{

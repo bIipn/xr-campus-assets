@@ -143,6 +143,23 @@ void UWTAVRRig::Start(bool bInHeadset)
 		BeamLook = UMaterialInstanceDynamic::Create(Glow != nullptr ? Glow : Lit, this);
 	}
 
+	// Comfort: the tunnel, a post process on the camera whose Amount UpdateTunnel sets each frame; seated play.
+	bTunnelOn = WTAXR::IsComfortTunnel();
+	TunnelAmount = 0.f;
+	if (UMaterialInterface* Tunnel = LoadByPath<UMaterialInterface>(TEXT("/Game/WTA/Materials/M_WTA_Vignette.M_WTA_Vignette")))
+	{
+		TunnelLook = UMaterialInstanceDynamic::Create(Tunnel, this);
+		TunnelLook->SetScalarParameterValue(TEXT("Amount"), 0.f);
+		Camera->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, TunnelLook));
+	}
+	else
+	{
+		UE_LOG(LogWTA, Warning, TEXT("WTA_VR no M_WTA_Vignette: no comfort tunnel (the lighting step builds it)"));
+	}
+	bSeatedPlay = bInHeadset && WTAXR::IsSeatedPlay();
+	bLiftMeasured = false;
+	SeatedLift = 0.f;
+
 	if (bHeadset)
 	{
 		// The head and hands on the floor under the capsule, in the headset's floor-level tracking space.
@@ -249,6 +266,16 @@ void UWTAVRRig::Stop()
 	}
 	bStarted = false;
 	AWTACharacter* Me = Body();
+	if (Me != nullptr && Me->Camera != nullptr && TunnelLook != nullptr)
+	{
+		const UObject* Look = TunnelLook.Get();
+		Me->Camera->PostProcessSettings.WeightedBlendables.Array.RemoveAll([Look](const FWeightedBlendable& Blendable)
+		{
+			return static_cast<const UObject*>(Blendable.Object) == Look;
+		});
+	}
+	TunnelLook = nullptr;
+	TunnelAmount = 0.f;
 	if (Me != nullptr && Me->Camera != nullptr && Origin != nullptr)
 	{
 		// The desktop camera again: on the capsule at the eye, turned by the controller, facing where the head faced.
@@ -291,9 +318,25 @@ void UWTAVRRig::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	AWTACharacter* Me = Body();
-	if (!bStarted || !bHeadset || Me == nullptr || Origin == nullptr)
+	if (!bStarted || Me == nullptr)
 	{
 		return;
+	}
+	UpdateTunnel(DeltaTime);
+	if (!bHeadset || Origin == nullptr)
+	{
+		return;
+	}
+	// Seated play's lift, once tracking has a head (the headset may start a moment after the rig).
+	if (bSeatedPlay && !bLiftMeasured && MeasureSeatedLift())
+	{
+		bLiftMeasured = true;
+		if (!bSeatedNow)
+		{
+			FVector Relative = Origin->GetRelativeLocation();
+			Relative.Z = OriginStandZ();
+			Origin->SetRelativeLocation(Relative);
+		}
 	}
 	// The body follows the head: the capsule steps under it (swept, so walls hold it back) and the origin steps back as
 	// far, so the head stays where the visitor put it. A jump of over a metre is a move the game made: it is left alone.
@@ -526,7 +569,75 @@ void UWTAVRRig::SetSeated(bool bSeated, float EyeZ)
 	}
 	else
 	{
-		Relative.Z = StandingOriginZ();
+		Relative.Z = OriginStandZ();
 	}
 	Origin->SetRelativeLocation(Relative);
+}
+
+float UWTAVRRig::OriginStandZ() const
+{
+	return StandingOriginZ() + (bSeatedPlay ? SeatedLift : 0.f);
+}
+
+bool UWTAVRRig::MeasureSeatedLift()
+{
+	const AWTACharacter* Me = Body();
+	if (Me == nullptr || Me->Camera == nullptr || Origin == nullptr)
+	{
+		return false;
+	}
+	// The camera's height over the origin is the head's over the floor the visitor is on (floor-level tracking).
+	const float Head = static_cast<float>(Me->Camera->GetRelativeLocation().Z);
+	if (Head < 40.f)
+	{
+		return false;                                  // tracking has no head yet
+	}
+	SeatedLift = FMath::Clamp(Me->EyeHeight - Head, 0.f, 110.f);
+	UE_LOG(LogWTA, Log, TEXT("WTA_VR seated play: the head %.0f cm over the floor, lifted %.0f cm"), Head, SeatedLift);
+	return true;
+}
+
+void UWTAVRRig::SetSeatedPlay(bool bOn)
+{
+	bSeatedPlay = bOn && bHeadset;
+	SeatedLift = 0.f;
+	bLiftMeasured = bSeatedPlay && MeasureSeatedLift();
+	if (Origin != nullptr && !bSeatedNow)
+	{
+		FVector Relative = Origin->GetRelativeLocation();
+		Relative.Z = OriginStandZ();
+		Origin->SetRelativeLocation(Relative);
+	}
+}
+
+void UWTAVRRig::SetComfortTunnel(bool bOn)
+{
+	bTunnelOn = bOn;
+	if (!bOn)
+	{
+		TunnelAmount = 0.f;
+		if (TunnelLook != nullptr)
+		{
+			TunnelLook->SetScalarParameterValue(TEXT("Amount"), 0.f);
+		}
+	}
+}
+
+void UWTAVRRig::UpdateTunnel(float DeltaTime)
+{
+	const AWTACharacter* Me = Body();
+	if (TunnelLook == nullptr || Me == nullptr)
+	{
+		return;
+	}
+	// Most of the way closed at a walk, open below a shuffle, easing both ways in about a quarter of a second. The
+	// body's own speed: the head moving in the room and VR's fade travels move nothing at speed.
+	const float Speed = static_cast<float>(Me->GetVelocity().Size2D());
+	const float Want = bTunnelOn && !bSeatedNow ? 0.85f * FMath::Clamp((Speed - 20.f) / 160.f, 0.f, 1.f) : 0.f;
+	TunnelAmount += (Want - TunnelAmount) * (1.f - FMath::Exp(-8.f * DeltaTime));
+	if (Want <= 0.f && TunnelAmount < 0.003f)
+	{
+		TunnelAmount = 0.f;
+	}
+	TunnelLook->SetScalarParameterValue(TEXT("Amount"), TunnelAmount);
 }

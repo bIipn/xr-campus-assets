@@ -26,6 +26,7 @@
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
 #include "UI/WTAVisitWidget.h"
+#include "UI/WTAVRKeyboardWidget.h"
 #include "UI/WTAVRRootWidget.h"
 #include "World/WTAExhibitActor.h"
 #include "XR/WTAVRRig.h"
@@ -33,6 +34,7 @@
 #include "XR/WTAXR.h"
 #include "Components/Border.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/EditableTextBox.h"
 #include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "World/WTATalkActor.h"
@@ -123,6 +125,11 @@ namespace
 	constexpr float VRCardWidth = 112.f;
 	const FIntPoint VRHudPixels(1600, 900);
 	constexpr float VRHudWidth = 185.f;
+	/** The keyboard screen (UWTAVRKeyboardWidget::DrawSize, 1100 px on 88 cm: 80 px keys are 6.4 cm) 80 cm ahead and
+	    55 cm under the eye, below the card's lower edge, tilted up to the eye. */
+	constexpr float VRKeyboardDistance = 80.f;
+	constexpr float VRKeyboardDrop = 55.f;
+	constexpr float VRKeyboardWidth = 88.f;
 	/** How far the laser reaches, and the longest step it takes on the floor. */
 	constexpr float VRLaserReach = 2000.f;
 	constexpr float VRStepReach = 1200.f;
@@ -2008,6 +2015,12 @@ void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 
 void AWTAPlayerController::OnBack(const FInputActionValue& Value)
 {
+	// VR: B puts the keyboard away before it closes the card under it.
+	if (IsVRKeyboardShown())
+	{
+		HideVRKeyboard();
+		return;
+	}
 	if (CloseTopPanel())
 	{
 		return;
@@ -2447,6 +2460,13 @@ bool AWTAPlayerController::EnterVR(bool bSimulate)
 	{
 		HudScreen->Init(HudRoot, VRHudPixels, VRHudWidth);
 	}
+	// The keyboard on a screen of its own, shown when the laser presses a text box.
+	Keyboard = CreateWidget<UWTAVRKeyboardWidget>(this, UWTAVRKeyboardWidget::StaticClass());
+	KeyboardScreen = World->SpawnActor<AWTAVRScreenActor>(AWTAVRScreenActor::StaticClass(), FTransform::Identity, Params);
+	if (KeyboardScreen != nullptr && Keyboard != nullptr)
+	{
+		KeyboardScreen->Init(Keyboard, UWTAVRKeyboardWidget::DrawSize(), VRKeyboardWidth);
+	}
 	MoveWidgetsToScreens(true);
 	if (Panel != nullptr)
 	{
@@ -2490,7 +2510,7 @@ void AWTAPlayerController::ExitVR()
 	bVRMode = false;
 	WTAXR::SetPresentationActive(false);
 	MoveWidgetsToScreens(false);
-	for (AWTAVRScreenActor* Screen : { CardScreen.Get(), HudScreen.Get() })
+	for (AWTAVRScreenActor* Screen : { CardScreen.Get(), HudScreen.Get(), KeyboardScreen.Get() })
 	{
 		if (Screen != nullptr)
 		{
@@ -2499,6 +2519,9 @@ void AWTAPlayerController::ExitVR()
 	}
 	CardScreen = nullptr;
 	HudScreen = nullptr;
+	KeyboardScreen = nullptr;
+	Keyboard = nullptr;
+	VRPointerScreen = nullptr;
 	CardRoot = nullptr;
 	HudRoot = nullptr;
 	if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
@@ -2622,6 +2645,22 @@ void AWTAPlayerController::UpdateVRScreens(float DeltaSeconds)
 		HeadYaw = static_cast<float>(Look.Yaw);
 	}
 	const bool bCards = IsAnyPanelOpen();
+	if (IsVRKeyboardShown())
+	{
+		// The keyboard goes when its box does: the card closed, the box gone from it (a card that changed page) or
+		// hidden with a part of it.
+		const UEditableTextBox* Box = Keyboard != nullptr ? Keyboard->GetTarget() : nullptr;
+		const UUserWidget* Card = Box != nullptr ? Box->GetTypedOuter<UUserWidget>() : nullptr;
+		bool bBoxShown = bCards && Box != nullptr && Box->GetParent() != nullptr && Card != nullptr && Card->IsVisible();
+		for (const UWidget* Part = Box; bBoxShown && Part != nullptr; Part = Part->GetParent())
+		{
+			bBoxShown = Part->IsVisible();
+		}
+		if (!bBoxShown)
+		{
+			HideVRKeyboard();
+		}
+	}
 	if (CardScreen != nullptr)
 	{
 		if (bCards && !CardScreen->IsShown())
@@ -2683,15 +2722,16 @@ void AWTAPlayerController::UpdateVRPointer()
 		return;
 	}
 	FCollisionQueryParams Params(FName(TEXT("WTAVRLaser")), false, Me);
-	AWTAVRScreenActor* Screens[] = { CardScreen.Get(), HudScreen.Get() };
-	// What a screen does with a ray: the card screen takes it anywhere on its face, the HUD screen only on a button.
+	AWTAVRScreenActor* Screens[] = { CardScreen.Get(), HudScreen.Get(), KeyboardScreen.Get() };
+	// What a screen does with a ray: the card and keyboard screens take it anywhere on their face, the HUD screen only
+	// on a button.
 	auto TraceScreens = [this, &Screens](const FVector& From, const FVector& Along, float& Reach, AWTAVRScreenActor*& OutScreen, FVector2D& OutPixel)
 	{
 		for (AWTAVRScreenActor* Screen : Screens)
 		{
 			float Distance = 0.f;
 			FVector2D Pixel;
-			if (Screen != nullptr && Screen->Trace(From, Along, Reach, Distance, Pixel) && (Screen == CardScreen || Screen->IsInteractiveAt(Pixel)))
+			if (Screen != nullptr && Screen->Trace(From, Along, Reach, Distance, Pixel) && (Screen != HudScreen || Screen->IsInteractiveAt(Pixel)))
 			{
 				Reach = Distance;
 				OutScreen = Screen;
@@ -2725,6 +2765,8 @@ void AWTAPlayerController::UpdateVRPointer()
 	FVector2D Pixel = FVector2D::ZeroVector;
 	TraceScreens(Start, Direction, Reach, OnScreen, Pixel);
 	bVRPointerOnScreen = OnScreen != nullptr;
+	VRPointerScreen = OnScreen;
+	VRPointerPixel = Pixel;
 	FHitResult WorldHit;
 	bVRWorldHit = OnScreen == nullptr && World->LineTraceSingleByChannel(WorldHit, Start, Start + Direction * VRLaserReach, ECC_Visibility, Params);
 	VRWorldHit = bVRWorldHit ? WorldHit : FHitResult();
@@ -2778,9 +2820,17 @@ void AWTAPlayerController::VRSelect(bool bPressed)
 	{
 		return;
 	}
-	// A button (or anywhere on a card's screen): the press goes there, and its release after it.
+	// A button (or anywhere on a card's screen): the press goes there, and its release after it. A text box on a card
+	// brings the keyboard up for it (a headset has no keys).
 	if (bVRPointerOnScreen && Pointer != nullptr)
 	{
+		if (VRPointerScreen.Get() == CardScreen && CardScreen != nullptr)
+		{
+			if (UEditableTextBox* Box = VRTextBoxAt(VRPointerPixel))
+			{
+				ShowVRKeyboard(Box);
+			}
+		}
 		Pointer->PressPointerKey(EKeys::LeftMouseButton);
 		bVRPressedScreen = true;
 		return;
@@ -2872,10 +2922,14 @@ void AWTAPlayerController::VRTravel(const FWTAView& View)
 		{
 			Me->TeleportToView(View);
 		}
-		// An open card comes along (an exhibit's card opens as the player goes to its view spot).
+		// An open card comes along (an exhibit's card opens as the player goes to its view spot), its keyboard too.
 		if (CardScreen != nullptr && CardScreen->IsShown())
 		{
 			PlaceCardScreen();
+			if (IsVRKeyboardShown())
+			{
+				PlaceKeyboardScreen();
+			}
 		}
 		if (PlayerCameraManager != nullptr)
 		{
@@ -2932,6 +2986,145 @@ float AWTAPlayerController::VRClearDistance(const FVector& Eye, float Yaw, float
 		}
 	}
 	return FMath::Clamp(Clear, 45.f, Distance);
+}
+
+void AWTAPlayerController::PlaceKeyboardScreen()
+{
+	if (KeyboardScreen == nullptr)
+	{
+		return;
+	}
+	const UWTAVRRig* Rig = GetVRRig();
+	FVector Eye;
+	float Yaw = 0.f;
+	if (Rig != nullptr)
+	{
+		Eye = Rig->GetEyeLocation();
+		Yaw = Rig->GetHeadYaw();
+	}
+	else
+	{
+		FRotator Look;
+		GetPlayerViewPoint(Eye, Look);
+		Yaw = static_cast<float>(Look.Yaw);
+	}
+	if (CardScreen != nullptr && CardScreen->IsShown())
+	{
+		Yaw = CardScreen->GetPlacedYaw();                  // under the card it types for
+	}
+	const float Distance = VRClearDistance(Eye, Yaw, VRKeyboardDistance, VRKeyboardDrop, VRKeyboardWidth);
+	const float Shrink = Distance / VRKeyboardDistance;
+	KeyboardScreen->SetSizeScale(Shrink);
+	KeyboardScreen->PlaceFacing(Eye, Yaw, Distance, VRKeyboardDrop * Shrink);
+}
+
+UEditableTextBox* AWTAPlayerController::VRTextBoxAt(const FVector2D& Pixel) const
+{
+	if (CardScreen == nullptr || CardScreen->Screen == nullptr)
+	{
+		return nullptr;
+	}
+	// The widgets under the pixel as the screen's hit test grid has them (only what is drawn there now), matched
+	// against the text boxes of the cards on the card screen, the topmost card first.
+	const TArray<FWidgetAndPointer> Path = CardScreen->Screen->GetHitWidgetPath(Pixel, false);
+	if (Path.Num() == 0)
+	{
+		return nullptr;
+	}
+	UUserWidget* Cards[] = { Menu.Get(), VisitCard.Get(), Chat.Get(), Certificate.Get(), Panel.Get() };
+	for (UUserWidget* Card : Cards)
+	{
+		if (Card == nullptr || Card->WidgetTree == nullptr || !Card->IsVisible())
+		{
+			continue;
+		}
+		UEditableTextBox* Found = nullptr;
+		Card->WidgetTree->ForEachWidget([&Found, &Path](UWidget* Widget)
+		{
+			UEditableTextBox* Box = Found == nullptr ? Cast<UEditableTextBox>(Widget) : nullptr;
+			const TSharedPtr<SWidget> Drawn = Box != nullptr ? Box->GetCachedWidget() : TSharedPtr<SWidget>();
+			if (!Drawn.IsValid())
+			{
+				return;
+			}
+			for (const FWidgetAndPointer& Arranged : Path)
+			{
+				if (&Arranged.Widget.Get() == Drawn.Get())
+				{
+					Found = Box;
+					return;
+				}
+			}
+		});
+		if (Found != nullptr)
+		{
+			return Found;
+		}
+	}
+	return nullptr;
+}
+
+void AWTAPlayerController::ShowVRKeyboard(UEditableTextBox* Box)
+{
+	if (Keyboard == nullptr || KeyboardScreen == nullptr || Box == nullptr)
+	{
+		return;
+	}
+	// Enter sends a question to the staff; anywhere else it finishes the typing.
+	const bool bQuestion = Chat != nullptr && Box->GetTypedOuter<UWTAChatWidget>() == Chat;
+	Keyboard->SetTarget(Box, WTAText(bQuestion ? TEXT("Send") : TEXT("Done")));
+	if (!KeyboardScreen->IsShown())
+	{
+		PlaceKeyboardScreen();
+		KeyboardScreen->SetShown(true);
+	}
+	UE_LOG(LogWTA, Log, TEXT("WTA_VR keyboard up for %s"), *Box->GetName());
+}
+
+void AWTAPlayerController::HideVRKeyboard()
+{
+	if (KeyboardScreen != nullptr && KeyboardScreen->IsShown())
+	{
+		KeyboardScreen->SetShown(false);
+		UE_LOG(LogWTA, Log, TEXT("WTA_VR keyboard away"));
+	}
+	if (Keyboard != nullptr)
+	{
+		Keyboard->SetTarget(nullptr, FText::GetEmpty());
+	}
+}
+
+bool AWTAPlayerController::IsVRKeyboardShown() const
+{
+	return KeyboardScreen != nullptr && KeyboardScreen->IsShown();
+}
+
+void AWTAPlayerController::SetComfortTunnel(bool bOn)
+{
+	WTAXR::SetComfortTunnel(bOn);
+	if (UWTAVRRig* Rig = GetVRRig())
+	{
+		Rig->SetComfortTunnel(bOn);
+	}
+}
+
+bool AWTAPlayerController::IsComfortTunnel() const
+{
+	return WTAXR::IsComfortTunnel();
+}
+
+void AWTAPlayerController::SetSeatedPlay(bool bOn)
+{
+	WTAXR::SetSeatedPlay(bOn);
+	if (UWTAVRRig* Rig = GetVRRig())
+	{
+		Rig->SetSeatedPlay(bOn);
+	}
+}
+
+bool AWTAPlayerController::IsSeatedPlay() const
+{
+	return WTAXR::IsSeatedPlay();
 }
 
 void AWTAPlayerController::OnInteractEnd(const FInputActionValue& Value)

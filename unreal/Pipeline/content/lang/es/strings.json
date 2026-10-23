@@ -329,5 +329,12 @@
  "Next (A)": "Siguiente (A)",
  "Enter VR": "Entrar en RV",
  "Leave VR": "Salir de RV",
- "Left stick walk · right stick turns · trigger points, opens and steps where it points · A next stop · B back · menu button: this menu": "Palanca izquierda caminar · palanca derecha girar · gatillo apunta, abre y te lleva adonde apunta · A siguiente parada · B atrás · botón de menú: este menú"
+ "Left stick walk · right stick turns · trigger points, opens and steps where it points · A next stop · B back · menu button: this menu": "Palanca izquierda caminar · palanca derecha girar · gatillo apunta, abre y te lleva adonde apunta · A siguiente parada · B atrás · botón de menú: este menú",
+ "Comfort tunnel · {0}": "Túnel de confort · {0}",
+ "Seated play · {0}": "Modo sentado · {0}",
+ "on": "activado",
+ "off": "desactivado",
+ "Shift": "Mayús",
+ "Space": "Espacio",
+ "Hide": "Ocultar"
 }

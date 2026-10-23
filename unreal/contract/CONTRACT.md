@@ -34,7 +34,7 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 | Exhibit art textures | `/Game/WTA/Art/T_Art_<id>` (id with `-` → `_`), source `unreal/Pipeline/out/campus/art/<id>.png` |
 | Data tables | `/Game/WTA/Data/DT_<Table>` (see structs.json `table`), source `unreal/WalkTheArchive/Data/<File>.json` |
 | Main level | `/Game/WTA/Maps/L_Campus` (not World Partition: the campus is small; Ocean Dive sits 420 m east in the same level) |
-| Materials | `/Game/WTA/Materials/` (the ones C++ loads by path, built by the lighting step: `M_WTA_Unlit`, `M_WTA_WidgetLit`, `M_WTA_Figure`, `M_WTA_WidgetScreen`, `M_WTA_Overlay`) |
+| Materials | `/Game/WTA/Materials/` (the ones C++ loads by path, built by the lighting step: `M_WTA_Unlit`, `M_WTA_WidgetLit`, `M_WTA_Figure`, `M_WTA_WidgetScreen`, `M_WTA_Overlay`, `M_WTA_Vignette`) |
 | Characters (MetaHumans) | `/Game/WTA/Characters/<PersonId>/MHC_<PersonId>` (MetaHuman Character) and `BP_<PersonId>` (built actor), one folder per id in `Content/Python/wta_people/people.json` (staff ids and Wax Hall `<sceneId>-<role>`); shared build assets `/Game/WTA/Characters/Common/`, the idle `/Game/WTA/Characters/Common/Anims/AS_WTA_StandIdle` |
 
 ## 4. C++ classes (module `WalkTheArchive`)
@@ -128,6 +128,7 @@ Fonts: engine default (`/Engine/EngineFonts/Roboto`) via `FSlateFontInfo`; palet
 | `UWTANameTagWidget` | the name over another person's figure in a guided visit (their colour, GUIDE kicker for the guide) |
 | `UWTAVRRootWidget` | VR: a world screen's content, the controller's own widgets stacked in their viewport z-order (`AWTAVRScreenActor`) |
 | `UWTAVRLabelWidget` | VR: the laser's label (what it is on), on the HUD's hover-label plate |
+| `UWTAVRKeyboardWidget` | VR: the keyboard the laser types with, on its own screen under the card (letters, digits, Delete, Shift, Space, Hide, Send / Done) |
 
 `AWTAPlayerController` owns one instance of each and switches input mode (`FInputModeGameAndUI` + cursor when any
 panel/chat/menu is open; `FInputModeGameOnly` + no cursor otherwise). In VR the widgets go on two screens in the world

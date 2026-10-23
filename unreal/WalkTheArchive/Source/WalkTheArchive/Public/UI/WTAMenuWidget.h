@@ -49,7 +49,7 @@ public:
 protected:
 	virtual void NativeOnInitialized() override;
 
-	/** Buttons: "Enter", "Tour", "Graphics" (Index), "Quit". */
+	/** Buttons: "Enter", "Tour", "Visit", "VR", "Tunnel", "Seated", "Graphics" (Index), "Quit". */
 	UFUNCTION()
 	void HandleAction(FName Action, FName Arg, int32 Index);
 
@@ -63,6 +63,12 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> VisitButton;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> VRButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> VRText;
+	/** In VR: the comfort tunnel and seated play (a headset) on or off. */
+	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> ComfortRow;
+	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> TunnelButton;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> TunnelText;
+	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> SeatedButton;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> SeatedText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> ControlsText;
 	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> GraphicsRow;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> GraphicsLabel;

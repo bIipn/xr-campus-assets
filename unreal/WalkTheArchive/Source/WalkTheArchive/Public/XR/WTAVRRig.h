@@ -11,6 +11,10 @@
 //   visitor's own height.
 //   In the desktop simulation (-vrsim): the camera stays as it is (the mouse looks) and the hands ride low in front of
 //   it, the right one aiming at what the middle of the view is on (SetSimAimTarget).
+// Comfort: a tunnel (M_WTA_Vignette, a post process on the camera) closes in round the view while the stick walks
+// and opens again when it stops (the body's own speed: the head's own moves and VR's fade travels make none); seated
+// play lifts a headset's origin so a visitor in a chair sees from standing eye height (measured from the head's
+// height once tracking runs, and again each time it is turned on).
 // The right hand's laser: a 3.5 mm beam from the wand's tip along the hand's aim (attached to the hand, so it moves
 // with it), a dot where it lands and a label over the dot naming what is there; brass when it is on something to open
 // or press, a dim bone otherwise. AWTAPlayerController::UpdateVRPointer drives it every frame (SetLaser, SetLabel) and
@@ -90,6 +94,18 @@ public:
 	/** Sat down with the eyes to be at EyeZ (world), or stood up again (the origin back on the floor). */
 	void SetSeated(bool bSeated, float EyeZ);
 
+	/** The comfort tunnel on or off (off opens it at once). */
+	void SetComfortTunnel(bool bOn);
+
+	/** How far the tunnel has closed now: 0 open, 0.85 walking. */
+	float GetTunnelAmount() const { return TunnelAmount; }
+
+	/** Seated play on or off (a headset: on measures the lift from the head's height now). */
+	void SetSeatedPlay(bool bOn);
+
+	/** The lift seated play gives the view now, cm (0 when off or not yet measured). */
+	float GetSeatedLift() const { return bSeatedPlay ? SeatedLift : 0.f; }
+
 	/** The right hand (null before Start). */
 	USceneComponent* GetRightHand() const { return RightHand; }
 
@@ -110,6 +126,15 @@ protected:
 	/** The origin's height under the capsule centre when standing: on the floor the capsule stands on. */
 	float StandingOriginZ() const;
 
+	/** The origin's standing height with seated play's lift. */
+	float OriginStandZ() const;
+
+	/** Seated play's lift from the head's height over the tracked floor; false while tracking has no head yet. */
+	bool MeasureSeatedLift();
+
+	/** The tunnel follows the body's speed (every frame, the simulation too). */
+	void UpdateTunnel(float DeltaTime);
+
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> Origin;
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> LeftHand;
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> RightHand;
@@ -124,6 +149,7 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> BeamLook;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> HandleLook;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> RingLook;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> TunnelLook;
 
 	bool bStarted = false;
 	bool bHeadset = false;
@@ -135,4 +161,9 @@ protected:
 	bool bLabelFitted = false;
 	int32 LaserActive = -1;
 	FVector LaserEnd = FVector::ZeroVector;
+	bool bTunnelOn = true;
+	float TunnelAmount = 0.f;
+	bool bSeatedPlay = false;
+	bool bLiftMeasured = false;
+	float SeatedLift = 0.f;
 };

@@ -71,6 +71,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void FocusInput();
 
+	/** The question box (VR's keyboard types into it; the play test aims at it). */
+	UEditableTextBox* GetInputBox() const { return InputBox; }
+
+	/** The bubbles in the conversation now (the greeting, questions, answers). */
+	int32 GetMessageCount() const;
+
 	/** Delay before a reply's action runs (web 0.55 s). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA")
 	float ActionDelay = 0.55f;

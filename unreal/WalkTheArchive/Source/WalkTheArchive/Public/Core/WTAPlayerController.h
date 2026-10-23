@@ -72,8 +72,10 @@ class UWTAMenuWidget;
 class UWTAPanelWidget;
 class UWTAPlayTest;
 class UWTAVisitWidget;
+class UWTAVRKeyboardWidget;
 class UWTAVRRig;
 class UWTAVRRootWidget;
+class UEditableTextBox;
 class UUserWidget;
 struct FInputActionValue;
 
@@ -400,6 +402,28 @@ public:
 	/** The laser rests on a VR screen this frame. */
 	bool IsVRPointerOnScreen() const { return bVRPointerOnScreen; }
 
+	/** VR's keyboard (UWTAVRKeyboardWidget): up under the card, typing into Box (a text box on a card that the laser
+	    pressed), or away. B hides it first; it goes by itself when its box's card closes. */
+	void ShowVRKeyboard(UEditableTextBox* Box);
+	void HideVRKeyboard();
+	bool IsVRKeyboardShown() const;
+	AWTAVRScreenActor* GetKeyboardScreen() const { return KeyboardScreen; }
+	UWTAVRKeyboardWidget* GetVRKeyboard() const { return Keyboard; }
+
+	/** Comfort in VR, remembered in GameUserSettings.ini (WTAXR): the tunnel that closes in round the view while the
+	    stick walks (on unless turned off), and seated play (a headset's view lifted to standing eye height). */
+	UFUNCTION(BlueprintCallable, Category = "WTA|VR")
+	void SetComfortTunnel(bool bOn);
+
+	UFUNCTION(BlueprintPure, Category = "WTA|VR")
+	bool IsComfortTunnel() const;
+
+	UFUNCTION(BlueprintCallable, Category = "WTA|VR")
+	void SetSeatedPlay(bool bOn);
+
+	UFUNCTION(BlueprintPure, Category = "WTA|VR")
+	bool IsSeatedPlay() const;
+
 	/**
 	 * QA: closes the menu and panels, then visits every valid place view (DT_Places), every staff talk view (DT_Staff)
 	 * and a view of every Wax Hall stage from the aisle (DT_WaxScenes). At each it waits SecondsPerShot (Lumen and
@@ -586,6 +610,12 @@ protected:
 	    Distance, or nearer (never under 45 cm). */
 	float VRClearDistance(const FVector& Eye, float Yaw, float Distance, float Drop, float WidthCm) const;
 
+	/** Stand the keyboard screen under the card, tilted up to the eye like a lectern's desk. */
+	void PlaceKeyboardScreen();
+
+	/** The text box on the card screen under Pixel (one the laser's press would reach), or null. */
+	UEditableTextBox* VRTextBoxAt(const FVector2D& Pixel) const;
+
 	/** The laser: what it is on (a screen, the world), the pointer's hit, the interaction ray, the laser's looks. */
 	void UpdateVRPointer();
 
@@ -620,6 +650,16 @@ protected:
 
 	UPROPERTY(Transient)
 	TObjectPtr<UWTAVRRootWidget> HudRoot;
+
+	UPROPERTY(Transient)
+	TObjectPtr<AWTAVRScreenActor> KeyboardScreen;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UWTAVRKeyboardWidget> Keyboard;
+
+	/** The screen and the pixel the laser rests on this frame (none off the screens). */
+	TWeakObjectPtr<AWTAVRScreenActor> VRPointerScreen;
+	FVector2D VRPointerPixel = FVector2D::ZeroVector;
 
 	bool bVRMode = false;
 	bool bVRHeadset = false;

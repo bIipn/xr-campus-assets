@@ -5,6 +5,8 @@
 #include "Components/SceneComponent.h"
 #include "InputMappingContext.h"
 #include "Misc/CommandLine.h"
+#include "CoreGlobals.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/Parse.h"
 #include "UObject/Class.h"
 #include "UObject/StructOnScope.h"
@@ -15,6 +17,28 @@ namespace
 {
 	bool GPresentationActive = false;
 	bool GGameBindings = false;
+
+	/** The comfort options' section in GameUserSettings.ini (the player's own settings, not the progress save). */
+	const TCHAR* ComfortSection = TEXT("/Script/WalkTheArchive.VRComfort");
+
+	bool ComfortValue(const TCHAR* Key, bool bDefault)
+	{
+		bool bValue = bDefault;
+		if (GConfig != nullptr)
+		{
+			GConfig->GetBool(ComfortSection, Key, bValue, GGameUserSettingsIni);
+		}
+		return bValue;
+	}
+
+	void SetComfortValue(const TCHAR* Key, bool bValue)
+	{
+		if (GConfig != nullptr)
+		{
+			GConfig->SetBool(ComfortSection, Key, bValue, GGameUserSettingsIni);
+			GConfig->Flush(false, GGameUserSettingsIni);
+		}
+	}
 
 	/** A class of a module the game does not link, found by its script path (loaded with the module or not at all). */
 	UClass* ScriptClass(const TCHAR* Path)
@@ -200,5 +224,25 @@ namespace WTAXR
 	void SetPresentationActive(bool bOn)
 	{
 		GPresentationActive = bOn;
+	}
+
+	bool IsComfortTunnel()
+	{
+		return ComfortValue(TEXT("ComfortTunnel"), true);
+	}
+
+	void SetComfortTunnel(bool bOn)
+	{
+		SetComfortValue(TEXT("ComfortTunnel"), bOn);
+	}
+
+	bool IsSeatedPlay()
+	{
+		return ComfortValue(TEXT("SeatedPlay"), false);
+	}
+
+	void SetSeatedPlay(bool bOn)
+	{
+		SetComfortValue(TEXT("SeatedPlay"), bOn);
 	}
 }

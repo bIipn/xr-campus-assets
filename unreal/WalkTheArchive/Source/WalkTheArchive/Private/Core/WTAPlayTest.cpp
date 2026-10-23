@@ -43,6 +43,7 @@
 #include "World/WTATalkActor.h"
 #include "UI/WTACertificateWidget.h"
 #include "UI/WTAActionButton.h"
+#include "UI/WTAVRKeyboardWidget.h"
 #include "XR/WTAVRRig.h"
 #include "XR/WTAVRScreenActor.h"
 #include "Blueprint/WidgetTree.h"
@@ -5175,7 +5176,23 @@ void UWTAPlayTest::AddGroupLeftPhase()
 
 // --- vr ----------------------------------------------------------------------------------------
 
-bool UWTAPlayTest::FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& OutPixel) const
+bool UWTAPlayTest::WidgetPixel(const UWidget* Widget, FVector2D& OutPixel) const
+{
+	if (Widget == nullptr)
+	{
+		return false;
+	}
+	const FGeometry& Geometry = Widget->GetCachedGeometry();
+	const FVector2D Size(Geometry.GetAbsoluteSize());
+	if (Size.X * Size.Y <= 1.0)
+	{
+		return false;
+	}
+	OutPixel = FVector2D(Geometry.GetAbsolutePosition()) + Size * 0.5;
+	return true;
+}
+
+bool UWTAPlayTest::FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& OutPixel, int32 Index) const
 {
 	if (Root == nullptr || Root->WidgetTree == nullptr)
 	{
@@ -5189,7 +5206,7 @@ bool UWTAPlayTest::FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& O
 	Root->WidgetTree->ForEachWidget([&](UWidget* Widget)
 	{
 		const UWTAActionButton* Button = Cast<UWTAActionButton>(Widget);
-		if (Button == nullptr || Button->Action != Action || !Button->IsVisible())
+		if (Button == nullptr || Button->Action != Action || !Button->IsVisible() || (Index != INDEX_NONE && Button->Index != Index))
 		{
 			return;
 		}
@@ -5227,6 +5244,7 @@ void UWTAPlayTest::AddVRPhase()
 		bool bFloor = false;
 		float YawBefore = 0.f;
 		int32 StopBefore = -1;
+		int32 MessagesBefore = 0;
 		FString Aim;
 	};
 	TSharedRef<FVRRun> State = MakeShared<FVRRun>();
@@ -5350,6 +5368,45 @@ void UWTAPlayTest::AddVRPhase()
 			Controller->OnVRTurnEnd(FInputActionValue(0.f));
 		}
 		return 0.3f;
+	} });
+
+	// The comfort tunnel closes in while the stick walks and opens again when it stops.
+	Steps.Add({ TEXT("vr tunnel walk"), [this, State]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const AWTACharacter* Me = Player();
+		if (Controller == nullptr || Me == nullptr)
+		{
+			return 0.f;
+		}
+		Controller->SetComfortTunnel(true);
+		// Back the way the floor step came: open floor for 2.5 m.
+		const FVector Back = State->Before - Me->GetActorLocation();
+		const float Yaw = Back.SizeSquared2D() > 100.0 ? static_cast<float>(Back.Rotation().Yaw) : static_cast<float>(Controller->GetControlRotation().Yaw);
+		Controller->SetControlRotation(FRotator(0.f, Yaw, 0.f));
+		bHoldForward = true;
+		return 0.7f;
+	} });
+	Steps.Add({ TEXT("vr tunnel on"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const UWTAVRRig* Rig = Controller != nullptr ? Controller->GetVRRig() : nullptr;
+		const AWTACharacter* Me = Player();
+		const float Amount = Rig != nullptr ? Rig->GetTunnelAmount() : 0.f;
+		Report(TEXT("vr"), Amount > 0.4f ? EResult::Pass : EResult::Fail, TEXT("the comfort tunnel closes in while the stick walks"),
+			FString::Printf(TEXT("tunnel %.2f at %.0f cm/s"), Amount, Me != nullptr ? Me->GetVelocity().Size2D() : 0.0));
+		Shot(TEXT("vr_tunnel"));
+		bHoldForward = false;
+		return 1.2f;
+	} });
+	Steps.Add({ TEXT("vr tunnel off"), [this]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const UWTAVRRig* Rig = Controller != nullptr ? Controller->GetVRRig() : nullptr;
+		const float Amount = Rig != nullptr ? Rig->GetTunnelAmount() : 1.f;
+		Report(TEXT("vr"), Amount < 0.05f ? EResult::Pass : EResult::Fail, TEXT("the tunnel opens again when the walking stops"),
+			FString::Printf(TEXT("tunnel %.2f"), Amount));
+		return 0.2f;
 	} });
 
 	// People in a visit show their names in the world (a screen-space name does not reach a headset).
@@ -5530,6 +5587,96 @@ void UWTAPlayTest::AddVRPhase()
 		Report(TEXT("vr"), bClosed ? EResult::Pass : EResult::Fail, TEXT("the laser on Resume closes the menu"), bClosed ? TEXT("closed") : TEXT("still open"));
 		return 0.3f;
 	} });
+
+	// A text box on a card brings up the keyboard; its keys type into the box, and Send asks the question.
+	Steps.Add({ TEXT("vr chat"), [this]() -> float
+	{
+		CloseAll();
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->OpenStaffChat(FName(TEXT("margaret")));
+		}
+		return 1.5f;
+	} });
+	Steps.Add({ TEXT("vr aim text box"), [this, State]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		AWTAVRScreenActor* CardScreen = Controller != nullptr ? Controller->GetCardScreen() : nullptr;
+		const UEditableTextBox* Box = Controller != nullptr && Controller->Chat != nullptr ? Controller->Chat->GetInputBox() : nullptr;
+		FVector2D Pixel;
+		if (CardScreen != nullptr && WidgetPixel(Box, Pixel))
+		{
+			AimAt(CardScreen->PixelToWorld(Pixel));
+			State->Aim = FString::Printf(TEXT("the question box at %.0f, %.0f"), Pixel.X, Pixel.Y);
+		}
+		else
+		{
+			State->Aim = TEXT("no question box drawn");
+		}
+		return 0.4f;
+	} });
+	Press(TEXT("vr text box"), 0.6f);
+	Steps.Add({ TEXT("vr keyboard"), [this, State]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const UWTAVRKeyboardWidget* Keys = Controller != nullptr ? Controller->GetVRKeyboard() : nullptr;
+		const UEditableTextBox* Box = Controller != nullptr && Controller->Chat != nullptr ? Controller->Chat->GetInputBox() : nullptr;
+		const bool bShown = Controller != nullptr && Controller->IsVRKeyboardShown();
+		const bool bUp = bShown && Keys != nullptr && Box != nullptr && Keys->GetTarget() == Box;
+		Report(TEXT("vr"), bUp ? EResult::Pass : EResult::Fail, TEXT("the trigger on a text box brings up the keyboard for it"),
+			FString::Printf(TEXT("%s; keyboard %s"), *State->Aim, bShown ? TEXT("up") : TEXT("away")));
+		State->MessagesBefore = Controller != nullptr && Controller->Chat != nullptr ? Controller->Chat->GetMessageCount() : 0;
+		return 0.3f;
+	} });
+	auto AimKey = [this, State](const FString& Name, FName Action, int32 KeyIndex)
+	{
+		Steps.Add({ TEXT("vr aim key ") + Name, [this, State, Name, Action, KeyIndex]() -> float
+		{
+			AWTAPlayerController* Controller = PC();
+			AWTAVRScreenActor* KeyScreen = Controller != nullptr ? Controller->GetKeyboardScreen() : nullptr;
+			FVector2D Pixel;
+			if (KeyScreen != nullptr && FindButtonPixel(Controller->GetVRKeyboard(), Action, Pixel, KeyIndex))
+			{
+				AimAt(KeyScreen->PixelToWorld(Pixel));
+			}
+			else
+			{
+				State->Aim = TEXT("no key ") + Name;
+			}
+			return 0.35f;
+		} });
+	};
+	AimKey(TEXT("h"), FName(TEXT("Key")), static_cast<int32>(TEXT('h')));
+	Press(TEXT("vr key h"), 0.3f);
+	AimKey(TEXT("i"), FName(TEXT("Key")), static_cast<int32>(TEXT('i')));
+	Press(TEXT("vr key i"), 0.3f);
+	Steps.Add({ TEXT("vr typed"), [this, State]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const UEditableTextBox* Box = Controller != nullptr && Controller->Chat != nullptr ? Controller->Chat->GetInputBox() : nullptr;
+		const FString Typed = Box != nullptr ? Box->GetText().ToString() : FString();
+		Report(TEXT("vr"), Typed.Equals(TEXT("Hi"), ESearchCase::CaseSensitive) ? EResult::Pass : EResult::Fail, TEXT("the laser types on the keyboard, a capital to start"),
+			FString::Printf(TEXT("\"%s\"%s"), *Typed, State->Aim.StartsWith(TEXT("no key")) ? *(TEXT("; ") + State->Aim) : TEXT("")));
+		Shot(TEXT("vr_keyboard"));
+		return 0.3f;
+	} });
+	AimKey(TEXT("enter"), FName(TEXT("Enter")), INDEX_NONE);
+	Press(TEXT("vr send"), 1.5f);
+	Steps.Add({ TEXT("vr sent"), [this, State]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const UWTAChatWidget* ChatCard = Controller != nullptr ? Controller->Chat.Get() : nullptr;
+		const UEditableTextBox* Box = ChatCard != nullptr ? ChatCard->GetInputBox() : nullptr;
+		const int32 Messages = ChatCard != nullptr ? ChatCard->GetMessageCount() : 0;
+		const bool bSent = Box != nullptr && Box->GetText().IsEmpty() && Messages >= State->MessagesBefore + 2;
+		const bool bAway = Controller != nullptr && !Controller->IsVRKeyboardShown();
+		Report(TEXT("vr"), bSent && bAway ? EResult::Pass : EResult::Fail, TEXT("Send on the keyboard asks the question and puts the keyboard away"),
+			FString::Printf(TEXT("%d -> %d bubbles, box \"%s\", keyboard %s"), State->MessagesBefore, Messages,
+				Box != nullptr ? *Box->GetText().ToString() : TEXT("-"), bAway ? TEXT("away") : TEXT("up")));
+		Shot(TEXT("vr_chat_answer"));
+		return 0.3f;
+	} });
+	Steps.Add({ TEXT("vr chat close"), [this]() -> float { CloseAll(); return 0.6f; } });
 
 	// The tour's Next button on the HUD screen moves the tour on.
 	Steps.Add({ TEXT("vr tour"), [this, State]() -> float

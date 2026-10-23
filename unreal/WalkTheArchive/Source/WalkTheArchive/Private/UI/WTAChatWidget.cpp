@@ -375,6 +375,11 @@ void UWTAChatWidget::Send(const FString& Question)
 	}
 }
 
+int32 UWTAChatWidget::GetMessageCount() const
+{
+	return MessageList != nullptr ? MessageList->GetChildrenCount() : 0;
+}
+
 void UWTAChatWidget::FocusInput()
 {
 	if (InputBox != nullptr && bOpen)

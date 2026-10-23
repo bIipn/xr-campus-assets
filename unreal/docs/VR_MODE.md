@@ -23,10 +23,10 @@ graphics preset in the menu if the headset stutters.
 |---|---|---|
 | Left | thumbstick (Vive: trackpad) | walk, the way you look |
 | Right | thumbstick left / right | turn 30 degrees (once per push) |
-| Right | trigger | point and pull: press a button on a card, open what the laser is on (an exhibit, a book, a seat, a staff member), close a card by pointing off it, or step to the floor where it points |
+| Right | trigger | point and pull: press a button on a card, open what the laser is on (an exhibit, a book, a seat, a staff member), close a card by pointing off it, step to the floor where it points, or bring up the keyboard on a text box |
 | Right | thumbstick up / down | scroll the card the laser is on |
 | Right | A (Index: A; Vive, WMR: trackpad click) | the tour's next stop |
-| Right | B (WMR, Vive: menu) | back: close the card, stand up from a seat, end the tour, the menu |
+| Right | B (WMR, Vive: menu) | back: put the keyboard away, close the card, stand up from a seat, end the tour, the menu |
 | Left | menu (Index: B) | the same as B |
 | Left | Y (Index: A) | the places list |
 | Left | X | a postcard of the view |
@@ -39,8 +39,20 @@ below eye level and turns after you once you look 35 degrees away; it steps asid
 nearer, and smaller by as much, when a wall is in the way, so they never go into it. Long walks (a tour stop, a place
 from the list, the walk to an exhibit's view spot) are a short fade instead of a walk. Sitting down puts your eyes at
 a seated height whatever your own height. In a guided visit the other people's names float over them, facing you.
-Text entry (typed chat questions, a visit name) waits for the headset's own keyboard: the chat's suggested questions
-and every button work.
+
+Typing: pull the trigger on a text box (a question for the staff, your name in a visit or on a certificate, a Lost
+Story's title) and a keyboard comes up under the card, tilted toward you like a lectern's desk; the laser presses its
+keys. It shows what you have typed at the top, starts a sentence with a capital, and its Send (Done for a name) does
+what Enter does on a desktop: the staff answer the question. B or Hide puts it away; it goes by itself when its card
+closes.
+
+Comfort, in the menu while in VR (remembered on the computer, not in the visit's progress):
+- **Comfort tunnel** (on unless you turn it off): while the stick walks, the edge of the view darkens into a soft
+  tunnel, which eases the swimmy feeling of gliding; it opens again as soon as you stop. Walking about the room and
+  the fades of a long move never close it.
+- **Seated play** (headset only, off unless you turn it on): for a visitor in a chair. Turning it on measures how
+  high your head is now and lifts the view to a standing person's eye height (1.62 m), so the cards, the exhibits and
+  the doors are where a standing visitor sees them. Turn it on sitting the way you will play; turn it off to play standing.
 
 ## How it is built (no module beyond the contract's list)
 
@@ -80,12 +92,23 @@ frame: a screen first (the card screen anywhere on its face, the HUD screen only
 its plane, not collision, so a screen's empty parts never block the laser), then the world (the interaction component
 traces along the laser, `SetRayOverride`).
 
+The keyboard (`UWTAVRKeyboardWidget`) is a third screen, shown by the controller when the trigger lands on a text box
+on the card screen (`VRTextBoxAt`: the screen's hit-test path at the laser's pixel, matched against the cards' text
+boxes). It types into that box directly (`UEditableTextBox::SetText`), so no Slate focus is involved, and its Enter
+broadcasts the box's `OnTextCommitted` with `OnEnter`, which is what the desktop's Enter key does.
+
+The comfort tunnel is `M_WTA_Vignette` (the lighting step, `emissive.py`), a post process on the camera after
+tonemapping whose `Amount` the rig eases toward the body's walking speed each frame. Seated play raises the rig's
+floor-level origin by the measured lift (`UWTAVRRig::SetSeatedPlay`); both options are `WTAXR` settings kept in
+GameUserSettings.ini (`[/Script/WalkTheArchive.VRComfort]`).
+
 `-vrsim` runs the same VR presentation on a desktop without a headset (the mouse looks and aims, the left button or E
 is the trigger, the wheel scrolls): the play test's `vr` phase uses it (`WTAPlayTest vr`), and so can anyone checking
 the VR screens on a desktop. `WTAVR [on|sim|off]` in the console switches it.
 
 ## Not yet
 
-- Hand tracking, grabbing props, a seated / standing height calibration, a comfort vignette while the stick walks.
-- The headset's own keyboard for typed chat questions and visit names.
+- Hand tracking and grabbing props.
 - A standalone Quest build: the Quest has no Lumen or Nanite, so it is a separate, reduced build (`docs/DELIVERY.md`).
+- A real headset run: everything above is checked in the desktop simulation (`WTAPlayTest vr`); the development PC
+  has no OpenXR runtime yet.

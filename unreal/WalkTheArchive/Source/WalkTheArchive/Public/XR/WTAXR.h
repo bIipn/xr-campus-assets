@@ -59,4 +59,12 @@ namespace WTAXR
 	    instead (the people's name tags in a guided visit). AWTAPlayerController sets it. */
 	WALKTHEARCHIVE_API bool IsPresentationActive();
 	WALKTHEARCHIVE_API void SetPresentationActive(bool bOn);
+
+	/** Comfort, remembered in GameUserSettings.ini ([/Script/WalkTheArchive.VRComfort]): the tunnel that closes in
+	    round the view while the stick walks (on unless turned off), and seated play (off unless turned on: a headset's
+	    view lifted to standing eye height for a visitor in a chair). */
+	WALKTHEARCHIVE_API bool IsComfortTunnel();
+	WALKTHEARCHIVE_API void SetComfortTunnel(bool bOn);
+	WALKTHEARCHIVE_API bool IsSeatedPlay();
+	WALKTHEARCHIVE_API void SetSeatedPlay(bool bOn);
 }
