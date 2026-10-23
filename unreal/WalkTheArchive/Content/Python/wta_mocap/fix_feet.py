@@ -14,6 +14,10 @@ in the air (as they are, the toes reach the floor).
 
 A fixed clip carries the metadata tag WTA_FEET_FIXED, so a second run leaves it alone. Logs WTA_FIX_FEET; with
 report=<path> also writes the per-clip angles there.
+
+The clips keep their keys in a Sequencer data model (AnimationSequencerDataModel), whose raw-track getters
+(AnimationLibrary.get_raw_track_data) come back empty, so each foot's keys are read by evaluating the clip at every
+key (get_bone_pose_for_frame, the model's own value there) and written back whole with set_bone_track_keys.
 """
 import math
 import unreal
@@ -100,6 +104,21 @@ def _solve(seq, side, axis, want, times):
     return (lo + hi) / 2
 
 
+def _keys(seq, bone):
+    """The bone's local keys, one per key of the clip: (positions, rotations, scales)."""
+    try:
+        n = unreal.AnimationLibrary.get_num_keys(seq)
+    except Exception:
+        n = seq.data_model_interface.get_number_of_keys()
+    pos, rot, scl = [], [], []
+    for i in range(n):
+        x = unreal.AnimationLibrary.get_bone_pose_for_frame(seq, bone, i, False)
+        pos.append(x.translation)
+        rot.append(x.rotation)
+        scl.append(x.scale3d)
+    return pos, rot, scl
+
+
 def _is_fixed(seq):
     try:
         return unreal.EditorAssetLibrary.get_metadata_tag(seq, MARK) not in (None, '')
@@ -150,14 +169,17 @@ def run(dry=False, report=None):
             ok = True
             for side in ('l', 'r'):
                 bone = 'foot_' + side
-                pos, rot, scl = unreal.AnimationLibrary.get_raw_track_data(seq, bone)
+                pos, rot, scl = _keys(seq, bone)
                 k = _turn(axes[side], med[side])
-                ok = seq.controller.set_bone_track_keys(bone, pos, [q * k for q in rot], scl, True) and ok
-            unreal.EditorAssetLibrary.set_metadata_tag(seq, MARK, 'l %.2f r %.2f' % (med['l'], med['r']))
-            unreal.EditorAssetLibrary.save_loaded_asset(seq, False)
+                ok = bool(seq.controller.set_bone_track_keys(bone, pos, [q * k for q in rot], scl, False)) and ok
             t = seq.get_play_length() * 0.5
             after = [_foot_vec(seq, s, t) for s in ('l', 'r')]
-            lines.append('fixed %s (%s): foot->ball now l %s r %s' % (name, ok, tuple(round(c, 1) for c in after[0]), tuple(round(c, 1) for c in after[1])))
+            if not ok:
+                lines.append('FAILED %s: the keys did not take, not saved' % name)
+                continue
+            unreal.EditorAssetLibrary.set_metadata_tag(seq, MARK, 'l %.2f r %.2f' % (med['l'], med['r']))
+            unreal.EditorAssetLibrary.save_loaded_asset(seq, False)
+            lines.append('fixed %s: foot->ball now l %s r %s' % (name, tuple(round(c, 1) for c in after[0]), tuple(round(c, 1) for c in after[1])))
             fixed.append(name)
     if report:
         with open(report, 'w') as fh:
