@@ -747,13 +747,18 @@ def build_wax(L):
 
 # Stations the Unreal campus moved: the layer table stands at the back of Room 104 since the classroom refit
 # (content/refits.json), seen from its south end, the beanbags behind you.
-UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}},
-              # the Training Wing's stations (bl/training.py; out/training/layout.json has the built anchors and views)
-              'dx-hygiene': {'pos': (24.0, -14.3), 'view': {'x': 24.0, 'z': -15.6, 'yaw': math.pi, 'pitch': -0.25}},
-              'dx-machine': {'pos': (28.5, -24.5), 'view': {'x': 28.5, 'z': -23.0, 'yaw': 0.0, 'pitch': -0.15}},
-              'dx-chair': {'pos': (30.5, -24.5), 'view': {'x': 30.5, 'z': -23.0, 'yaw': 0.0, 'pitch': -0.2}},
-              'dx-water': {'pos': (25.5, -26.3), 'view': {'x': 25.5, 'z': -24.8, 'yaw': 0.0, 'pitch': -0.1}},
-              'dx-charting': {'pos': (33.3, -17.5), 'view': {'x': 31.9, 'z': -17.5, 'yaw': -math.pi / 2, 'pitch': -0.2}}}
+UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'yaw': math.pi, 'pitch': -0.3}}}
+
+# The Training Wing's stations come from its own builder's layout (bl/training.py -> out/training/layout.json:
+# each station's anchor and view in the campus layout's shape), merged over the campus layout's stations.
+TRAINING_LAYOUT = os.path.join(UNREAL, 'Pipeline', 'out', 'training', 'layout.json')
+
+
+def extra_stations():
+    if not os.path.exists(TRAINING_LAYOUT):
+        return {}
+    with open(TRAINING_LAYOUT, 'r', encoding='utf-8') as fh:
+        return {s['id']: s for s in json.load(fh).get('stations', [])}
 
 
 # The steps a visitor walks through at each station (the panel shows one at a time and reads it aloud; the last
@@ -789,11 +794,12 @@ def station_steps(s):
 
 def build_stations(L):
     lay = {s['id']: s for s in L['stations']}
+    lay.update(extra_stations())
     rows = []
     for s in load('stations.json'):
-        # the web's stations are in layout.json; the Unreal-only ones (the training wing) are placed by UE_STATION
+        # the web's stations are in layout.json, the training wing's in its builder's layout; UE_STATION moves a few
         ls, card = dict(lay.get(s['id']) or {'ue_location_cm': [0.0, 0.0, 90.0], 'view': {}}), s.get('card') or {}
-        assert s['id'] in lay or s['id'] in UE_STATION, 'station %s has no place: not in layout.json nor UE_STATION' % s['id']
+        assert s['id'] in lay or s['id'] in UE_STATION, 'station %s has no place: not in layout.json, the training layout nor UE_STATION' % s['id']
         if s['id'] in UE_STATION:
             u = UE_STATION[s['id']]
             ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]

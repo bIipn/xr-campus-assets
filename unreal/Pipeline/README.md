@@ -15,10 +15,11 @@ bl/exterior.py ──► out/exterior/Outside.glb, lights.json, theatre_layout.j
                    fountain, trees, the other shells including the talks wing's)
 bl/auditorium.py ──► out/auditorium/Auditorium.glb, lights.json, layout.json  (the talks wing: the foyer and the auditorium)
 bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json     (Room 104 as the XR Classroom: smartboard, desks, signs)
+bl/training.py ──► out/training/Training.glb, lights.json, layout.json        (the Training Wing: the dialysis course's five stations)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
-out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -78,6 +79,31 @@ under its walls), or the lawn shows through its floor.
   teacher's desk; `bl/classroom.py` adds a 3 m smartboard (`screen__classroom`) on the east wall, the teacher's desk
   and chair by the window, 3 rows of 3 two-seat desks with 18 chairs facing the board, the teacher's spot at the front
   left, and the door sign and blade sign reading "104 · XR Classroom".
+
+The Training Wing (`training`, `bl/training.py`; its shell, the holes for its door and windows and the canopy are
+`bl/exterior.py`'s SHELLS `'training'`, OPENINGS, WINDOWS and SHELL_CUTS; the door from the auditorium is
+`bl/auditorium.py`'s EAST_DOOR): the dialysis technician course's room (XR Libraries' Project SANDI), a new wing east of
+the auditorium and north of the School, x 21.2..32.0, z -27.0..-13.6, floor 0, ceiling 3.6, entered through a 1.2 x
+2.2 m door in the auditorium's east wall at the cross-aisle (z -16.2..-15.0, a walnut surround on the hall side) and
+from the yard through a 1.8 x 2.4 m double doorway at the north end of its east wall (z -26.7..-24.9, its leaves
+standing open, a canopy and a lantern outside). The east wall stands on the yard fence's line, so the wing stops at
+x 32.45, half a metre short of the coaster, and `content/refits.json` clips the fence out of the Yard asset where the
+doorway opens through it (a `clip` refit: faces inside a campus box go). A clean clinical room: pale warm-grey walls
+with a white dado rail, a grey resilient floor, an acoustic-tile ceiling on a T-grid with eight 2 x 4 panel lights
+(`panel`, AREA) and LED strips over the course board and the water panel (`screen`), two windows on the east wall and
+two on the north (frames, glass, reveals, rolled blinds), a clock, the wing's sign over the yard door. Five stations
+round the room, each with a free standing spot in front and a numbered plate on the wall above: `dx-hygiene` (the
+sink unit on the south wall by the west door), `dx-machine` (the dialysis machine beside the treatment chair: screen,
+blood-pump module, the dialyzer in its side holder with the blood lines to the patient's arm, the IV pole),
+`dx-chair` (the reclining treatment chair, the BP monitor on its rolling stand, the floor scale), `dx-water` (the two
+carbon tanks, the RO unit, the wall cabinet with the conductivity meter and the chlorine test kit on its shelf, the log
+on its hook) and `dx-charting` (the desk with the treatment record on its monitor, the task chair, the filing cabinet,
+the corkboard). The course desk is a standing desk mid-way along the west wall facing east, with the checklist board
+("DIALYSIS TECHNICIAN · FOUNDATIONS") on the wall behind it and `spot__training_f0` behind it where the course lead
+stands; the seats are four chairs along the south wall (`seat__training_c1_f270` .. `c4`, facing north) and the task
+chair (`seat__training_desk_f90`). `out/training/layout.json` gives the room, the doors and windows, each station's
+anchor (`ue_location_cm`) and view (web and Unreal conventions), the course desk with its spot and board, a place
+view and the seats; `lights.json` the fixtures. Materials are `trn_*` (`content/surfaces.json` has the Training block).
 
 Surfaces: `content/surfaces.json` names the CC0 texture sets (ambientCG) and which builder material in which asset
 takes which set; `wta_setup/surfaces.py` imports them from the textures folder on the machine and swaps the
@@ -177,7 +203,8 @@ pack inlined as the example it opens on.
 | ReadingRoom | 16 | 187k | The Blender-modelled room: real books on every shelf, thick walls, PBR textures |
 | School | 311 | 43k | Hall + rooms 101–104; `bp__<id>` = blueprint boards |
 | Outside | 26 | 140k | Blender: terrain with the forecourt meadow, flagstone path, fountain, trees, lamp posts, the other buildings' shells, horizon |
-| Yard | 104 | 73k | Coaster, Sky Drop, dive dome, playground; `ride__` / `token__` tags |
+| Yard | 104 | 73k | Coaster, Sky Drop, dive dome, playground; `ride__` / `token__` tags; the fence clipped at the Training Wing's doorway |
+| Training | 37 | 8k | Blender: the Training Wing's room and its five stations; `spot__training_f0`, `seat__training_*` |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,

@@ -1,0 +1,250 @@
+{
+ "source": "bl/training.py",
+ "units": "metres, three.js campus axes (y up)",
+ "lights": [
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    24.2,
+    3.54,
+    -24.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    24.2,
+    3.54,
+    -21.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    24.2,
+    3.54,
+    -18.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    24.2,
+    3.54,
+    -15.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    29.0,
+    3.54,
+    -24.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    29.0,
+    3.54,
+    -21.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    29.0,
+    3.54,
+    -18.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "panel",
+   "type": "AREA",
+   "campus_pos_m": [
+    29.0,
+    3.54,
+    -15.9
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 160,
+   "color_linear": [
+    1.0,
+    0.97,
+    0.92
+   ],
+   "radius_m": 0.06,
+   "area_size_m": [
+    1.2,
+    0.6
+   ]
+  },
+  {
+   "name": "screen",
+   "type": "POINT",
+   "campus_pos_m": [
+    24.95,
+    3.45,
+    -26.65
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 110,
+   "color_linear": [
+    1.0,
+    0.98,
+    0.95
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  },
+  {
+   "name": "screen",
+   "type": "POINT",
+   "campus_pos_m": [
+    21.55,
+    3.45,
+    -20.5
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 110,
+   "color_linear": [
+    1.0,
+    0.98,
+    0.95
+   ],
+   "radius_m": 0.06,
+   "area_size_m": null
+  }
+ ]
+}

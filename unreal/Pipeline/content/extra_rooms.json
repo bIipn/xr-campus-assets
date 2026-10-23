@@ -47,13 +47,13 @@
   {
     "id": "training",
     "wing": "school",
-    "x0": 21.2, "x1": 34.0, "z0": -27.0, "z1": -13.6, "y0": 0.0, "y1": 3.6,
+    "x0": 21.2, "x1": 32.0, "z0": -27.0, "z1": -13.6, "y0": 0.0, "y1": 3.6,
     "outdoor": false,
     "info": {"k": "Training", "n": "The Training Wing", "y": "Five stations, then the quiz at the desk"},
     "label": "TRAINING",
     "goPlace": "training",
     "place": {"label": "The Training Wing", "names": ["training", "training wing", "course", "dialysis", "clinic", "workforce", "stations"],
-              "view": {"x": 27.6, "y": 0.0, "z": -15.2, "yaw": 0, "pitch": -0.08},
-              "say": "the training wing", "directions": "through the auditorium's side door at the back of the hall, or in from the yard by the door north of the school."}
+              "view": {"x": 28.0, "y": 0.0, "z": -16.0, "yaw": 0.3, "pitch": -0.05},
+              "say": "the training wing", "directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school."}
   }
 ]

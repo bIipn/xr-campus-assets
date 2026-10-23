@@ -110,6 +110,22 @@ def wall_with_door(b, origin, U, V, N, t, w, h, d_u0, d_u1, d_h, solid=True):
         if pts[2][1] - pts[0][1] > 1e-6 and pts[1][0] - pts[0][0] > 1e-6: extrude_profile(b, pts, origin, U, V, N, t, back=solid, sides=solid)
 
 
+def wall_with_openings(b, origin, U, V, N, t, w, h, openings, solid=True):
+    """A wall slab w by h with any number of rectangular openings [(u0, u1, v0, v1), ...] that do not overlap along
+    u (a door from v0 = 0, a window above the floor): the piers between them and a piece below and above each. Front
+    face only when solid=False (a room's inner face, or a shell face whose reveals the room's builder draws)."""
+    pieces = []
+    u = 0.0
+    for (u0, u1, v0, v1) in sorted(openings):
+        if u0 - u > 1e-6: pieces.append([(u, 0), (u0, 0), (u0, h), (u, h)])
+        if v0 > 1e-6: pieces.append([(u0, 0), (u1, 0), (u1, v0), (u0, v0)])
+        if h - v1 > 1e-6: pieces.append([(u0, v1), (u1, v1), (u1, h), (u0, h)])
+        u = max(u, u1)
+    if w - u > 1e-6: pieces.append([(u, 0), (w, 0), (w, h), (u, h)])
+    for pts in pieces:
+        extrude_profile(b, pts, origin, U, V, N, t, back=solid, sides=solid)
+
+
 # ---------------------------------------------------------------- mouldings, columns, capitals
 def run_boxes(b, a, c, out, prof, seg=None):
     """Mouldings along a wall from campus (x, z) `a` to `c`, each (y0, y1, depth) a box standing `depth` out of the

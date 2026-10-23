@@ -40,6 +40,14 @@
    "y": 0.0,
    "z": -13.875,
    "width": 2.6
+  },
+  {
+   "what": "the door in the east wall at the cross-aisle, into the Training Wing",
+   "x": 20.975,
+   "y": 0.0,
+   "z": -15.6,
+   "width": 1.2,
+   "height": 2.2
   }
  ],
  "speaker_spot": {

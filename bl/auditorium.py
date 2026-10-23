@@ -8,8 +8,9 @@ north wall opens through a portal lettered AUDITORIUM into the back of the AUDIT
 row toward the stage, side aisles with step lights, a balustrade along the top row, an orchestra floor, a raised
 stage with a curved front, steps up either side, a lectern at stage left, an 8 x 4.5 m screen on the north wall in a
 black masking frame, velvet drapes and a valance, warm walnut slats on the walls under plaster, a ceiling with
-acoustic clouds, downlights and a lighting truss, sconces, a booth window and an exit sign. The outer shell (the
-limestone order on the east and north faces, the roof) is bl/exterior.py's (SHELLS 'foyer' and 'auditorium').
+acoustic clouds, downlights and a lighting truss, sconces, a booth window and an exit sign, and in the east wall at
+the cross-aisle a 1.2 x 2.2 m door (EAST_DOOR, a walnut surround) into the Training Wing (bl/training.py). The outer
+shell (the limestone order on the east and north faces, the roof) is bl/exterior.py's (SHELLS 'foyer' and 'auditorium').
 
 The talks system's marks (see unreal/Pipeline/README.md): screen__auditorium (the 16:9 quad the slides play on),
 spot__auditorium_f90 (where the speaker stands, behind the lectern, facing the seats), and one tagged mesh per chair
@@ -76,6 +77,8 @@ SCREEN_Z = AZN + 0.064                     # the image; the masking frame's face
 LECTERN = (18.6, -28.35)
 SPEAKER = (18.6, -28.9)
 NX = 56                                    # columns across the hall for the floors
+EAST_DOOR = (-16.2, -15.0, 2.2)            # z0, z1, h: the door in the east wall at the cross-aisle, into the Training
+TRAINING_X = 21.2                          # Wing (bl/training.py) through the 0.45 m wall to its west face at x 21.2
 
 
 def zarc(rho, x):
@@ -310,14 +313,30 @@ def hall_walls():
     pl = builder('aud_plaster', 'aud_plaster', tile=3.0); rail = builder('aud_rail', 'aud_armwood', tile=1.0)
     fab = builder('aud_fabric', 'aud_fabric_dark', tile=2.0)
     ylo = Y_ORCH - 0.05
-    # the side walls: dark backing behind walnut slats up to PANEL_TOP, a rail, plaster to the ceiling, a cornice
+    # the side walls: dark backing behind walnut slats up to PANEL_TOP, a rail, plaster to the ceiling, a cornice;
+    # the east wall has the door into the Training Wing at the cross-aisle (its own mesh, the way Hall R's north
+    # door is: the backing with the hole, the reveal through to the wing's face, a walnut surround)
+    dz0, dz1, dh = EAST_DOOR
     for (x, out) in ((AX0, (1, 0)), (AX1, (-1, 0))):
         a, c = (x, AZS), (x, AZN)
-        wall_face(bk, a, c, out, ylo, PANEL_TOP, nu=6, nv=2)
+        if x == AX1:
+            ew = builder('aud_east_wall', 'aud_backing')
+            wall_with_door(ew, (x, ylo, AZS), (0, 0, -1), (0, 1, 0), (-1, 0, 0), 0.0, AZS - AZN, PANEL_TOP - ylo, AZS - dz1, AZS - dz0, dh - ylo, solid=False)
+            for (zz, nz) in ((dz0, 1), (dz1, -1)):
+                rail.face([P(x, 0.0, zz), P(TRAINING_X, 0.0, zz), P(TRAINING_X, dh, zz), P(x, dh, zz)], D(0, 0, nz))
+            rail.face([P(x, dh, dz0), P(x, dh, dz1), P(TRAINING_X, dh, dz1), P(TRAINING_X, dh, dz0)], D(0, -1, 0))
+            for zz in (dz0 - 0.08, dz1 + 0.08):
+                rail.box(x - 0.05, dh / 2, zz, 0.10, dh, 0.16, seg=1.5)
+            run_boxes(rail, (x, dz1 + 0.18), (x, dz0 - 0.18), out, [(dh, dh + 0.16, 0.10), (dh + 0.16, dh + 0.24, 0.15)])
+        else:
+            wall_face(bk, a, c, out, ylo, PANEL_TOP, nu=6, nv=2)
         wall_face(pl, a, c, out, PANEL_TOP, CEIL, nu=6, nv=2)
         z = AZS - 0.08
         while z > AZN + 0.06:
-            sl.box(x + out[0] * 0.016, (ylo + PANEL_TOP) / 2, z, 0.03, PANEL_TOP - ylo, 0.045, faces=('X' if out[0] > 0 else 'x') + 'yYzZ')
+            if x == AX1 and dz0 - 0.03 < z < dz1 + 0.03:      # over the door: from inside its head moulding up
+                sl.box(x + out[0] * 0.016, (dh + 0.06 + PANEL_TOP) / 2, z, 0.03, PANEL_TOP - dh - 0.06, 0.045, faces=('X' if out[0] > 0 else 'x') + 'yYzZ')
+            else:
+                sl.box(x + out[0] * 0.016, (ylo + PANEL_TOP) / 2, z, 0.03, PANEL_TOP - ylo, 0.045, faces=('X' if out[0] > 0 else 'x') + 'yYzZ')
             z -= 0.11
         run_boxes(rail, a, c, out, [(PANEL_TOP - 0.02, PANEL_TOP + 0.08, 0.07)])
         run_boxes(builder('aud_cornice', 'aud_plaster', tile=3.0), a, c, out, [(CEIL - 0.30, CEIL - 0.18, 0.08), (CEIL - 0.18, CEIL, 0.18)])
@@ -610,7 +629,9 @@ def write_json(seat_count):
              'entry_floor_y': 0.0, 'stage_y': Y_STAGE, 'ceiling_y': CEIL},
         ],
         'entries': [{'what': "Hall R's north door, into the foyer", 'x': round((HALL_DOOR[0] + HALL_DOOR[1]) / 2, 3), 'y': 0.0, 'z': -4.6, 'width': round(HALL_DOOR[1] - HALL_DOOR[0], 3)},
-                    {'what': 'the portal from the foyer into the back of the auditorium', 'x': round(FXC, 3), 'y': 0.0, 'z': round((FZN + AZS) / 2, 3), 'width': round(PORTAL[1] - PORTAL[0], 3)}],
+                    {'what': 'the portal from the foyer into the back of the auditorium', 'x': round(FXC, 3), 'y': 0.0, 'z': round((FZN + AZS) / 2, 3), 'width': round(PORTAL[1] - PORTAL[0], 3)},
+                    {'what': 'the door in the east wall at the cross-aisle, into the Training Wing', 'x': round((AX1 + TRAINING_X) / 2, 3), 'y': 0.0,
+                     'z': round((EAST_DOOR[0] + EAST_DOOR[1]) / 2, 3), 'width': round(EAST_DOOR[1] - EAST_DOOR[0], 3), 'height': EAST_DOOR[2]}],
         'speaker_spot': {'x': SPEAKER[0], 'y': Y_STAGE, 'z': SPEAKER[1], 'yaw': seat_yaw(0.0, 1.0)},
         'lectern': {'x': LECTERN[0], 'z': LECTERN[1]},
         'screens': [{'name': 'screen__auditorium', 'centre': [XC, round(SCREEN_Y0 + SCREEN_H / 2, 3), round(SCREEN_Z, 3)],
@@ -689,6 +710,7 @@ def main():
                  'stage': ((XC + 1.0, 0.2, -21.0), (XC, 2.2, AZN), 72),
                  'seats': ((LECTERN[0] - 0.3, Y_STAGE + 1.62, SPEAKER[1]), (XC - 2.0, -0.6, -18.0), 80),
                  'aisle': ((AX1 - 0.8, 1.0, -17.6), (AX1 - 1.4, -1.2, -27.5), 76),
+                 'door': ((18.0, 1.6, -18.8), (AX1, 1.2, -15.6), 70),
                  'foyer': ((FXC + 0.6, 1.62, -5.6), (FXC - 0.4, 1.8, FZN), 76),
                  'foyer_s': ((FXC - 0.8, 1.62, -12.6), (FXC + 0.3, 2.0, FZS), 76)}
         want = [a.split('=')[1].split(',') for a in sys.argv if a.startswith('--views=')]
