@@ -43,7 +43,9 @@ Headers live in `Source/WalkTheArchive/Public/<Area>/`, sources in `Source/WalkT
 Include as `#include "Area/File.h"`. Areas: `Core`, `Data`, `Interaction`, `World`, `Systems`, `UI`.
 Module dependencies (Build.cs, public): Core, CoreUObject, Engine, InputCore, EnhancedInput, UMG, Slate, SlateCore,
 AIModule, NavigationSystem, DeveloperSettings, Json, JsonUtilities; private: AnimationCore, AudioCaptureCore (the Lost
-Stories microphone), Sockets and Networking (the guided visits' beacon).
+Stories microphone). The guided visits' beacon uses the Sockets module the Engine module already brings in publicly.
+Change Build.cs only when there is no other way: a changed Build.cs recompiles the build-rules assembly, and on Ev's
+PC Smart App Control blocks a freshly compiled one ("An Application Control policy has blocked this file").
 
 ### 4.1 Data (`Data/WTATypes.h`)
 Every struct in `contract/structs.json`, spelled exactly, all `USTRUCT(BlueprintType)`, rows derive `FTableRowBase`,

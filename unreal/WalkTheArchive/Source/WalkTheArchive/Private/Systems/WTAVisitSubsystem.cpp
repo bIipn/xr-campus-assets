@@ -11,7 +11,6 @@
 #include "Core/WTAText.h"
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
-#include "Common/UdpSocketBuilder.h"
 #include "CollisionQueryParams.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
@@ -44,6 +43,38 @@ namespace
 			View.Pitch = 0.f;
 		}
 		return View;
+	}
+
+	/** A non-blocking UDP socket (the Sockets module, which the Engine module already brings): broadcasting for the
+	    guide's beacon, or bound to BindPort for listening to the beacons (BindPort < 0: not bound). */
+	FSocket* MakeUdpSocket(const TCHAR* Description, bool bBroadcast, int32 BindPort)
+	{
+		ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+		FSocket* Socket = Sockets ? Sockets->CreateSocket(NAME_DGram, Description, FNetworkProtocolTypes::IPv4) : nullptr;
+		if (Socket == nullptr)
+		{
+			return nullptr;
+		}
+		Socket->SetNonBlocking(true);
+		Socket->SetReuseAddr(true);
+		if (bBroadcast)
+		{
+			Socket->SetBroadcast(true);
+		}
+		if (BindPort >= 0)
+		{
+			TSharedRef<FInternetAddr> Any = Sockets->CreateInternetAddr(FNetworkProtocolTypes::IPv4);
+			Any->SetAnyAddress();
+			Any->SetPort(BindPort);
+			if (!Socket->Bind(*Any))
+			{
+				Sockets->DestroySocket(Socket);
+				return nullptr;
+			}
+			int32 Size = 0;
+			Socket->SetReceiveBufferSize(16 * 1024, Size);
+		}
+		return Socket;
 	}
 
 	FCollisionQueryParams IgnoringPeople(UWorld* World, const TCHAR* Tag)
@@ -417,7 +448,7 @@ void UWTAVisitSubsystem::StartSearch()
 	{
 		return;
 	}
-	SearchSocket = FUdpSocketBuilder(TEXT("WTAVisitSearch")).AsNonBlocking().AsReusable().BoundToPort(BeaconPort).WithReceiveBufferSize(16 * 1024).Build();
+	SearchSocket = MakeUdpSocket(TEXT("WTAVisitSearch"), false, BeaconPort);
 	if (SearchSocket == nullptr)
 	{
 		UE_LOG(LogWTA, Warning, TEXT("Visit: cannot listen for visits on UDP %d (joining by address still works)"), BeaconPort);
@@ -465,7 +496,7 @@ void UWTAVisitSubsystem::SendBeacon()
 	}
 	if (BeaconSocket == nullptr)
 	{
-		BeaconSocket = FUdpSocketBuilder(TEXT("WTAVisitBeacon")).AsNonBlocking().AsReusable().WithBroadcast().Build();
+		BeaconSocket = MakeUdpSocket(TEXT("WTAVisitBeacon"), true, -1);
 		if (BeaconSocket == nullptr)
 		{
 			return;
