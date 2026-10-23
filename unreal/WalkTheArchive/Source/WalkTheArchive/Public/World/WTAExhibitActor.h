@@ -2,8 +2,8 @@
 // Interact: walk to the row's View and open the catalog card (the controller notes the exhibit as seen).
 // Label: "Open - <Title>". Placed by the editor Python from the item__<id> meshes; it sets item_id and pick_extent.
 // When the season folder has a picture for the row (Saved/Season/art/<id>.png), BeginPlay hangs it over the frame's
-// baked artwork: an unlit plane the row's Size at its Location, facing its Yaw, so a swapped exhibit shows on the
-// wall as well as on its card.
+// baked artwork: an unlit plane the row's Size at its Location, facing its Yaw, a centimetre in front of the frame's
+// face (found by a line from the view spot), so a swapped exhibit shows on the wall as well as on its card.
 
 #pragma once
 

@@ -6,7 +6,9 @@
 #include "Core/WTAPlayerController.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "CollisionQueryParams.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -56,12 +58,24 @@ bool AWTAExhibitActor::HangSeasonPicture()
 		Width = Height * Aspect;
 	}
 	const FRotator Facing(0.f, Row->Yaw, 0.f);
+	// The baked frame stands proud of the wall by a few centimetres (the row's Location is the artwork's centre on
+	// the wall): a line from the view spot finds the frame's face, and the picture hangs a centimetre in front of it.
+	float OutCm = 4.f;
+	if (Row->View.bValid && GetWorld() != nullptr)
+	{
+		FHitResult Hit;
+		FCollisionQueryParams Params(SCENE_QUERY_STAT(WTASeasonPicture), false, this);
+		if (GetWorld()->LineTraceSingleByChannel(Hit, Row->View.Location, Row->Location - Facing.Vector() * 10.f, ECC_Visibility, Params))
+		{
+			OutCm = FMath::Clamp(FVector::DotProduct(Hit.ImpactPoint - Row->Location, Facing.Vector()) + 1.f, 1.f, 30.f);
+		}
+	}
 	SeasonPlane = NewObject<UStaticMeshComponent>(this, TEXT("SeasonPicture"));
 	SeasonPlane->SetStaticMesh(Plane);
 	SeasonPlane->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SeasonPlane->SetCastShadow(false);
 	SeasonPlane->SetupAttachment(GetRootComponent());
-	SeasonPlane->SetWorldLocationAndRotation(Row->Location + Facing.Vector() * 2.5f, Facing + FRotator(0.f, -90.f, 90.f));
+	SeasonPlane->SetWorldLocationAndRotation(Row->Location + Facing.Vector() * OutCm, Facing + FRotator(0.f, -90.f, 90.f));
 	SeasonPlane->SetWorldScale3D(FVector(Width / 100.f, Height / 100.f, 1.f));
 	if (UMaterialInstanceDynamic* Mid = UMaterialInstanceDynamic::Create(Unlit, this))
 	{
@@ -71,10 +85,8 @@ bool AWTAExhibitActor::HangSeasonPicture()
 		SeasonPlane->SetMaterial(0, Mid);
 	}
 	SeasonPlane->RegisterComponent();
-	UE_LOG(LogWTA, Display, TEXT("WTA_SEASON %s hangs this season's picture (%.0f x %.0f cm) at %s facing %s, normal %s, scale %s; row at %s yaw %.1f; root at %s"),
-		*ItemId.ToString(), Width, Height, *SeasonPlane->GetComponentLocation().ToString(), *SeasonPlane->GetComponentRotation().ToString(),
-		*SeasonPlane->GetComponentRotation().RotateVector(FVector::UpVector).ToString(), *SeasonPlane->GetComponentScale().ToString(),
-		*Row->Location.ToString(), Row->Yaw, *GetActorLocation().ToString());
+	UE_LOG(LogWTA, Display, TEXT("WTA_SEASON %s hangs this season's picture (%.0f x %.0f cm), %.1f cm out from %s facing %.0f"),
+		*ItemId.ToString(), Width, Height, OutCm, *Row->Location.ToString(), Row->Yaw);
 	return true;
 }
 
