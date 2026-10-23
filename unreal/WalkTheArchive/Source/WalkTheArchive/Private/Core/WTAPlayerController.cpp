@@ -32,6 +32,7 @@
 #include "XR/WTAVRScreenActor.h"
 #include "XR/WTAXR.h"
 #include "Components/Border.h"
+#include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "World/WTATalkActor.h"
 #include "Blueprint/UserWidget.h"
