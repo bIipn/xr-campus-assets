@@ -352,6 +352,12 @@ struct WALKTHEARCHIVE_API FWTABookRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	TSoftObjectPtr<UTexture2D> Cover;
+	/** The client's catalogue search for this title (empty: no link), and the link's words ("Find it in WorldCat"). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FString CatalogueUrl;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText CatalogueLabel;
 };
 
 /** DT_Rooms: room boxes in cm (UE axes). Wing groups rooms (museum, wax, lib, school, play). */

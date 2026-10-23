@@ -183,7 +183,12 @@ first course is Dialysis Technician: Foundations in the Training Wing (`dx-*` st
 ## A client pack, and the sheet a library fills in
 
 `clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit
-screens, the frieze lines, the open book, where its content lives) and, beside it, its own `talks.json`.
+screens, the frieze lines, the open book, where its content lives) and, beside it, its own `talks.json` and,
+optionally, `catalogue.json`: the library's catalogue name, its search page with `{q}` where the words go (every
+library book's cover then carries "Find it in <name>", the title searched), and `records`, a source id from
+`content/sources.json` mapped to the library's own catalogue record, which the card links instead of the web page.
+XR Libraries' pack points at WorldCat, which every library can search. `data/build_data.py` reads the pack from
+`WTA_CLIENT` (what `build_client.py` sets), else XR Libraries' own, so a plain run writes the same tables.
 `clients/start.html` is the sheet a library fills in to get one: the words on the building, the talks and classes
 with their slides, quizzes and certificates, a contact. It validates as they type and downloads `<folder>-pack.zip`
 (`campus.json`, `talks.json`, a README), which goes into `clients/<folder>/`; then

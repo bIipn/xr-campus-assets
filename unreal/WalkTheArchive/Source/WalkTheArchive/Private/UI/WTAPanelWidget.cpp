@@ -402,6 +402,11 @@ void UWTAPanelWidget::ShowBook(FName BookId, int32 Page)
 		{
 			AddButton(PanelText(TEXT("Start reading")), NAME_PanelPage, NAME_None, 0, true);
 		}
+		if (!Row->CatalogueUrl.IsEmpty())
+		{
+			// The library's own catalogue: the real book, on the real shelf.
+			AddLink(Row->CatalogueLabel.IsEmpty() ? PanelText(TEXT("Find it in the catalogue")) : Row->CatalogueLabel, Row->CatalogueUrl);
+		}
 		EndCard(false, NumPages > 0, PanelText(TEXT("Cover")));
 		return;
 	}

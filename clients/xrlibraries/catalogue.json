@@ -1,0 +1,6 @@
+{
+  "about": "The library's catalogue, for the links on the campus. search: the catalogue's search page with {q} where the words go (every library book's cover gets 'Find it in <name>'). records: a source id from content/sources.json -> the library's own record for it, used instead of the web link. XR Libraries has no catalogue of its own, so WorldCat, which every library can search.",
+  "name": "WorldCat",
+  "search": "https://search.worldcat.org/search?q={q}",
+  "records": {}
+}

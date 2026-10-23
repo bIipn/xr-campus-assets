@@ -14,6 +14,7 @@ Run (Python 3.9+, standard library only), from anywhere:
     python3 unreal/Pipeline/data/build_data.py
 """
 import json
+import urllib.parse
 import math
 import os
 import re
@@ -100,8 +101,43 @@ def art_ref(item_id):
 
 
 # ---------- tables ----------
+DEFAULT_PACK = os.path.join(UNREAL, '..', 'clients', 'xrlibraries')
+
+
+def pack_dir():
+    """The client pack: WTA_CLIENT (build_client.py sets it), else XR Libraries' own, so a plain run of this
+    script writes the same tables the pack build does."""
+    pack = os.environ.get('WTA_CLIENT') or DEFAULT_PACK
+    return pack if os.path.isdir(pack) else ''
+
+
+def catalogue():
+    """The client pack's catalogue (clients/<pack>/catalogue.json): name, a search template with {q}, and records
+    (source id -> the library's own record URL). Empty without a pack or the file."""
+    pack = pack_dir()
+    path = os.path.join(pack, 'catalogue.json') if pack else ''
+    if not path or not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        cat = json.load(f)
+    assert '{q}' in cat.get('search', '{q}'), 'catalogue.json: search needs a {q} for the words searched'
+    return cat
+
+
+def catalogue_search(cat, title):
+    if not cat.get('search') or not title:
+        return ''
+    return cat['search'].replace('{q}', urllib.parse.quote(title))
+
+
 def build_sources():
-    return [{'Name': s['id'], 'Label': txt(s['label']), 'Url': txt(s['url'])} for s in load('sources.json')]
+    records = catalogue().get('records') or {}
+    rows = []
+    for s in load('sources.json'):
+        url = records.get(s['id']) or s['url']
+        rows.append({'Name': s['id'], 'Label': txt(s['label']), 'Url': txt(url)})
+    assert set(records) <= {s['id'] for s in load('sources.json')}, 'catalogue.json: a record names a source that is not in sources.json'
+    return rows
 
 
 def build_galleries():
@@ -190,11 +226,14 @@ def book_block(b):
 
 
 def build_books():
+    cat = catalogue()
+    label = ('Find it in %s' % cat['name']) if cat.get('name') else 'Find it in the catalogue'
     rows = []
     for b in load('books.json'):
         pages = [{'Heading': txt(p.get('h')), 'Blocks': [book_block(x) for x in p.get('b', [])]} for p in b['pages']]
+        url = catalogue_search(cat, b['title'])
         rows.append({'Name': b['id'], 'Subject': b['subject'], 'Title': txt(b['title']), 'Subtitle': txt(b.get('sub')),
-                     'Pages': pages, 'Cover': ''})
+                     'Pages': pages, 'Cover': '', 'CatalogueUrl': url, 'CatalogueLabel': label if url else ''})
     return rows
 
 
@@ -842,7 +881,7 @@ def build_rides(L):
 
 # ---------- talks and classes (content/talks.json, or the client pack's own) ----------
 def talks_source():
-    pack = os.environ.get('WTA_CLIENT')
+    pack = pack_dir()
     if pack and os.path.exists(os.path.join(pack, 'talks.json')):
         return os.path.join(pack, 'talks.json')
     return os.path.join(CONTENT, 'talks.json')
