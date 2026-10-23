@@ -172,8 +172,31 @@ def fix2_views():
     out += [w for w in wax_views() if '_near_' in w]
     return out
 
+def fix3_views():
+    """Ev's third Oct 23 list: the walk in to Margaret (what stands in the way), the library's section signs and its
+    reading tables from the seats, the auditorium and the story cabin, and the people's bodies (every stage near,
+    the staff, two statues)."""
+    m = (0.68, 1.0, -4.0)
+    out = [look('to_margaret_door', (0.0, EYE, 11.5), m), look('to_margaret_rotunda', (0.0, EYE, 6.0), m),
+           look('to_margaret_arch', (0.0, EYE, 1.5), m), look('rotunda_west', (0.0, EYE, 5.8), (-3.9, 1.6, 5.8)),
+           look('rotunda_east', (0.0, EYE, 5.8), (3.9, 1.6, 5.8)), look('lobby_west', (1.5, EYE, -3.0), (-6.0, 1.0, -3.0)),
+           look('lobby_east', (-1.5, EYE, -3.0), (6.0, 1.0, -3.0)), look('lobby_back', (0.0, EYE, -5.6), (0.0, 1.0, 2.0)),
+           look('lib_signs_n', (-27.0, EYE, -3.0), (-27.0, 2.08, -5.55)), look('lib_signs_s', (-27.0, EYE, -3.0), (-27.0, 2.08, -0.45)),
+           look('lib_aisle_w', (-15.0, EYE, -3.0), (-30.0, 1.8, -3.0))]
+    for (n, z) in (('n', -10.8), ('s', 4.6)):
+        out.append(look('lib_table_%s_a' % n, (-19.5, 2.2, z + 2.2), (-19.5, 0.8, z)))
+        out.append(look('lib_table_%s_b' % n, (-19.5, 2.2, z - 2.2), (-19.5, 0.8, z)))
+        out.append(look('lib_seat_%s_a' % n, (-19.5, 1.25, z + 0.85), (-19.5, 0.8, z)))
+        out.append(look('lib_seat_%s_b' % n, (-19.5, 1.25, z - 0.85), (-19.5, 0.8, z)))
+    out += [look('aud_foyer', (9.0, EYE, -6.0), (9.0, 1.5, -13.0)), look('aud_hall', (13.7, EYE - 0.6, -15.5), (13.7, 1.5, -28.0)),
+            look('cabin_out', (-4.0, 1.6, 64.0), (-4.0, 1.5, 72.0)), look('cabin_in', (-4.0, 1.6, 73.0), (-2.0, 1.2, 76.0))]
+    out += [w for w in wax_views() if w.split(' ')[0].endswith('_near_0')]
+    out += [look('body_margaret', (0.68, 1.2, -1.2), (0.68, 1.0, -4.0)), look('body_rosa', (-15.6, 1.2, -6.4), (-17.2, 1.0, -7.75)),
+            look('body_statue_w', (-1.6, 1.7, 5.8), (-3.9, 2.0, 5.8)), look('body_statue_e', (1.6, 1.7, 5.8), (3.9, 2.0, 5.8))]
+    return out
+
 OUT = os.path.dirname(os.path.abspath(__file__))
-files = {'survey_fixes2.txt': fix2_views(), 'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
+files = {'survey_fixes3.txt': fix3_views(), 'survey_fixes2.txt': fix2_views(), 'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
 for fn, ls in files.items():
     open(os.path.join(OUT, fn), "w").write('\n'.join(ls) + '\n')
     print(fn, len(ls))
