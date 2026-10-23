@@ -234,8 +234,12 @@ def build_widget_material(path=WIDGET_LIT):
                        {"parameter_name": "TintColorAndOpacity", "default_value": unreal.LinearColor(1.0, 1.0, 1.0, 1.0)})
     from_tex = _expression(mat, "MaterialExpressionScalarParameter", -1100, 450,
                            {"parameter_name": "OpacityFromTexture", "default_value": 1.0})
+    # The render target holds the widget's colours gamma encoded (the first engine shots read them as albedo and came
+    # out washed out: grey ink, pale brass), so they are decoded to linear here before the room lights them.
+    decoded = _expression(mat, "MaterialExpressionPower", -850, -100, {"const_exponent": 2.2})
+    _connect(tex, "RGB", decoded, "Base")
     colour = _expression(mat, "MaterialExpressionMultiply", -700, 0)
-    _connect(tex, "RGB", colour, "A")
+    _connect(decoded, "", colour, "A")
     _connect(tint, "", colour, "B")
     cut = _expression(mat, "MaterialExpressionLinearInterpolate", -700, 380, {"const_a": 1.0})
     _connect(tex, "A", cut, "B")

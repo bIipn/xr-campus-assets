@@ -121,9 +121,20 @@ bool UWTAInteractionComponent::GetLastHitLocation(FVector& OutLocation, FVector&
 
 void UWTAInteractionComponent::SetHovered(AActor* NewActor)
 {
-	// A destroyed actor under the crosshair reads as "nothing"; its stale label still has to go.
 	AActor* Current = Hovered.Get();
-	if (Current == NewActor && (NewActor != nullptr || HoverLabel.IsEmpty()))
+	if (Current == NewActor && NewActor != nullptr)
+	{
+		// The same actor: its label can change while it is looked at (a seat taken, a story playing, a count).
+		const FText Label = IWTAInteractable::Execute_GetInteractLabel(NewActor);
+		if (!Label.ToString().Equals(HoverLabel.ToString(), ESearchCase::CaseSensitive))
+		{
+			HoverLabel = Label;
+			OnHoverChanged.Broadcast(HoverLabel);
+		}
+		return;
+	}
+	// A destroyed actor under the crosshair reads as "nothing"; its stale label still has to go.
+	if (Current == NewActor && HoverLabel.IsEmpty())
 	{
 		return;
 	}

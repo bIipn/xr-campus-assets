@@ -143,7 +143,7 @@ UWTAStoriesSubsystem* UWTAStoriesSubsystem::Get(const UObject* WorldContextObjec
 
 FString UWTAStoriesSubsystem::StoriesDir()
 {
-	return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Stories"));
+	return FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Stories")));
 }
 
 FString UWTAStoriesSubsystem::NewDir()

@@ -18,7 +18,7 @@ namespace
 	constexpr int32 BoardColumns = 4;
 	constexpr int32 BoardRows = 2;
 	constexpr float BoardCardW = 452.f;
-	constexpr float BoardCardH = 360.f;
+	constexpr float BoardCardH = 380.f;
 
 	/** A few words of the story: up to MaxChars, cut at a word, with an ellipsis when cut. */
 	FString BoardExcerpt(const FString& Text, int32 MaxChars)
@@ -80,6 +80,7 @@ UWidget* UWTAStoryBoardWidget::MakeCard(const FWTAStory& Story, bool bPlaying, b
 	UBorder* Paper = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
 	Paper->SetBrush(Story.bThisVisit ? WTAStyle::EdgedBrush(WTAStyle::Card(), 10.f, WTAStyle::Brass(), 5.f) : WTAStyle::RoundedBrush(WTAStyle::Card(), 10.f));
 	Paper->SetPadding(FMargin(30.f, 26.f, 30.f, 24.f));
+	Paper->SetClipping(EWidgetClipping::ClipToBounds);         // a long story never spills onto the felt
 	Size->SetContent(Paper);
 	UVerticalBox* Box = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 	Paper->SetContent(Box);
@@ -87,22 +88,22 @@ UWidget* UWTAStoryBoardWidget::MakeCard(const FWTAStory& Story, bool bPlaying, b
 	const FText Byline = Story.bThisVisit
 		? FText::Format(WTAText(TEXT("New · {0}")), Story.Byline())
 		: Story.Byline();
-	BoardAddLine(Box, WTAWidgets::MakeText(Tree, WTAUpper(Byline), WTAStyle::Kicker(17), WTAStyle::BrassDark(), true), 12.f);
+	BoardAddLine(Box, WTAWidgets::MakeText(Tree, WTAUpper(Byline), WTAStyle::Kicker(15), WTAStyle::BrassDark(), true), 10.f);
 
-	UTextBlock* Title = WTAWidgets::MakeText(Tree, Story.DisplayTitle(), WTAStyle::Serif(40, true), WTAStyle::CardInk(), true);
+	UTextBlock* Title = WTAWidgets::MakeText(Tree, Story.DisplayTitle(), WTAStyle::Serif(34, true), WTAStyle::CardInk(), true);
 	Title->SetLineHeightPercentage(0.95f);
-	BoardAddLine(Box, Title, 12.f);
+	BoardAddLine(Box, Title, 10.f);
 
 	FText Words;
 	if (!Story.Transcript.IsEmpty() && !Story.Title.IsEmpty())
 	{
-		Words = FText::Format(WTAText(TEXT("“{0}”")), FText::FromString(BoardExcerpt(Story.Transcript, 110)));
+		Words = FText::Format(WTAText(TEXT("“{0}”")), FText::FromString(BoardExcerpt(Story.Transcript, 90)));
 	}
 	else if (!Story.Transcript.IsEmpty())
 	{
 		// The title is already its first words: the next ones.
 		const FString Rest = Story.Transcript.Mid(FMath::Min(Story.Transcript.Len(), Story.DisplayTitle().ToString().Len()));
-		Words = Rest.TrimStartAndEnd().Len() > 12 ? FText::Format(WTAText(TEXT("“…{0}”")), FText::FromString(BoardExcerpt(Rest, 110))) : FText::GetEmpty();
+		Words = Rest.TrimStartAndEnd().Len() > 12 ? FText::Format(WTAText(TEXT("“…{0}”")), FText::FromString(BoardExcerpt(Rest, 90))) : FText::GetEmpty();
 	}
 	else if (bWriting)
 	{
@@ -110,7 +111,7 @@ UWidget* UWTAStoryBoardWidget::MakeCard(const FWTAStory& Story, bool bPlaying, b
 	}
 	if (!Words.IsEmpty())
 	{
-		UTextBlock* Quote = WTAWidgets::MakeText(Tree, Words, WTAStyle::SerifItalic(27), WTAStyle::CardInkDim(), true);
+		UTextBlock* Quote = WTAWidgets::MakeText(Tree, Words, WTAStyle::SerifItalic(24), WTAStyle::CardInkDim(), true);
 		Quote->SetLineHeightPercentage(1.05f);
 		BoardAddLine(Box, Quote, 0.f);
 	}

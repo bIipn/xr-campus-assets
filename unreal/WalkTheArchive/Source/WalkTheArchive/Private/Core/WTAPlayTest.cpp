@@ -4238,9 +4238,18 @@ void UWTAPlayTest::AddStoriesPhase()
 		const bool bOpen = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Stories;
 		Report(TEXT("stories"), bOpen ? EResult::Pass : EResult::Fail, TEXT("the stories card"), bOpen ? Controller->Panel->GetTitle().ToString() : TEXT("did not open"));
 		Shot(TEXT("stories_list"));
-		if (Controller != nullptr && !Id->IsEmpty())
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories read"), [this, Id]() -> float
+	{
+		// The story's own card, a step after the list's shot (opening it in the same frame redraws the card the
+		// screenshot is taken of).
+		if (AWTAPlayerController* Controller = PC())
 		{
-			Controller->OpenStories(FName(**Id));
+			if (!Id->IsEmpty())
+			{
+				Controller->OpenStories(FName(**Id));
+			}
 		}
 		return 0.8f;
 	} });
