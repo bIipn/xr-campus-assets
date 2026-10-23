@@ -196,7 +196,7 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 		FigureNeck->SetRelativeLocation(FVector(0.f, 0.f, JointZ));
 		FigureHead->SetRelativeLocation(FVector::ZeroVector);
 		FigureVisor->SetRelativeLocation(FVector::ZeroVector);
-		NameTag->SetRelativeLocation(FVector(0.f, 0.f, JointZ + 48.f));
+		NameTag->SetRelativeLocation(FVector(0.f, 0.f, JointZ + 33.f));    // a hand over the crown (26 cm over the joint)
 		return;
 	}
 	// Standing: a turned base, a tapered body to 1.23 m, shoulders, the head at 1.46 m (the eye is at 1.62).
@@ -362,7 +362,7 @@ void AWTACharacter::RefreshFigureLook()
 		// visor dark glass, the collar a deeper shade of the robe (M_WTA_Figure's Roughness and Sheen; the basic
 		// shape material only takes the colour).
 		FigureMaterial->SetVectorParameterValue(TEXT("Color"), Color);
-		FigureMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.62f);
+		FigureMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.72f);
 		FigureMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.35f);
 		HeadMaterial->SetVectorParameterValue(TEXT("Color"), bDesignedFigure ? FMath::Lerp(WTAStyle::FromHex(0xd6c4a8), Color, 0.08f)
 			: FMath::Lerp(Color, WTAStyle::Bone(), 0.35f));

@@ -19,9 +19,10 @@ One librarian leads a group through the campus, each visitor on their own comput
 6. To finish, the guide chooses *End the visit* on the card; everyone carries on alone where they are. A visitor can
    leave on their own the same way (*Leave the visit*).
 
-Everyone sees everyone as a figure in their own colour with their name over it; the guide's is brass with a GUIDE
-tag. Cards, books, rides, the wax scenes and the staff stay each person's own: opening a book on one computer does not
-open it on the others.
+Everyone sees everyone as a figure in their own colour with their name over it: a calm, robed person with a headset's
+visor across the eyes (which way the visor faces is where they look), seated when they sit; the guide's is brass with a
+GUIDE tag. Cards, books, rides, the wax scenes and the staff stay each person's own: opening a book on one computer does
+not open it on the others.
 
 ## How it works
 
@@ -41,6 +42,9 @@ open it on the others.
 both run their half of the play test (`WTAPlayTest group_lead` / `group_join`). Screenshots go to
 `Saved/QA/visit` (`play_NN_group_guide_*`, `play_NN_group_guest_*`). It keeps the game port on this computer
 (`-multihome=127.0.0.1`), so Windows does not ask about the network.
+
+To look at the figures without a second computer, `WTAFigures 6` in the console stands a guide and five visitors in
+front of you (`WTAFigures 0` takes them away); `bl/figure.py` builds the figure (`assets/people/preview.jpg`).
 
 ## Not yet
 

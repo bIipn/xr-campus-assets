@@ -36,6 +36,7 @@
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
@@ -1469,6 +1470,7 @@ void AWTAPlayerController::WTAFigures(int32 Count, float X, float Y, float Yaw, 
 		State->SetVisitName(Names[Slot % UE_ARRAY_COUNT(Names)]);
 		Person->bStandIn = true;
 		Person->SetPlayerState(State);
+		Person->GetCharacterMovement()->bRunPhysicsWithNoController = true;    // they settle onto the floor, as a person does
 		Person->TeleportToView(Spot);
 		Person->bSeatedPose = Slot >= Count - Seated;
 		++Made;

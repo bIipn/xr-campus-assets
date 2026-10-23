@@ -4806,8 +4806,9 @@ void UWTAPlayTest::AddGroupGuidePhase()
 		const AWTACharacter* Me = Player();
 		const float Distance = Visitor && Me ? static_cast<float>(FVector::Dist2D(Visitor->GetActorLocation(), Me->GetActorLocation())) : -1.f;
 		const AWTAPlayerState* Person = Visitor ? Visitor->GetPlayerState<AWTAPlayerState>() : nullptr;
-		Report(*P, Visitor && Visitor->IsFigureShown() ? EResult::Pass : EResult::Fail, TEXT("the visitor shows as a figure with a name"),
-			FString::Printf(TEXT("%s, slot %d"), Person ? *Person->GetVisitName() : TEXT("no player state"), Person ? Person->Slot : -1));
+		Report(*P, Visitor && Visitor->IsFigureShown() && Visitor->IsNameTagShown() ? EResult::Pass : EResult::Fail, TEXT("the visitor shows as a figure with a name"),
+			FString::Printf(TEXT("%s, slot %d, %s figure, name tag %s"), Person ? *Person->GetVisitName() : TEXT("no player state"), Person ? Person->Slot : -1,
+				Visitor && Visitor->IsDesignedFigure() ? TEXT("designed") : TEXT("basic"), Visitor && Visitor->IsNameTagShown() ? TEXT("shown") : TEXT("hidden")));
 		Report(*P, Distance > 0.f && Distance < 600.f ? EResult::Pass : EResult::Fail, TEXT("the visitor arrived beside the guide"), FString::Printf(TEXT("%.0f cm away"), Distance));
 		Shot(TEXT("group_guide_sees_visitor"));
 		return 1.f;
@@ -5014,7 +5015,9 @@ void UWTAPlayTest::AddGroupGuestPhase()
 	Steps.Add({ TEXT("guest sees the guide"), [this, P]() -> float
 	{
 		const AWTACharacter* Guide = GuidePerson();
-		Report(*P, Guide && Guide->IsFigureShown() ? EResult::Pass : EResult::Fail, TEXT("the guide shows as a figure with a name"), Guide ? TEXT("") : TEXT("no guide pawn on this machine"));
+		Report(*P, Guide && Guide->IsFigureShown() && Guide->IsNameTagShown() ? EResult::Pass : EResult::Fail, TEXT("the guide shows as a figure with a name"),
+			Guide ? FString::Printf(TEXT("%s figure, name tag %s"), Guide->IsDesignedFigure() ? TEXT("designed") : TEXT("basic"), Guide->IsNameTagShown() ? TEXT("shown") : TEXT("hidden"))
+				: FString(TEXT("no guide pawn on this machine")));
 		Shot(TEXT("group_guest_sees_guide"));
 		return 0.5f;
 	} });
