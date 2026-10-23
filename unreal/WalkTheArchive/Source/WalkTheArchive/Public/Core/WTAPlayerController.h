@@ -303,6 +303,12 @@ public:
 	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
 	void WTAShotTour(float SecondsPerShot = 5.f);
 
+	/** QA: the same tour over the views listed in Saved/QA/shot_views.txt, one per line:
+	    `<name> | <x> <y> <z> | <yaw> [<pitch>]` (Unreal cm and degrees; `#` starts a comment), saved as
+	    Saved/Screenshots/<platform>/QA/<NN>_<name>.png with the HUD off. Console: WTAShotList [Seconds]. */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAShotList(float SecondsPerShot = 5.f);
+
 	/** QA: asks every staff member their own chips, then each line of Saved/QA/chat_questions.txt (or a short built-in
 	 *  list); logs one WTA_CHAT line per answer (text, action, arg, offer label) and "WTA_CHAT done N questions". */
 	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
@@ -406,7 +412,9 @@ protected:
 	/** Every wax scene whose trigger the player is inside (scenes face each other across the aisle and overlap). */
 	TArray<FName> InsideStageIds;
 
-	/** WTAShotTour: teleport to the current view, then capture it after ShotTourSeconds and move on. */
+	/** WTAShotTour: teleport to the current view, then capture it after ShotTourSeconds and move on.
+	    bShotTourNoHud: the HUD is hidden for the pictures (WTAShotList). */
+	bool bShotTourNoHud = false;
 	void ShotTourTeleport();
 	void ShotTourCapture();
 	TArray<TPair<FString, FWTAView>> ShotTourViews;

@@ -1162,6 +1162,55 @@ void AWTAPlayerController::WTAShotTour(float SecondsPerShot)
 	ShotTourTeleport();
 }
 
+void AWTAPlayerController::WTAShotList(float SecondsPerShot)
+{
+	ShotTourViews.Reset();
+	ShotTourSeconds = FMath::Max(SecondsPerShot, 1.f);
+	TArray<FString> Lines;
+	const FString File = FPaths::ProjectSavedDir() / TEXT("QA") / TEXT("shot_views.txt");
+	if (!FFileHelper::LoadFileToStringArray(Lines, *File))
+	{
+		UE_LOG(LogWTA, Warning, TEXT("WTA_SHOTTOUR no %s"), *File);
+		return;
+	}
+	for (const FString& Raw : Lines)
+	{
+		const FString Line = Raw.TrimStartAndEnd();
+		if (Line.IsEmpty() || Line.StartsWith(TEXT("#")))
+		{
+			continue;
+		}
+		TArray<FString> Parts;
+		Line.ParseIntoArray(Parts, TEXT("|"), true);
+		if (Parts.Num() < 3)
+		{
+			UE_LOG(LogWTA, Warning, TEXT("WTA_SHOTTOUR bad line: %s"), *Line);
+			continue;
+		}
+		TArray<FString> Xyz, Angles;
+		Parts[1].TrimStartAndEnd().ParseIntoArrayWS(Xyz);
+		Parts[2].TrimStartAndEnd().ParseIntoArrayWS(Angles);
+		if (Xyz.Num() < 3 || Angles.Num() < 1)
+		{
+			UE_LOG(LogWTA, Warning, TEXT("WTA_SHOTTOUR bad line: %s"), *Line);
+			continue;
+		}
+		FWTAView View;
+		View.Location = FVector(FCString::Atof(*Xyz[0]), FCString::Atof(*Xyz[1]), FCString::Atof(*Xyz[2]));
+		View.Yaw = FCString::Atof(*Angles[0]);
+		View.Pitch = Angles.Num() > 1 ? FCString::Atof(*Angles[1]) : 0.f;
+		View.bValid = true;
+		ShotTourViews.Emplace(Parts[0].TrimStartAndEnd(), View);
+	}
+	while (CloseTopPanel())
+	{
+	}
+	bShotTourNoHud = true;
+	ShotTourIndex = 0;
+	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR start %d views, %.1f s each"), ShotTourViews.Num(), ShotTourSeconds);
+	ShotTourTeleport();
+}
+
 void AWTAPlayerController::WTAChatTest()
 {
 	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
@@ -1334,6 +1383,7 @@ void AWTAPlayerController::ShotTourTeleport()
 	{
 		UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR done %d views"), ShotTourViews.Num());
 		ShotTourIndex = INDEX_NONE;
+		bShotTourNoHud = false;
 		return;
 	}
 	GoToView(ShotTourViews[ShotTourIndex].Value, false);
@@ -1349,7 +1399,7 @@ void AWTAPlayerController::ShotTourCapture()
 	// An absolute path: a relative one with a folder in it would land next to the engine binaries.
 	const FString File = FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() /
 		FString::Printf(TEXT("QA/%02d_%s.png"), ShotTourIndex, *ShotTourViews[ShotTourIndex].Key));
-	FScreenshotRequest::RequestScreenshot(File, true, false);
+	FScreenshotRequest::RequestScreenshot(File, !bShotTourNoHud, false);
 	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR %s"), *File);
 	++ShotTourIndex;
 	// Leave the screenshot a few frames before moving on.
