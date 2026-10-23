@@ -604,7 +604,12 @@ def book_pages(book_id):
     return title, heads
 
 
-TW, TH = 1280, 690                # the printed pages, the near page's and the backdrop's proportions (0.52 x 0.28)
+TW, TH = 1280, 690                # the printed pages are drawn at the pages' proportions (0.52 x 0.28) ...
+SAVE_W, SAVE_H = 1024, 512        # ... and saved at a power of two, so Unreal gives them mips (the uvs span the page)
+
+
+def save_print(im, path):
+    im.resize((SAVE_W, SAVE_H), resample=3).save(path)          # 3 = LANCZOS
 
 
 def hexrgb(h):
@@ -721,7 +726,7 @@ def paint_backdrop(key, path):
                       fill=[(229, 57, 53, 255), (253, 216, 53, 255), (30, 136, 229, 255)][k % 3])
         d.polygon([(cx - 60, TH), (cx, cy), (cx + 60, TH)], outline=(120, 144, 156, 255), width=10)
     im = paper_grain(im, len(key))
-    im.save(path)
+    save_print(im, path)
 
 
 def paint_floor(key, n, total, heading, path):
@@ -751,7 +756,7 @@ def paint_floor(key, n, total, heading, path):
     w = d.textlength(heading, font=f)
     d.text(((TW - w) / 2, TH - band + 44 + (104 - f.size) * 0.45), heading, font=f, fill=(40, 34, 26, 255))
     im = paper_grain(im, n)
-    im.save(path)
+    save_print(im, path)
 
 
 def paint_cover(book_id, title, colour, path):
@@ -772,7 +777,7 @@ def paint_cover(book_id, title, colour, path):
     x = (TW - tw) / 2
     for ch in k:
         d.text((x, TH * 0.62), ch, font=fk, fill=(214, 180, 106, 255)); x += d.textlength(ch, font=fk) + 12
-    im.save(path)
+    save_print(im, path)
 
 
 # ---------------------------------------------------------------- building a book

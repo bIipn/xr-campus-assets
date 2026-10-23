@@ -182,7 +182,7 @@ def process(name, rel):
         m.name = 'M_%s_%s_%03d' % (name, base[:24], i)
         if m.node_tree:
             for k, n in enumerate([n for n in m.node_tree.nodes if getattr(n, 'image', None)]):
-                n.image.name = 'T_%s_%s_%d' % (name, base[:24], k) if n.image.users <= 1 else n.image.name
+                n.image.name = 'T_%s_%s_%03d_%d' % (name, base[:24], i, k) if n.image.users <= 1 else n.image.name
     for k, img in enumerate(bpy.data.images):
         if not img.name.startswith('T_'):
             img.name = 'T_%s_shared_%03d' % (name, k)
