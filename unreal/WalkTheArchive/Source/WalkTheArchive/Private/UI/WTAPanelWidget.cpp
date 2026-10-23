@@ -618,7 +618,7 @@ void UWTAPanelWidget::ShowHunt()
 {
 	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
 	const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this);
-	BeginCard(EWTAPanelMode::Hunt, NAME_None, PanelText(TEXT("Token hunt")), PanelText(TEXT("My Library Card")));
+	BeginCard(EWTAPanelMode::Hunt, NAME_None, PanelText(TEXT("Token hunt")), PanelText(TEXT("My library card")));
 	SetHeaderExtras(FText::GetEmpty(), PanelText(TEXT("Glowing XR tokens are hidden around the campus. Each one you find stamps this card.")));
 
 	int32 Found = 0;

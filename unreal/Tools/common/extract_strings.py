@@ -81,6 +81,13 @@ def main():
         json.dump({k: k for k in sorted(keys, key=lambda s: s.lower())}, fh, ensure_ascii=False, indent=1)
         fh.write('\n')
     print('%d keys -> %s' % (len(keys), os.path.relpath(OUT, ROOT)))
+    # DT_Strings row names are FNames, which ignore case: two keys that differ only in case would lose one row.
+    lower = {}
+    for k in keys:
+        lower.setdefault(k.lower(), []).append(k)
+    for same in lower.values():
+        if len(same) > 1:
+            print('CASE CLASH (use one spelling in the C++): %r' % same)
     if args.check:
         with open(args.check, 'r', encoding='utf-8') as fh:
             lang = json.load(fh)
