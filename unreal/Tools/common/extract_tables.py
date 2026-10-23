@@ -7,7 +7,9 @@ pack in that language ships every card, book, station, talk, place, badge and st
 
 Shape: {"<DT table>": {"<row name>": {"<Text field>": "...", "<array field>": [{...}, ...]}}}. Arrays keep every
 item (null where an item has no text), so positions line up. Empty strings are left out. Staff rules carry their
-Pattern (a regex) too, since a language needs its own question patterns; it is the one non-Text field here.
+Pattern (a regex) too, since a language needs its own question patterns, and places carry their Aliases (what a
+visitor may type for them); those two are the non-Text fields here. A language's Aliases list may be longer than
+the English one: the extra names are added (keep the English ones, append the language's).
 --check lists the rows and fields a language is missing and the ones it has that the tables no longer do.
 """
 import argparse
@@ -21,7 +23,7 @@ STRUCTS = os.path.join(ROOT, 'unreal', 'contract', 'structs.json')
 DATA = os.path.join(ROOT, 'unreal', 'WalkTheArchive', 'Data')
 OUT = os.path.join(ROOT, 'unreal', 'Pipeline', 'content', 'lang', 'tables.en.json')
 ARRAY = re.compile(r'^Array<(.+)>$')
-EXTRA_FIELDS = {'FWTAStaffRuleRow': ['Pattern']}    # non-Text fields a language still needs
+EXTRA_FIELDS = {'FWTAStaffRuleRow': ['Pattern'], 'FWTAPlaceRow': ['Aliases']}    # non-Text fields a language still needs
 
 
 def text_shape(value, ftype, structs, sname):

@@ -1003,7 +1003,8 @@ def build_strings(lang):
 
 def merge_lang(target, override, where):
     """The language's words over the English, by shape: dict keys over dict keys, list items by position (an
-    override list may be shorter), scalars replaced. Only text should differ, and only fields the contract has."""
+    override list may be shorter; a list of plain words such as a place's Aliases may be longer, and the extra
+    words are added), scalars replaced. Only text should differ, and only fields the contract has."""
     if isinstance(override, dict):
         assert isinstance(target, dict), '%s: a dict over a %s' % (where, type(target).__name__)
         for k, v in override.items():
@@ -1012,9 +1013,12 @@ def merge_lang(target, override, where):
         return target
     if isinstance(override, list):
         assert isinstance(target, list), '%s: a list over a %s' % (where, type(target).__name__)
-        assert len(override) <= len(target), '%s: %d items over %d' % (where, len(override), len(target))
+        plain = all(isinstance(v, str) for v in target) and all(isinstance(v, str) for v in override)
+        assert plain or len(override) <= len(target), '%s: %d items over %d' % (where, len(override), len(target))
         for i, v in enumerate(override):
-            if v is not None:
+            if i >= len(target):
+                target.append(v)         # a longer list of plain words (a place's aliases): the extra ones are added
+            elif v is not None:
                 target[i] = merge_lang(target[i], v, '%s[%d]' % (where, i))
         return target
     assert isinstance(override, str) and isinstance(target, str), '%s: only text is translated' % where

@@ -1,4 +1,5 @@
-"""Every word the engine writes on its own (WTAText("..."), PanelText("...") in the C++), listed for the
+"""Every word the engine writes on its own (WTAText("..."), PanelText("...") and the staff's ShapeMatch("...")
+question regexes in the C++), listed for the
 translators as unreal/Pipeline/content/lang/strings.en.json: {"English key": "English key"}. A language's
 strings.json (lang/<lang>/strings.json) has the same keys with the translations as values; build_data.py turns it
 into DT_Strings (WTA_LANG=<lang>), and UWTAContentSubsystem::Tr shows the translation wherever the C++ wrote
@@ -19,7 +20,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 SOURCE = os.path.join(ROOT, 'unreal', 'WalkTheArchive', 'Source', 'WalkTheArchive')
 OUT = os.path.join(ROOT, 'unreal', 'Pipeline', 'content', 'lang', 'strings.en.json')
 
-CALL = re.compile(r'\b(?:WTAText|PanelText)\s*\(')
+CALL = re.compile(r'\b(?:WTAText|PanelText|ShapeMatch)\s*\(')
 LITERAL = re.compile(r'TEXT\("((?:[^"\\]|\\.)*)"\)')
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 

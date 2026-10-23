@@ -1627,231 +1627,560 @@
  "DT_Places": {
   "lobby": {
    "Label": "Lobby",
+   "Aliases": [
+    "lobby",
+    "entrance",
+    "front door",
+    "start",
+    "directory",
+    "beginning"
+   ],
    "Directions": "the lobby.",
    "Say": "the lobby"
   },
   "g1": {
    "Label": "Gallery 1: Headsets in Libraries",
+   "Aliases": [
+    "gallery 1",
+    "gallery one",
+    "first gallery",
+    "headsets in libraries",
+    "museum",
+    "galleries",
+    "exhibits"
+   ],
    "Directions": "Gallery 1: Headsets in Libraries, straight ahead from the lobby.",
    "Say": "Gallery 1: Headsets in Libraries"
   },
   "g2": {
    "Label": "Gallery 2: Learning That Works",
+   "Aliases": [
+    "gallery 2",
+    "gallery two",
+    "second gallery",
+    "learning that works"
+   ],
    "Directions": "Gallery 2: Learning That Works, straight ahead from the lobby.",
    "Say": "Gallery 2: Learning That Works"
   },
   "g3": {
    "Label": "Gallery 3: Stories Worth Saving",
+   "Aliases": [
+    "gallery 3",
+    "gallery three",
+    "third gallery",
+    "stories worth saving"
+   ],
    "Directions": "Gallery 3: Stories Worth Saving, straight ahead from the lobby.",
    "Say": "Gallery 3: Stories Worth Saving"
   },
   "library": {
    "Label": "The Reading Room",
+   "Aliases": [
+    "library",
+    "reading room",
+    "bookshelves",
+    "shelves",
+    "stacks",
+    "books"
+   ],
    "Directions": "the Reading Room, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Reading Room"
   },
   "desk": {
    "Label": "Reference desk",
+   "Aliases": [
+    "reference desk",
+    "librarian",
+    "rosa",
+    "help desk",
+    "front desk"
+   ],
    "Directions": "the reference desk, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the reference desk"
   },
   "featured": {
    "Label": "Featured books table",
+   "Aliases": [
+    "featured books",
+    "featured table",
+    "display table",
+    "featured"
+   ],
    "Directions": "the featured books table, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the featured books table"
   },
   "freedomBoard": {
    "Label": "Freedom to Read display",
+   "Aliases": [
+    "freedom to read",
+    "book bans",
+    "banned books"
+   ],
    "Directions": "the Freedom to Read display, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Freedom to Read display"
   },
   "window": {
    "Label": "Library window",
+   "Aliases": [
+    "window",
+    "big window"
+   ],
    "Directions": "the library window, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the library window"
   },
   "school": {
    "Label": "Workshop School hall",
+   "Aliases": [
+    "school",
+    "workshop school",
+    "hallway",
+    "classes",
+    "classrooms",
+    "lockers"
+   ],
    "Directions": "the Workshop School hall, through the doorway on the right side of the lobby and down the hall.",
    "Say": "the Workshop School hall"
   },
   "studio": {
    "Label": "Room 101: 3D Art Studio",
+   "Aliases": [
+    "studio",
+    "art studio",
+    "paint studio",
+    "room 101",
+    "workshop",
+    "painting",
+    "art room",
+    "3d art",
+    "blank canvas",
+    "mr hale",
+    "hale",
+    "teacher",
+    "easel"
+   ],
    "Directions": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
    "Say": "Room 101: 3D Art Studio"
   },
   "lab": {
    "Label": "Room 102: Science Lab",
+   "Aliases": [
+    "science lab",
+    "the lab",
+    "lab",
+    "room 102",
+    "laboratory",
+    "chemistry lab",
+    "physics lab",
+    "science room"
+   ],
    "Directions": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
    "Say": "Room 102: Science Lab"
   },
   "sieve": {
    "Label": "Sieve shaker",
+   "Aliases": [
+    "sieve",
+    "sieves",
+    "sieve shaker",
+    "sieve test",
+    "sieve analysis",
+    "psd",
+    "particle size",
+    "grain size",
+    "sand test"
+   ],
    "Directions": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
    "Say": "the sieve shaker"
   },
   "titration": {
    "Label": "Titration station",
+   "Aliases": [
+    "titration",
+    "burette",
+    "acid base",
+    "chemistry"
+   ],
    "Directions": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
    "Say": "the titration station"
   },
   "pendulum": {
    "Label": "Pendulum",
+   "Aliases": [
+    "pendulum",
+    "gravity experiment",
+    "physics experiment"
+   ],
    "Directions": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
    "Say": "the pendulum"
   },
   "blueprints": {
    "Label": "Room 103: Blueprint Lab",
+   "Aliases": [
+    "blueprint lab",
+    "blueprints",
+    "blueprint",
+    "room 103",
+    "engineering room",
+    "engineering"
+   ],
    "Directions": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "Room 103: Blueprint Lab"
   },
   "bp-car": {
    "Label": "Automobile blueprint",
+   "Aliases": [
+    "car blueprint",
+    "automobile blueprint",
+    "automobile"
+   ],
    "Directions": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the automobile blueprint"
   },
   "bp-excavator": {
    "Label": "Excavator blueprint",
+   "Aliases": [
+    "excavator blueprint",
+    "excavator",
+    "heavy equipment",
+    "digger"
+   ],
    "Directions": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the excavator blueprint"
   },
   "bp-house": {
    "Label": "House blueprint",
+   "Aliases": [
+    "house blueprint",
+    "building blueprint",
+    "house framing"
+   ],
    "Directions": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the house blueprint"
   },
   "bp-bridge": {
    "Label": "Truss bridge blueprint",
+   "Aliases": [
+    "bridge blueprint",
+    "truss bridge",
+    "bridge"
+   ],
    "Directions": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the bridge blueprint"
   },
   "bp-computer": {
    "Label": "Computer blueprint",
+   "Aliases": [
+    "computer blueprint",
+    "pc blueprint",
+    "computer parts",
+    "motherboard"
+   ],
    "Directions": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the computer blueprint"
   },
   "modelbench": {
    "Label": "Model bench",
+   "Aliases": [
+    "model bench",
+    "model car",
+    "shake table",
+    "bench"
+   ],
    "Directions": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
    "Say": "the model bench"
   },
   "worldroom": {
    "Label": "Room 104: XR Classroom",
+   "Aliases": [
+    "xr classroom",
+    "classroom",
+    "class",
+    "room 104",
+    "intro to vr",
+    "quiz",
+    "certificate",
+    "course",
+    "world builder studio",
+    "world builder",
+    "layer table"
+   ],
    "Directions": "Room 104, the XR Classroom: through the doorway on the right side of the lobby and down the school hall. It is the second door on the right.",
    "Say": "Room 104: XR Classroom"
   },
   "diorama": {
    "Label": "Layer table",
+   "Aliases": [
+    "layer table",
+    "diorama",
+    "mini world"
+   ],
    "Directions": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right.",
    "Say": "the layer table"
   },
   "sculpture": {
    "Label": "Sample sculpture",
+   "Aliases": [
+    "sculpture",
+    "sample sculpture",
+    "butterfly"
+   ],
    "Directions": "the sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
    "Say": "the sample sculpture"
   },
   "margaret": {
    "Label": "Margaret",
+   "Aliases": [
+    "margaret",
+    "museum guide",
+    "greeter"
+   ],
    "Directions": "Margaret.",
    "Say": "Margaret"
   },
   "wax": {
    "Label": "The Wax Hall",
+   "Aliases": [
+    "wax hall",
+    "wax museum",
+    "wax figures",
+    "wax figure",
+    "living history",
+    "reenactments",
+    "reenactment",
+    "history hall",
+    "the wax"
+   ],
    "Directions": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3.",
    "Say": "the Wax Hall"
   },
   "yard": {
    "Label": "The Recess Yard",
+   "Aliases": [
+    "recess yard",
+    "recess",
+    "playground",
+    "the yard",
+    "yard",
+    "outside",
+    "rides",
+    "play outside"
+   ],
    "Directions": "the Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the Recess Yard"
   },
   "coaster": {
    "Label": "Comet Coaster",
+   "Aliases": [
+    "comet coaster",
+    "roller coaster",
+    "rollercoaster",
+    "coaster"
+   ],
    "Directions": "the Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the Comet Coaster"
   },
   "drop": {
    "Label": "Sky Drop",
+   "Aliases": [
+    "sky drop",
+    "skydrop",
+    "drop tower",
+    "the tower"
+   ],
    "Directions": "the Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the Sky Drop"
   },
   "dive": {
    "Label": "Ocean Dive",
+   "Aliases": [
+    "ocean dive",
+    "the dive",
+    "dive dome",
+    "underwater",
+    "scuba",
+    "dive"
+   ],
    "Directions": "the Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the Ocean Dive"
   },
   "rae": {
    "Label": "Coach Rae",
+   "Aliases": [
+    "coach rae",
+    "rae",
+    "coach",
+    "recess coach"
+   ],
    "Directions": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "Coach Rae"
   },
   "field": {
    "Label": "Soccer goal",
+   "Aliases": [
+    "soccer goal",
+    "soccer field",
+    "ball field",
+    "the goal",
+    "goal",
+    "soccer",
+    "penalty",
+    "goalkeeper",
+    "keeper"
+   ],
    "Directions": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the soccer goal"
   },
   "blocks": {
    "Label": "Block tower",
+   "Aliases": [
+    "block tower",
+    "foam blocks",
+    "tower of blocks",
+    "blocks"
+   ],
    "Directions": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
    "Say": "the block tower"
   },
   "sec-basics": {
    "Label": "XR Basics section",
+   "Aliases": [
+    "xr basics section",
+    "xr basics shelf",
+    "xr basics books"
+   ],
    "Directions": "the XR Basics section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the XR Basics section"
   },
   "sec-programs": {
    "Label": "Library Programs section",
+   "Aliases": [
+    "library programs section",
+    "library programs shelf",
+    "library programs books"
+   ],
    "Directions": "the Library Programs section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Library Programs section"
   },
   "sec-careers": {
    "Label": "Careers section",
+   "Aliases": [
+    "careers section",
+    "careers shelf",
+    "careers books"
+   ],
    "Directions": "the Careers section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Careers section"
   },
   "sec-story": {
    "Label": "Storytelling section",
+   "Aliases": [
+    "storytelling section",
+    "storytelling shelf",
+    "storytelling books"
+   ],
    "Directions": "the Storytelling section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Storytelling section"
   },
   "sec-equity": {
    "Label": "Lost Stories section",
+   "Aliases": [
+    "lost stories section",
+    "lost stories shelf",
+    "lost stories books"
+   ],
    "Directions": "the Lost Stories section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Lost Stories section"
   },
   "sec-environment": {
    "Label": "Environment section",
+   "Aliases": [
+    "environment section",
+    "environment shelf",
+    "environment books"
+   ],
    "Directions": "the Environment section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Environment section"
   },
   "sec-worlds": {
    "Label": "Shared Worlds section",
+   "Aliases": [
+    "shared worlds section",
+    "shared worlds shelf",
+    "shared worlds books"
+   ],
    "Directions": "the Shared Worlds section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Shared Worlds section"
   },
   "sec-tech": {
    "Label": "Technology section",
+   "Aliases": [
+    "technology section",
+    "technology shelf",
+    "technology books"
+   ],
    "Directions": "the Technology section, through the doorway on the left side of the lobby and down the hall.",
    "Say": "the Technology section"
   },
   "rotunda": {
    "Label": "Rotunda",
+   "Aliases": [
+    "rotunda",
+    "dome",
+    "front hall",
+    "vestibule"
+   ],
    "Directions": "the domed hall just behind the front doors, before the lobby.",
    "Say": "the rotunda"
   },
   "forecourt": {
    "Label": "The Forecourt Theatre",
+   "Aliases": [
+    "forecourt",
+    "outside",
+    "grounds",
+    "front steps",
+    "portico",
+    "colonnade",
+    "fountain",
+    "meadow",
+    "theatre",
+    "theater",
+    "outdoor theatre",
+    "amphitheatre",
+    "amphitheater",
+    "stage",
+    "benches"
+   ],
    "Directions": "out through the rotunda and the front doors, down the steps: the stage is at their foot, the seats rise in front of it.",
    "Say": "the forecourt theatre"
   },
   "auditorium": {
    "Label": "The Auditorium",
+   "Aliases": [
+    "auditorium",
+    "talks",
+    "talk",
+    "lecture hall",
+    "lecture",
+    "presentation",
+    "speaker",
+    "slides"
+   ],
    "Directions": "through the lobby's right-hand door into Hall R, out through the door at its far end, across the foyer and through the portal.",
    "Say": "the auditorium"
   },
   "training": {
    "Label": "The Training Wing",
+   "Aliases": [
+    "training",
+    "training wing",
+    "course",
+    "dialysis",
+    "clinic",
+    "workforce",
+    "stations"
+   ],
    "Directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school.",
    "Say": "the training wing"
   }

@@ -13,7 +13,14 @@ A client pack names its language in `campus.json` (`"language": "es"`); `build_c
   `unreal/Tools/common/extract_tables.py` writes every Text field of every row as `tables.en.json` (the shape to
   fill), and `--check lang/es/tables.json` lists what is missing or still English. Arrays keep their positions
   (`null` for an item with nothing to translate). Staff rules carry their `Pattern` (a regex) too: a language
-  needs its own question patterns, written as `(english|spanish)` alternatives so both are understood.
+  needs its own question patterns, written as `(english|spanish)` alternatives so both are understood. Places
+  carry their `Aliases` (what a visitor may type for the place): keep the English list and append the language's
+  names; a longer list adds them. The staff fold accents when they read a question ("dónde" = "donde"), so one
+  spelling is enough there; the regexes see the question as typed, so write them accent-tolerant (`d[oó]nde`).
+- The seven question-shape regexes the staff use on their own (take me / where is / a greeting / show me / when /
+  how many / who) and the list of stop words they ignore are keys in `strings.json` like any other (they begin
+  with `\b` or `^`, and the stop list with `a an the and`): a language returns each with its own alternatives
+  appended after the English, so the staff read the shape of a question in both.
 - Voices: `unreal/Tools/voice/make_talk_voices.py --lang es` reads the built tables (DT_Talks, DT_Stations) in
   Kokoro's Spanish voices (ef_dora, em_alex) into `out/voice/es/`; the clip names stay the same, so the
   language's clips are imported in place of the English ones for that build.

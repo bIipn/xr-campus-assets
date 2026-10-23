@@ -22,22 +22,48 @@ namespace
 	bool IsAsciiDigit(TCHAR C) { return C >= TEXT('0') && C <= TEXT('9'); }
 	bool IsApostrophe(TCHAR C) { return C == TEXT('\'') || C == 0x2019; }
 
-	/** The web's STOP list: words that never count as search terms. */
+	/** A Latin-1 letter lower-cased with its accent dropped ('É' -> 'e', 'ñ' -> 'n', 'ü' -> 'u'), so a visitor's
+	    "dónde" and "donde" are the same word to the staff; every other character comes back as it is. */
+	TCHAR FoldChar(TCHAR C)
+	{
+		if (C >= TEXT('A') && C <= TEXT('Z'))
+		{
+			return C - TEXT('A') + TEXT('a');
+		}
+		if (C < 0xC0 || C > 0xFF)
+		{
+			return C;
+		}
+		const TCHAR Lower = (C >= 0xC0 && C <= 0xDE && C != 0xD7) ? C + 0x20 : C;   // the Latin-1 capitals sit 0x20 below their small letters
+		if ((Lower >= 0xE0 && Lower <= 0xE5)) return TEXT('a');
+		if (Lower == 0xE7) return TEXT('c');
+		if (Lower >= 0xE8 && Lower <= 0xEB) return TEXT('e');
+		if (Lower >= 0xEC && Lower <= 0xEF) return TEXT('i');
+		if (Lower == 0xF1) return TEXT('n');
+		if ((Lower >= 0xF2 && Lower <= 0xF6) || Lower == 0xF8) return TEXT('o');
+		if (Lower >= 0xF9 && Lower <= 0xFC) return TEXT('u');
+		if (Lower == 0xFD || Lower == 0xFF) return TEXT('y');
+		return Lower;
+	}
+
+	/** The web's STOP list: words that never count as search terms. The list goes through the language layer
+	    (one key, the whole English list), so a language's strings.json extends it with its own little words. */
 	const TSet<FString>& StopWords()
 	{
 		static TSet<FString> Words;
 		if (Words.Num() == 0)
 		{
-			const TCHAR* List =
-				TEXT("a an the and or but if of to in on at by for with from into onto over under about as is are was were be been being am do does did doing done have has had having i me my mine ")
-				TEXT("you your yours he him his she her hers it its we us our they them their this that these those there here what which who whom whose when where why how can could would should will shall may might must ")
-				TEXT("not no please tell show give get got find let lets like just some any much many more most very really also too so than then such thing things something anything stuff kind sort want wanted need know ")
-				TEXT("think say said go going went come came see look looking one ones ok okay hey hi hello whats wheres hows thats im youre theres does dont can cant");
+			const FString List = WTAText(TEXT("a an the and or but if of to in on at by for with from into onto over under about as is are was were be been being am do does did doing done have has had having i me my mine you your yours he him his she her hers it its we us our they them their this that these those there here what which who whom whose when where why how can could would should will shall may might must not no please tell show give get got find let lets like just some any much many more most very really also too so than then such thing things something anything stuff kind sort want wanted need know think say said go going went come came see look looking one ones ok okay hey hi hello whats wheres hows thats im youre theres does dont can cant")).ToString();
 			TArray<FString> Parts;
-			FString(List).ParseIntoArrayWS(Parts);
+			List.ParseIntoArrayWS(Parts);
 			for (const FString& Part : Parts)
 			{
-				Words.Add(Part);
+				FString Folded;
+				for (int32 i = 0; i < Part.Len(); ++i)
+				{
+					Folded.AppendChar(FoldChar(Part[i]));
+				}
+				Words.Add(Folded);
 			}
 		}
 		return Words;
@@ -65,11 +91,16 @@ namespace
 		return true;
 	}
 
-	/** The web's toks(): lower-case letter/digit words, apostrophes dropped, stop words removed. */
+	/** The web's toks(): lower-case letter/digit words (accents folded), apostrophes dropped, stop words removed. */
 	void TokenizeImpl(const FString& Text, TArray<FString>& OutTokens)
 	{
 		OutTokens.Reset();
-		const FString Lower = Text.ToLower();
+		FString Lower;
+		Lower.Reserve(Text.Len());
+		for (int32 i = 0; i < Text.Len(); ++i)
+		{
+			Lower.AppendChar(FoldChar(Text[i]));
+		}
 		FString Word;
 		auto Flush = [&OutTokens, &Word]()
 		{
@@ -247,15 +278,14 @@ namespace
 		return false;
 	}
 
-	/** The web's norm(): " lower-case words separated by single spaces ", punctuation removed. */
+	/** The web's norm(): " lower-case words separated by single spaces ", accents folded, punctuation removed. */
 	FString Normalize(const FString& Text)
 	{
-		const FString Lower = Text.ToLower();
 		FString Out(TEXT(" "));
 		bool bLastSpace = true;
-		for (int32 i = 0; i < Lower.Len(); ++i)
+		for (int32 i = 0; i < Text.Len(); ++i)
 		{
-			const TCHAR C = Lower[i];
+			const TCHAR C = FoldChar(Text[i]);
 			if (IsApostrophe(C))
 			{
 				continue;
@@ -288,6 +318,14 @@ namespace
 		const FRegexPattern Compiled(FString(TEXT("(?i)")) + Pattern);
 		FRegexMatcher Matcher(Compiled, Text);
 		return Matcher.FindNext();
+	}
+
+	/** A question-shape regex through the language layer: the English pattern is the key, and a language's
+	    strings.json gives it back with the language's alternatives added ("(english|spanish)"), so the staff read
+	    the question's shape in both. */
+	bool ShapeMatch(const TCHAR* EnglishPattern, const FString& Question)
+	{
+		return RegexMatch(UWTAContentSubsystem::Tr(EnglishPattern).ToString(), Question);
 	}
 
 	// --- Question shape ---------------------------------------------------------
@@ -340,19 +378,18 @@ namespace
 		return false;
 	}
 
-	/** "when", "num", "who" or empty (the web's qtype). */
+	/** "when", "num", "who" or empty (the web's qtype), read with the language's shapes. */
 	FString QuestionType(const FString& Question)
 	{
-		const FString S = Question.ToLower().TrimStartAndEnd();
-		if (S.StartsWith(TEXT("when")) || S.Contains(TEXT("what year")) || S.Contains(TEXT("how long ago")))
+		if (ShapeMatch(TEXT("^\\s*[¿¡]?\\s*when\\b|\\bwhat year\\b|\\bhow long ago\\b"), Question))
 		{
 			return TEXT("when");
 		}
-		if (S.Contains(TEXT("how many")) || S.Contains(TEXT("how much")) || S.Contains(TEXT("number of")))
+		if (ShapeMatch(TEXT("\\bhow (many|much)\\b|\\bnumber of\\b"), Question))
 		{
 			return TEXT("num");
 		}
-		if (S.StartsWith(TEXT("who")))
+		if (ShapeMatch(TEXT("^\\s*[¿¡]?\\s*who\\b"), Question))
 		{
 			return TEXT("who");
 		}
@@ -362,19 +399,19 @@ namespace
 	/** The web's RX.go: the player wants to be taken somewhere. */
 	bool WantsToGo(const FString& Question)
 	{
-		return RegexMatch(TEXT("\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b"), Question);
+		return ShapeMatch(TEXT("\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b"), Question);
 	}
 
 	/** The web's RX.wh: the player asks where something is. */
 	bool AsksWhere(const FString& Question)
 	{
-		return RegexMatch(TEXT("\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b"), Question);
+		return ShapeMatch(TEXT("\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b"), Question);
 	}
 
 	/** The web's RX.hi. */
 	bool IsGreeting(const FString& Question)
 	{
-		return RegexMatch(TEXT("^\\s*(hi|hello|hey|howdy|yo|good (morning|afternoon|evening))\\b"), Question);
+		return ShapeMatch(TEXT("^\\s*[¿¡]?\\s*(hi|hello|hey|howdy|yo|good (morning|afternoon|evening))\\b"), Question);
 	}
 
 	FString TextOf(const FText& Text)
@@ -491,7 +528,7 @@ namespace
 	/** The player asked to be shown or taken somewhere now, so an answer's action runs instead of waiting for its button. */
 	bool WantsItNow(const FString& Question)
 	{
-		return WantsToGo(Question) || RegexMatch(TEXT("\\bshow me\\b"), Question);
+		return WantsToGo(Question) || ShapeMatch(TEXT("\\bshow me\\b"), Question);
 	}
 }
 
