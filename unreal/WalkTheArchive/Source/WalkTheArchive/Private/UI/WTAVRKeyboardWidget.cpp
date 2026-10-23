@@ -31,6 +31,13 @@ namespace
 	constexpr float KeyGap = 8.f;
 	/** The preview shows the end of a long text. */
 	constexpr int32 PreviewChars = 70;
+
+	/** Keys a step lighter than the HUD's buttons: the campus's exposure and tonemapping deepen dark tones on the
+	    VR screens, and a key must stand clear of the plate it sits on. */
+	FButtonStyle KeyStyle()
+	{
+		return WTAStyle::ButtonStyle(WTAStyle::FromHex(0x34493f), WTAStyle::FromHex(0x46604f), WTAStyle::FromHex(0x24352f));
+	}
 }
 
 void UWTAVRKeyboardWidget::NativeOnInitialized()
@@ -42,13 +49,11 @@ void UWTAVRKeyboardWidget::NativeOnInitialized()
 		return;
 	}
 
-	// The HUD's dark plate with a brass edge, filling the screen.
+	// A solid ink plate with a brass edge, filling the screen: a keyboard is a thing, not a window.
 	UBorder* Plate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
-	FLinearColor Fill = WTAStyle::Panel();
-	Fill.A = 0.96f;
 	FLinearColor Edge = WTAStyle::Brass();
-	Edge.A = 0.55f;
-	Plate->SetBrush(WTAStyle::EdgedBrush(Fill, 18.f, Edge, 2.f));
+	Edge.A = 0.6f;
+	Plate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Ink(), 18.f, Edge, 2.f));
 	Plate->SetPadding(FMargin(16.f, 12.f, 16.f, 14.f));
 	Tree->RootWidget = Plate;
 
@@ -56,7 +61,7 @@ void UWTAVRKeyboardWidget::NativeOnInitialized()
 	Plate->SetContent(Column);
 
 	// What is being typed: the box's hint as a kicker, the text so far with a caret.
-	UBorder* Preview = WTAWidgets::MakePlate(Tree, WTAStyle::Ink(), FMargin(16.f, 8.f, 16.f, 9.f), 10.f);
+	UBorder* Preview = WTAWidgets::MakePlate(Tree, WTAStyle::Panel(), FMargin(16.f, 8.f, 16.f, 9.f), 10.f);
 	UVerticalBox* PreviewColumn = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 	Preview->SetContent(PreviewColumn);
 	HintText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Kicker(11), WTAStyle::Brass(), false);
@@ -105,7 +110,7 @@ UWTAActionButton* UWTAVRKeyboardWidget::AddKey(UHorizontalBox* Row, const FText&
 	UWidgetTree* Tree = WidgetTree;
 	const bool bWord = Char == 0;
 	UWTAActionButton* Key = WTAWidgets::MakeButton(Tree, Label, Action, NAME_None, Char,
-		bPrimary ? WTAStyle::PrimaryButton() : WTAStyle::SecondaryButton(), bWord ? WTAStyle::Font(15, true) : WTAStyle::Font(21),
+		bPrimary ? WTAStyle::PrimaryButton() : KeyStyle(), bWord ? WTAStyle::Font(15, true) : WTAStyle::Font(21),
 		bPrimary ? WTAStyle::Ink() : WTAStyle::Bone());
 	Key->OnAction.AddDynamic(this, &UWTAVRKeyboardWidget::HandleAction);
 	if (UButtonSlot* LabelSlot = Cast<UButtonSlot>(Key->GetContentSlot()))
@@ -232,7 +237,7 @@ void UWTAVRKeyboardWidget::Refresh()
 	}
 	if (ShiftKey != nullptr)
 	{
-		ShiftKey->SetStyle(bShift ? WTAStyle::PrimaryButton() : WTAStyle::SecondaryButton());
+		ShiftKey->SetStyle(bShift ? WTAStyle::PrimaryButton() : KeyStyle());
 		if (UTextBlock* Label = Cast<UTextBlock>(ShiftKey->GetChildAt(0)))
 		{
 			Label->SetColorAndOpacity(FSlateColor(bShift ? WTAStyle::Ink() : WTAStyle::Bone()));

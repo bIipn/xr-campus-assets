@@ -5673,9 +5673,14 @@ void UWTAPlayTest::AddVRPhase()
 		Report(TEXT("vr"), bSent && bAway ? EResult::Pass : EResult::Fail, TEXT("Send on the keyboard asks the question and puts the keyboard away"),
 			FString::Printf(TEXT("%d -> %d bubbles, box \"%s\", keyboard %s"), State->MessagesBefore, Messages,
 				Box != nullptr ? *Box->GetText().ToString() : TEXT("-"), bAway ? TEXT("away") : TEXT("up")));
-		Shot(TEXT("vr_chat_answer"));
-		return 0.3f;
+		// Back up to the card for the picture of the answer.
+		if (const AWTAVRScreenActor* CardScreen = Controller != nullptr ? Controller->GetCardScreen() : nullptr)
+		{
+			AimAt(CardScreen->PixelToWorld(CardScreen->GetDrawSize() * 0.5));
+		}
+		return 0.4f;
 	} });
+	Steps.Add({ TEXT("vr chat shot"), [this]() -> float { Shot(TEXT("vr_chat_answer")); return 0.3f; } });
 	Steps.Add({ TEXT("vr chat close"), [this]() -> float { CloseAll(); return 0.6f; } });
 
 	// The tour's Next button on the HUD screen moves the tour on.
