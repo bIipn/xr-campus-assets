@@ -12,7 +12,8 @@ Steps, in order: textures (the friezes), screens, slides (the talks' slides), pr
 exterior, auditorium (the talks wing), classroom (Room 104), training (the Training Wing), data, prepare, voices (the
 talks read aloud; needs the Kokoro model, skipped when it is not there), ini.
 A client pack is a copy of clients/xrlibraries with its own words and content folder (and its own talks.json for the
-talks and classes); the campus is the same. clients/start.html is the sheet that writes one.
+talks and classes); the campus is the same. clients/start.html is the sheet that writes one. Its "language" ("es")
+sets WTA_LANG for every step: the slides, the data tables and the voices come out in it (unreal/Pipeline/content/lang).
 """
 import argparse
 import json
@@ -78,8 +79,9 @@ def main():
     with open(os.path.join(folder, "campus.json"), "r", encoding="utf-8") as fh:
         pack = json.load(fh)
     wanted = [s.strip() for s in args.only.split(",") if s.strip()] or [name for name, _ in STEPS]
-    env = dict(os.environ, WTA_CLIENT=folder)
-    print("client pack:", folder, "-", pack.get("client"), "/", pack.get("campus"), flush=True)
+    lang = (pack.get("language") or "en").strip().lower()
+    env = dict(os.environ, WTA_CLIENT=folder, WTA_LANG=lang)     # the slides, the tables and the voices all read it
+    print("client pack:", folder, "-", pack.get("client"), "/", pack.get("campus"), "- language", lang, flush=True)
     results = []
     for name, cmd in STEPS:
         if name not in wanted and not (name == "library_export" and "library" in wanted):
