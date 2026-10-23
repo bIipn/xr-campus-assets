@@ -25,6 +25,7 @@
 #include "Styling/SlateBrush.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTADialogueSubsystem.h"
+#include "Systems/WTAVisitLogSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
 #include "UI/WTAActionButton.h"
 #include "UI/WTAUIStyle.h"
@@ -193,6 +194,10 @@ void UWTAChatWidget::Open(FName InStaffId)
 	const UWTAContentSubsystem* Data = UWTAContentSubsystem::Get(this);
 	const FWTAStaffRow* Row = Data ? Data->FindStaff(InStaffId) : nullptr;
 	UWTADialogueSubsystem* Dialogue = UWTADialogueSubsystem::Get(this);
+	if (UWTAVisitLogSubsystem* Visits = UWTAVisitLogSubsystem::Get(this))
+	{
+		Visits->NoteCard(FName(TEXT("chat")), InStaffId);
+	}
 
 	// A different staff member (or an empty list) starts a fresh conversation with a greeting.
 	const bool bFresh = (InStaffId != StaffId) || MessageList == nullptr || MessageList->GetChildrenCount() == 0;

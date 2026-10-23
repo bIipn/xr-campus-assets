@@ -10,6 +10,7 @@
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAGraphicsLibrary.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "Systems/WTAVisitLogSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
 #include "Systems/WTAVoiceSubsystem.h"
@@ -471,6 +472,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("hunt")))
 	{
 		AddHuntPhase();
+	}
+	if (Want(TEXT("visits")))
+	{
+		AddVisitsPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3865,6 +3870,40 @@ void UWTAPlayTest::AddHuntPhase()
 			Newest.IsEmpty() ? TEXT("no Saved/Cards/library_card_*.png") : FString::Printf(TEXT("%s (%lld bytes, %s)"), *FPaths::ConvertRelativePathToFull(Newest), Size, bFresh ? TEXT("just written") : TEXT("old")));
 		CloseAll();
 		return 0.2f;
+	} });
+}
+
+void UWTAPlayTest::AddVisitsPhase()
+{
+	// The visit log: this session's CSV is being written with rooms, cards and position samples (run it last,
+	// after the phases that open cards and move about).
+	Steps.Add({ TEXT("visits log"), [this]() -> float
+	{
+		UWTAVisitLogSubsystem* Visits = UWTAVisitLogSubsystem::Get(this);
+		if (Visits == nullptr)
+		{
+			Report(TEXT("visits"), EResult::Fail, TEXT("the visit log runs"), TEXT("no UWTAVisitLogSubsystem in this world"));
+			return 0.f;
+		}
+		Visits->NoteCard(FName(TEXT("qa")), FName(TEXT("visits")));
+		const FString File = Visits->GetLogFile();
+		FString Text;
+		const bool bRead = !File.IsEmpty() && FFileHelper::LoadFileToString(Text, *File);
+		int32 Rooms = 0, Cards = 0, Positions = 0, Lines = 0;
+		TArray<FString> Rows;
+		Text.ParseIntoArrayLines(Rows);
+		for (const FString& Row : Rows)
+		{
+			++Lines;
+			if (Row.Contains(TEXT(",room,"))) { ++Rooms; }
+			else if (Row.Contains(TEXT(",card,"))) { ++Cards; }
+			else if (Row.Contains(TEXT(",pos,"))) { ++Positions; }
+		}
+		const bool bOk = bRead && Lines >= 3 && Cards >= 1 && Positions >= 1 && Lines == Visits->GetLinesWritten() + 1;
+		Report(TEXT("visits"), bOk ? EResult::Pass : EResult::Fail, TEXT("the visit log is written"),
+			bRead ? FString::Printf(TEXT("%s: %d lines (%d rooms left, %d cards, %d positions; %d written)"), *File, Lines, Rooms, Cards, Positions, Visits->GetLinesWritten())
+			      : FString::Printf(TEXT("could not read %s"), File.IsEmpty() ? TEXT("(no file yet)") : *File));
+		return 0.f;
 	} });
 }
 

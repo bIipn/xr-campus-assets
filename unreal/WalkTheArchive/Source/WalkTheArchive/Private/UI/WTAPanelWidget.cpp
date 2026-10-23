@@ -35,6 +35,7 @@
 #include "Styling/SlateBrush.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "Systems/WTAVisitLogSubsystem.h"
 #include "Systems/WTAVoiceSubsystem.h"
 #include "UI/WTAActionButton.h"
 #include "UI/WTAUIStyle.h"
@@ -1215,6 +1216,12 @@ void UWTAPanelWidget::BeginCard(EWTAPanelMode NewMode, FName Id, const FText& Ki
 {
 	Mode = NewMode;
 	CurrentId = Id;
+	if (UWTAVisitLogSubsystem* Visits = UWTAVisitLogSubsystem::Get(this))
+	{
+		static const TCHAR* ModeNames[] = { TEXT("none"), TEXT("exhibit"), TEXT("book"), TEXT("station"), TEXT("ride"), TEXT("badges"), TEXT("places"), TEXT("quiz"), TEXT("course"), TEXT("hunt") };
+		const int32 ModeIndex = static_cast<int32>(NewMode);
+		Visits->NoteCard(FName(ModeIndex >= 0 && ModeIndex < UE_ARRAY_COUNT(ModeNames) ? ModeNames[ModeIndex] : TEXT("card")), Id);
+	}
 
 	if (KickerText != nullptr)
 	{
