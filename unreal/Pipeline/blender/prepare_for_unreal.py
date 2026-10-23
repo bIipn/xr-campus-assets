@@ -9,8 +9,9 @@ when you import meshes as assets). So before Unreal sees them, this pass:
     ideal for Nanite and quick to place),
   * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__, and the
     talk venues' screen__ slide screens and spot__ speaker marks) as their own meshes with their tag as the name,
-  * applies content/refits.json to the web-exported wings it names (meshes dropped, groups moved), e.g. the
-    School's Room 104 becoming the XR Classroom,
+  * applies content/refits.json to the web-exported wings it names (meshes dropped, groups moved, faces clipped
+    out of a box), e.g. the School's Room 104 becoming the XR Classroom, the yard fence cut where the Training
+    Wing's doorway opens through it,
   * drops vertex colours that only carried baked lighting,
   * names materials M_<Asset>_... and textures T_<Asset>_... so Unreal's Content Browser is readable.
 
@@ -44,6 +45,7 @@ SOURCES = [
     ('Seats', 'unreal/Pipeline/out/props/Seats.glb'),           # bl/seats.py: settees for the Wax Hall aisle, each seat a tagged mesh
     ('Auditorium', 'unreal/Pipeline/out/auditorium/Auditorium.glb'),   # bl/auditorium.py: the talks wing (foyer + auditorium)
     ('Classroom', 'unreal/Pipeline/out/classroom/Classroom.glb'),      # bl/classroom.py: Room 104's smartboard, desks, chairs
+    ('Training', 'unreal/Pipeline/out/training/Training.glb'),         # bl/training.py: the Training Wing (the dialysis course's room)
 ]
 TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot)__')
 REFITS = os.path.join(REPO, 'unreal', 'Pipeline', 'content', 'refits.json')
@@ -71,9 +73,11 @@ def load_refit(name):
 
 
 def apply_refit(name, meshes):
-    """content/refits.json for this asset, on meshes already baked to world space: drop, then move groups.
+    """content/refits.json for this asset, on meshes already baked to world space: drop, then move groups, then
+    clip (faces lying wholly inside a campus box go, e.g. the yard fence where the Training Wing's doorway is).
     Returns the meshes that remain and a short report."""
     import math
+    import bmesh
     from mathutils import Matrix, Vector
     spec = load_refit(name)
     if not spec:
@@ -96,7 +100,28 @@ def apply_refit(name, meshes):
         for o in group:
             o.data.transform(m)
         moved.append('%s: %d of %d' % (mv.get('what', mv['meshes'][0]), len(group), len(mv['meshes'])))
-    return keep, {'dropped': dropped_names, 'moved': moved}
+    clipped = []
+    for cp in spec.get('clip', []):
+        x0, y0, z0, x1, y1, z1 = cp['box']                     # campus metres: x0, y0, z0, x1, y1, z1
+        lo = Vector((x0 - 1e-4, -z1 - 1e-4, y0 - 1e-4)); hi = Vector((x1 + 1e-4, -z0 + 1e-4, y1 + 1e-4))
+        n = 0
+        for o in keep:
+            if cp.get('meshes') and not matches(o, [re.escape(m) for m in cp['meshes']]):
+                continue
+            me = o.data
+            inside = [all(lo[i] <= v.co[i] <= hi[i] for i in range(3)) for v in me.vertices]
+            gone = [p.index for p in me.polygons if all(inside[i] for i in p.vertices)]
+            if not gone:
+                continue
+            bm = bmesh.new(); bm.from_mesh(me); bm.faces.ensure_lookup_table()
+            bmesh.ops.delete(bm, geom=[bm.faces[i] for i in gone], context='FACES')
+            bm.to_mesh(me); bm.free()
+            n += len(gone)
+        clipped.append('%s: %d faces' % (cp.get('what', 'box'), n))
+    out = {'dropped': dropped_names, 'moved': moved}
+    if clipped:
+        out['clipped'] = clipped
+    return keep, out
 
 
 def process(name, rel):

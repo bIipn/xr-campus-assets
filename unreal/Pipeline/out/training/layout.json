@@ -1,0 +1,346 @@
+{
+ "source": "bl/training.py",
+ "units": "campus metres (x east, y up, z south); Unreal = (x*100, z*100, y*100)",
+ "venue": "training",
+ "rooms": [
+  {
+   "id": "training",
+   "label": "The Training Wing",
+   "x0": 21.2,
+   "x1": 32.0,
+   "z0": -27.0,
+   "z1": -13.6,
+   "floor_y": 0.0,
+   "ceiling_y": 3.6
+  }
+ ],
+ "entries": [
+  {
+   "what": "the door from the auditorium's cross-aisle, through its east wall",
+   "x": 20.975,
+   "y": 0.0,
+   "z": -15.6,
+   "width": 1.2,
+   "height": 2.2
+  },
+  {
+   "what": "the double doorway to the yard, in the east wall",
+   "x": 32.225,
+   "y": 0.0,
+   "z": -25.8,
+   "width": 1.8,
+   "height": 2.4
+  }
+ ],
+ "windows": [
+  {
+   "wall": "E",
+   "x": 32.0,
+   "z0": -21.9,
+   "z1": -20.5,
+   "y0": 1.15,
+   "y1": 2.35
+  },
+  {
+   "wall": "E",
+   "x": 32.0,
+   "z0": -17.5,
+   "z1": -16.1,
+   "y0": 1.15,
+   "y1": 2.35
+  },
+  {
+   "wall": "N",
+   "z": -27.0,
+   "x0": 27.5,
+   "x1": 28.9,
+   "y0": 1.15,
+   "y1": 2.35
+  },
+  {
+   "wall": "N",
+   "z": -27.0,
+   "x0": 29.9,
+   "x1": 31.3,
+   "y0": 1.15,
+   "y1": 2.35
+  }
+ ],
+ "stations": [
+  {
+   "id": "dx-hygiene",
+   "room": "training",
+   "anchor_m": [
+    23.3,
+    0.9,
+    -13.9
+   ],
+   "ue_location_cm": [
+    2330.0,
+    -1390.0,
+    90.0
+   ],
+   "view": {
+    "three": {
+     "x": 23.3,
+     "z": -15.3,
+     "eye_y": 1.62,
+     "yaw_rad": -3.141593,
+     "pitch_rad": -0.25
+    },
+    "ue": {
+     "location_cm": [
+      2330.0,
+      -1530.0,
+      162.0
+     ],
+     "rotation_deg": {
+      "pitch": -14.324,
+      "yaw": 90.0,
+      "roll": 0.0
+     }
+    }
+   }
+  },
+  {
+   "id": "dx-machine",
+   "room": "training",
+   "anchor_m": [
+    30.95,
+    1.4,
+    -17.75
+   ],
+   "ue_location_cm": [
+    3095.0,
+    -1775.0,
+    140.0
+   ],
+   "view": {
+    "three": {
+     "x": 29.4,
+     "z": -17.75,
+     "eye_y": 1.62,
+     "yaw_rad": -1.570796,
+     "pitch_rad": -0.05
+    },
+    "ue": {
+     "location_cm": [
+      2940.0,
+      -1775.0,
+      162.0
+     ],
+     "rotation_deg": {
+      "pitch": -2.865,
+      "yaw": 0.0,
+      "roll": 0.0
+     }
+    }
+   }
+  },
+  {
+   "id": "dx-chair",
+   "room": "training",
+   "anchor_m": [
+    30.4,
+    0.6,
+    -19.0
+   ],
+   "ue_location_cm": [
+    3040.0,
+    -1900.0,
+    60.0
+   ],
+   "view": {
+    "three": {
+     "x": 28.7,
+     "z": -19.9,
+     "eye_y": 1.62,
+     "yaw_rad": -2.057696,
+     "pitch_rad": -0.2
+    },
+    "ue": {
+     "location_cm": [
+      2870.0,
+      -1990.0,
+      162.0
+     ],
+     "rotation_deg": {
+      "pitch": -11.459,
+      "yaw": 27.897,
+      "roll": 0.0
+     }
+    }
+   }
+  },
+  {
+   "id": "dx-water",
+   "room": "training",
+   "anchor_m": [
+    24.6,
+    1.2,
+    -26.5
+   ],
+   "ue_location_cm": [
+    2460.0,
+    -2650.0,
+    120.0
+   ],
+   "view": {
+    "three": {
+     "x": 24.6,
+     "z": -24.7,
+     "eye_y": 1.62,
+     "yaw_rad": -0.0,
+     "pitch_rad": -0.05
+    },
+    "ue": {
+     "location_cm": [
+      2460.0,
+      -2470.0,
+      162.0
+     ],
+     "rotation_deg": {
+      "pitch": -2.865,
+      "yaw": -90.0,
+      "roll": 0.0
+     }
+    }
+   }
+  },
+  {
+   "id": "dx-charting",
+   "room": "training",
+   "anchor_m": [
+    30.1,
+    0.9,
+    -14.25
+   ],
+   "ue_location_cm": [
+    3010.0,
+    -1425.0,
+    90.0
+   ],
+   "view": {
+    "three": {
+     "x": 30.1,
+     "z": -15.9,
+     "eye_y": 1.62,
+     "yaw_rad": -3.141593,
+     "pitch_rad": -0.2
+    },
+    "ue": {
+     "location_cm": [
+      3010.0,
+      -1590.0,
+      162.0
+     ],
+     "rotation_deg": {
+      "pitch": -11.459,
+      "yaw": 90.0,
+      "roll": 0.0
+     }
+    }
+   }
+  }
+ ],
+ "course_desk": {
+  "anchor_m": [
+   22.55,
+   1.05,
+   -20.5
+  ],
+  "faces": [
+   1,
+   0,
+   0
+  ],
+  "ue_location_cm": [
+   2255.0,
+   -2050.0,
+   105.0
+  ],
+  "spot": {
+   "x": 21.95,
+   "y": 0.0,
+   "z": -20.5,
+   "yaw": 0,
+   "mesh": "spot__training_f0"
+  },
+  "board": {
+   "wall": "W",
+   "x": 21.2,
+   "z": -20.5,
+   "width": 2.4,
+   "height": 1.2,
+   "y0": 1.35
+  },
+  "view": {
+   "three": {
+    "x": 23.65,
+    "z": -20.5,
+    "eye_y": 1.62,
+    "yaw_rad": 1.570796,
+    "pitch_rad": -0.05
+   },
+   "ue": {
+    "location_cm": [
+     2365.0,
+     -2050.0,
+     162.0
+    ],
+    "rotation_deg": {
+     "pitch": -2.865,
+     "yaw": 180.0,
+     "roll": 0.0
+    }
+   }
+  }
+ },
+ "speaker_spot": {
+  "x": 21.95,
+  "y": 0.0,
+  "z": -20.5,
+  "yaw": 0
+ },
+ "place_view": {
+  "three": {
+   "x": 28.0,
+   "z": -16.0,
+   "eye_y": 1.62,
+   "yaw_rad": 0.299776,
+   "pitch_rad": -0.05
+  },
+  "ue": {
+   "location_cm": [
+    2800.0,
+    -1600.0,
+    162.0
+   ],
+   "rotation_deg": {
+    "pitch": -2.865,
+    "yaw": -107.176,
+    "roll": 0.0
+   }
+  }
+ },
+ "camera": {
+  "eye": [
+   31.4,
+   1.55,
+   -25.5
+  ],
+  "target": [
+   24.5,
+   1.1,
+   -18.0
+  ]
+ },
+ "seats": 5,
+ "seat_names": [
+  "seat__training_c1_f270",
+  "seat__training_c2_f270",
+  "seat__training_c3_f270",
+  "seat__training_c4_f270",
+  "seat__training_desk_f90"
+ ]
+}

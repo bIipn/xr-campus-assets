@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the whole campus for one client from its pack (clients/<name>/campus.json): the words on the museum's
 friezes, the app on the tablet and phone screens, the book's pages, the held props, the Wax Hall settees, the
-reading room, the museum, the grounds with the forecourt theatre, the talks wing, the classroom, the data tables,
+reading room, the museum, the grounds with the forecourt theatre, the talks wing, the classroom, the training wing, the data tables,
 and the Unreal-ready meshes. Then on the Unreal machine: Tools/win/setup_project.ps1 (import_meshes, surfaces,
 data_tables, build_level, lighting, actors, ...).
 
@@ -9,8 +9,8 @@ data_tables, build_level, lighting, actors, ...).
     python3 build_client.py --client clients/acme --only screens,props,data
 
 Steps, in order: textures (the friezes), screens, slides (the talks' slides), props, seats, library, museum,
-exterior, auditorium (the talks wing), classroom (Room 104), data, prepare, voices (the talks read aloud; needs the
-Kokoro model, skipped when it is not there), ini.
+exterior, auditorium (the talks wing), classroom (Room 104), training (the Training Wing), data, prepare, voices (the
+talks read aloud; needs the Kokoro model, skipped when it is not there), ini.
 A client pack is a copy of clients/xrlibraries with its own words and content folder (and its own talks.json for the
 talks and classes); the campus is the same. clients/start.html is the sheet that writes one.
 """
@@ -37,9 +37,10 @@ STEPS = [
     ("exterior", [PY, "bl/exterior.py"]),
     ("auditorium", [PY, "bl/auditorium.py"]),          # the talks wing: the foyer and the auditorium (posters from the pack)
     ("classroom", [PY, "bl/classroom.py"]),            # Room 104's smartboard, desks and signs
+    ("training", [PY, "bl/training.py"]),              # the Training Wing: the dialysis course's five stations
     ("data", [PY, "unreal/Pipeline/data/build_data.py"]),
     ("prepare", [PY, "unreal/Pipeline/blender/prepare_for_unreal.py", "--", "HandProps", "Seats", "ReadingRoom", "Museum", "Outside",
-                 "Auditorium", "Classroom", "School"]),
+                 "Auditorium", "Classroom", "Training", "School", "Yard"]),
     ("voices", [PY, "unreal/Tools/voice/make_talk_voices.py"]),
     ("ini", None),
 ]

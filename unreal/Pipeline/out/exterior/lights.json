@@ -3,6 +3,28 @@
  "units": "metres, three.js campus axes (y up)",
  "lights": [
   {
+   "name": "lantern",
+   "type": "POINT",
+   "campus_pos_m": [
+    32.79,
+    2.4,
+    -24.25
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 100,
+   "color_linear": [
+    1.0,
+    0.82,
+    0.58
+   ],
+   "radius_m": 0.08,
+   "area_size_m": null
+  },
+  {
    "name": "post",
    "type": "POINT",
    "campus_pos_m": [

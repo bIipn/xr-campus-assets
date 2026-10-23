@@ -231,8 +231,8 @@
     "seat__forecourt_w6b05_f322",
     "spot__forecourt_f90"
    ],
-   "triangles": 169964,
-   "bytes": 40158320
+   "triangles": 168910,
+   "bytes": 40110252
   },
   "Yard": {
    "file": "Yard.glb",
@@ -246,8 +246,15 @@
     "token__t_drop",
     "token__t_yard"
    ],
-   "triangles": 73076,
-   "bytes": 10197348
+   "triangles": 72844,
+   "bytes": 10173684,
+   "refit": {
+    "dropped": [],
+    "moved": [],
+    "clipped": [
+     "the yard fence inside the Training Wing's east wall: 232 faces"
+    ]
+   }
   },
   "OceanDive": {
    "file": "OceanDive.glb",
@@ -476,8 +483,8 @@
     "seat__foyer_b_f0",
     "spot__auditorium_f90"
    ],
-   "triangles": 35824,
-   "bytes": 39390816
+   "triangles": 35882,
+   "bytes": 39396552
   },
   "Classroom": {
    "file": "Classroom.glb",
@@ -507,6 +514,21 @@
    ],
    "triangles": 4654,
    "bytes": 9725188
+  },
+  "Training": {
+   "file": "Training.glb",
+   "source": "unreal/Pipeline/out/training/Training.glb",
+   "meshes": 37,
+   "tagged": [
+    "seat__training_c1_f270",
+    "seat__training_c2_f270",
+    "seat__training_c3_f270",
+    "seat__training_c4_f270",
+    "seat__training_desk_f90",
+    "spot__training_f0"
+   ],
+   "triangles": 8208,
+   "bytes": 5851084
   }
  }
 }

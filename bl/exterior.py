@@ -35,7 +35,7 @@ sys.path.insert(0, HERE)
 import library as L                                              # noqa: E402
 from library import P, D, Builder, bar, prism, material, MATS, frange, select_only, seat_yaw   # noqa: E402
 import neo                                                       # noqa: E402
-from neo import lathe, annulus, wall_with_door, run_boxes, entablature, pilaster, urn, tree, blob, lantern, smooth, face_uv, ENT_H   # noqa: E402
+from neo import lathe, annulus, wall_with_door, wall_with_openings, run_boxes, entablature, pilaster, urn, tree, blob, lantern, smooth, face_uv, ENT_H   # noqa: E402
 import museum as M                                               # noqa: E402  (the plan: constants and ground_height)
 
 SP = L.SP
@@ -88,19 +88,33 @@ SHELLS = {
     # Hall R, and the auditorium behind it, its south face against the School's north face
     'foyer':      dict(x0=6.3, x1=11.75, z0=-13.65, z1=-4.8, h=4.95),
     'auditorium': dict(x0=6.3, x1=21.2, z0=-31.45, z1=-13.65, h=7.4),
+    # the Training Wing (bl/training.py builds the room, x 21.2..32.0, z -27.0..-13.6): east of the auditorium, north
+    # of the School; its east wall stands on the yard fence's line (x 32.2), the fence buried in it
+    'training':   dict(x0=21.2, x1=32.45, z0=-27.45, z1=-13.65, h=4.3),
 }
 # faces that stand against another building get no wall; where a lower neighbour leaves the top of a face in view,
 # that face is built from the height given (no plinth or pilasters, the order's entablature still runs)
 SHELL_SKIP = {('hallL', 'W'), ('hallL', 'E'), ('hallR', 'W'), ('hallR', 'E'), ('hallR', 'N'), ('wax', 'S'),
-              ('foyer', 'W'), ('foyer', 'N'), ('auditorium', 'W')}
+              ('foyer', 'W'), ('foyer', 'N'), ('auditorium', 'W'), ('training', 'S'), ('training', 'W')}
 SHELL_FROM = {('foyer', 'E'): 4.5, ('foyer', 'S'): 3.7, ('auditorium', 'S'): 4.6}
-# openings in those shells: (shell, wall, u0, u1, h) - 'E' east wall x1, 'W' west wall x0 (u along z)
+# a face a lower neighbour hides along part of its run: (u0, u1, y_from) - the stretch u0..u1 (campus z on E/W
+# faces, x on N/S) is built from y_from only, as SHELL_FROM, or not at all when y_from is at the parapet; the rest
+# of the face keeps its plinth and pilasters. The training wing hides the auditorium's east face and the School's
+# north face below its parapet top (4.55); the School's cut starts 10 cm west of the wing's west face so the plinth's
+# end stays inside the auditorium's wall
+SHELL_CUTS = {('auditorium', 'E'): [(-27.45, -13.65, 4.55)], ('school', 'N'): [(21.1, 32.45, 4.55)]}
+# openings in those shells: doors (shell, wall, u0, u1, h) and windows (shell, wall, u0, u1, y0, y1) - 'E' east wall
+# x1, 'W' west wall x0 (u along z), 'N'/'S' (u along x); the rooms' builders draw the reveals, frames and glass
 OPENINGS = [('library', 'E', -4.8, -1.2, 3.65), ('school', 'W', -4.8, -1.2, 3.65), ('school', 'E', -4.6, -1.4, 3.0),
-            ('wax', 'S', -1.9, 1.9, 3.3)]
+            ('wax', 'S', -1.9, 1.9, 3.3), ('training', 'E', -26.7, -24.9, 2.4)]
+WINDOWS = [('training', 'E', -21.9, -20.5, 1.15, 2.35), ('training', 'E', -17.5, -16.1, 1.15, 2.35),
+           ('training', 'N', 27.5, 28.9, 1.15, 2.35), ('training', 'N', 29.9, 31.3, 1.15, 2.35)]
+CANOPIES = [('training', 'E', -26.7, -24.9, 2.4)]           # a small canopy over a door: (shell, wall, u0, u1, door h)
 # web tree positions kept (parts/outdoor.js), minus the two that stood where the rotunda and forecourt now are
-# (the ones at (9, -9.5), (9, -17), (9, -25), (9, -34), (19, -17.5) and (14, -25) gave way to the talks wing)
-CAMPUS_TREES = [(9, 3.8), (16, 11.5), (24.5, 12.5), (-20, 12), (-28.5, 11), (27, -18.5),
-                (-8.5, -20), (-9, -31), (-22, -18), (-30, -21), (25.0, -27.5), (24.5, -33.0)]
+# (the ones at (9, -9.5), (9, -17), (9, -25), (9, -34), (19, -17.5) and (14, -25) gave way to the talks wing, the
+# ones at (27, -18.5) and (25, -27.5) to the training wing; one moved north of it)
+CAMPUS_TREES = [(9, 3.8), (16, 11.5), (24.5, 12.5), (-20, 12), (-28.5, 11), (24.0, -30.0),
+                (-8.5, -20), (-9, -31), (-22, -18), (-30, -21), (24.5, -33.0)]
 YARD_TREES = [(47.5, 23.4), (54, 23.8), (60.5, 23.2), (71.5, 23.6), (78, 23.2), (84.5, 23.6), (90, 22), (89.8, 15.5), (90, 8), (89.6, 1.2),
               (89.8, -5.5), (61.2, 11.6), (69.5, 1.6), (84.8, 7.4), (46.7, 8.4), (69.5, 16.6), (58.2, -6.2), (37.2, 6.4)]
 # new: an allee either side of the path, and groves on the meadow
@@ -637,55 +651,99 @@ THEATRE = {}
 def build_shells():
     ash = builder('shells', 'ashlar', tile=2.4); ent = builder('entablature', 'lime', tile=3.0); den = builder('dentils', 'lime', tile=3.0)
     rf = builder('roofs', 'roof', tile=2.0); gl = builder('glass', 'glass')
+    PLINTH = [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)]
     for name, s in SHELLS.items():
         x0, x1, z0, z1, h = s['x0'], s['x1'], s['z0'], s['z1'], s['h']
         order = h >= 5.0                    # the big blocks carry the full order; the halls only a cornice
         top = h - (ENT_H if order else 0.4)
+        cornice = [(h - 0.40, h - 0.30, 0.10), (h - 0.30, h - 0.12, 0.18), (h - 0.12, h, 0.26)]
         walls = {'W': ((x0, z1), (x0, z0), (-1, 0)), 'E': ((x1, z0), (x1, z1), (1, 0)), 'N': ((x0, z0), (x1, z0), (0, -1)), 'S': ((x1, z1), (x0, z1), (0, 1))}
         for key, (a, c, out) in walls.items():
             # the halls meet the museum and the big blocks: skip the faces that would sit inside another shell
             # (the wax hall's south wall is the museum's end wall; the talks wing leans on the galleries and the School)
             if (name, key) in SHELL_SKIP: continue
-            ops = [o for o in OPENINGS if o[0] == name and o[1] == key]
+            ux, uz = c[0] - a[0], c[1] - a[1]; Ln = math.hypot(ux, uz); ux, uz = ux / Ln, uz / Ln
+            def along(v):     # a campus z (walls E/W) or x (walls N/S) -> u along the run from a
+                return (v - a[1]) * uz if key in ('E', 'W') else (v - a[0]) * ux
+            def at(u): return (a[0] + ux * u, a[1] + uz * u)
+            def face_from(ra, rc, y_from):
+                A0 = P(ra[0], y_from, ra[1]); C0 = P(rc[0], y_from, rc[1]); A1 = P(ra[0], h, ra[1])
+                ash.grid(A0, C0 - A0, A1 - A0, D(out[0], 0, out[1]), 6, 2)
+            # the entablature (or cornice) runs the whole face; the wall below it comes in runs, where a neighbour
+            # that hides part of the face cuts it (SHELL_CUTS), or from one height (SHELL_FROM)
+            if order: entablature(ent, den, a, c, out, top)
+            else: run_boxes(ent, a, c, out, cornice, seg=3.0)
             y_from = SHELL_FROM.get((name, key))
             if y_from is not None:
-                A0 = P(a[0], y_from, a[1]); C0 = P(c[0], y_from, c[1]); A1 = P(a[0], h, a[1])
-                ash.grid(A0, C0 - A0, A1 - A0, D(out[0], 0, out[1]), 6, 2)
-                if order: entablature(ent, den, a, c, out, top)
-                else: run_boxes(ent, a, c, out, [(h - 0.40, h - 0.30, 0.10), (h - 0.30, h - 0.12, 0.18), (h - 0.12, h, 0.26)], seg=3.0)
+                face_from(a, c, y_from)
                 continue
-            if ops:
-                _n, _w, u0, u1, oh = ops[0]
-                ux, uz = c[0] - a[0], c[1] - a[1]; Ln = math.hypot(ux, uz); ux, uz = ux / Ln, uz / Ln
-                # u along the run from a; the opening's u0..u1 are campus z (walls E/W) or x (walls N/S)
-                ua = (u0 - a[1]) * uz if key in ('E', 'W') else (u0 - a[0]) * ux
-                ub = (u1 - a[1]) * uz if key in ('E', 'W') else (u1 - a[0]) * ux
-                ua, ub = min(ua, ub), max(ua, ub)
-                wall_with_door(ash, (a[0], -1.0, a[1]), (ux, 0, uz), (0, 1, 0), (out[0], 0, out[1]), 0.0, Ln, h + 1.0, ua, ub, oh + 1.0, solid=False)
-                # the plinth course stops either side of the door: across it, it was a 50 cm kerb to jump
-                run_boxes(ash, a, (a[0] + ux * ua, a[1] + uz * ua), out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
-                run_boxes(ash, (a[0] + ux * ub, a[1] + uz * ub), c, out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
-            else:
-                A0 = P(a[0], -1.0, a[1]); C0 = P(c[0], -1.0, c[1]); A1 = P(a[0], h, a[1])
-                ash.grid(A0, C0 - A0, A1 - A0, D(out[0], 0, out[1]), 6, 3)
-                run_boxes(ash, a, c, out, [(-1.0, 0.5, 0.10), (0.5, 0.6, 0.14)], seg=3.0)
-            if order:
-                entablature(ent, den, a, c, out, top)
-                ux, uz = c[0] - a[0], c[1] - a[1]; Ln = math.hypot(ux, uz); ux, uz = ux / Ln, uz / Ln
-                sx = 0.6
-                while sx <= Ln - 0.5:
-                    pilaster(ash, ent, ash, (a[0] + ux * sx, a[1] + uz * sx), out, 0.7, top, depth=0.2)
-                    sx += 6.0 if Ln > 12 else Ln - 1.2
-            else:
-                run_boxes(ent, a, c, out, [(h - 0.40, h - 0.30, 0.10), (h - 0.30, h - 0.12, 0.18), (h - 0.12, h, 0.26)], seg=3.0)
+            cuts = sorted((min(along(u0), along(u1)), max(along(u0), along(u1)), yf) for (u0, u1, yf) in SHELL_CUTS.get((name, key), []))
+            runs, s0 = [], 0.0
+            for (c0, c1, yf) in cuts:
+                if c0 - s0 > 1e-6: runs.append((s0, c0, None))
+                runs.append((c0, c1, yf)); s0 = c1
+            if Ln - s0 > 1e-6: runs.append((s0, Ln, None))
+            for (s0, s1, yf) in runs:
+                ra, rc = at(s0), at(s1); L_ = s1 - s0
+                if yf is not None:
+                    if yf < h - 0.01: face_from(ra, rc, yf)
+                    continue
+                # the doors and windows in this run (u from the run's start), the wall round them, and the plinth
+                # course, which stops either side of a door: across it, it was a 50 cm kerb to jump
+                doors = [(min(along(u0), along(u1)) - s0, max(along(u0), along(u1)) - s0, oh) for (_n, _w, u0, u1, oh) in OPENINGS if _n == name and _w == key]
+                wins = [(min(along(u0), along(u1)) - s0, max(along(u0), along(u1)) - s0, wy0, wy1) for (_n, _w, u0, u1, wy0, wy1) in WINDOWS if _n == name and _w == key]
+                doors = [d for d in doors if d[1] > 1e-6 and d[0] < L_ - 1e-6]
+                wins = [w for w in wins if w[1] > 1e-6 and w[0] < L_ - 1e-6]
+                ops = [(ua, ub, 0.0, oh + 1.0) for (ua, ub, oh) in doors] + [(ua, ub, wy0 + 1.0, wy1 + 1.0) for (ua, ub, wy0, wy1) in wins]
+                if ops:
+                    wall_with_openings(ash, (ra[0], -1.0, ra[1]), (ux, 0, uz), (0, 1, 0), (out[0], 0, out[1]), 0.0, L_, h + 1.0, ops, solid=False)
+                else:
+                    A0 = P(ra[0], -1.0, ra[1]); C0 = P(rc[0], -1.0, rc[1]); A1 = P(ra[0], h, ra[1])
+                    ash.grid(A0, C0 - A0, A1 - A0, D(out[0], 0, out[1]), 6, 3)
+                p = 0.0
+                for (ua, ub, oh) in sorted(doors):
+                    if ua - p > 1e-6: run_boxes(ash, at(s0 + p), at(s0 + ua), out, PLINTH, seg=3.0)
+                    p = ub
+                if L_ - p > 1e-6: run_boxes(ash, at(s0 + p), at(s0 + L_), out, PLINTH, seg=3.0)
+                if order:
+                    sx = 0.6
+                    while sx <= L_ - 0.5:
+                        pilaster(ash, ent, ash, at(s0 + sx), out, 0.7, top, depth=0.2)
+                        sx += 6.0 if L_ > 12 else L_ - 1.2
+            for (_n, _w, u0, u1, oh) in CANOPIES:
+                if _n == name and _w == key: canopy(a, c, out, (along(u0) + along(u1)) / 2, abs(along(u1) - along(u0)) + 0.6, oh + 0.3)
         rf.box((x0 + x1) / 2, h + 0.04, (z0 + z1) / 2, x1 - x0, 0.12, z1 - z0, faces='Y')     # above the rooms' own ceilings
         ash.box((x0 + x1) / 2, h + 0.25, (z0 + z1) / 2, x1 - x0 + 0.1, 0.5, z1 - z0 + 0.1, faces='xXzZY')      # parapet
+    # a lantern on a bracket beside the training wing's yard door (the lighting step lights it with the outside)
+    bz = builder('bronze', 'bronze'); lp = builder('lamps', 'lamp_e')
+    lx, lz = SHELLS['training']['x1'], -24.25
+    bar(bz, (lx, 2.72, lz), (lx + 0.34, 2.72, lz), 0.03)
+    bar(bz, (lx + 0.34, 2.72, lz), (lx + 0.34, 2.64, lz), 0.02)
+    bz.box(lx + 0.02, 2.66, lz, 0.04, 0.16, 0.10)
+    lantern(bz, lp, lx + 0.34, 2.64 - 0.74 * 0.55, lz, s=0.55)
+    LIGHTS.append(('lantern', (lx + 0.34, 2.40, lz), (1.0, 0.82, 0.58), 100, None))
     # the Reading Room's roof lantern (over the laylight x -30..-14, z -3.9..-2.1)
     lb = builder('shells', 'ashlar', tile=2.4)
     lb.box(-22.0, 7.9 + 0.5, -3.0, 17.0, 1.0, 3.2, faces='xXzZ')
     gl.face([P(-30.4, 8.95, -4.5), P(-13.6, 8.95, -4.5), P(-13.6, 8.95, -1.5), P(-30.4, 8.95, -1.5)], D(0, 1, 0))
     lb.box(-22.0, 9.0, -3.0, 17.4, 0.12, 3.6, faces='xXzZY')
     # a canopy over the school's back door is kept from the web; nothing more to add there
+
+
+def canopy(a, c, out, u, w, y):
+    """A small flat canopy over a door in a shell face (the one the School's yard door has, built here instead of
+    kept from the web): a zinc slab w wide standing 0.9 m out from the face with its top at y + 0.08, a fascia along
+    its outer edge, on two bronze rods from plates on the wall."""
+    ux, uz = c[0] - a[0], c[1] - a[1]; L = math.hypot(ux, uz); ux, uz = ux / L, uz / L
+    ry = math.atan2(-uz, ux)
+    cx, cz = a[0] + ux * u + out[0] * 0.45, a[1] + uz * u + out[1] * 0.45
+    rf = builder('roofs', 'roof', tile=2.0); bz = builder('bronze', 'bronze')
+    rf.box(cx, y + 0.04, cz, w, 0.08, 0.9, ry)
+    rf.box(cx + out[0] * 0.435, y - 0.03, cz + out[1] * 0.435, w, 0.14, 0.03, ry)
+    for s in (-1, 1):
+        root = (a[0] + ux * (u + s * (w / 2 - 0.15)), y - 0.55, a[1] + uz * (u + s * (w / 2 - 0.15)))
+        bar(bz, root, (root[0] + out[0] * 0.84, y - 0.01, root[2] + out[1] * 0.84), 0.03)
+        bz.box(root[0] + out[0] * 0.02, y - 0.55, root[2] + out[1] * 0.02, 0.10, 0.12, 0.04, ry)
 
 
 # ---------------------------------------------------------------- planting, lamps, horizon
@@ -874,7 +932,8 @@ def main():
                  'theatre': ((0.0, 3.6, 32.4), (0.0, 1.2, 19.0), 72), 'seats': ((-3.0, 0.9, 18.6), (2.0, 0.5, 30.0), 80),
                  'stage': ((5.5, 0.8, 27.6), (-1.0, 1.2, 19.5), 70), 'portico': ((0.0, 0.9, 13.2), (0.0, 0.5, 30.0), 80),
                  'wing': ((36.0, 1.7, -38.0), (18.0, 4.5, -22.0), 70), 'wing_n': ((14.0, 1.7, -46.0), (14.0, 4.0, -26.0), 76),
-                 'cavea': ((-4.0, 1.0, 40.0), (-6.5, 1.3, 31.0), 66)}
+                 'cavea': ((-4.0, 1.0, 40.0), (-6.5, 1.3, 31.0), 66),
+                 'training': ((37.5, 1.7, -21.0), (31.0, 3.0, -26.5), 72), 'training_n': ((35.5, 1.8, -33.0), (26.0, 3.0, -27.4), 70)}
         want = [a.split('=')[1].split(',') for a in sys.argv if a.startswith('--views=')]
         for name in (want[0] if want else views):
             eye, target, fov = views[name]
