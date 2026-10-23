@@ -1094,6 +1094,17 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 			bPass = bGated ? !bGot : (bGot && Token->IsCollected());
 			bShot = ClassIndex < 1;
 		}
+		else if (const AWTAGalleryWallActor* Wall = Cast<AWTAGalleryWallActor>(Target))
+		{
+			// E hangs what is new and says so in a toast; nothing opens.
+			Expected = TEXT("the wall refreshed, no panel");
+			bPass = !Controller->IsAnyPanelOpen() && Wall->NumPictures() >= 0;
+		}
+		else if (const AWTACourseActor* Course = Cast<AWTACourseActor>(Target))
+		{
+			Expected = TEXT("course card ") + Course->TalkId.ToString();
+			bPass = PanelIs(EWTAPanelMode::Course, Course->TalkId);
+		}
 		else
 		{
 			Expected = TEXT("something");
