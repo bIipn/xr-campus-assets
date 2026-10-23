@@ -16,7 +16,8 @@ Unreal scene unchanged (lighting.py explains the exposure):
     lights make those pools now. The horizon rings lost their vertex colours in the export and get the web's
     colours back (HORIZON_COLOURS).
 Every glow and converted mesh stays out of Lumen's GI: small bright emitters only add noise there, and a
-display-referred one would feed the exposure back into the lighting. Glows also cast no shadow.
+display-referred one would feed the exposure back into the lighting. Glows also cast no shadow, except lit fabric
+round a light (KEEP_SHADOW: a lamp's shade, which throws the light down in a pool and up in a circle).
 It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards).
 """
 import os
@@ -39,9 +40,14 @@ BLENDER_NITS = {
     "laylight_e": 2500.0,     # the glazing under the museum's laylights and the Reading Room's
     "oculus_e": 6000.0,       # the sky in the rotunda's oculus
     "bulb_e": 3000.0,
+    "st_shade_e": 14.0,       # the Lost Stories cabin's linen drum shade, lit from inside (before "shade_e": it matches)
     "shade_e": 60.0,          # the reading lamps' green cased glass: a faint glow through it
     "shadein_e": 1500.0,      # their warm opal lining, lit by the tube under it
 }
+
+# Glows that are lit fabric round a light rather than the light itself keep their shadow, so a lamp's shade throws its
+# light down in a pool and up in a circle, as a real one does (the others cast none: emitters and lit glass).
+KEEP_SHADOW = ("st_shade_e",)
 
 UNLIT_MASTER = paths.MATERIALS_PATH + "/M_WTA_Unlit"
 UNLIT_MASTER_TRANSLUCENT = paths.MATERIALS_PATH + "/M_WTA_UnlitTranslucent"
@@ -96,12 +102,17 @@ def glow_nits(asset, strength, colour):
     return strength * GLOW_NITS
 
 
+def named(name, key):
+    """A material instance made from the Blender material `key` (M_<Asset>_<key>, or with a _NNN suffix)."""
+    return ("_%s_" % key) in name or name.endswith("_" + key)
+
+
 def calibrate_glows(mis, facts, report):
     """EmissiveStrength = glow_nits() on every glow material instance (idempotent: computed from the GLB)."""
     mel = unreal.MaterialEditingLibrary
     done, unmatched, failed = [], [], []
     for name, mi in mis.items():
-        blender = next((nits for key, nits in BLENDER_NITS.items() if ("_%s_" % key) in name or name.endswith("_" + key)), None)
+        blender = next((nits for key, nits in BLENDER_NITS.items() if named(name, key)), None)
         if GLOW_MARK not in name and blender is None:
             continue
         fact = facts.get(name)
@@ -309,7 +320,7 @@ def convert_unlit(mis, facts, report):
 
 
 def quiet_emitters(glows, unlit, report):
-    """Glow and converted unlit meshes stay out of Lumen's GI; glows also cast no shadow."""
+    """Glow and converted unlit meshes stay out of Lumen's GI; glows also cast no shadow (but KEEP_SHADOW's)."""
     counts = {"glow": 0, "unlit": 0}
     for actor in util.find_actors(class_name="StaticMeshActor"):
         comp = util.get_prop(actor, "static_mesh_component")
@@ -321,6 +332,8 @@ def quiet_emitters(glows, unlit, report):
             continue
         if names & glows:
             props, kind = {"cast_shadow": False, "affect_dynamic_indirect_lighting": False}, "glow"
+            if any(named(n, key) for n in names for key in KEEP_SHADOW):
+                props = {"cast_shadow": True, "affect_dynamic_indirect_lighting": False}
         elif names & unlit:
             props, kind = {"affect_dynamic_indirect_lighting": False}, "unlit"
         else:

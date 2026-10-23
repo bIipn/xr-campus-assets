@@ -128,6 +128,7 @@ def setup_materials():
     material('st_onair_e', 'stories_onair', emission=True, emission_strength=0.9)
     material('st_bulb_e', color=(1, 1, 1, 1), emission=(1.0, 0.82, 0.55, 1), emission_strength=4.0)
     material('st_shade_e', color=(0.95, 0.88, 0.75, 1), emission=(1.0, 0.80, 0.55, 1), emission_strength=1.2)
+    material('st_canvas', color=(0.62, 0.53, 0.40, 1), roughness=0.92)                  # the tote on the coat rail
     material('st_led_e', color=(1, 0.1, 0.05, 1), emission=(1.0, 0.1, 0.05, 1), emission_strength=6.0)
     material('st_mark', color=(0.2, 0.2, 0.2, 1), roughness=0.9)
 
@@ -185,6 +186,45 @@ def cylinder(b, a, c, r, n=12, caps=True):
     if caps:
         b.face([P(*(A + ring[i] * r)) for i in reversed(range(n))], D(*(-ax)))
         b.face([P(*(C + ring[i] * r)) for i in range(n)], D(*ax))
+
+
+def soft_box(b, centre, size, r, axes=None, k=3):
+    """An upholstered block: a box `size` (local x, y, z) with every edge and corner rounded to radius r, centred at
+    campus `centre`, its local axes the campus unit vectors `axes` = (ex, ey, ez) (default the campus axes). Each face
+    of a cube is gridded densely near its edges and pushed out onto the rounded surface (the inner box plus r along
+    the way out), so the six faces meet in round edges; build it with a smoothing builder."""
+    hx, hy, hz = size[0] / 2, size[1] / 2, size[2] / 2
+    r = min(r, hx, hy, hz)
+    ix, iy, iz = hx - r, hy - r, hz - r
+    ex, ey, ez = axes or ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+    def samples(h, i):
+        if i <= 1e-9:
+            return [-h + 2 * h * t / (2 * k) for t in range(2 * k + 1)]
+        return [-h + (h - i) * t / k for t in range(k)] + [-i, i] + [i + (h - i) * t / k for t in range(1, k + 1)]
+    def surface(lx, ly, lz):
+        qx, qy, qz = max(-ix, min(ix, lx)), max(-iy, min(iy, ly)), max(-iz, min(iz, lz))
+        dx, dy, dz = lx - qx, ly - qy, lz - qz
+        ln = math.sqrt(dx * dx + dy * dy + dz * dz) or 1.0
+        nx, ny, nz = dx / ln, dy / ln, dz / ln
+        x, y, z = qx + nx * r, qy + ny * r, qz + nz * r
+        return (centre[0] + ex[0] * x + ey[0] * y + ez[0] * z, centre[1] + ex[1] * x + ey[1] * y + ez[1] * z,
+                centre[2] + ex[2] * x + ey[2] * y + ez[2] * z)
+    sx, sy, sz = samples(hx, ix), samples(hy, iy), samples(hz, iz)
+    # (fixed axis, its value, the two running axes' samples, the outward local normal)
+    for axis, sign in ((0, 1), (0, -1), (1, 1), (1, -1), (2, 1), (2, -1)):
+        h = (hx, hy, hz)[axis] * sign
+        a, c = [(1, 2), (0, 2), (0, 1)][axis]
+        su, sv = [(sx, sy, sz)[a], (sx, sy, sz)[c]]
+        nl = [0.0, 0.0, 0.0]; nl[axis] = float(sign)
+        n_world = (ex[0] * nl[0] + ey[0] * nl[1] + ez[0] * nl[2], ex[1] * nl[0] + ey[1] * nl[1] + ez[1] * nl[2],
+                   ex[2] * nl[0] + ey[2] * nl[1] + ez[2] * nl[2])
+        for i in range(len(su) - 1):
+            for j in range(len(sv) - 1):
+                quad = []
+                for (u, v) in ((su[i], sv[j]), (su[i + 1], sv[j]), (su[i + 1], sv[j + 1]), (su[i], sv[j + 1])):
+                    p = [0.0, 0.0, 0.0]; p[axis] = h; p[a] = u; p[c] = v
+                    quad.append(P(*surface(*p)))
+                b.face(quad, D(*n_world))
 
 
 def ball(b, c, r, rings=6, k=12):
@@ -675,28 +715,29 @@ def build_openings():
 
 # ---------------------------------------------------------------- inside
 def armchair(cx, cz, f, fabric, seat_name):
-    """An upholstered armchair facing the plan direction f (unit, along x or z): a base, a cushion (its own mesh, the
-    seat), a back and two arms on short walnut legs."""
-    fb = builder('st_chair_' + fabric, fabric, tile=0.6)
-    lg = builder('st_walnut', 'st_walnut')
+    """A club armchair facing the plan direction f (unit, along x or z): every part an upholstered block with round
+    edges - the body, a deep seat cushion (its own mesh, the seat), a back leaning a little, a loose back cushion and
+    two thick arms - on four turned walnut legs."""
+    fb = builder('st_chair_' + fabric, fabric, tile=0.6, smooth_deg=40)
+    cush = builder(seat_name, fabric, tile=0.6, smooth_deg=40)
+    lg = builder('st_chair_legs', 'st_walnut', smooth_deg=40)
     fx, fz = f
-    ry = math.atan2(-fz, fx)                           # local +x along f
-    def at(u, w):                                      # u along f, w to the chair's left
-        return (cx + fx * u - fz * w, cz + fz * u + fx * w)
-    seat_y = FY + 0.44
-    bx, bz = at(0.0, 0.0)
-    fb.box(bx, FY + 0.27, bz, 0.66, 0.30, 0.66, ry=ry)                     # the base
-    kx, kz = at(0.04, 0.0)
-    cush = builder(seat_name, fabric, tile=0.6)
-    cush.box(kx, seat_y - 0.03, kz, 0.56, 0.14, 0.54, ry=ry)              # the cushion
-    ax, az = at(-0.27, 0.0)
-    fb.box(ax, FY + 0.62, az, 0.14, 0.70, 0.78, ry=ry)                     # the back
+    eu, ey, ew = (fx, 0.0, fz), (0.0, 1.0, 0.0), (-fz, 0.0, fx)        # forward, up, across
+    def at(u, y, w):
+        return (cx + fx * u - fz * w, y, cz + fz * u + fx * w)
+    lean = math.radians(11)                                              # the back's lean
+    back_axes = (tuple(eu[i] * math.cos(lean) + ey[i] * math.sin(lean) for i in range(3)),
+                 tuple(ey[i] * math.cos(lean) - eu[i] * math.sin(lean) for i in range(3)), ew)
+    leg_h = 0.10
+    soft_box(fb, at(0.0, FY + leg_h + 0.13, 0.0), (0.70, 0.26, 0.60), 0.045, (eu, ey, ew))             # the body
+    soft_box(cush, at(0.05, FY + leg_h + 0.26 + 0.065, 0.0), (0.58, 0.13, 0.50), 0.05, (eu, ey, ew))   # the seat
+    soft_box(fb, at(-0.29, FY + 0.64, 0.0), (0.16, 0.70, 0.62), 0.06, back_axes)                       # the back
+    soft_box(fb, at(-0.17, FY + 0.70, 0.0), (0.12, 0.40, 0.50), 0.05, back_axes)                       # its cushion
     for w in (-1, 1):
-        rx, rz = at(0.0, w * 0.33)
-        fb.box(rx, FY + 0.48, rz, 0.66, 0.42, 0.13, ry=ry)                 # the arms
-    for (u, w) in ((0.26, 0.28), (0.26, -0.28), (-0.26, 0.28), (-0.26, -0.28)):
-        x, z = at(u, w)
-        lg.box(x, FY + 0.06, z, 0.05, 0.12, 0.05)
+        soft_box(fb, at(-0.02, FY + leg_h + 0.28, w * 0.335), (0.74, 0.56, 0.14), 0.06, (eu, ey, ew))  # the arms
+    for (u, w) in ((0.28, 0.335), (0.28, -0.335), (-0.30, 0.335), (-0.30, -0.335)):            # under the arms
+        x, _y, z = at(u, 0.0, w)
+        lathe(lg, x, z, [(FY, 0.014), (FY + leg_h * 0.6, 0.02), (FY + leg_h, 0.026), (FY + leg_h + 0.02, 0.026)], n=12)
 
 
 def mic(x, z, toward, h=0.30):
@@ -732,14 +773,31 @@ def build_nook():
     for s in (-1, 1):
         cylinder(bk, (tx + 0.06 + s * 0.07, TABLE_TOP + 0.005, tz - 0.14), (tx + 0.06 + s * 0.07, TABLE_TOP + 0.04, tz - 0.14), 0.04, n=14)
     bar(bk, (tx - 0.01, TABLE_TOP + 0.045, tz - 0.14), (tx + 0.13, TABLE_TOP + 0.045, tz - 0.14), 0.02, 0.01)
-    # the reading lamp beside the teller
+    # the reading lamp beside the teller: an iron floor lamp, a bulb in a brass socket and a linen drum shade lit
+    # from inside, brass bands round its rims, held by an uno fitter's three spokes off the socket (the shade casts
+    # a shadow - wta_setup/emissive.py KEEP_SHADOW - so the light falls in a pool below it and a circle above)
     lx, lz = LAMP
     ir = builder('st_iron', 'st_iron')
     lathe(ir, lx, lz, [(FY, 0.15), (FY + 0.02, 0.15), (FY + 0.03, 0.02)], n=20)
-    cylinder(ir, (lx, FY + 0.03, lz), (lx, FY + 1.42, lz), 0.012, n=8)
+    cylinder(ir, (lx, FY + 0.03, lz), (lx, FY + 1.37, lz), 0.012, n=8)
+    y0, y1, r0, r1 = FY + 1.36, FY + 1.62, 0.22, 0.17                 # the shade's bottom and top, and their radii
+    def shade_r(y):
+        return r0 + (r1 - r0) * (y - y0) / (y1 - y0)
     sh = builder('st_shade_e', 'st_shade_e', smooth_deg=50)
-    lathe(sh, lx, lz, [(FY + 1.36, 0.22), (FY + 1.62, 0.17)], n=24, cap_top=False)
-    LIGHTS.append(('lamp', (lx, FY + 1.42, lz), (1.0, 0.78, 0.52), 25, None))
+    lathe(sh, lx, lz, [(y0, r0), (y1, r1)], n=32, cap_top=False)
+    lb = builder('st_lamp_brass', 'st_brass', smooth_deg=50)
+    for (ya, yb) in ((y0 - 0.004, y0 + 0.016), (y1 - 0.02, y1 + 0.002)):
+        lathe(lb, lx, lz, [(ya, shade_r(ya) - 0.005), (ya, shade_r(ya) + 0.004), (yb, shade_r(yb) + 0.004),
+                           (yb, shade_r(yb) - 0.005)], n=32, cap_top=False)
+    lathe(lb, lx, lz, [(FY + 1.37, 0.016), (FY + 1.375, 0.019), (FY + 1.415, 0.019), (FY + 1.42, 0.014)], n=16,
+          cap_bot=True)                                                   # the socket
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + 0.4
+        ro = shade_r(FY + 1.40) - 0.004
+        bar(lb, (lx + 0.019 * math.cos(a), FY + 1.40, lz + 0.019 * math.sin(a)),
+            (lx + ro * math.cos(a), FY + 1.40, lz + ro * math.sin(a)), 0.004)
+    ball(builder('st_bulb_e', 'st_bulb_e'), (lx, FY + 1.455, lz), 0.032, rings=8, k=14)
+    LIGHTS.append(('lamp', (lx, FY + 1.46, lz), (1.0, 0.78, 0.52), 25, None))
     # the round rug under the nook and a runner from the door to the board
     rg = builder('st_rug', 'st_rug', tile=1.0)
     disc(rg, (TABLE[0] - 0.05, FY + 0.006, TABLE[1]), (0, 1, 0), 1.15, k=48)
@@ -880,11 +938,11 @@ def build_room_details():
     sc.box(hx + 0.015, FY + 1.765 - 0.30, ZI1 - 0.046, 0.17, 0.60, 0.016)      # the back tail, against the wall
     for k in range(5):                                                         # the fringe
         sc.box(hx - 0.07 + k * 0.035, FY + 1.765 - 0.775, ZI1 - 0.092, 0.012, 0.07, 0.01)
-    tb = builder('st_tote', 'st_card')
+    tb = builder('st_tote', 'st_canvas', smooth_deg=40)
     tx = rx + 0.3
-    tb.box(tx, FY + 1.27, ZI1 - 0.065, 0.36, 0.40, 0.06)
+    soft_box(tb, (tx, FY + 1.27, ZI1 - 0.062), (0.34, 0.40, 0.045), 0.018)        # a soft canvas bag, a little full
     for dx in (-0.08, 0.08):
-        bar(tb, (tx + dx, FY + 1.47, ZI1 - 0.075), (tx, FY + 1.775, ZI1 - 0.09), 0.009)
+        bar(tb, (tx + dx, FY + 1.46, ZI1 - 0.07), (tx, FY + 1.775, ZI1 - 0.09), 0.004, 0.014)     # flat straps
 
 
 def build_porch_things():

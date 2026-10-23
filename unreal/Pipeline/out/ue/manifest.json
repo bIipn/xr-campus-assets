@@ -544,15 +544,15 @@
   "Stories": {
    "file": "Stories.glb",
    "source": "unreal/Pipeline/out/stories/Stories.glb",
-   "meshes": 38,
+   "meshes": 39,
    "tagged": [
     "seat__stories_bench_f270",
     "seat__stories_guest_f180",
     "seat__stories_porch_f270",
     "seat__stories_teller_f0"
    ],
-   "triangles": 9420,
-   "bytes": 1114012
+   "triangles": 18268,
+   "bytes": 1454592
   },
   "PopUp": {
    "file": "PopUp.glb",
