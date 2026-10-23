@@ -7,6 +7,7 @@
 #include "Core/WTASettings.h"
 #include "Interaction/WTAInteractable.h"
 #include "Interaction/WTAInteractionComponent.h"
+#include "Core/WTAText.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTADialogueSubsystem.h"
 #include "Systems/WTAGraphicsLibrary.h"
@@ -2363,7 +2364,7 @@ void UWTAPlayTest::AddSeatsPhase()
 			}
 			const AActor* Hovered = Controller->Interaction->GetHovered();
 			const FString Label = Hovered != nullptr && Hovered->Implements<UWTAInteractable>() ? IWTAInteractable::Execute_GetInteractLabel(Hovered).ToString() : FString();
-			if (Hovered != Target || Label != TEXT("Sit"))
+			if (Hovered != Target || Label != WTAText(TEXT("Sit")).ToString())   // the engine word, in the pack's language
 			{
 				*Ok = false;
 				Report(TEXT("seats"), EResult::Fail, Name + TEXT(" says Sit"), FString::Printf(TEXT("the crosshair has \"%s\" on %s; %s"), *Label, Hovered != nullptr ? *Hovered->GetName() : TEXT("nothing"), *DescribeAim(Target)));
@@ -3582,7 +3583,7 @@ void UWTAPlayTest::AddCoursePhase()
 				return 0.f;
 			}
 			const FString Label = IWTAInteractable::Execute_GetInteractLabel(Desk).ToString();
-			const bool bLabel = Label.StartsWith(TEXT("Course"));
+			const bool bLabel = Label.StartsWith(WTAText(TEXT("Course")).ToString());   // the engine word, in the pack's language
 			Report(TEXT("course"), bLabel ? EResult::Pass : EResult::Fail, Name + TEXT(" desk"),
 				FString::Printf(TEXT("%s at %s says \"%s\"; lead %s"), *Desk->GetName(), *Venue.ToString(), *Label,
 					Desk->GetLead() != nullptr ? *Desk->GetLead()->GetName() : TEXT("not built (person missing)")));
