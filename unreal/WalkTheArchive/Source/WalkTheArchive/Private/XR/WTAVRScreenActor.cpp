@@ -36,11 +36,10 @@ bool AWTAVRScreenActor::FitToWidget(UWidgetComponent* Component)
 	{
 		return false;
 	}
-	// Its Slate widget (made now if the component has not drawn it yet), measured at one Slate unit a pixel, the
-	// scale the component draws it at.
-	const TSharedRef<SWidget> Slate = Content->TakeWidget();
-	Slate->SlatePrepass(1.f);
-	const FVector2D Want = Slate->GetDesiredSize();
+	// Its Slate widget (made now if the component has not drawn it yet), measured.
+	Content->TakeWidget();
+	Content->ForceLayoutPrepass();
+	const FVector2D Want = Content->GetDesiredSize();
 	if (Want.X < 1.0 || Want.Y < 1.0)
 	{
 		static int32 Misses = 0;
