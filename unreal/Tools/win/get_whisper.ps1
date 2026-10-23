@@ -67,9 +67,13 @@ foreach ($f in $files) { Copy-Item -LiteralPath $f.FullName -Destination $target
 Copy-Item -LiteralPath $pick.FullName -Destination $target -Force
 Write-Note ('copied whisper-cli.exe, ' + ($files.Count - 1) + ' DLLs and ' + $pick.Name)
 
-# Prove it runs: its help text, no audio needed.
+# Prove it runs: its help text, no audio needed. whisper-cli prints it on stderr, which Windows PowerShell turns into
+# error records (and, with 'Stop', a terminating error), so they are read as plain text here.
 $cli = Join-Path $target 'whisper-cli.exe'
-$out = & $cli --help 2>&1 | Out-String
+$prev = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+$out = (& $cli --help 2>&1 | ForEach-Object { [string]$_ }) -join "`n"
+$ErrorActionPreference = $prev
 $ok = $out -match 'usage'
 if ($ok) { Write-Note 'whisper-cli runs' } else { Write-Warn ('whisper-cli did not answer --help: ' + $out.Substring(0, [Math]::Min(300, $out.Length))) }
 Write-ResultLine 'get_whisper' $ok @{ folder = $target; model = $pick.Name; dlls = ($files.Count - 1) }
