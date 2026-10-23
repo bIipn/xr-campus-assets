@@ -6,6 +6,7 @@
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Core/WTAPlayerState.h"
+#include "Engine/World.h"
 #include "GameFramework/GameStateBase.h"
 #include "NavigationSystem.h"
 #include "NavMesh/RecastNavMesh.h"
@@ -89,11 +90,27 @@ void AWTAGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 }
 
+APawn* AWTAGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
+{
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.ObjectFlags |= RF_Transient;   // never saved into the map
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer);
+	APawn* Pawn = GetWorld() != nullptr ? GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo) : nullptr;
+	if (Pawn == nullptr)
+	{
+		UE_LOG(LogWTA, Warning, TEXT("Could not spawn a %s for %s"), *GetNameSafe(PawnClass), *GetNameSafe(NewPlayer));
+	}
+	return Pawn;
+}
+
 void AWTAGameMode::Logout(AController* Exiting)
 {
 	if (const AWTAPlayerState* Person = Exiting ? Exiting->GetPlayerState<AWTAPlayerState>() : nullptr)
 	{
-		if (!Person->bGuide)
+		// Only a visitor leaving the guide's campus (not this machine's own player when its world closes).
+		if (!Person->bGuide && !Exiting->IsLocalController())
 		{
 			UE_LOG(LogWTA, Log, TEXT("WTA_VISIT left slot %d (%s)"), Person->Slot, *Person->GetVisitName());
 		}

@@ -37,6 +37,10 @@ public:
 	/** Server: the visit card's name (trimmed, at most 24 characters; empty keeps the old one). */
 	void SetVisitName(const FString& Name);
 
+	/** True once this person's own game sent a name (a visitor's game is then loaded and playing). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool IsNamed() const { return bNamed; }
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:

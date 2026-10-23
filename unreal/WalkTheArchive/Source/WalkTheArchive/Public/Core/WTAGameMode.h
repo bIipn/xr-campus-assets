@@ -5,7 +5,8 @@
 //
 // Guided visits (UWTAVisitSubsystem): the guide's machine runs this as a listen server. PostLogin makes the guide's
 // own player the guide (slot 0) and gives each visitor who joins the lowest free slot from 1; the visitor's pawn is
-// then put at their place round the guide (AWTAPlayerController::OnPossess).
+// then put at their place round the guide (AWTAPlayerController::OnPossess). Pawns always spawn (there is no
+// PlayerStart: the engine falls back to the world origin, where the guide may be standing).
 
 #pragma once
 
@@ -27,6 +28,11 @@ public:
 	/** Slots and the guide's flag before the new player's pawn is spawned. */
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
+
+	/** Always spawns (nudged out of the way where there is room): the campus has no PlayerStart, so every pawn starts
+	 *  at the world origin before the controller moves it to its view, and a visitor joining must not fail to spawn
+	 *  because someone stands there. */
+	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
 
 	/** One NavMesh build when the default one is runtime-generated and still has no tiles (also a visitor's machine). */
 	static void BuildNavigationIfEmpty(UWorld* World);

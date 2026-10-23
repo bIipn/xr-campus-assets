@@ -2373,6 +2373,7 @@ void UWTAPlayTest::AddSeatsPhase()
 		RoomsShot.Add(Room);
 		const FString ShotName = FString::Printf(TEXT("seat_%02d_%s"), Index++, *Room);
 		const TSharedRef<bool> Ok = MakeShared<bool>(false);
+		const TSharedRef<bool> ViaMic = MakeShared<bool>(false);
 		const TSharedRef<FVector> StoodAt = MakeShared<FVector>(FVector::ZeroVector);
 
 		Steps.Add({ Name + TEXT(" stand"), [this, Weak, Name, Ok, StoodAt]() -> float
@@ -2420,7 +2421,7 @@ void UWTAPlayTest::AddSeatsPhase()
 			}
 			return 0.f;
 		} });
-		Steps.Add({ Name + TEXT(" E"), [this, Weak, Name, Ok, StoodAt]() -> float
+		Steps.Add({ Name + TEXT(" E"), [this, Weak, Name, Ok, ViaMic, StoodAt]() -> float
 		{
 			AWTASeatActor* Target = Weak.Get();
 			AWTAPlayerController* Controller = PC();
@@ -2430,7 +2431,16 @@ void UWTAPlayTest::AddSeatsPhase()
 			}
 			const AActor* Hovered = Controller->Interaction->GetHovered();
 			const FString Label = Hovered != nullptr && Hovered->Implements<UWTAInteractable>() ? IWTAInteractable::Execute_GetInteractLabel(Hovered).ToString() : FString();
-			if (Hovered != Target || Label != WTAText(TEXT("Sit")).ToString())   // the engine word, in the pack's language
+			// The Lost Stories teller's chair sits behind the booth's microphone: looked at over the table, the
+			// crosshair offers the microphone ("Tell a story"), and E on it sits the visitor in this same chair (then
+			// opens the booth card, which the next step closes).
+			const AWTAStoryMicActor* Mic = Cast<AWTAStoryMicActor>(Hovered);
+			*ViaMic = Mic != nullptr && Mic->TellerSeatId == Target->SeatId;
+			if (*ViaMic)
+			{
+				Report(TEXT("seats"), EResult::Info, Name + TEXT(" over the microphone"), FString::Printf(TEXT("the crosshair has \"%s\" on the booth's microphone, which seats you here"), *Label));
+			}
+			else if (Hovered != Target || Label != WTAText(TEXT("Sit")).ToString())   // the engine word, in the pack's language
 			{
 				*Ok = false;
 				Report(TEXT("seats"), EResult::Fail, Name + TEXT(" says Sit"), FString::Printf(TEXT("the crosshair has \"%s\" on %s; %s"), *Label, Hovered != nullptr ? *Hovered->GetName() : TEXT("nothing"), *DescribeAim(Target)));
@@ -2451,13 +2461,17 @@ void UWTAPlayTest::AddSeatsPhase()
 			}
 			return 0.6f;
 		} });
-		Steps.Add({ Name + TEXT(" seated"), [this, Weak, Name, Ok, bShot, ShotName]() -> float
+		Steps.Add({ Name + TEXT(" seated"), [this, Weak, Name, Ok, ViaMic, bShot, ShotName]() -> float
 		{
 			AWTASeatActor* Target = Weak.Get();
 			AWTACharacter* Me = Player();
 			if (!*Ok || Target == nullptr || Me == nullptr)
 			{
 				return 0.f;
+			}
+			if (*ViaMic)
+			{
+				CloseAll();   // the booth card the microphone opened: Space then reaches the player again
 			}
 			const FVector Eye = Me->GetEyeLocation();
 			const FVector Sit = Target->GetSitPoint();
@@ -4769,16 +4783,21 @@ void UWTAPlayTest::AddGroupGuidePhase()
 	} });
 	Steps.Add({ TEXT("guide waits for a visitor"), [this, Waited, P]() -> float
 	{
-		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
-		const int32 Visitors = State ? State->NumVisitors() : 0;
-		if (Visitors < 1 && *Waited < 300.f)
+		// A visitor counts once their own game is up: their figure is here and their name came through (their game
+		// sends it once its map has loaded, which takes a minute or two with both games on one computer).
+		const AWTACharacter* Visitor = OtherPerson();
+		const AWTAPlayerState* Person = Visitor ? Visitor->GetPlayerState<AWTAPlayerState>() : nullptr;
+		const bool bHere = Person != nullptr && !Person->bGuide && Person->IsNamed();
+		if (!bHere && *Waited < 480.f)
 		{
 			*Waited += 1.f;
 			return -1.f;
 		}
-		Report(*P, Visitors >= 1 ? EResult::Pass : EResult::Fail, TEXT("a visitor joined"), FString::Printf(TEXT("%d after %.0f s: %s"), Visitors, *Waited, *PeopleLine(this)));
+		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+		Report(*P, bHere ? EResult::Pass : EResult::Fail, TEXT("a visitor joined"),
+			FString::Printf(TEXT("%d after %.0f s: %s"), State ? State->NumVisitors() : 0, *Waited, *PeopleLine(this)));
 		*Waited = 0.f;
-		return 8.f;                                           // they arrive, their name comes through
+		return 6.f;                                           // their own checks on arrival
 	} });
 	Steps.Add({ TEXT("guide looks at the visitor"), [this]() -> float { LookAtPerson(OtherPerson()); return 2.f; } });
 	Steps.Add({ TEXT("guide sees the visitor"), [this, P]() -> float
@@ -4800,9 +4819,9 @@ void UWTAPlayTest::AddGroupGuidePhase()
 		const bool bOpen = Controller && Controller->VisitCard && Controller->VisitCard->IsOpen();
 		Report(*P, bOpen ? EResult::Pass : EResult::Fail, TEXT("V opens the guide's Visit together card"), PeopleLine(this));
 		Shot(TEXT("group_guide_card"));
-		CloseAll();
-		return 1.f;
+		return 0.5f;                                          // the picture is taken at the end of this frame
 	} });
+	Steps.Add({ TEXT("guide card close"), [this]() -> float { CloseAll(); return 1.f; } });
 
 	// The tour: two stops, the visitor at their place round each.
 	for (int32 Stop = 0; Stop < 2; ++Stop)
@@ -4822,16 +4841,24 @@ void UWTAPlayTest::AddGroupGuidePhase()
 			}
 			return 1.f;
 		} });
-		Steps.Add({ FString::Printf(TEXT("guide walks to stop %d"), Stop + 1), [this, Waited]() -> float
+		Steps.Add({ FString::Printf(TEXT("guide walks to stop %d"), Stop + 1), [this, Waited, Stop]() -> float
 		{
+			// The guide's own walk, then the visitor's to their place round the stop (their position comes from
+			// their game), then time for the visitor's own check and picture before the tour moves on.
 			const AWTACharacter* Me = Player();
 			if (Me != nullptr && Me->IsAutoWalking() && *Waited < 45.f)
 			{
 				*Waited += 0.5f;
 				return -0.5f;
 			}
+			const float Distance = DistanceToStop(this, OtherPerson(), Stop);
+			if ((Distance < 0.f || Distance >= 450.f) && *Waited < 90.f)
+			{
+				*Waited += 0.5f;
+				return -0.5f;
+			}
 			*Waited = 0.f;
-			return 7.f;                                       // the visitor's walk and the camera's easing
+			return 6.f;
 		} });
 		Steps.Add({ FString::Printf(TEXT("guide checks stop %d"), Stop + 1), [this, Stop, P]() -> float
 		{
@@ -4867,7 +4894,20 @@ void UWTAPlayTest::AddGroupGuidePhase()
 		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
 		const bool bOk = Visit != nullptr && Visit->GatherHere();
 		Report(*P, bOk ? EResult::Info : EResult::Fail, TEXT("the guide gathers the group"), TEXT(""));
-		return 12.f;
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guide waits for the group"), [this, Waited]() -> float
+	{
+		const AWTACharacter* Visitor = OtherPerson();
+		const AWTACharacter* Me = Player();
+		const float Distance = Visitor && Me ? static_cast<float>(FVector::Dist2D(Visitor->GetActorLocation(), Me->GetActorLocation())) : -1.f;
+		if ((Distance < 0.f || Distance >= 500.f) && *Waited < 90.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		*Waited = 0.f;
+		return 5.f;                                           // the visitor's own check and picture
 	} });
 	Steps.Add({ TEXT("guide checks the gathering"), [this, P]() -> float
 	{
@@ -5081,9 +5121,9 @@ void UWTAPlayTest::AddGroupGuestPhase()
 		const AWTAPlayerController* Controller = PC();
 		Report(*P, Controller && Controller->VisitCard && Controller->VisitCard->IsOpen() ? EResult::Pass : EResult::Fail, TEXT("V opens the visitor's Visit together card"), PeopleLine(this));
 		Shot(TEXT("group_guest_card"));
-		CloseAll();
-		return 1.f;
+		return 0.5f;
 	} });
+	Steps.Add({ TEXT("guest card close"), [this]() -> float { CloseAll(); return 1.f; } });
 	Steps.Add({ TEXT("guest leaves"), [this, P]() -> float
 	{
 		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);

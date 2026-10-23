@@ -64,7 +64,7 @@ return the action `FName`s; `WTABadge::FirstSteps()/Explorer()/Bookworm()/Curiou
 Constructor: `DefaultPawnClass = AWTACharacter`, `PlayerControllerClass = AWTAPlayerController`, `GameStateClass = AWTAGameState`, `PlayerStateClass = AWTAPlayerState`, `HUDClass = nullptr`.
 `StartPlay()` override: `BuildNavigationIfEmpty(GetWorld())`.
 `static void BuildNavigationIfEmpty(UWorld*)`: when the default `ARecastNavMesh` uses `RuntimeGeneration=Dynamic` and has no active tiles (the headless setup run cannot build it: the editor holds its async-load navigation lock), calls `UNavigationSystemV1::Build()` once, so click-to-walk and the tour walk instead of teleporting. A NavMesh built and saved in the editor is kept. A guided visit's visitor machine (no game mode) calls it from `AWTAGameState::BeginPlay` and `UWTAVisitSubsystem`'s tick.
-`PostLogin(APlayerController*)` (before Super, which spawns the pawn): the machine's own player gets `bGuide = (NM_ListenServer)`, `Slot 0`; a joining visitor the lowest free slot from 1 (log `WTA_VISIT joined slot n`). `Logout` logs `WTA_VISIT left slot n`.
+`PostLogin(APlayerController*)` (before Super, which spawns the pawn): the machine's own player gets `bGuide = (NM_ListenServer)`, `Slot 0`; a joining visitor the lowest free slot from 1 (log `WTA_VISIT joined slot n`). `Logout` logs `WTA_VISIT left slot n` (remote visitors only). `SpawnDefaultPawnAtTransform_Implementation`: as the engine's, but `AdjustIfPossibleButAlwaysSpawn` (no PlayerStart: every pawn starts at the world origin, where the guide may stand, and `OnPossess` then moves it).
 
 ### `AWTAGameState : AGameStateBase` (`Core/WTAGameState.h`)
 Guided visits share this from the guide's machine (the listen server). `UP(ReplicatedUsing=OnRep_Tour) int32 TourStop=-1, TourSerial=0`; `UP(ReplicatedUsing=OnRep_Gather) int32 GatherSerial=0`; `UP(Replicated) FVector GatherFloor; float GatherYaw`.
@@ -73,7 +73,7 @@ Guided visits share this from the guide's machine (the listen server). `UP(Repli
 
 ### `AWTAPlayerState : APlayerState` (`Core/WTAPlayerState.h`)
 `UP(Replicated) bool bGuide; int32 Slot` (0 the guide, 1.. visitors in the order they came; `AWTAGameMode::PostLogin`), protected `UP(Replicated) bool bNamed`.
-`BPpure FLinearColor GetVisitColor() const` (brass for the guide, then twelve muted colours by slot); `BPpure FString GetVisitName() const` (the name given on the visit card, else "Guide" / "Visitor n"); `void SetVisitName(const FString&)` (server: trimmed, at most 24 characters).
+`BPpure FLinearColor GetVisitColor() const` (brass for the guide, then twelve muted colours by slot); `BPpure FString GetVisitName() const` (the name given on the visit card, else "Guide" / "Visitor n"); `void SetVisitName(const FString&)` (server: trimmed, at most 24 characters); `BPpure bool IsNamed() const` (the person's own game sent a name: a visitor's game has loaded).
 
 ### `AWTAPlayerController : APlayerController` (`Core/WTAPlayerController.h`) — the hub
 Delegate `FWTAUIModeChanged(bool bPanelOpen)`; `UP(BlueprintAssignable) OnUIModeChanged`.
