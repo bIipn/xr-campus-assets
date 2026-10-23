@@ -726,6 +726,10 @@ struct WALKTHEARCHIVE_API FWTAStationRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	bool bUsesHands = false;
 
+	/** The badge finishing this station awards; None = the room's (UWTAProgressSubsystem::NoteStationFinished). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FName BadgeId;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
 	FVector Location = FVector::ZeroVector;
 

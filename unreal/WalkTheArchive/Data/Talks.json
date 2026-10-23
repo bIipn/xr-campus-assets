@@ -604,5 +604,111 @@
    "dx-charting"
   ],
   "Intro": "Welcome to the Training Wing. This course walks you through the five things a dialysis technician does every shift: hand hygiene, the machine, the patient chair, the water and the chart. Finish all five stations, then come back to this desk for the quiz. Pass it and the certificate is yours."
+ },
+ {
+  "Name": "storytelling",
+  "Venue": "studio",
+  "Kind": "course",
+  "Title": "Making a 360 Story",
+  "Subtitle": "Five stations, a quiz, a certificate",
+  "Speaker": "Daniel Reyes",
+  "SpeakerShort": "Daniel",
+  "SpeakerRole": "360 storytelling trainer",
+  "Person": "wax-2022a-trainer",
+  "Staff": "None",
+  "Slides": [],
+  "Quiz": [
+   {
+    "Question": "At what height should a 360 camera usually stand?",
+    "Options": [
+     "On the floor",
+     "About eye level, around five feet",
+     "As high as the ceiling",
+     "It does not matter"
+    ],
+    "Answer": 1,
+    "Why": "About eye level. That is where the viewer’s eyes will be, so the scene feels the right size.",
+    "Clip": "storytelling-01"
+   },
+   {
+    "Question": "Why keep a 360 camera still?",
+    "Options": [
+     "To save the battery",
+     "A moving 360 camera can make viewers feel sick",
+     "So the seam moves",
+     "To record better sound"
+    ],
+    "Answer": 1,
+    "Why": "Movement the viewer did not make can make them feel sick. Cut between still scenes instead.",
+    "Clip": "storytelling-02"
+   },
+   {
+    "Question": "Where should faces and important things be?",
+    "Options": [
+     "On the seam between the lenses",
+     "Right under the tripod",
+     "Away from the seam, out to the sides",
+     "Behind the camera"
+    ],
+    "Answer": 2,
+    "Why": "The seam is where the two lenses’ pictures are stitched together; anything on it can come out broken.",
+    "Clip": "storytelling-03"
+   },
+   {
+    "Question": "What is room tone?",
+    "Options": [
+     "The colour of the walls",
+     "Thirty seconds of the place with nobody talking",
+     "The loudest sound in the room",
+     "Music added in the edit"
+    ],
+    "Answer": 1,
+    "Why": "Room tone fills the gaps between cuts, so the edit never drops into silence.",
+    "Clip": "storytelling-04"
+   },
+   {
+    "Question": "How long is a good 360 scene, often?",
+    "Options": [
+     "Five seconds",
+     "Thirty to ninety seconds",
+     "Ten minutes",
+     "As long as the memory card allows"
+    ],
+    "Answer": 1,
+    "Why": "Thirty to ninety seconds gives viewers time to look around before the next scene starts.",
+    "Clip": "storytelling-05"
+   },
+   {
+    "Question": "Who should see the finished story first?",
+    "Options": [
+     "A film festival",
+     "The people in it",
+     "Nobody, until it is online",
+     "Only the editor"
+    ],
+    "Answer": 1,
+    "Why": "It is their story. Show it to the people in it first, and keep their permissions with the files.",
+    "Clip": "storytelling-06"
+   }
+  ],
+  "PassCount": 5,
+  "Certificate": {
+   "Title": "Certificate of Completion",
+   "Line": "has completed the course",
+   "Place": "The 3D Art Studio · Room 101",
+   "Signer": "Daniel Reyes",
+   "SignerRole": "360 storytelling trainer",
+   "Org": "XR Libraries Campus",
+   "Note": "A Walk the Archive campus. A record of learning, not a professional qualification."
+  },
+  "BadgeId": "certified-creator",
+  "Stations": [
+   "cr-plan",
+   "cr-camera",
+   "cr-sound",
+   "cr-edit",
+   "cr-share"
+  ],
+  "Intro": "Welcome to the creator course. In five stations you will make a 360 story the way XRLibraries trained Washington’s librarians: plan it with your community, set up the camera, record clear sound, stitch and edit, then share it and keep it. Finish all five, then come back to this desk for the quiz. Pass it and the certificate is yours."
  }
 ]

@@ -441,5 +441,210 @@
     ],
     "buttonLabels": [],
     "toasts": []
+  },
+  {
+    "id": "cr-plan",
+    "card": {
+      "k": "Room 101 · 360 Storytelling",
+      "t": "Plan the story",
+      "m": "Who tells it, and what each scene shows",
+      "go": "Start planning"
+    },
+    "file": "the 3D Art Studio (bl/maker.py)",
+    "lines": "",
+    "room": "studio",
+    "kick": "Room 101 · 360 Storytelling",
+    "usesHands": false,
+    "badge": "creator",
+    "stepTitles": [
+      "A story that matters",
+      "Partner with the people who know it",
+      "Write a shot list",
+      "Short scenes"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "A 360 story puts the viewer inside a place: a historic site, a cultural event, how something is made. Pick a story that matters to your community, one people will want to stand inside."
+      },
+      {
+        "kind": "stp",
+        "text": "Work with the people who know the story best: a historical society, a cultural group, a tribe, a local business. Ask permission, and ask who has the right to share it."
+      },
+      {
+        "kind": "stp",
+        "text": "Write a simple shot list on cards: each place you will film, who will speak there, and the one thing you want viewers to notice. Lay the cards out in order on the table."
+      },
+      {
+        "kind": "stp",
+        "text": "Plan short scenes, often thirty to ninety seconds each. A viewer needs time to look around before the next scene starts, so fewer scenes, held longer, read best."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "cr-camera",
+    "card": {
+      "k": "Room 101 · 360 Storytelling",
+      "t": "Set up the 360 camera",
+      "m": "Eye height, still, and out of the seam",
+      "go": "Set up the camera"
+    },
+    "file": "the 3D Art Studio (bl/maker.py)",
+    "lines": "",
+    "room": "studio",
+    "kick": "Room 101 · 360 Storytelling",
+    "usesHands": false,
+    "badge": "creator",
+    "stepTitles": [
+      "Eye height",
+      "Keep it still",
+      "Mind the seam",
+      "Step out, or step in"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "Put the camera on a tripod at about eye level, around five feet high. That is where the viewer’s eyes will be, so the scene feels the right size."
+      },
+      {
+        "kind": "stp",
+        "text": "Keep the camera still. A moving 360 camera can make viewers feel sick. If the story has to travel, cut between still scenes instead."
+      },
+      {
+        "kind": "stp",
+        "text": "A 360 camera sees through two lenses back to back and stitches their pictures together. Keep faces and important things away from the seam between the lenses, out to the sides."
+      },
+      {
+        "kind": "stp",
+        "text": "The camera sees everything, including you. Either step out of the scene and start it from your phone, or become part of it. Film in even light, so neither lens looks into the sun."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "cr-sound",
+    "card": {
+      "k": "Room 101 · 360 Storytelling",
+      "t": "Record clear sound",
+      "m": "The voice close, the room quiet",
+      "go": "Start recording"
+    },
+    "file": "the 3D Art Studio (bl/maker.py)",
+    "lines": "",
+    "room": "studio",
+    "kick": "Room 101 · 360 Storytelling",
+    "usesHands": false,
+    "badge": "creator",
+    "stepTitles": [
+      "Sound tells viewers where to look",
+      "Close to the voice",
+      "Listen back",
+      "Room tone"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "In a 360 scene the viewer can look anywhere, so sound guides them: a voice, a bell, a door. Plan the sound with the picture."
+      },
+      {
+        "kind": "stp",
+        "text": "Put the microphone close to the speaker, about a hand’s width to a forearm away, out of the wind. A quiet room beats an expensive microphone."
+      },
+      {
+        "kind": "stp",
+        "text": "Wear headphones and record a short test first. Listen for fans, traffic and buzzing lights, and fix them before the real take."
+      },
+      {
+        "kind": "stp",
+        "text": "Record thirty seconds of the place with nobody talking. This room tone fills the gaps when you edit, so the cuts are never silent."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "cr-edit",
+    "card": {
+      "k": "Room 101 · 360 Storytelling",
+      "t": "Stitch and edit",
+      "m": "From two lenses to one story",
+      "go": "Open the edit"
+    },
+    "file": "the 3D Art Studio (bl/maker.py)",
+    "lines": "",
+    "room": "studio",
+    "kick": "Room 101 · 360 Storytelling",
+    "usesHands": false,
+    "badge": "creator",
+    "stepTitles": [
+      "Stitch",
+      "Cut short scenes",
+      "Titles and captions",
+      "Check it in a headset"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "The camera’s app stitches the two lenses into one picture, flat like a world map. Check the seam for faces cut in half."
+      },
+      {
+        "kind": "stp",
+        "text": "Trim each scene to where it starts and where it ends. Thirty to ninety seconds is plenty when the viewer can look around."
+      },
+      {
+        "kind": "stp",
+        "text": "Put titles and captions where the viewer is already looking, not behind them. Captions help everyone, not only viewers who cannot hear."
+      },
+      {
+        "kind": "stp",
+        "text": "Watch the edit in a headset before you share it. A tilted horizon or a seam that looked fine on a flat screen jumps out once you are standing inside."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
+  },
+  {
+    "id": "cr-share",
+    "card": {
+      "k": "Room 101 · 360 Storytelling",
+      "t": "Share it and keep it",
+      "m": "Credit everyone, keep the originals",
+      "go": "Share the story"
+    },
+    "file": "the 3D Art Studio (bl/maker.py)",
+    "lines": "",
+    "room": "studio",
+    "kick": "Room 101 · 360 Storytelling",
+    "usesHands": false,
+    "badge": "creator",
+    "stepTitles": [
+      "Show the people in it first",
+      "Share it",
+      "Credit everyone",
+      "Keep it"
+    ],
+    "panelTexts": [
+      {
+        "kind": "stp",
+        "text": "Show the finished story to the people in it before anyone else. It is their story: their thanks, and their corrections, come first."
+      },
+      {
+        "kind": "stp",
+        "text": "Share it on headsets at the library, as a 360 video online, or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours."
+      },
+      {
+        "kind": "stp",
+        "text": "Credit the people who told the story and the partners who helped, in the video and wherever you post it."
+      },
+      {
+        "kind": "stp",
+        "text": "Save the original files, your notes and the permissions with the library’s collection, labelled with names, the date and the place, so the story lasts."
+      }
+    ],
+    "buttonLabels": [],
+    "toasts": []
   }
 ]

@@ -157,6 +157,48 @@
         "note": "A Walk the Archive campus. A record of learning, not a clinical qualification."
       },
       "badge": "certified-dialysis"
+    },
+    {
+      "id": "storytelling", "venue": "studio", "kind": "course",
+      "title": "Making a 360 Story",
+      "subtitle": "Five stations, a quiz, a certificate",
+      "speaker": {"name": "Daniel Reyes", "short": "Daniel", "role": "360 storytelling trainer", "person": "wax-2022a-trainer", "voice": "am_eric"},
+      "stations": ["cr-plan", "cr-camera", "cr-sound", "cr-edit", "cr-share"],
+      "slides": [],
+      "intro": "Welcome to the creator course. In five stations you will make a 360 story the way XRLibraries trained Washington’s librarians: plan it with your community, set up the camera, record clear sound, stitch and edit, then share it and keep it. Finish all five, then come back to this desk for the quiz. Pass it and the certificate is yours.",
+      "quiz": {
+        "pass": 5,
+        "questions": [
+          {"q": "At what height should a 360 camera usually stand?",
+           "options": ["On the floor", "About eye level, around five feet", "As high as the ceiling", "It does not matter"], "answer": 1,
+           "why": "About eye level. That is where the viewer’s eyes will be, so the scene feels the right size."},
+          {"q": "Why keep a 360 camera still?",
+           "options": ["To save the battery", "A moving 360 camera can make viewers feel sick", "So the seam moves", "To record better sound"], "answer": 1,
+           "why": "Movement the viewer did not make can make them feel sick. Cut between still scenes instead."},
+          {"q": "Where should faces and important things be?",
+           "options": ["On the seam between the lenses", "Right under the tripod", "Away from the seam, out to the sides", "Behind the camera"], "answer": 2,
+           "why": "The seam is where the two lenses’ pictures are stitched together; anything on it can come out broken."},
+          {"q": "What is room tone?",
+           "options": ["The colour of the walls", "Thirty seconds of the place with nobody talking", "The loudest sound in the room", "Music added in the edit"], "answer": 1,
+           "why": "Room tone fills the gaps between cuts, so the edit never drops into silence."},
+          {"q": "How long is a good 360 scene, often?",
+           "options": ["Five seconds", "Thirty to ninety seconds", "Ten minutes", "As long as the memory card allows"], "answer": 1,
+           "why": "Thirty to ninety seconds gives viewers time to look around before the next scene starts."},
+          {"q": "Who should see the finished story first?",
+           "options": ["A film festival", "The people in it", "Nobody, until it is online", "Only the editor"], "answer": 1,
+           "why": "It is their story. Show it to the people in it first, and keep their permissions with the files."}
+        ]
+      },
+      "certificate": {
+        "title": "Certificate of Completion",
+        "line": "has completed the course",
+        "place": "The 3D Art Studio · Room 101",
+        "signer": "Daniel Reyes",
+        "signer_role": "360 storytelling trainer",
+        "org": "XR Libraries Campus",
+        "note": "A Walk the Archive campus. A record of learning, not a professional qualification."
+      },
+      "badge": "certified-creator"
     }
   ]
 }

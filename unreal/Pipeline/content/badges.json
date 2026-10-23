@@ -93,5 +93,15 @@
     "id": "certified-dialysis",
     "name": "Certified: Dialysis Foundations",
     "how": "Finish the five stations of the Training Wing and pass the quiz at the course desk"
+  },
+  {
+    "id": "creator",
+    "name": "Creator",
+    "how": "Finish a station of the 360 storytelling course in Room 101"
+  },
+  {
+    "id": "certified-creator",
+    "name": "Certified: 360 Storytelling",
+    "how": "Finish the five storytelling stations in Room 101 and pass the quiz at the teacher’s desk"
   }
 ]

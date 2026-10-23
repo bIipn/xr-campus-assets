@@ -529,6 +529,17 @@
    ],
    "triangles": 8208,
    "bytes": 5851084
+  },
+  "Maker": {
+   "file": "Maker.glb",
+   "source": "unreal/Pipeline/out/maker/Maker.glb",
+   "meshes": 25,
+   "tagged": [
+    "seat__studio_edit_f90",
+    "spot__studio_f90"
+   ],
+   "triangles": 3702,
+   "bytes": 5405996
   }
  }
 }

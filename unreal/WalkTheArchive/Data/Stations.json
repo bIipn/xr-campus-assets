@@ -33,6 +33,7 @@
    "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass."
   ],
   "bUsesHands": true,
+  "BadgeId": "None",
   "Location": {
    "X": 3358.0,
    "Y": -900.0,
@@ -75,6 +76,7 @@
    "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
   ],
   "bUsesHands": true,
+  "BadgeId": "None",
   "Location": {
    "X": 3100.0,
    "Y": -1260.0,
@@ -116,6 +118,7 @@
    "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back)."
   ],
   "bUsesHands": true,
+  "BadgeId": "None",
   "Location": {
    "X": 2590.0,
    "Y": -920.0,
@@ -163,6 +166,7 @@
    "Pick a kit. You’ll build it with your own hands, one part at a time, the way you would with real materials, then test it."
   ],
   "bUsesHands": true,
+  "BadgeId": "None",
   "Location": {
    "X": 1810.0,
    "Y": 240.0,
@@ -210,6 +214,7 @@
   ],
   "Panel": [],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 2590.0,
    "Y": 290.0,
@@ -252,6 +257,7 @@
    "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 2330.0,
    "Y": -1390.0,
@@ -297,6 +303,7 @@
    "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 3095.0,
    "Y": -1775.0,
@@ -339,6 +346,7 @@
    "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 3040.0,
    "Y": -1900.0,
@@ -381,6 +389,7 @@
    "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 2460.0,
    "Y": -2650.0,
@@ -420,6 +429,7 @@
    "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 3010.0,
    "Y": -1425.0,
@@ -433,6 +443,221 @@
    },
    "Yaw": 90.0,
    "Pitch": -11.459,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cr-plan",
+  "Room": "studio",
+  "Kicker": "Room 101 · 360 Storytelling",
+  "Title": "Plan the story",
+  "Subtitle": "Who tells it, and what each scene shows",
+  "GoLabel": "Start planning",
+  "Steps": [
+   "A story that matters",
+   "Partner with the people who know it",
+   "Write a shot list",
+   "Short scenes"
+  ],
+  "StepTexts": [
+   "A 360 story puts the viewer inside a place: a historic site, a cultural event, how something is made. Pick a story that matters to your community, one people will want to stand inside.",
+   "Work with the people who know the story best: a historical society, a cultural group, a tribe, a local business. Ask permission, and ask who has the right to share it.",
+   "Write a simple shot list on cards: each place you will film, who will speak there, and the one thing you want viewers to notice. Lay the cards out in order on the table.",
+   "Plan short scenes, often thirty to ninety seconds each. A viewer needs time to look around before the next scene starts, so fewer scenes, held longer, read best."
+  ],
+  "Panel": [
+   "A 360 story puts the viewer inside a place: a historic site, a cultural event, how something is made. Pick a story that matters to your community, one people will want to stand inside.",
+   "Work with the people who know the story best: a historical society, a cultural group, a tribe, a local business. Ask permission, and ask who has the right to share it.",
+   "Write a simple shot list on cards: each place you will film, who will speak there, and the one thing you want viewers to notice. Lay the cards out in order on the table.",
+   "Plan short scenes, often thirty to ninety seconds each. A viewer needs time to look around before the next scene starts, so fewer scenes, held longer, read best."
+  ],
+  "bUsesHands": false,
+  "BadgeId": "creator",
+  "Location": {
+   "X": 1525.0,
+   "Y": -875.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 1695.0,
+    "Y": -875.0,
+    "Z": 162.0
+   },
+   "Yaw": 180.0,
+   "Pitch": -20.054,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cr-camera",
+  "Room": "studio",
+  "Kicker": "Room 101 · 360 Storytelling",
+  "Title": "Set up the 360 camera",
+  "Subtitle": "Eye height, still, and out of the seam",
+  "GoLabel": "Set up the camera",
+  "Steps": [
+   "Eye height",
+   "Keep it still",
+   "Mind the seam",
+   "Step out, or step in"
+  ],
+  "StepTexts": [
+   "Put the camera on a tripod at about eye level, around five feet high. That is where the viewer’s eyes will be, so the scene feels the right size.",
+   "Keep the camera still. A moving 360 camera can make viewers feel sick. If the story has to travel, cut between still scenes instead.",
+   "A 360 camera sees through two lenses back to back and stitches their pictures together. Keep faces and important things away from the seam between the lenses, out to the sides.",
+   "The camera sees everything, including you. Either step out of the scene and start it from your phone, or become part of it. Film in even light, so neither lens looks into the sun."
+  ],
+  "Panel": [
+   "Put the camera on a tripod at about eye level, around five feet high. That is where the viewer’s eyes will be, so the scene feels the right size.",
+   "Keep the camera still. A moving 360 camera can make viewers feel sick. If the story has to travel, cut between still scenes instead.",
+   "A 360 camera sees through two lenses back to back and stitches their pictures together. Keep faces and important things away from the seam between the lenses, out to the sides.",
+   "The camera sees everything, including you. Either step out of the scene and start it from your phone, or become part of it. Film in even light, so neither lens looks into the sun."
+  ],
+  "bUsesHands": false,
+  "BadgeId": "creator",
+  "Location": {
+   "X": 1900.0,
+   "Y": -870.0,
+   "Z": 130.0
+  },
+  "View": {
+   "Location": {
+    "X": 1900.0,
+    "Y": -685.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -3.438,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cr-sound",
+  "Room": "studio",
+  "Kicker": "Room 101 · 360 Storytelling",
+  "Title": "Record clear sound",
+  "Subtitle": "The voice close, the room quiet",
+  "GoLabel": "Start recording",
+  "Steps": [
+   "Sound tells viewers where to look",
+   "Close to the voice",
+   "Listen back",
+   "Room tone"
+  ],
+  "StepTexts": [
+   "In a 360 scene the viewer can look anywhere, so sound guides them: a voice, a bell, a door. Plan the sound with the picture.",
+   "Put the microphone close to the speaker, about a hand’s width to a forearm away, out of the wind. A quiet room beats an expensive microphone.",
+   "Wear headphones and record a short test first. Listen for fans, traffic and buzzing lights, and fix them before the real take.",
+   "Record thirty seconds of the place with nobody talking. This room tone fills the gaps when you edit, so the cuts are never silent."
+  ],
+  "Panel": [
+   "In a 360 scene the viewer can look anywhere, so sound guides them: a voice, a bell, a door. Plan the sound with the picture.",
+   "Put the microphone close to the speaker, about a hand’s width to a forearm away, out of the wind. A quiet room beats an expensive microphone.",
+   "Wear headphones and record a short test first. Listen for fans, traffic and buzzing lights, and fix them before the real take.",
+   "Record thirty seconds of the place with nobody talking. This room tone fills the gaps when you edit, so the cuts are never silent."
+  ],
+  "bUsesHands": false,
+  "BadgeId": "creator",
+  "Location": {
+   "X": 2340.0,
+   "Y": -865.0,
+   "Z": 90.0
+  },
+  "View": {
+   "Location": {
+    "X": 2125.0,
+    "Y": -865.0,
+    "Z": 162.0
+   },
+   "Yaw": 0.0,
+   "Pitch": -11.459,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cr-edit",
+  "Room": "studio",
+  "Kicker": "Room 101 · 360 Storytelling",
+  "Title": "Stitch and edit",
+  "Subtitle": "From two lenses to one story",
+  "GoLabel": "Open the edit",
+  "Steps": [
+   "Stitch",
+   "Cut short scenes",
+   "Titles and captions",
+   "Check it in a headset"
+  ],
+  "StepTexts": [
+   "The camera’s app stitches the two lenses into one picture, flat like a world map. Check the seam for faces cut in half.",
+   "Trim each scene to where it starts and where it ends. Thirty to ninety seconds is plenty when the viewer can look around.",
+   "Put titles and captions where the viewer is already looking, not behind them. Captions help everyone, not only viewers who cannot hear.",
+   "Watch the edit in a headset before you share it. A tilted horizon or a seam that looked fine on a flat screen jumps out once you are standing inside."
+  ],
+  "Panel": [
+   "The camera’s app stitches the two lenses into one picture, flat like a world map. Check the seam for faces cut in half.",
+   "Trim each scene to where it starts and where it ends. Thirty to ninety seconds is plenty when the viewer can look around.",
+   "Put titles and captions where the viewer is already looking, not behind them. Captions help everyone, not only viewers who cannot hear.",
+   "Watch the edit in a headset before you share it. A tilted horizon or a seam that looked fine on a flat screen jumps out once you are standing inside."
+  ],
+  "bUsesHands": false,
+  "BadgeId": "creator",
+  "Location": {
+   "X": 2240.0,
+   "Y": -512.0,
+   "Z": 105.0
+  },
+  "View": {
+   "Location": {
+    "X": 2240.0,
+    "Y": -745.0,
+    "Z": 162.0
+   },
+   "Yaw": 90.0,
+   "Pitch": -6.875,
+   "bValid": true
+  }
+ },
+ {
+  "Name": "cr-share",
+  "Room": "studio",
+  "Kicker": "Room 101 · 360 Storytelling",
+  "Title": "Share it and keep it",
+  "Subtitle": "Credit everyone, keep the originals",
+  "GoLabel": "Share the story",
+  "Steps": [
+   "Show the people in it first",
+   "Share it",
+   "Credit everyone",
+   "Keep it"
+  ],
+  "StepTexts": [
+   "Show the finished story to the people in it before anyone else. It is their story: their thanks, and their corrections, come first.",
+   "Share it on headsets at the library, as a 360 video online, or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours.",
+   "Credit the people who told the story and the partners who helped, in the video and wherever you post it.",
+   "Save the original files, your notes and the permissions with the library’s collection, labelled with names, the date and the place, so the story lasts."
+  ],
+  "Panel": [
+   "Show the finished story to the people in it before anyone else. It is their story: their thanks, and their corrections, come first.",
+   "Share it on headsets at the library, as a 360 video online, or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours.",
+   "Credit the people who told the story and the partners who helped, in the video and wherever you post it.",
+   "Save the original files, your notes and the permissions with the library’s collection, labelled with names, the date and the place, so the story lasts."
+  ],
+  "bUsesHands": false,
+  "BadgeId": "creator",
+  "Location": {
+   "X": 1940.0,
+   "Y": -1230.0,
+   "Z": 110.0
+  },
+  "View": {
+   "Location": {
+    "X": 1940.0,
+    "Y": -1055.0,
+    "Z": 162.0
+   },
+   "Yaw": -90.0,
+   "Pitch": -10.313,
    "bValid": true
   }
  },
@@ -459,6 +684,7 @@
    "Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around."
   ],
   "bUsesHands": false,
+  "BadgeId": "None",
   "Location": {
    "X": 1560.0,
    "Y": -640.0,

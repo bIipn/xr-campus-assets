@@ -3120,7 +3120,7 @@
   },
   "R027": {
    "Pattern": "\\b(badges?|achievements?|rewards?|prizes?|trophies|trophy)\\b|\\b(insignias?|logros?|recompensas?|premios?|trofeos?|medallas?)\\b",
-   "Answer": "Hay 19 insignias. En esta versión puedes ganar Primeros pasos, Explorador del museo, Ratón de biblioteca, Mente curiosa, Historia viva y Oído atento, por escuchar una charla hasta el final; las insignias de taller, por terminar una estación: Científico de laboratorio, Modelista, Creador de mundos y Artista 3D; Certificado: Intro a la VR, por aprobar el cuestionario de la Sala 104; Aprendiz, por terminar una estación del Ala de formación; y Certificado: Fundamentos de diálisis, por terminar sus cinco estaciones y aprobar el cuestionario del mostrador del curso. Las insignias de atracciones, fútbol y fichas llegarán con esas funciones en próximas versiones.",
+   "Answer": "Hay 21 insignias. En esta versión puedes ganar Primeros pasos, Explorador del museo, Ratón de biblioteca, Mente curiosa, Historia viva y Oído atento, por escuchar una charla hasta el final; las insignias de taller, por terminar una estación: Científico de laboratorio, Modelista, Creador de mundos y Artista 3D; Certificado: Intro a la VR, por aprobar el cuestionario de la Sala 104; Aprendiz, por terminar una estación del Ala de formación; Certificado: Fundamentos de diálisis, por terminar sus cinco estaciones y aprobar el cuestionario del mostrador del curso; Creador, por terminar una estación del curso de narración en 360 de la Sala 101; Certificado: Narración en 360, por terminar sus cinco estaciones y aprobar el cuestionario en el escritorio del maestro; y Cazador de fichas, por encontrar todas las fichas XR escondidas. Las insignias de atracciones y de fútbol llegarán con esas funciones en próximas versiones.",
    "OfferLabel": "Ver las insignias"
   },
   "R028": {
@@ -3395,6 +3395,16 @@
    "Pattern": "^(?=.*?(?:\\b(make|making|film|filming|shoot|shooting|record|recording|create|creating)\\b))(?=.*?(?:\\b360\\b))|^(?=.*?(?:\\b(hacer|hago|haga|hacemos|crear|creo|grabar|grabo|graba|grabaci[oó]n|filmar|filmo|filma|filmaci[oó]n|rodar|producir|c[oó]mo se (hace|hacen|graba|graban|filma|filman)|c[oó]mo (hago|grabo|filmo|creo))\\b))(?=.*?(?:\\b360\\b))",
    "Answer": "“Cómo crear historias en 360” te guía paso a paso: planea una historia con las personas que mejor la conocen, filma desde un trípode a la altura de los ojos, graba un sonido claro, haz cada escena corta, y luego une el metraje y compártelo.",
    "OfferLabel": "Abrir “Cómo crear historias en 360”"
+  },
+  "R036": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(360|storytelling|story ?telling|creator|content[- ]creation)\\b))(?=.*?(?:\\b(course|class|certificate|learn|lesson)\\b))|^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)|\\bll[eé]va(me|nos)\\b|\\bacomp[aá][ñn]a(me|nos)\\b|\\bgu[ií]a(me|nos)\\b|\\bvamos al?\\b|\\bquiero ir\\b|\\bquisiera ir\\b|\\bc[oó]mo (llego|voy|se llega|se va|puedo (llegar|ir))\\b|\\bir al?\\b|\\bd[oó]nde (est[aá]n?|queda|quedan|hay|puedo (encontrar|ver)|encuentro|se encuentran?)\\b|\\bpor d[oó]nde\\b|\\bc[oó]mo encuentro\\b|\\bdirecci[oó]n(es)?\\b|\\bmu[eé]strame el camino\\b|\\bqu[eé] camino\\b|\\bhacia d[oó]nde\\b))(?=.*?(?:\\b(360|narraci[oó]n|narrar|cuentacuentos|historias? en 360|creador(es|as)?|creaci[oó]n de contenido)\\b))(?=.*?(?:\\b(curso|clase|certificado|aprender|lecci[oó]n|taller)\\b))",
+   "Answer": "La Sala 101, el Taller de arte 3D, ofrece el curso de creadores, Cómo hacer una historia en 360: planea la historia, prepara la cámara 360, graba un sonido claro, une y edita, y luego compártela y guárdala, una estación para cada paso. Termina las cinco y aprueba el cuestionario en el escritorio del maestro para obtener un certificado.",
+   "OfferLabel": "Abrir el curso"
+  },
+  "R037": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(dialysis|technician|training wing|sandi)\\b))(?=.*?(?:\\b(course|class|certificate|learn|train(ing)?)\\b))|^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)|\\bll[eé]va(me|nos)\\b|\\bacomp[aá][ñn]a(me|nos)\\b|\\bgu[ií]a(me|nos)\\b|\\bvamos al?\\b|\\bquiero ir\\b|\\bquisiera ir\\b|\\bc[oó]mo (llego|voy|se llega|se va|puedo (llegar|ir))\\b|\\bir al?\\b|\\bd[oó]nde (est[aá]n?|queda|quedan|hay|puedo (encontrar|ver)|encuentro|se encuentran?)\\b|\\bpor d[oó]nde\\b|\\bc[oó]mo encuentro\\b|\\bdirecci[oó]n(es)?\\b|\\bmu[eé]strame el camino\\b|\\bqu[eé] camino\\b|\\bhacia d[oó]nde\\b))(?=.*?(?:\\b(di[aá]lisis|t[eé]cnicos?|ala de formaci[oó]n|sandi)\\b))(?=.*?(?:\\b(curso|clase|certificado|aprender|capacitaci[oó]n|formaci[oó]n|entrenar)\\b))",
+   "Answer": "El Ala de formación, pasando el auditorio, ofrece el curso de técnico en diálisis: la higiene de manos, la máquina, el sillón del paciente, el agua y el registro, una estación para cada paso. Termina las cinco y aprueba el cuestionario en el mostrador del curso para obtener un certificado.",
+   "OfferLabel": "Abrir el curso"
   }
  },
  "DT_Facts": {
@@ -3566,6 +3576,14 @@
   "certified-dialysis": {
    "DisplayName": "Certificado: Fundamentos de diálisis",
    "How": "Termina las cinco estaciones del Ala de formación y aprueba el cuestionario en el mostrador del curso"
+  },
+  "creator": {
+   "DisplayName": "Creador",
+   "How": "Termina una estación del curso de narración en 360 en la Sala 101"
+  },
+  "certified-creator": {
+   "DisplayName": "Certificado: Narración en 360",
+   "How": "Termina las cinco estaciones de narración en la Sala 101 y aprueba el cuestionario en el escritorio del maestro"
   }
  },
  "DT_Tokens": {
@@ -4073,6 +4091,126 @@
    "Panel": [
     "Pinta en el aire alrededor del caballete. Los pinceles, los sellos, la simetría y una plataforma giratoria te permiten crear una imagen 3D que puedes rodear caminando."
    ]
+  },
+  "cr-plan": {
+   "Kicker": "Sala 101 · Narración en 360",
+   "Title": "Planea la historia",
+   "Subtitle": "Quién la cuenta y qué muestra cada escena",
+   "GoLabel": "Empezar a planear",
+   "Steps": [
+    "Una historia que importa",
+    "Trabaja con quienes la conocen",
+    "Escribe una lista de tomas",
+    "Escenas cortas"
+   ],
+   "StepTexts": [
+    "Una historia en 360 pone a quien la mira dentro de un lugar: un sitio histórico, una celebración, cómo se hace algo. Elige una historia que le importe a tu comunidad, una en la que la gente quiera estar.",
+    "Trabaja con las personas que mejor conocen la historia: una sociedad histórica, un grupo cultural, una tribu, un negocio local. Pide permiso y pregunta quién tiene derecho a compartirla.",
+    "Escribe una lista de tomas sencilla en tarjetas: cada lugar que vas a filmar, quién va a hablar ahí y lo único que quieres que la gente note. Pon las tarjetas en orden sobre la mesa.",
+    "Planea escenas cortas, muchas veces de treinta a noventa segundos. Quien mira necesita tiempo para mirar alrededor antes de la siguiente escena, así que funcionan mejor pocas escenas, más largas."
+   ],
+   "Panel": [
+    "Una historia en 360 pone a quien la mira dentro de un lugar: un sitio histórico, una celebración, cómo se hace algo. Elige una historia que le importe a tu comunidad, una en la que la gente quiera estar.",
+    "Trabaja con las personas que mejor conocen la historia: una sociedad histórica, un grupo cultural, una tribu, un negocio local. Pide permiso y pregunta quién tiene derecho a compartirla.",
+    "Escribe una lista de tomas sencilla en tarjetas: cada lugar que vas a filmar, quién va a hablar ahí y lo único que quieres que la gente note. Pon las tarjetas en orden sobre la mesa.",
+    "Planea escenas cortas, muchas veces de treinta a noventa segundos. Quien mira necesita tiempo para mirar alrededor antes de la siguiente escena, así que funcionan mejor pocas escenas, más largas."
+   ]
+  },
+  "cr-camera": {
+   "Kicker": "Sala 101 · Narración en 360",
+   "Title": "Prepara la cámara 360",
+   "Subtitle": "A la altura de los ojos, quieta y lejos de la costura",
+   "GoLabel": "Preparar la cámara",
+   "Steps": [
+    "A la altura de los ojos",
+    "Que no se mueva",
+    "Cuidado con la costura",
+    "Sal de la escena, o entra en ella"
+   ],
+   "StepTexts": [
+    "Pon la cámara en un tripié a la altura de los ojos, a un metro y medio más o menos. Ahí van a estar los ojos de quien mire, así que la escena se siente del tamaño correcto.",
+    "Mantén la cámara quieta. Una cámara 360 en movimiento puede marear a quien mira. Si la historia tiene que viajar, corta entre escenas quietas.",
+    "Una cámara 360 ve con dos lentes espalda con espalda y une sus imágenes. Mantén las caras y lo importante lejos de la costura entre los lentes, hacia los lados.",
+    "La cámara lo ve todo, también a ti. Sal de la escena y empieza a grabar desde tu teléfono, o forma parte de ella. Graba con luz pareja, para que ningún lente mire hacia el sol."
+   ],
+   "Panel": [
+    "Pon la cámara en un tripié a la altura de los ojos, a un metro y medio más o menos. Ahí van a estar los ojos de quien mire, así que la escena se siente del tamaño correcto.",
+    "Mantén la cámara quieta. Una cámara 360 en movimiento puede marear a quien mira. Si la historia tiene que viajar, corta entre escenas quietas.",
+    "Una cámara 360 ve con dos lentes espalda con espalda y une sus imágenes. Mantén las caras y lo importante lejos de la costura entre los lentes, hacia los lados.",
+    "La cámara lo ve todo, también a ti. Sal de la escena y empieza a grabar desde tu teléfono, o forma parte de ella. Graba con luz pareja, para que ningún lente mire hacia el sol."
+   ]
+  },
+  "cr-sound": {
+   "Kicker": "Sala 101 · Narración en 360",
+   "Title": "Graba un sonido claro",
+   "Subtitle": "La voz cerca, el cuarto en silencio",
+   "GoLabel": "Empezar a grabar",
+   "Steps": [
+    "El sonido dice dónde mirar",
+    "Cerca de la voz",
+    "Escucha la prueba",
+    "El tono de sala"
+   ],
+   "StepTexts": [
+    "En una escena 360 la gente puede mirar a cualquier lado, así que el sonido la guía: una voz, una campana, una puerta. Planea el sonido junto con la imagen.",
+    "Pon el micrófono cerca de quien habla, entre un palmo y un antebrazo de distancia, y lejos del viento. Un cuarto en silencio vale más que un micrófono caro.",
+    "Ponte audífonos y graba primero una prueba corta. Escucha si hay ventiladores, tráfico o luces que zumban, y arréglalo antes de la toma de verdad.",
+    "Graba treinta segundos del lugar sin que nadie hable. Ese tono de sala llena los huecos al editar, para que los cortes nunca queden en silencio."
+   ],
+   "Panel": [
+    "En una escena 360 la gente puede mirar a cualquier lado, así que el sonido la guía: una voz, una campana, una puerta. Planea el sonido junto con la imagen.",
+    "Pon el micrófono cerca de quien habla, entre un palmo y un antebrazo de distancia, y lejos del viento. Un cuarto en silencio vale más que un micrófono caro.",
+    "Ponte audífonos y graba primero una prueba corta. Escucha si hay ventiladores, tráfico o luces que zumban, y arréglalo antes de la toma de verdad.",
+    "Graba treinta segundos del lugar sin que nadie hable. Ese tono de sala llena los huecos al editar, para que los cortes nunca queden en silencio."
+   ]
+  },
+  "cr-edit": {
+   "Kicker": "Sala 101 · Narración en 360",
+   "Title": "Une y edita",
+   "Subtitle": "De dos lentes a una historia",
+   "GoLabel": "Abrir la edición",
+   "Steps": [
+    "Une las imágenes",
+    "Corta escenas cortas",
+    "Títulos y subtítulos",
+    "Revísalo con un visor"
+   ],
+   "StepTexts": [
+    "La aplicación de la cámara une los dos lentes en una sola imagen, plana como un mapa del mundo. Revisa la costura por si hay caras cortadas a la mitad.",
+    "Recorta cada escena desde donde empieza hasta donde termina. De treinta a noventa segundos es suficiente cuando quien mira puede mirar alrededor.",
+    "Pon los títulos y los subtítulos donde la gente ya está mirando, no a sus espaldas. Los subtítulos ayudan a todos, no solo a quien no puede oír.",
+    "Mira la edición con un visor antes de compartirla. Un horizonte chueco o una costura que se veían bien en una pantalla plana saltan a la vista cuando estás adentro."
+   ],
+   "Panel": [
+    "La aplicación de la cámara une los dos lentes en una sola imagen, plana como un mapa del mundo. Revisa la costura por si hay caras cortadas a la mitad.",
+    "Recorta cada escena desde donde empieza hasta donde termina. De treinta a noventa segundos es suficiente cuando quien mira puede mirar alrededor.",
+    "Pon los títulos y los subtítulos donde la gente ya está mirando, no a sus espaldas. Los subtítulos ayudan a todos, no solo a quien no puede oír.",
+    "Mira la edición con un visor antes de compartirla. Un horizonte chueco o una costura que se veían bien en una pantalla plana saltan a la vista cuando estás adentro."
+   ]
+  },
+  "cr-share": {
+   "Kicker": "Sala 101 · Narración en 360",
+   "Title": "Compártela y guárdala",
+   "Subtitle": "Da crédito a todos, guarda los originales",
+   "GoLabel": "Compartir la historia",
+   "Steps": [
+    "Primero, a quienes salen en ella",
+    "Compártela",
+    "Da crédito a todos",
+    "Guárdala"
+   ],
+   "StepTexts": [
+    "Muestra la historia terminada a las personas que salen en ella antes que a nadie. Es su historia: su agradecimiento, y sus correcciones, van primero.",
+    "Compártela en visores en la biblioteca, como video 360 en línea o en un creador de recorridos virtuales. El XR Showcase presenta Uptale, una plataforma para crear recorridos virtuales en 360.",
+    "Da crédito a las personas que contaron la historia y a quienes ayudaron, en el video y donde la publiques.",
+    "Guarda los archivos originales, tus notas y los permisos en la colección de la biblioteca, con los nombres, la fecha y el lugar, para que la historia dure."
+   ],
+   "Panel": [
+    "Muestra la historia terminada a las personas que salen en ella antes que a nadie. Es su historia: su agradecimiento, y sus correcciones, van primero.",
+    "Compártela en visores en la biblioteca, como video 360 en línea o en un creador de recorridos virtuales. El XR Showcase presenta Uptale, una plataforma para crear recorridos virtuales en 360.",
+    "Da crédito a las personas que contaron la historia y a quienes ayudaron, en el video y donde la publiques.",
+    "Guarda los archivos originales, tus notas y los permisos en la colección de la biblioteca, con los nombres, la fecha y el lugar, para que la historia dure."
+   ]
   }
  },
  "DT_Rides": {
@@ -4537,6 +4675,85 @@
     "Note": "Un campus de Walk the Archive. Un registro de aprendizaje, no una titulación clínica."
    },
    "Intro": "Te damos la bienvenida al Ala de formación. Este curso te guía por las cinco cosas que un técnico en diálisis hace en cada turno: la higiene de manos, la máquina, el sillón del paciente, el agua y el registro. Termina las cinco estaciones y luego vuelve a este mostrador para el cuestionario. Apruébalo y el certificado es tuyo."
+  },
+  "storytelling": {
+   "Title": "Cómo hacer una historia en 360",
+   "Subtitle": "Cinco estaciones, un cuestionario, un certificado",
+   "Speaker": "Daniel Reyes",
+   "SpeakerShort": "Daniel",
+   "SpeakerRole": "Capacitador de narración en 360",
+   "Quiz": [
+    {
+     "Question": "¿A qué altura suele ir una cámara 360?",
+     "Options": [
+      "En el piso",
+      "A la altura de los ojos, un metro y medio más o menos",
+      "Tan alto como el techo",
+      "No importa"
+     ],
+     "Why": "A la altura de los ojos. Ahí van a estar los ojos de quien mire, así que la escena se siente del tamaño correcto."
+    },
+    {
+     "Question": "¿Por qué hay que mantener quieta una cámara 360?",
+     "Options": [
+      "Para ahorrar batería",
+      "Una cámara 360 en movimiento puede marear a quien mira",
+      "Para que la costura se mueva",
+      "Para grabar mejor sonido"
+     ],
+     "Why": "Un movimiento que quien mira no hizo puede marearlo. Mejor corta entre escenas quietas."
+    },
+    {
+     "Question": "¿Dónde deben ir las caras y lo importante?",
+     "Options": [
+      "En la costura entre los lentes",
+      "Justo debajo del tripié",
+      "Lejos de la costura, hacia los lados",
+      "Detrás de la cámara"
+     ],
+     "Why": "La costura es donde se unen las imágenes de los dos lentes; lo que quede ahí puede salir roto."
+    },
+    {
+     "Question": "¿Qué es el tono de sala?",
+     "Options": [
+      "El color de las paredes",
+      "Treinta segundos del lugar sin que nadie hable",
+      "El sonido más fuerte del cuarto",
+      "La música que se agrega al editar"
+     ],
+     "Why": "El tono de sala llena los huecos entre cortes, para que la edición nunca quede en silencio."
+    },
+    {
+     "Question": "¿Cuánto suele durar una buena escena en 360?",
+     "Options": [
+      "Cinco segundos",
+      "De treinta a noventa segundos",
+      "Diez minutos",
+      "Lo que aguante la tarjeta de memoria"
+     ],
+     "Why": "De treinta a noventa segundos le da a la gente tiempo de mirar alrededor antes de la siguiente escena."
+    },
+    {
+     "Question": "¿Quién debe ver primero la historia terminada?",
+     "Options": [
+      "Un festival de cine",
+      "Las personas que salen en ella",
+      "Nadie, hasta que esté en línea",
+      "Solo quien la editó"
+     ],
+     "Why": "Es su historia. Muéstrasela primero a quienes salen en ella y guarda sus permisos junto con los archivos."
+    }
+   ],
+   "Certificate": {
+    "Title": "Certificado de finalización",
+    "Line": "ha completado el curso",
+    "Place": "El Taller de arte 3D · Sala 101",
+    "Signer": "Daniel Reyes",
+    "SignerRole": "Capacitador de narración en 360",
+    "Org": "Campus de XR Libraries",
+    "Note": "Un campus de Walk the Archive. Un registro de aprendizaje, no una titulación profesional."
+   },
+   "Intro": "Te damos la bienvenida al curso de creadores. En cinco estaciones vas a hacer una historia en 360 como XRLibraries capacitó a las bibliotecarias y los bibliotecarios de Washington: planéala con tu comunidad, prepara la cámara, graba un sonido claro, une y edita, y luego compártela y guárdala. Termina las cinco y vuelve a este escritorio para el cuestionario. Apruébalo y el certificado es tuyo."
   }
  }
 }

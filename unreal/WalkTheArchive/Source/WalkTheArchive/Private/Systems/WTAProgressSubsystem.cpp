@@ -258,7 +258,8 @@ void UWTAProgressSubsystem::NoteStationFinished(FName StationId)
 	const FWTAStationRow* Station = Content ? Content->FindStation(StationId) : nullptr;
 	FName Badge;
 	const FName Room = Station ? Station->Room : NAME_None;
-	if (Room == FName(TEXT("lab")))             { Badge = FName(TEXT("scientist")); }
+	if (Station != nullptr && !Station->BadgeId.IsNone()) { Badge = Station->BadgeId; }       // the row names its own
+	else if (Room == FName(TEXT("lab")))        { Badge = FName(TEXT("scientist")); }
 	else if (Room == FName(TEXT("blueprint")))  { Badge = FName(TEXT("maker")); }
 	else if (Room == FName(TEXT("world")))      { Badge = FName(TEXT("worldbuilder")); }
 	else if (Room == FName(TEXT("studio")))     { Badge = FName(TEXT("artist")); }

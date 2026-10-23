@@ -16,10 +16,11 @@ bl/exterior.py ──► out/exterior/Outside.glb, lights.json, theatre_layout.j
 bl/auditorium.py ──► out/auditorium/Auditorium.glb, lights.json, layout.json  (the talks wing: the foyer and the auditorium)
 bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json     (Room 104 as the XR Classroom: smartboard, desks, signs)
 bl/training.py ──► out/training/Training.glb, lights.json, layout.json        (the Training Wing: the dialysis course's five stations)
+bl/maker.py ──► out/maker/Maker.glb, layout.json                              (Room 101's 360 storytelling course: five stations, the desk)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
-out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb
+out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb + Maker.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -178,7 +179,21 @@ A row of kind `course` is a class taught by doing rather than listening: no slid
 `AWTACourseActor` on its venue's spot instead of a talk actor: the lead (the row's `person`) idles at the desk, E opens
 the course card with the welcome (`VO_talk_<id>_01`, the one talk clip a course has), the stations as a checklist with
 a Go button each, and once every station is finished the quiz, the certificate and the badge, as for a class. The
-first course is Dialysis Technician: Foundations in the Training Wing (`dx-*` stations, `certified-dialysis`).
+first course is Dialysis Technician: Foundations in the Training Wing (`dx-*` stations, `certified-dialysis`); the
+second, Making a 360 Story, is the maker room's lesson in the 3D Art Studio (`storytelling`, venue `studio`, `cr-*`
+stations, `certified-creator`), taught by a 360 trainer (the Washington 360 scene's trainer) at the room's teacher desk.
+A station row may name its own badge (`badge` in stations.json, `BadgeId` in DT_Stations; the storytelling stations
+give Creator), else finishing it gives its room's.
+
+The 360 storytelling course's props (`bl/maker.py`) stand in the School's 3D Art Studio around what was there (the
+chalkboard, the teacher desk, the easel, the turntable): `cr-plan` the storyboard table in front of the paint poster
+(the shot-list cards laid out, a cup of markers), `cr-camera` the 360 camera on a tripod at eye height in the middle of
+the room with a gear cart and a tape cross under it, `cr-sound` the interview corner by the middle east window (two
+chairs angled together, a low table with a microphone, the recorder and headphones, a softbox light), `cr-edit` the
+edit desk on the south wall east of the door (the stitched picture flat on one monitor, the timeline on the other, a
+task chair that is a seat) and `cr-share` the headset on a pedestal in front of the chalkboard with the archive box of
+originals; the course board on the west wall, a tablet and the desk card on the teacher desk, and `spot__studio_f90`
+behind it.
 
 ## A client pack, and the sheet a library fills in
 
@@ -223,6 +238,7 @@ exhibit is itself again. The play QA's `season` phase does exactly this with the
 | Outside | 26 | 140k | Blender: terrain with the forecourt meadow, flagstone path, fountain, trees, lamp posts, the other buildings' shells, horizon |
 | Yard | 104 | 73k | Coaster, Sky Drop, dive dome, playground; `ride__` / `token__` tags; the fence clipped at the Training Wing's doorway |
 | Training | 37 | 8k | Blender: the Training Wing's room and its five stations; `spot__training_f0`, `seat__training_*` |
+| Maker | 33 | 5k | Blender: Room 101's 360 storytelling course props; `spot__studio_f90`, `seat__studio_edit_f90` |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,

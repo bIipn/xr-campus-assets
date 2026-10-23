@@ -46,6 +46,7 @@ SOURCES = [
     ('Auditorium', 'unreal/Pipeline/out/auditorium/Auditorium.glb'),   # bl/auditorium.py: the talks wing (foyer + auditorium)
     ('Classroom', 'unreal/Pipeline/out/classroom/Classroom.glb'),      # bl/classroom.py: Room 104's smartboard, desks, chairs
     ('Training', 'unreal/Pipeline/out/training/Training.glb'),         # bl/training.py: the Training Wing (the dialysis course's room)
+    ('Maker', 'unreal/Pipeline/out/maker/Maker.glb'),                  # bl/maker.py: the 360 storytelling course in Room 101
 ]
 TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot)__')
 REFITS = os.path.join(REPO, 'unreal', 'Pipeline', 'content', 'refits.json')

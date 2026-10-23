@@ -791,13 +791,17 @@ UE_STATION = {'diorama': {'pos': (25.9, 2.9), 'view': {'x': 25.9, 'z': 0.95, 'ya
 # The Training Wing's stations come from its own builder's layout (bl/training.py -> out/training/layout.json:
 # each station's anchor and view in the campus layout's shape), merged over the campus layout's stations.
 TRAINING_LAYOUT = os.path.join(UNREAL, 'Pipeline', 'out', 'training', 'layout.json')
+MAKER_LAYOUT = os.path.join(UNREAL, 'Pipeline', 'out', 'maker', 'layout.json')      # bl/maker.py: the 360 course in Room 101
 
 
 def extra_stations():
-    if not os.path.exists(TRAINING_LAYOUT):
-        return {}
-    with open(TRAINING_LAYOUT, 'r', encoding='utf-8') as fh:
-        return {s['id']: s for s in json.load(fh).get('stations', [])}
+    """The stations the Blender builders placed themselves: the Training Wing's and the 3D Art Studio's course."""
+    found = {}
+    for path in (TRAINING_LAYOUT, MAKER_LAYOUT):
+        if os.path.exists(path):
+            with open(path, 'r', encoding='utf-8') as fh:
+                found.update({s['id']: s for s in json.load(fh).get('stations', [])})
+    return found
 
 
 # The steps a visitor walks through at each station (the panel shows one at a time and reads it aloud; the last
@@ -838,7 +842,7 @@ def build_stations(L):
     for s in load('stations.json'):
         # the web's stations are in layout.json, the training wing's in its builder's layout; UE_STATION moves a few
         ls, card = dict(lay.get(s['id']) or {'ue_location_cm': [0.0, 0.0, 90.0], 'view': {}}), s.get('card') or {}
-        assert s['id'] in lay or s['id'] in UE_STATION, 'station %s has no place: not in layout.json, the training layout nor UE_STATION' % s['id']
+        assert s['id'] in lay or s['id'] in UE_STATION, 'station %s has no place: not in layout.json, a builder layout (training, maker) nor UE_STATION' % s['id']
         if s['id'] in UE_STATION:
             u = UE_STATION[s['id']]
             ls['ue_location_cm'] = [u['pos'][0] * 100.0, u['pos'][1] * 100.0, ls['ue_location_cm'][2]]
@@ -852,14 +856,15 @@ def build_stations(L):
                      # the panel's paragraphs, without the live status lines of a running test ("Swinging… The photogate ...")
                      'Panel': [txt(p['text']) for p in (s.get('panelTexts') or [])
                                if p.get('kind') == 'stp' and not re.match('^\\w+…', p['text'])][:6],
-                     'bUsesHands': bool(s.get('usesHands')), 'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
+                     'bUsesHands': bool(s.get('usesHands')), 'BadgeId': s.get('badge') or 'None',
+                     'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
     if 'easel' in lay and not any(r['Name'] == 'easel' for r in rows):
         ls = lay['easel']
         rows.append({'Name': 'easel', 'Room': 'studio', 'Kicker': 'Room 101 · 3D Art Studio', 'Title': '3D Art Studio',
                      'Subtitle': 'Paint in the air with brushes, shapes and symmetry', 'GoLabel': 'Start making art',
                      'Steps': [t for t, _ in EASEL_STEPS], 'StepTexts': [d for _, d in EASEL_STEPS],
                      'Panel': ['Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around.'],
-                     'bUsesHands': False, 'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
+                     'bUsesHands': False, 'BadgeId': 'None', 'Location': vec(*ls['ue_location_cm']), 'View': view_from_layout(ls['view'])})
     return rows
 
 

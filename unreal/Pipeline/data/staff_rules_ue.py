@@ -162,9 +162,11 @@ RULES = [
     R('R027', 27, 27, 'There are {n:badges} badges. In this build you can earn First Steps, Museum Explorer, Bookworm, '
       'Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: '
       'Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), '
-      'Trainee (finish a station in the Training Wing) and Certified: Dialysis Foundations (finish its five stations '
-      'and pass the quiz at the course desk); the ride, soccer and token badges arrive with those features in later '
-      'builds.', ['{rx:badges}'], **offer('OpenBadges', 'None', 'Show me the badges')),
+      'Trainee (finish a station in the Training Wing), Certified: Dialysis Foundations (finish its five stations '
+      'and pass the quiz at the course desk), Creator (finish a station of the 360 storytelling course in Room 101), '
+      'Certified: 360 Storytelling (finish its five stations and pass the quiz at the teacher’s desk) and Token '
+      'Hunter (find every hidden XR token); the ride and soccer badges arrive with those features in later builds.',
+      ['{rx:badges}'], **offer('OpenBadges', 'None', 'Show me the badges')),
     # 28 the Wax Hall (not when asking the way)
     R('R028', 28, 28, '{fact:wax}', ['{rx:wax}'], Not=['{travel}'],
       **offer('GoPlace', 'wax', 'Take me to the Wax Hall')),
@@ -173,6 +175,17 @@ RULES = [
     # 30 history (not when asking the way, not the Wax Hall)
     R('R030', 30, 30, '{fact:history} The Wax Hall acts it all out, scene by scene.', ['{rx:history}'],
       Not=['{travel}', '{rx:wax}'], **offer('GoPlace', 'wax', 'Take me to the Wax Hall')),
+    # the two courses (Unreal only): what they are, with the course card to open (asking the way still gets directions)
+    R('R036', None, 36, 'Room 101, the 3D Art Studio, runs the creator course, Making a 360 Story: plan the story, set '
+      'up the 360 camera, record clear sound, stitch and edit, then share it and keep it, one station each. Finish all '
+      'five, then pass the quiz at the teacher’s desk for a certificate.',
+      [r'\b(360|storytelling|story ?telling|creator|content[- ]creation)\b', r'\b(course|class|certificate|learn|lesson)\b'],
+      Not=['{travel}'], **offer('OpenCourse', 'storytelling', 'Open the course')),
+    R('R037', None, 37, 'The Training Wing, past the auditorium, runs the dialysis technician course: hand hygiene, the '
+      'machine, the treatment chair, the water and the chart, one station each. Finish all five, then pass the quiz at '
+      'the course desk for a certificate.',
+      [r'\b(dialysis|technician|training wing|sandi)\b', r'\b(course|class|certificate|learn|train(ing)?)\b'],
+      Not=['{travel}'], **offer('OpenCourse', 'dialysis', 'Open the course')),
 
     # --- after the directions and title matches (the web's branches after 31) -------------------------------------
     # 32 the earliest / latest dated exhibit; "show me" or "take me" goes now. The web left Mr. Hale out ("the first

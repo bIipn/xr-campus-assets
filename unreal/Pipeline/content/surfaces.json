@@ -85,6 +85,10 @@
       "trn_ceiling": {"set": "Plaster001", "tint": [0.94, 0.94, 0.92]},
       "trn_oak": {"set": "Wood027", "tint": [0.95, 0.86, 0.74]},
       "trn_fabric": {"set": "Fabric030", "tint": [0.22, 0.23, 0.26]}
+    },
+    "Maker": {
+      "mk_oak": {"set": "Wood027", "tint": [0.95, 0.86, 0.74]},
+      "mk_fabric": {"set": "Fabric030", "tint": [0.30, 0.55, 0.58]}
     }
   }
 }

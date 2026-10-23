@@ -35,6 +35,8 @@ unreal/Pipeline/out/slides/*/preview_*.jpg
 unreal/Pipeline/out/auditorium/Auditorium.glb
 unreal/Pipeline/out/classroom/Classroom.glb
 unreal/Pipeline/out/training/Training.glb
+unreal/Pipeline/out/maker/Maker.glb
 assets/auditorium/*.blend*
 assets/classroom/*.blend*
 assets/training/*.blend*
+assets/maker/*.blend*

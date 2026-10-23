@@ -2639,7 +2639,7 @@
   },
   "R027": {
    "Pattern": "\\b(badges?|achievements?|rewards?|prizes?|trophies|trophy)\\b",
-   "Answer": "There are 19 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), Trainee (finish a station in the Training Wing) and Certified: Dialysis Foundations (finish its five stations and pass the quiz at the course desk); the ride, soccer and token badges arrive with those features in later builds.",
+   "Answer": "There are 21 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), Trainee (finish a station in the Training Wing), Certified: Dialysis Foundations (finish its five stations and pass the quiz at the course desk), Creator (finish a station of the 360 storytelling course in Room 101), Certified: 360 Storytelling (finish its five stations and pass the quiz at the teacher’s desk) and Token Hunter (find every hidden XR token); the ride and soccer badges arrive with those features in later builds.",
    "OfferLabel": "Show me the badges"
   },
   "R028": {
@@ -2691,6 +2691,16 @@
    "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:\\bwax\\b|living history|re-?enact\\w*))(?=.*?(?:\\b(history|timeline)\\b|\\bwhen did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bhow did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bfrom the (very )?beginning\\b))",
    "Answer": "XRLibraries began in 2016 as the coordinator of the California Virtual Reality Experience, which piloted VR stations in Marin County’s libraries. In 2017 the project spread to more than 90 California libraries, and a pilot in Nevada followed. Later milestones include Nevada’s first VR records in WorldCat in 2019, Project SANDI in 2020, 360-degree storytelling training in Washington in 2022 and the Pollinators AR booth at the 2025 Marin County Fair. The Wax Hall acts it all out, scene by scene.",
    "OfferLabel": "Take me to the Wax Hall"
+  },
+  "R036": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(360|storytelling|story ?telling|creator|content[- ]creation)\\b))(?=.*?(?:\\b(course|class|certificate|learn|lesson)\\b))",
+   "Answer": "Room 101, the 3D Art Studio, runs the creator course, Making a 360 Story: plan the story, set up the 360 camera, record clear sound, stitch and edit, then share it and keep it, one station each. Finish all five, then pass the quiz at the teacher’s desk for a certificate.",
+   "OfferLabel": "Open the course"
+  },
+  "R037": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(dialysis|technician|training wing|sandi)\\b))(?=.*?(?:\\b(course|class|certificate|learn|train(ing)?)\\b))",
+   "Answer": "The Training Wing, past the auditorium, runs the dialysis technician course: hand hygiene, the machine, the treatment chair, the water and the chart, one station each. Finish all five, then pass the quiz at the course desk for a certificate.",
+   "OfferLabel": "Open the course"
   },
   "R132": {
    "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
@@ -3085,6 +3095,14 @@
   "certified-dialysis": {
    "DisplayName": "Certified: Dialysis Foundations",
    "How": "Finish the five stations of the Training Wing and pass the quiz at the course desk"
+  },
+  "creator": {
+   "DisplayName": "Creator",
+   "How": "Finish a station of the 360 storytelling course in Room 101"
+  },
+  "certified-creator": {
+   "DisplayName": "Certified: 360 Storytelling",
+   "How": "Finish the five storytelling stations in Room 101 and pass the quiz at the teacher’s desk"
   }
  },
  "DT_Tokens": {
@@ -3572,6 +3590,126 @@
     "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
    ]
   },
+  "cr-plan": {
+   "Kicker": "Room 101 · 360 Storytelling",
+   "Title": "Plan the story",
+   "Subtitle": "Who tells it, and what each scene shows",
+   "GoLabel": "Start planning",
+   "Steps": [
+    "A story that matters",
+    "Partner with the people who know it",
+    "Write a shot list",
+    "Short scenes"
+   ],
+   "StepTexts": [
+    "A 360 story puts the viewer inside a place: a historic site, a cultural event, how something is made. Pick a story that matters to your community, one people will want to stand inside.",
+    "Work with the people who know the story best: a historical society, a cultural group, a tribe, a local business. Ask permission, and ask who has the right to share it.",
+    "Write a simple shot list on cards: each place you will film, who will speak there, and the one thing you want viewers to notice. Lay the cards out in order on the table.",
+    "Plan short scenes, often thirty to ninety seconds each. A viewer needs time to look around before the next scene starts, so fewer scenes, held longer, read best."
+   ],
+   "Panel": [
+    "A 360 story puts the viewer inside a place: a historic site, a cultural event, how something is made. Pick a story that matters to your community, one people will want to stand inside.",
+    "Work with the people who know the story best: a historical society, a cultural group, a tribe, a local business. Ask permission, and ask who has the right to share it.",
+    "Write a simple shot list on cards: each place you will film, who will speak there, and the one thing you want viewers to notice. Lay the cards out in order on the table.",
+    "Plan short scenes, often thirty to ninety seconds each. A viewer needs time to look around before the next scene starts, so fewer scenes, held longer, read best."
+   ]
+  },
+  "cr-camera": {
+   "Kicker": "Room 101 · 360 Storytelling",
+   "Title": "Set up the 360 camera",
+   "Subtitle": "Eye height, still, and out of the seam",
+   "GoLabel": "Set up the camera",
+   "Steps": [
+    "Eye height",
+    "Keep it still",
+    "Mind the seam",
+    "Step out, or step in"
+   ],
+   "StepTexts": [
+    "Put the camera on a tripod at about eye level, around five feet high. That is where the viewer’s eyes will be, so the scene feels the right size.",
+    "Keep the camera still. A moving 360 camera can make viewers feel sick. If the story has to travel, cut between still scenes instead.",
+    "A 360 camera sees through two lenses back to back and stitches their pictures together. Keep faces and important things away from the seam between the lenses, out to the sides.",
+    "The camera sees everything, including you. Either step out of the scene and start it from your phone, or become part of it. Film in even light, so neither lens looks into the sun."
+   ],
+   "Panel": [
+    "Put the camera on a tripod at about eye level, around five feet high. That is where the viewer’s eyes will be, so the scene feels the right size.",
+    "Keep the camera still. A moving 360 camera can make viewers feel sick. If the story has to travel, cut between still scenes instead.",
+    "A 360 camera sees through two lenses back to back and stitches their pictures together. Keep faces and important things away from the seam between the lenses, out to the sides.",
+    "The camera sees everything, including you. Either step out of the scene and start it from your phone, or become part of it. Film in even light, so neither lens looks into the sun."
+   ]
+  },
+  "cr-sound": {
+   "Kicker": "Room 101 · 360 Storytelling",
+   "Title": "Record clear sound",
+   "Subtitle": "The voice close, the room quiet",
+   "GoLabel": "Start recording",
+   "Steps": [
+    "Sound tells viewers where to look",
+    "Close to the voice",
+    "Listen back",
+    "Room tone"
+   ],
+   "StepTexts": [
+    "In a 360 scene the viewer can look anywhere, so sound guides them: a voice, a bell, a door. Plan the sound with the picture.",
+    "Put the microphone close to the speaker, about a hand’s width to a forearm away, out of the wind. A quiet room beats an expensive microphone.",
+    "Wear headphones and record a short test first. Listen for fans, traffic and buzzing lights, and fix them before the real take.",
+    "Record thirty seconds of the place with nobody talking. This room tone fills the gaps when you edit, so the cuts are never silent."
+   ],
+   "Panel": [
+    "In a 360 scene the viewer can look anywhere, so sound guides them: a voice, a bell, a door. Plan the sound with the picture.",
+    "Put the microphone close to the speaker, about a hand’s width to a forearm away, out of the wind. A quiet room beats an expensive microphone.",
+    "Wear headphones and record a short test first. Listen for fans, traffic and buzzing lights, and fix them before the real take.",
+    "Record thirty seconds of the place with nobody talking. This room tone fills the gaps when you edit, so the cuts are never silent."
+   ]
+  },
+  "cr-edit": {
+   "Kicker": "Room 101 · 360 Storytelling",
+   "Title": "Stitch and edit",
+   "Subtitle": "From two lenses to one story",
+   "GoLabel": "Open the edit",
+   "Steps": [
+    "Stitch",
+    "Cut short scenes",
+    "Titles and captions",
+    "Check it in a headset"
+   ],
+   "StepTexts": [
+    "The camera’s app stitches the two lenses into one picture, flat like a world map. Check the seam for faces cut in half.",
+    "Trim each scene to where it starts and where it ends. Thirty to ninety seconds is plenty when the viewer can look around.",
+    "Put titles and captions where the viewer is already looking, not behind them. Captions help everyone, not only viewers who cannot hear.",
+    "Watch the edit in a headset before you share it. A tilted horizon or a seam that looked fine on a flat screen jumps out once you are standing inside."
+   ],
+   "Panel": [
+    "The camera’s app stitches the two lenses into one picture, flat like a world map. Check the seam for faces cut in half.",
+    "Trim each scene to where it starts and where it ends. Thirty to ninety seconds is plenty when the viewer can look around.",
+    "Put titles and captions where the viewer is already looking, not behind them. Captions help everyone, not only viewers who cannot hear.",
+    "Watch the edit in a headset before you share it. A tilted horizon or a seam that looked fine on a flat screen jumps out once you are standing inside."
+   ]
+  },
+  "cr-share": {
+   "Kicker": "Room 101 · 360 Storytelling",
+   "Title": "Share it and keep it",
+   "Subtitle": "Credit everyone, keep the originals",
+   "GoLabel": "Share the story",
+   "Steps": [
+    "Show the people in it first",
+    "Share it",
+    "Credit everyone",
+    "Keep it"
+   ],
+   "StepTexts": [
+    "Show the finished story to the people in it before anyone else. It is their story: their thanks, and their corrections, come first.",
+    "Share it on headsets at the library, as a 360 video online, or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours.",
+    "Credit the people who told the story and the partners who helped, in the video and wherever you post it.",
+    "Save the original files, your notes and the permissions with the library’s collection, labelled with names, the date and the place, so the story lasts."
+   ],
+   "Panel": [
+    "Show the finished story to the people in it before anyone else. It is their story: their thanks, and their corrections, come first.",
+    "Share it on headsets at the library, as a 360 video online, or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours.",
+    "Credit the people who told the story and the partners who helped, in the video and wherever you post it.",
+    "Save the original files, your notes and the permissions with the library’s collection, labelled with names, the date and the place, so the story lasts."
+   ]
+  },
   "easel": {
    "Kicker": "Room 101 · 3D Art Studio",
    "Title": "3D Art Studio",
@@ -4056,6 +4194,85 @@
     "Note": "A Walk the Archive campus. A record of learning, not a clinical qualification."
    },
    "Intro": "Welcome to the Training Wing. This course walks you through the five things a dialysis technician does every shift: hand hygiene, the machine, the patient chair, the water and the chart. Finish all five stations, then come back to this desk for the quiz. Pass it and the certificate is yours."
+  },
+  "storytelling": {
+   "Title": "Making a 360 Story",
+   "Subtitle": "Five stations, a quiz, a certificate",
+   "Speaker": "Daniel Reyes",
+   "SpeakerShort": "Daniel",
+   "SpeakerRole": "360 storytelling trainer",
+   "Quiz": [
+    {
+     "Question": "At what height should a 360 camera usually stand?",
+     "Options": [
+      "On the floor",
+      "About eye level, around five feet",
+      "As high as the ceiling",
+      "It does not matter"
+     ],
+     "Why": "About eye level. That is where the viewer’s eyes will be, so the scene feels the right size."
+    },
+    {
+     "Question": "Why keep a 360 camera still?",
+     "Options": [
+      "To save the battery",
+      "A moving 360 camera can make viewers feel sick",
+      "So the seam moves",
+      "To record better sound"
+     ],
+     "Why": "Movement the viewer did not make can make them feel sick. Cut between still scenes instead."
+    },
+    {
+     "Question": "Where should faces and important things be?",
+     "Options": [
+      "On the seam between the lenses",
+      "Right under the tripod",
+      "Away from the seam, out to the sides",
+      "Behind the camera"
+     ],
+     "Why": "The seam is where the two lenses’ pictures are stitched together; anything on it can come out broken."
+    },
+    {
+     "Question": "What is room tone?",
+     "Options": [
+      "The colour of the walls",
+      "Thirty seconds of the place with nobody talking",
+      "The loudest sound in the room",
+      "Music added in the edit"
+     ],
+     "Why": "Room tone fills the gaps between cuts, so the edit never drops into silence."
+    },
+    {
+     "Question": "How long is a good 360 scene, often?",
+     "Options": [
+      "Five seconds",
+      "Thirty to ninety seconds",
+      "Ten minutes",
+      "As long as the memory card allows"
+     ],
+     "Why": "Thirty to ninety seconds gives viewers time to look around before the next scene starts."
+    },
+    {
+     "Question": "Who should see the finished story first?",
+     "Options": [
+      "A film festival",
+      "The people in it",
+      "Nobody, until it is online",
+      "Only the editor"
+     ],
+     "Why": "It is their story. Show it to the people in it first, and keep their permissions with the files."
+    }
+   ],
+   "Certificate": {
+    "Title": "Certificate of Completion",
+    "Line": "has completed the course",
+    "Place": "The 3D Art Studio · Room 101",
+    "Signer": "Daniel Reyes",
+    "SignerRole": "360 storytelling trainer",
+    "Org": "XR Libraries Campus",
+    "Note": "A Walk the Archive campus. A record of learning, not a professional qualification."
+   },
+   "Intro": "Welcome to the creator course. In five stations you will make a 360 story the way XRLibraries trained Washington’s librarians: plan it with your community, set up the camera, record clear sound, stitch and edit, then share it and keep it. Finish all five, then come back to this desk for the quiz. Pass it and the certificate is yours."
   }
  }
 }
