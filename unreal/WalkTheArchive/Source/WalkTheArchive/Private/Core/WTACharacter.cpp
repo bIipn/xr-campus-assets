@@ -111,11 +111,11 @@ AWTACharacter::AWTACharacter()
 	Figure->SetupAttachment(GetCapsuleComponent());
 	Figure->SetRelativeLocation(FVector(0.f, 0.f, -CapsuleHalfHeight));
 
-	auto MakePart = [this, &ShapeMaterial](const TCHAR* Name, UStaticMesh* Mesh, USceneComponent* Parent)
+	auto MakePart = [this](const TCHAR* Name, UStaticMesh* PartMesh, USceneComponent* Parent)
 	{
 		UStaticMeshComponent* Part = CreateDefaultSubobject<UStaticMeshComponent>(Name);
 		Part->SetupAttachment(Parent);
-		Part->SetStaticMesh(Mesh);
+		Part->SetStaticMesh(PartMesh);
 		if (ShapeMaterial.Succeeded())
 		{
 			Part->SetMaterial(0, ShapeMaterial.Object);

@@ -915,8 +915,8 @@ void AWTAPlayerController::HandleVisitChanged()
 	{
 		return;
 	}
-	const EWTAVisitRole Role = Visit->GetRole();
-	if (Role == EWTAVisitRole::Solo)
+	const EWTAVisitRole VisitRole = Visit->GetRole();
+	if (VisitRole == EWTAVisitRole::Solo)
 	{
 		Hud->SetVisitChip(FText::GetEmpty(), FText::GetEmpty());
 	}
@@ -924,7 +924,7 @@ void AWTAPlayerController::HandleVisitChanged()
 	{
 		const int32 Visitors = FMath::Max(0, Visit->GetPeople().Num() - 1);
 		FText Line;
-		if (Role == EWTAVisitRole::Guide)
+		if (VisitRole == EWTAVisitRole::Guide)
 		{
 			Line = Visitors == 0 ? WTAText(TEXT("You lead \u00B7 waiting for visitors"))
 				: Visitors == 1 ? WTAText(TEXT("You lead \u00B7 1 visitor"))

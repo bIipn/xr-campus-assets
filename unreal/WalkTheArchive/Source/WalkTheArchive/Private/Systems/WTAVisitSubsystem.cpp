@@ -505,7 +505,7 @@ void UWTAVisitSubsystem::SendBeacon()
 	int32 Port = GamePort;
 	if (const UWorld* World = CurrentWorld())
 	{
-		if (const UNetDriver* Driver = World->GetNetDriver())
+		if (UNetDriver* Driver = World->GetNetDriver())
 		{
 			const TSharedPtr<const FInternetAddr> Local = Driver->GetLocalAddr();
 			if (Local.IsValid() && Local->GetPort() > 0)
@@ -862,7 +862,7 @@ void UWTAVisitSubsystem::HandlePostLoadMap(UWorld* World)
 		bLeading = false;
 		Status = FText::GetEmpty();
 		int32 Port = GamePort;
-		if (const UNetDriver* Driver = World->GetNetDriver())
+		if (UNetDriver* Driver = World->GetNetDriver())
 		{
 			const TSharedPtr<const FInternetAddr> Local = Driver->GetLocalAddr();
 			if (Local.IsValid() && Local->GetPort() > 0)
