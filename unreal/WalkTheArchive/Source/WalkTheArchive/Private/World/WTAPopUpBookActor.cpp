@@ -213,6 +213,7 @@ void AWTAPopUpBookActor::BuildPieces()
 	}
 	bHaveScene = All.IsValid != 0;
 	SceneCentre = bHaveScene ? FVector(All.GetCenter().X, All.GetCenter().Y, All.Min.Z + 0.4 * (All.Max.Z - All.Min.Z)) : GetActorLocation();
+	PageZ = bHaveScene ? static_cast<float>(All.Min.Z) + 1.6f : static_cast<float>(GetActorLocation().Z);
 
 	auto MakeComp = [this](UStaticMesh* Mesh) -> int32
 	{
@@ -281,6 +282,7 @@ void AWTAPopUpBookActor::BuildPieces()
 	if (BaseMesh != nullptr)
 	{
 		BaseComp = MakeComp(BaseMesh);
+		PageZ = static_cast<float>(BaseMesh->GetBoundingBox().Max.Z);
 	}
 
 	static const TCHAR* LayerNames[3] = { TEXT("l1"), TEXT("l2"), TEXT("l3") };
@@ -583,6 +585,16 @@ FVector AWTAPopUpBookActor::GetSceneCentre() const
 	return bHaveScene ? SceneCentre : GetActorLocation();
 }
 
+FVector AWTAPopUpBookActor::GetReaderLookAt() const
+{
+	if (!bHaveScene)
+	{
+		return GetActorLocation();
+	}
+	const FVector At = SceneCentre + Reader * 4.f;
+	return FVector(At.X, At.Y, PageZ + 2.f);
+}
+
 FText AWTAPopUpBookActor::BookTitle(int32 Book) const
 {
 	const FName Id = BookOfSpreads.IsValidIndex(Book) && Books.IsValidIndex(BookOfSpreads[Book]) ? Books[BookOfSpreads[Book]].BookId : NAME_None;
@@ -774,7 +786,8 @@ void AWTAPopUpBookActor::Interact_Implementation(AWTAPlayerController* Controlle
 	if (Player != nullptr && Seat != nullptr && !(Player->IsSeated() && Player->GetSeat() == Seat))
 	{
 		Player->SitAt(Seat, Seat->GetSitPoint(), Seat->SeatYaw);
-		Controller->SetControlRotation((GetSceneCentre() - Player->GetEyeLocation()).Rotation());
+		Controller->SetControlRotation((GetReaderLookAt() - Player->GetEyeLocation()).Rotation());
+		CheckPlayerNear();
 		if (State == EWTAPopUpState::Open || State == EWTAPopUpState::Opening)
 		{
 			ShowSpreadCaption();
@@ -836,6 +849,21 @@ void AWTAPopUpBookActor::CheckPlayerNear()
 	{
 		bPlayerNear = bNear;
 		UpdateLight(0.f);
+	}
+	// The printed pages of every spread kept at full resolution while someone is near, so a spread that pops up is
+	// sharp at once rather than streaming in from a blur (twenty-odd small textures).
+	const UWorld* World = GetWorld();
+	const double Now = World != nullptr ? World->GetTimeSeconds() : 0.0;
+	if (bNear && Pawn != nullptr && Now - LastPrestream > 240.0)
+	{
+		LastPrestream = Now;
+		for (UStaticMeshComponent* Comp : PieceComponents)
+		{
+			if (Comp != nullptr)
+			{
+				Comp->PrestreamTextures(600.f, false);
+			}
+		}
 	}
 }
 

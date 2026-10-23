@@ -739,14 +739,17 @@ def paint_floor(key, n, total, heading, path):
     band = int(TH * 0.3)
     d.rectangle((0, TH - band, TW, TH), fill=(246, 239, 222, 255))
     d.line((60, TH - band + 18, TW - 60, TH - band + 18), fill=(190, 150, 80, 255), width=5)
-    f = font(['CormorantGaramond-Bold.ttf'], 108)
-    while d.textlength(heading, font=f) > TW - 220 and f.size > 40:
-        f = font(['CormorantGaramond-Bold.ttf'], f.size - 6)
-    w = d.textlength(heading, font=f)
-    d.text(((TW - w) / 2, TH - band + 40), heading, font=f, fill=(40, 34, 26, 255))
+    # the page number small in the band's corner, the heading centred and kept clear of it
     pg = '%d / %d' % (n + 1, total)
-    f2 = font(['CormorantGaramond-MediumItalic.ttf'], 56)
-    d.text((TW - 80 - d.textlength(pg, font=f2), TH - 82), pg, font=f2, fill=(110, 90, 60, 255))
+    f2 = font(['CormorantGaramond-MediumItalic.ttf'], 44)
+    pw = d.textlength(pg, font=f2)
+    d.text((TW - 58 - pw, TH - 64), pg, font=f2, fill=(120, 98, 66, 255))
+    f = font(['CormorantGaramond-Bold.ttf'], 104)
+    room = TW - 2 * (pw + 90)
+    while d.textlength(heading, font=f) > room and f.size > 40:
+        f = font(['CormorantGaramond-Bold.ttf'], f.size - 4)
+    w = d.textlength(heading, font=f)
+    d.text(((TW - w) / 2, TH - band + 44 + (104 - f.size) * 0.45), heading, font=f, fill=(40, 34, 26, 255))
     im = paper_grain(im, n)
     im.save(path)
 

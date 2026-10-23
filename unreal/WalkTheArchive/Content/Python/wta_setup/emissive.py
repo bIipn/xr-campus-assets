@@ -39,7 +39,8 @@ BLENDER_NITS = {
     "laylight_e": 2500.0,     # the glazing under the museum's laylights and the Reading Room's
     "oculus_e": 6000.0,       # the sky in the rotunda's oculus
     "bulb_e": 3000.0,
-    "shade_e": 400.0,
+    "shade_e": 60.0,          # the reading lamps' green cased glass: a faint glow through it
+    "shadein_e": 1500.0,      # their warm opal lining, lit by the tube under it
 }
 
 UNLIT_MASTER = paths.MATERIALS_PATH + "/M_WTA_Unlit"

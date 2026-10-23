@@ -265,7 +265,9 @@ def setup_materials():
     material('lacquer_v', color=(0.013, 0.013, 0.015, 1), roughness=0.07)               # the piano's polished case
     material('ivory_v', color=(0.86, 0.84, 0.77, 1), roughness=0.28)                    # its keys
     material('glass', color=(0.9, 0.95, 1.0, 1), roughness=0.05, alpha=0.12)
-    material('shade_e', color=(0.06, 0.3, 0.14, 1), roughness=0.3, emission=(0.25, 0.9, 0.4, 1), emission_strength=2.5)
+    # the reading lamps' cased glass: deep green and glossy outside with a faint glow through it, warm opal inside
+    material('shade_e', color=(0.012, 0.09, 0.04, 1), roughness=0.1, emission=(0.08, 0.5, 0.18, 1), emission_strength=0.6)
+    material('shadein_e', color=(1, 0.95, 0.85, 1), emission=(1.0, 0.9, 0.74, 1), emission_strength=6.0)
     material('bulb_e', color=(1, 1, 1, 1), emission=(1.0, 0.85, 0.6, 1), emission_strength=25.0)
     material('laylight_e', color=(1, 1, 1, 1), emission=(0.92, 0.95, 1.0, 1), emission_strength=7.0)
     material('view_e', 'window_view', color=(0, 0, 0, 1), emission=True, emission_strength=1.1)
@@ -748,11 +750,39 @@ def build_stair(lights):
     lights.append(('point', (cx + 0.9, DECK + 1.10, cz), (1.0, 0.86, 0.66), 40))
     tw.finish(); br.finish()
 
-def lamp(brass, shade, bulb, x, y, z, ry=0.0):
-    brass.box(x, y + 0.01, z, 0.16, 0.02, 0.11, ry); brass.box(x, y + 0.17, z, 0.016, 0.3, 0.016, ry, seg=0)
+def lamp(brass, shade, bulb, x, y, z, ry=0.0, inner=None):
+    """A banker's lamp on a surface at height y: a round brass foot, the stem and harp, and the shade - a long
+    half-round of cased glass, green outside and warm opal inside (inner) - over a tube bulb. Along x (ry 0)."""
+    prism(brass, x, y, z, 0.075, 0.014, n=24, r_top=0.066)
+    prism(brass, x, y + 0.014, z, 0.03, 0.012, n=16, r_top=0.018, cap_bot=False)
+    brass.box(x, y + 0.17, z, 0.016, 0.3, 0.016, ry, seg=0)
     brass.box(x, y + 0.3, z, 0.016, 0.016, 0.10, ry, seg=0)
-    shade.box(x, y + 0.34, z, 0.34, 0.07, 0.15, ry)
-    bulb.box(x, y + 0.305, z, 0.26, 0.012, 0.08, ry)
+    yc, r, k, half, n = y + 0.302, 0.078, 0.86, 0.17, 14       # the rim's height, the radius across, the dome's squash
+    pts = [(math.cos(math.pi * i / n), math.sin(math.pi * i / n)) for i in range(n + 1)]
+    rin = r - 0.0035
+    for i in range(n):
+        (c0, s0), (c1, s1) = pts[i], pts[i + 1]
+        cm, sm = math.cos(math.pi * (i + 0.5) / n), math.sin(math.pi * (i + 0.5) / n)
+        o0, o1 = (z + r * c0, yc + r * k * s0), (z + r * c1, yc + r * k * s1)
+        shade.face([P(x - half, o0[1], o0[0]), P(x + half, o0[1], o0[0]), P(x + half, o1[1], o1[0]), P(x - half, o1[1], o1[0])],
+                   D(0, sm / k, cm))
+        if inner is not None:
+            i0, i1 = (z + rin * c0, yc + rin * k * s0), (z + rin * c1, yc + rin * k * s1)
+            inner.face([P(x - half + 0.003, i0[1], i0[0]), P(x - half + 0.003, i1[1], i1[0]), P(x + half - 0.003, i1[1], i1[0]),
+                        P(x + half - 0.003, i0[1], i0[0])], D(0, -sm / k, -cm))
+    # the ends (fans of triangles, so the exporter can write tangents), and the rim along both long edges
+    for sx in (-1, 1):
+        xe = x + sx * half
+        for i in range(n):
+            (c0, s0), (c1, s1) = pts[i], pts[i + 1]
+            shade.face([P(xe, yc, z), P(xe, yc + r * k * s0, z + r * c0), P(xe, yc + r * k * s1, z + r * c1)], D(sx, 0, 0))
+            if inner is not None:
+                xi = xe - sx * 0.003
+                inner.face([P(xi, yc, z), P(xi, yc + rin * k * s1, z + rin * c1), P(xi, yc + rin * k * s0, z + rin * c0)], D(-sx, 0, 0))
+    for sz in (-1, 1):
+        shade.face([P(x - half, yc, z + sz * rin), P(x + half, yc, z + sz * rin), P(x + half, yc, z + sz * r), P(x - half, yc, z + sz * r)],
+                   D(0, -1, 0))
+    bulb.box(x, yc + 0.006, z, 0.26, 0.012, 0.03, ry)
 
 def build_furniture(lights):
     walnut = Builder('furniture', 'walnut_v', tile=1.0, lightmap=False, vcol=True, seg=0.4)
@@ -760,7 +790,8 @@ def build_furniture(lights):
     leather = Builder('seats', 'leather_v', tile=0.6, lightmap=False, vcol=True, seg=0.3)
     nseat = [0]
     brass = Builder('lamp_brass', 'brass_v', tile=1.0, lightmap=False, vcol=True, seg=0.5)
-    shade = Builder('lamp_shades', 'shade_e', tile=1.0, lightmap=False, vcol=False)
+    shade = Builder('lamp_shades', 'shade_e', tile=1.0, lightmap=False, vcol=False, smooth=35)
+    shade_in = Builder('lamp_shades_in', 'shadein_e', tile=1.0, lightmap=False, vcol=False, smooth=35)
     bulb = Builder('lamp_bulbs', 'bulb_e', tile=1.0, lightmap=False, vcol=False)
     # The desk and the two reading tables sit a little west of where they used to, which leaves the east end of
     # the room clear for the spiral stair and the piano. RDX and TX are the only numbers that moved.
@@ -768,7 +799,7 @@ def build_furniture(lights):
     # reference desk
     walnut.box(RDX, 0.5, -6.9, 3.0, 1.0, 0.8); tops.box(RDX, 1.025, -6.9, 3.12, 0.05, 0.92, faces='YxXzZ')
     walnut.box(RDX, 0.52, -6.9 + 0.41, 3.0, 0.08, 0.03)
-    lamp(brass, shade, bulb, RDX - 1.1, 1.05, -7.0); lights.append(('point', (RDX - 1.1, 1.35, -7.0), (1.0, 0.75, 0.45), 18))
+    lamp(brass, shade, bulb, RDX - 1.1, 1.05, -7.0, inner=shade_in); lights.append(('point', (RDX - 1.1, 1.35, -7.0), (1.0, 0.75, 0.45), 18))
     for i in range(3): walnut.box(RDX + 1.2, 1.075 + i * 0.05, -6.95, 0.22, 0.05, 0.3, 0.1 * i)
     # reading tables with lamps and chairs
     for tz in (-10.8, 4.6):
@@ -779,7 +810,7 @@ def build_furniture(lights):
         # two lamps down the middle of the table, three chairs a side between and beyond them, so no reader
         # sits staring into a shade
         for lx in (TX - 0.65, TX + 0.65):
-            lamp(brass, shade, bulb, lx, 0.79, tz); lights.append(('point', (lx, 1.09, tz), (1.0, 0.75, 0.45), 18))
+            lamp(brass, shade, bulb, lx, 0.79, tz, inner=shade_in); lights.append(('point', (lx, 1.09, tz), (1.0, 0.75, 0.45), 18))
         for lx in (TX - 1.3, TX, TX + 1.3):
             for s in (-1, 1):
                 cz = tz + s * 0.85
@@ -802,7 +833,7 @@ def build_furniture(lights):
     y = 0.3
     while y < 3.3: lad.box(-26, y, -12.15 + 0.35, 0.5, 0.03, 0.03); y += 0.3
     lad.finish()
-    walnut.finish(); tops.finish(); leather.finish(); brass.finish(); shade.finish(); bulb.finish()
+    walnut.finish(); tops.finish(); leather.finish(); brass.finish(); shade.finish(); shade_in.finish(); bulb.finish()
     # globe
     bpy.ops.mesh.primitive_uv_sphere_add(radius=0.28, segments=32, ring_count=20, location=P(-21.3, 1.15, -9.2))
     g = bpy.context.active_object; g.name = 'globe'

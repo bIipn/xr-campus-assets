@@ -159,9 +159,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	float GetLightLevel() const { return LightLevel; }
 
-	/** Where the open scene's middle is (the chair looks there). */
+	/** Where the open scene's middle is (the light aims there). */
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	FVector GetSceneCentre() const;
+
+	/** Where the reader's eye goes on sitting down: low on the scene, so the whole of it and the printed page sit
+	    above the HUD's caption. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FVector GetReaderLookAt() const;
 
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	FString Describe() const;
@@ -216,7 +221,9 @@ protected:
 	TArray<int32> BookOfSpreads;       // Spreads[i] is Books[BookOfSpreads[i]]
 	int32 BaseComp = INDEX_NONE;
 	FVector SceneCentre = FVector::ZeroVector;
+	float PageZ = 0.f;                 // the near page's surface (the base's top)
 	bool bHaveScene = false;
+	double LastPrestream = -1.0e9;     // when the pages' textures were last asked to stay sharp
 
 	EWTAPopUpState State = EWTAPopUpState::Closed;
 	int32 BookIndex = 0;

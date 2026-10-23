@@ -4374,11 +4374,46 @@ void UWTAPlayTest::AddPopUpPhase()
 			IWTAInteractable::Execute_Interact(Book, Controller);
 			return 0.f;
 		} });
-		Steps.Add({ FString::Printf(TEXT("popup settle %d"), i + 1), [Weak, Wait]() -> float
+		if (i == 0)
 		{
-			const AWTAPopUpBookActor* Book = Weak.Get();
-			return Book != nullptr ? Wait : 0.f;
-		} });
+			// The first turn, caught moving: the layers folding, the backdrop coming down, the next spread rising
+			// with its back layer popping up, and the layers snapping upright.
+			const float Close = Found->CloseSeconds;
+			const float Times[4] = { 0.3f, 0.72f, Close + 0.55f, Close + 1.0f };
+			float Prev = 0.f;
+			for (int32 k = 0; k < 4; ++k)
+			{
+				const float Gap = Times[k] - Prev;
+				Prev = Times[k];
+				Steps.Add({ FString::Printf(TEXT("popup turning %d"), k + 1), [Weak, Gap]() -> float
+				{
+					return Weak.Get() != nullptr ? Gap : 0.f;
+				} });
+				Steps.Add({ FString::Printf(TEXT("popup turning shot %d"), k + 1), [this, Weak, k]() -> float
+				{
+					const AWTAPopUpBookActor* Book = Weak.Get();
+					if (Book == nullptr)
+					{
+						return 0.f;
+					}
+					Report(TEXT("popup"), EResult::Info, FString::Printf(TEXT("turning, moment %d"), k + 1), Book->Describe());
+					Shot(FString::Printf(TEXT("popup_turning_%d"), k + 1), false);
+					return 0.f;
+				} });
+			}
+			Steps.Add({ TEXT("popup settle 1"), [Weak, Wait, Prev]() -> float
+			{
+				return Weak.Get() != nullptr ? FMath::Max(0.2f, Wait - Prev) : 0.f;
+			} });
+		}
+		else
+		{
+			Steps.Add({ FString::Printf(TEXT("popup settle %d"), i + 1), [Weak, Wait]() -> float
+			{
+				const AWTAPopUpBookActor* Book = Weak.Get();
+				return Book != nullptr ? Wait : 0.f;
+			} });
+		}
 		Steps.Add({ FString::Printf(TEXT("popup look %d"), i + 1), [this, Weak, i]() -> float
 		{
 			const AWTAPopUpBookActor* Book = Weak.Get();

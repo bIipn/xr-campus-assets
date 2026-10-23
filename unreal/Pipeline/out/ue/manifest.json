@@ -269,7 +269,7 @@
   "ReadingRoom": {
    "file": "ReadingRoom.glb",
    "source": "unreal/Pipeline/out/reading_room/ReadingRoom.glb",
-   "meshes": 33,
+   "meshes": 34,
    "tagged": [
     "seat__lib01_f90",
     "seat__lib02_f270",
@@ -284,8 +284,8 @@
     "seat__lib11_f90",
     "seat__lib12_f270"
    ],
-   "triangles": 202184,
-   "bytes": 63715908
+   "triangles": 203364,
+   "bytes": 63829848
   },
   "Props": {
    "file": "Props.glb",
@@ -607,7 +607,7 @@
     "popup__what_is_xr_s1_l3"
    ],
    "triangles": 18146,
-   "bytes": 3102320
+   "bytes": 3096348
   }
  }
 }
