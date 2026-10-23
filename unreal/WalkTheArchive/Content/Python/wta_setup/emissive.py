@@ -335,10 +335,12 @@ def build_figure_material(path=FIGURE_MATERIAL):
 def build_widget_screen_material(path=WIDGET_SCREEN):
     """An unlit, translucent, display-referred material for VR's screens: the widget as the desktop draws it.
 
-    Emissive = decode(SlateUI) x TintColorAndOpacity x Luminance / EyeAdaptation, so the exposure leaves it as the
-    viewport would show it; Opacity = lerp(1, SlateUI alpha, OpacityFromTexture) x the tint's alpha. The render target
-    holds the colours gamma encoded and, where the widget is see-through, already multiplied by its alpha (Slate blends
-    onto a clear target), so the colour is divided by the alpha before it is decoded and the blend multiplies it back.
+    Emissive = SlateUI x TintColorAndOpacity x Luminance / EyeAdaptation, so the exposure leaves it as the viewport
+    would show it; Opacity = lerp(1, SlateUI alpha, OpacityFromTexture) x the tint's alpha. The component's render
+    target is an sRGB texture, so a sample is already linear (decoding it again crushed every dark panel to black on
+    the first VR screens: the HUD's #15221e came out #000000, a key's #34493f #000201); where the widget is see-through
+    it is multiplied by its alpha (Slate blends onto a clear target), so the colour is divided by the alpha and the
+    blend multiplies it back.
     Drawn after motion blur (crisp, out of the temporal upscaler's jitter), a pass the engine renders with no depth
     buffer, so a screen shows over everything in front of it: the player controller brings a screen nearer when a
     wall is in the way, the name tags hide behind walls by a line check, and the laser and its dot draw after the
@@ -375,7 +377,7 @@ def build_widget_screen_material(path=WIDGET_SCREEN):
     lum = _expression(mat, "MaterialExpressionScalarParameter", -700, 300,
                       {"parameter_name": "Luminance", "default_value": 1.0})
     eye = _expression(mat, "MaterialExpressionEyeAdaptation", -500, 420)
-    # Straight (not premultiplied) gamma-encoded colour, then linear.
+    # Straight (not premultiplied) linear colour.
     safe_alpha = _expression(mat, "MaterialExpressionMax", -1150, 50, {"const_b": 0.004})
     _connect(tex, "A", safe_alpha, "A")
     straight = _expression(mat, "MaterialExpressionDivide", -1000, -100)
@@ -383,10 +385,8 @@ def build_widget_screen_material(path=WIDGET_SCREEN):
     _connect(safe_alpha, "", straight, "B")
     clamped = _expression(mat, "MaterialExpressionSaturate", -870, -100)
     _connect(straight, "", clamped, "")
-    decoded = _expression(mat, "MaterialExpressionPower", -740, -100, {"const_exponent": 2.2})
-    _connect(clamped, "", decoded, "Base")
     tinted = _expression(mat, "MaterialExpressionMultiply", -600, 0)
-    _connect(decoded, "", tinted, "A")
+    _connect(clamped, "", tinted, "A")
     _connect(tint, "", tinted, "B")
     scaled = _expression(mat, "MaterialExpressionMultiply", -450, 100)
     _connect(tinted, "", scaled, "A")
