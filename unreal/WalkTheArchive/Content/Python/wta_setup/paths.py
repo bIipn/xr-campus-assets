@@ -46,6 +46,7 @@ CLASSROOM_LIGHTS_JSON = os.path.join(OUT_DIR, "classroom", "lights.json")    # b
 TRAINING_LIGHTS_JSON = os.path.join(OUT_DIR, "training", "lights.json")      # bl/training.py (the Training Wing's panels)
 STORIES_LIGHTS_JSON = os.path.join(OUT_DIR, "stories", "lights.json")        # bl/stories.py (the Lost Stories cabin)
 STORIES_LAYOUT_JSON = os.path.join(OUT_DIR, "stories", "layout.json")        # bl/stories.py: the story wall and the mic
+POPUP_LAYOUT_JSON = os.path.join(OUT_DIR, "popup", "layout.json")            # bl/popup.py: the pop-up books and their spreads
 LAYOUT_JSON = os.path.join(PIPELINE_DIR, "layout", "layout.json")
 STATUES_JSON = os.path.join(PIPELINE_DIR, "content", "statues.json")       # the marble statues (hand-authored)
 GALLERY_WALLS_JSON = os.path.join(PIPELINE_DIR, "content", "gallery_walls.json")   # the visitors' own walls (hand-authored)

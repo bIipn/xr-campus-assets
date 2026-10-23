@@ -1,0 +1,65 @@
+{
+ "source": "bl/popup.py",
+ "units": "campus metres; ue = Unreal cm (x*100, z*100, y*100)",
+ "book": {
+  "centre": [
+   -19.5,
+   0.806,
+   4.64
+  ],
+  "centre_ue": [
+   -1950.0,
+   464.0,
+   80.6
+  ],
+  "spine_ue": [
+   -1950.0,
+   450.0,
+   80.9
+  ],
+  "reader_ue": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "width_m": 0.52,
+  "depth_m": 0.28,
+  "height_m": 0.28
+ },
+ "reader_seat": "lib10",
+ "books": [
+  {
+   "id": "water-cycle",
+   "title": "The Water Cycle",
+   "pages": [
+    0,
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "id": "oceans-vr",
+   "title": "Oceans in VR",
+   "pages": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "what-is-xr",
+   "title": "What Is XR?",
+   "pages": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "ar-around-town",
+   "title": "AR Around Town",
+   "pages": [
+    2
+   ]
+  }
+ ]
+}

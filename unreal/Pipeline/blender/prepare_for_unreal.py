@@ -7,8 +7,9 @@ when you import meshes as assets). So before Unreal sees them, this pass:
     lands in the right place when spawned at Unreal (0, 0, 0)),
   * joins untagged meshes that share a material into one mesh per material (fewer, bigger meshes:
     ideal for Nanite and quick to place),
-  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__, and the
-    talk venues' screen__ slide screens and spot__ speaker marks) as their own meshes with their tag as the name,
+  * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__, the
+    talk venues' screen__ slide screens and spot__ speaker marks, and the pop-up books' popup__ pieces) as their own
+    meshes with their tag as the name,
   * applies content/refits.json to the web-exported wings it names (meshes dropped, groups moved, faces clipped
     out of a box), e.g. the School's Room 104 becoming the XR Classroom, the yard fence cut where the Training
     Wing's doorway opens through it,
@@ -48,8 +49,9 @@ SOURCES = [
     ('Training', 'unreal/Pipeline/out/training/Training.glb'),         # bl/training.py: the Training Wing (the dialysis course's room)
     ('Maker', 'unreal/Pipeline/out/maker/Maker.glb'),                  # bl/maker.py: the 360 storytelling course in Room 101
     ('Stories', 'unreal/Pipeline/out/stories/Stories.glb'),            # bl/stories.py: the Lost Stories cabin at the end of the path
+    ('PopUp', 'unreal/Pipeline/out/popup/PopUp.glb'),                  # bl/popup.py: the pop-up books on the Reading Room's south table
 ]
-TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot)__')
+TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot|popup)__')
 REFITS = os.path.join(REPO, 'unreal', 'Pipeline', 'content', 'refits.json')
 
 

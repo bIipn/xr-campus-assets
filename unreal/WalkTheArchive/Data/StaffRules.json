@@ -769,6 +769,19 @@
   "OfferLabel": "Take me to the cabin"
  },
  {
+  "Name": "R039",
+  "Order": 39,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bpop[- ]?ups?\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "The pop-up books lie open on the Reading Room’s south reading table, between the two lamps: “The Water Cycle,” “Oceans in VR,” “What Is XR?” and “AR Around Town.” Sit in the middle chair facing the book and press E: every press turns the page and the next scene pops up, and when a book closes, the next one is waiting.",
+  "Action": "GoPlace",
+  "ActionArg": "library",
+  "bOffer": true,
+  "OfferLabel": "Take me to the Reading Room"
+ },
+ {
   "Name": "R132",
   "Order": 132,
   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",

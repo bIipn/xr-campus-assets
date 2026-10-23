@@ -1,5 +1,5 @@
 {
- "_": "The words the builders draw into textures themselves, English key to the language's words. bl/slides.py reads it (the slide kickers) and bl/stories.py (the Lost Stories cabin's sign, its how-it-works card, the ON AIR sign and the archive boxes); the other signs, boards and screens still draw English until their builders read it too.",
+ "_": "The words the builders draw into textures themselves, English key to the language's words. bl/slides.py reads it (the slide kickers), bl/stories.py (the Lost Stories cabin's sign, its how-it-works card, the ON AIR sign and the archive boxes) and bl/popup.py (the pop-up books' covers); the other signs, boards and screens still draw English until their builders read it too.",
  "A talk": "Una charla",
  "A class": "Una clase",
  "The forecourt theatre": "El teatro de la explanada",
@@ -20,5 +20,6 @@
  "box {0}": "caja {0}",
  "donated": "donadas",
  "unsorted": "sin ordenar",
- "tapes": "cintas"
+ "tapes": "cintas",
+ "A POP-UP BOOK": "UN LIBRO DESPLEGABLE"
 }

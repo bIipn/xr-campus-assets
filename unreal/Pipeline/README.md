@@ -18,11 +18,12 @@ bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json 
 bl/training.py ──► out/training/Training.glb, lights.json, layout.json        (the Training Wing: the dialysis course's five stations)
 bl/maker.py ──► out/maker/Maker.glb, layout.json                              (Room 101's 360 storytelling course: five stations, the desk)
 bl/stories.py ──► out/stories/Stories.glb, lights.json, layout.json           (the Lost Stories cabin at the path's end: the booth and the story wall)
+bl/popup.py ──► out/popup/PopUp.glb, layout.json                              (the pop-up books on the Reading Room's south reading table)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
 out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb + Maker.glb
-    + Stories.glb
+    + Stories.glb + PopUp.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -211,6 +212,21 @@ the board's face (`story_wall`: centre, yaw, width and height, for `AWTAStoryWal
 wall-wash spot and the porch lantern. Materials are `st_*` (`content/surfaces.json` has the Stories block); the sign
 and the "How it works" card take a client pack's `stories` words when it has them.
 
+The pop-up books (`bl/popup.py`) lie on the Reading Room's south reading table between its two lamps, the spine across
+the table and the near page toward the middle chair on the south side (`seat__lib10`). Each is a theatre pop-up: opened,
+the far page stands as the backdrop (the scene printed on it, the book's cover on its back) and three paper layers stand
+between it and the reader, back to front and smaller toward the front, every piece an extruded paper cut-out in its own
+colour; the near page carries the scene's ground and, on a cream band, the page's heading from the book in the library.
+Four books, nine spreads: The Water Cycle (water on the move, evaporation, condensation, precipitation), Oceans in VR
+(the reef with its turtle and manta, coral bleaching), What Is XR? (a reader in a headset looking at floating islands, a
+dinosaur in the living room seen through a phone) and AR Around Town (pollinators at the fair). Every piece Unreal moves
+is its own mesh, built standing open in place: `popup__<book>_s<n>_back`, `_floor`, `_l1` (front) to `_l3` (back), and
+`popup__base` for the back cover and the page block. `build_level.py` leaves them to `AWTAPopUpBookActor`, which the
+actors step places from `out/popup/layout.json` (where the book is, which way the reader sits, the chair, and per book the
+DT_Books page each spread shows); it hinges every piece on its bottom edge and folds it toward the reader. The headings
+and covers come from the pack's books (its `content` folder, its language's DT_Books); a pack without these books gets
+none. The printed pages (`assets/tex/popup_*.png`) are painted on every run and travel in the GLB as JPEGs.
+
 ## A client pack, and the sheet a library fills in
 
 `clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit
@@ -256,6 +272,7 @@ exhibit is itself again. The play QA's `season` phase does exactly this with the
 | Training | 37 | 8k | Blender: the Training Wing's room and its five stations; `spot__training_f0`, `seat__training_*` |
 | Maker | 33 | 5k | Blender: Room 101's 360 storytelling course props; `spot__studio_f90`, `seat__studio_edit_f90` |
 | Stories | 38 | 8k | Blender: the Lost Stories cabin at the path's end (porch, booth, story board, shelves); `seat__stories_teller_f0`, `_guest_f180`, `_bench_f270`, `_porch_f270` |
+| PopUp | 46 | 18k | Blender: the pop-up books on the Reading Room's south table, every moving piece its own `popup__` mesh (the actors step's `AWTAPopUpBookActor` places and folds them) |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,

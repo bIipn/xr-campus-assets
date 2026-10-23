@@ -20,6 +20,8 @@
   AWTAGalleryWallActor one per Pipeline/content/gallery_walls.json entry (the visitors' pictures)
   AWTAStoryWallActor and AWTAStoryMicActor: the Lost Stories cabin's board and microphone, from
                      Pipeline/out/stories/layout.json (bl/stories.py)
+  AWTAPopUpBookActor the pop-up books on the Reading Room's south table, from Pipeline/out/popup/layout.json
+                     (bl/popup.py): every popup__ mesh and the books, the actor folds the pieces itself
 Properties are set with set_editor_property using the snake_case names from the contract. Every actor is
 tagged WTA_Setup / WTA_actors and filed under WTA/<Kind>.
 """
@@ -393,6 +395,50 @@ def spawn_story_booth(report):
     return failed_props
 
 
+def spawn_popup_book(report):
+    """The pop-up books (bl/popup.py writes out/popup/layout.json; prepare_for_unreal and import_meshes bring its
+    PopUp.glb in as the popup__ meshes): one AWTAPopUpBookActor over the book with every popup__ mesh, the books and
+    their spreads' pages, the way the reader sits and the chair. build_level leaves those meshes to it. Nothing when the
+    builder has not run, or when the pack has none of its books."""
+    failed_props = []
+    try:
+        doc = paths.read_json(paths.POPUP_LAYOUT_JSON)
+    except Exception:
+        report["popup_book"] = "no out/popup/layout.json (bl/popup.py has not run)"
+        return failed_props
+    if not doc.get("books"):
+        report["popup_book"] = "the pack has none of the pop-up books"
+        return failed_props
+    folder = paths.campus_asset_path("PopUp")
+    meshes = [mesh for _path, mesh in util.static_meshes_under(folder, cached=True)
+              if util.object_name(mesh).startswith("popup__")]
+    if not meshes:
+        report["popup_book"] = "no popup__ meshes under %s (import_meshes has not brought PopUp in)" % folder
+        log.warn(report["popup_book"])
+        return failed_props
+    book = doc["book"]
+    cx, cy, cz = [float(v) for v in book["centre_ue"]]
+    width, depth, height = 100.0 * float(book["width_m"]), 100.0 * float(book["depth_m"]), 100.0 * float(book.get("height_m", 0.28))
+    books = []
+    for row in doc["books"]:
+        entry = unreal.WTAPopUpBook()
+        entry.set_editor_property("book_id", row["id"])
+        entry.set_editor_property("pages", [int(p) for p in row.get("pages", [])])
+        books.append(entry)
+    # The pick box: the pages, and the scene standing on them (half its height over the page).
+    _a, failed = spawn_wta("WTAPopUpBookActor", (cx, cy, cz + 0.5 * height), 0.0, "PopUpBook", "Books", {
+        "meshes": sorted(meshes, key=util.object_name),
+        "books": books,
+        "reader_direction": unreal.Vector(*[float(v) for v in book.get("reader_ue", [0.0, 1.0, 0.0])]),
+        "reader_seat_id": doc.get("reader_seat", "lib10"),
+        "pick_extent": unreal.Vector(0.5 * width + 4.0, 0.5 * depth + 4.0, 0.5 * height + 2.0),
+    })
+    failed_props += failed
+    report["popup_book"] = {"meshes": len(meshes), "books": [b["id"] for b in doc["books"]],
+                            "spreads": sum(len(b.get("pages", [])) for b in doc["books"])}
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
@@ -400,7 +446,7 @@ def run():
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
                spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks, spawn_gallery_walls,
-               spawn_story_booth):
+               spawn_story_booth, spawn_popup_book):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

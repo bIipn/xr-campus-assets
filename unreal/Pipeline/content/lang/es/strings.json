@@ -263,5 +263,11 @@
  "Press E at the wall for every story, newest first.": "Pulsa E en el muro para verlas todas, de la más reciente a la más antigua.",
  "Recording · E for the card": "Grabando · E para la tarjeta",
  "Stories from this place · {0}": "Historias de este lugar · {0}",
- "Stop the story": "Detener la historia"
+ "Stop the story": "Detener la historia",
+ "{0} — {1}": "{0} — {1}",
+ "Pop-up book": "Libro desplegable",
+ "Read the pop-up book · {0}": "Leer el libro desplegable · {0}",
+ "Turn the page · {0} of {1}": "Pasar la página · {0} de {1}",
+ "Close the book": "Cerrar el libro",
+ "Open the pop-up book · {0}": "Abrir el libro desplegable · {0}"
 }

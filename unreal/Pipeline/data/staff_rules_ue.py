@@ -193,6 +193,13 @@ RULES = [
       'down beside it, and goes on the wall inside for the next visitor to hear.',
       [r'\b(lost stor(y|ies)|oral histor(y|ies)|story (booth|cabin|wall)|(record|tell|leave|share|keep) (a|my|your|our) stor(y|ies)|stories? (booth|cabin))\b'],
       Not=['{travel}'], **offer('GoPlace', 'stories', 'Take me to the cabin')),
+    # the pop-up books on the Reading Room's south table (Unreal only): what they are and how they work, with the way
+    # there offered (asking the way gets the Reading Room's directions: "books" is one of its names)
+    R('R039', None, 39, 'The pop-up books lie open on the Reading Room’s south reading table, between the two lamps: '
+      '“{book:water-cycle},” “{book:oceans-vr},” “{book:what-is-xr}” and “{book:ar-around-town}.” Sit in the middle '
+      'chair facing the book and press E: every press turns the page and the next scene pops up, and when a book '
+      'closes, the next one is waiting.',
+      [r'\bpop[- ]?ups?\b'], Not=['{travel}'], **offer('GoPlace', 'library', 'Take me to the Reading Room')),
 
     # --- after the directions and title matches (the web's branches after 31) -------------------------------------
     # 32 the earliest / latest dated exhibit; "show me" or "take me" goes now. The web left Mr. Hale out ("the first

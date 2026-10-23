@@ -42,5 +42,9 @@ assets/classroom/*.blend*
 assets/training/*.blend*
 assets/maker/*.blend*
 assets/stories/*.blend*
+unreal/Pipeline/out/popup/PopUp.glb
+assets/popup/*.blend*
+# the pop-up books' printed pages: bl/popup.py paints them on every run and they travel inside the GLB
+assets/tex/popup_*.png
 # whisper.cpp for the Lost Stories booth (Tools/win/get_whisper.ps1 fetches it; MIT, with its model): not in git
 unreal/WalkTheArchive/ThirdParty/

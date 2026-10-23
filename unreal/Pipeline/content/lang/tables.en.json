@@ -2731,6 +2731,11 @@
    "Answer": "Lost Stories began in Marin City, where young people rebuilt overlooked history in XR (the Wax Hall’s tenth scene). Out on the grounds, at the end of the path past the fountain, the Lost Stories cabin carries it on: sit at the microphone and tell a story about this place. It is kept in your own voice, written down beside it, and goes on the wall inside for the next visitor to hear.",
    "OfferLabel": "Take me to the cabin"
   },
+  "R039": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bpop[- ]?ups?\\b))",
+   "Answer": "The pop-up books lie open on the Reading Room’s south reading table, between the two lamps: “The Water Cycle,” “Oceans in VR,” “What Is XR?” and “AR Around Town.” Sit in the middle chair facing the book and press E: every press turns the page and the next scene pops up, and when a book closes, the next one is waiting.",
+   "OfferLabel": "Take me to the Reading Room"
+  },
   "R132": {
    "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
    "Answer": "Follow me. The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016."

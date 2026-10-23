@@ -32,6 +32,7 @@
 #include "World/WTAStatueActor.h"
 #include "World/WTACourseActor.h"
 #include "World/WTAGalleryWallActor.h"
+#include "World/WTAPopUpBookActor.h"
 #include "World/WTAStoryMicActor.h"
 #include "World/WTAStoryWallActor.h"
 #include "Systems/WTAStoriesSubsystem.h"
@@ -500,6 +501,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	{
 		AddStoriesPhase();
 	}
+	if (Want(TEXT("popup")))
+	{
+		AddPopUpPhase();
+	}
 	if (Want(TEXT("ui")))
 	{
 		AddUIPhase();
@@ -940,7 +945,7 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 	const FString ShotName = FString::Printf(TEXT("%s_%02d"), *Kind.ToLower(), ClassIndex);
 	const TSharedRef<FState> S = MakeShared<FState>();
 	// A token and the visitors' wall open nothing (E collects, E refreshes), so Esc would open the pause menu.
-	const bool bToken = Actor->IsA<AWTATokenActor>() || Actor->IsA<AWTAGalleryWallActor>();
+	const bool bToken = Actor->IsA<AWTATokenActor>() || Actor->IsA<AWTAGalleryWallActor>() || Actor->IsA<AWTAPopUpBookActor>();
 	const bool bBook = Actor->IsA<AWTABookActor>();
 
 	// A token only a ride reaches (the rides are a later build): out of reach on foot is right for it.
@@ -1128,6 +1133,12 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 		{
 			Expected = TEXT("the stories card");
 			bPass = PanelIs(EWTAPanelMode::Stories, NAME_None);
+		}
+		else if (const AWTAPopUpBookActor* PopUp = Cast<AWTAPopUpBookActor>(Target))
+		{
+			// E sits the visitor in the reader's chair facing the book; the book itself opens nothing on the HUD.
+			Expected = TEXT("seated in ") + PopUp->ReaderSeatId.ToString() + TEXT(", nothing open");
+			bPass = PopUp->IsReaderSeated() && !Controller->IsAnyPanelOpen();
 		}
 		else if (const AWTAStoryMicActor* Mic = Cast<AWTAStoryMicActor>(Target))
 		{
@@ -4270,6 +4281,130 @@ void UWTAPlayTest::AddStoriesPhase()
 		Stories->FindStory(*Id, Story);
 		const bool bDeleted = Stories->DeleteOwnStory(*Id) && !FPaths::FileExists(Story.WavFile()) && !FPaths::FileExists(Story.JsonFile());
 		Report(TEXT("stories"), bDeleted ? EResult::Pass : EResult::Fail, TEXT("its teller can delete it"), bDeleted ? TEXT("both files gone") : TEXT("files still there"));
+		return 0.3f;
+	} });
+}
+
+void UWTAPlayTest::AddPopUpPhase()
+{
+	// The pop-up books on the Reading Room's south table: the actor and its pieces are in the level; from its view
+	// spot the crosshair names it; E sits the visitor in the reader's chair facing it, the spread's caption up; then E
+	// works through every book on the table - each turn folds the spread down and pops the next one up, after the last
+	// spread the book shuts and the next one's cover lies there, E opens that - with a shot of each spread once its
+	// paper has stopped (no HUD), and of each closed cover.
+	AWTAPopUpBookActor* Found = nullptr;
+	for (TActorIterator<AWTAPopUpBookActor> It(GetWorld()); It; ++It)
+	{
+		Found = *It;
+		break;
+	}
+	const TWeakObjectPtr<AWTAPopUpBookActor> Weak(Found);
+	Steps.Add({ TEXT("popup place"), [this, Weak]() -> float
+	{
+		CloseAll();
+		AWTAPopUpBookActor* Book = Weak.Get();
+		const bool bOk = Book != nullptr && Book->NumPieces() > 0 && Book->NumBooks() > 0;
+		Report(TEXT("popup"), bOk ? EResult::Pass : EResult::Fail, TEXT("the pop-up book is in the level"), Book != nullptr ? Book->Describe()
+			: FString(TEXT("no AWTAPopUpBookActor (bl/popup.py, prepare PopUp, import_meshes, then the actors step place it)")));
+		FWTAView View;
+		if (bOk && IWTAInteractable::Execute_GetViewSpot(Book, View) && View.bValid)
+		{
+			StandAt(View);
+		}
+		return bOk ? 1.4f : 0.f;
+	} });
+	if (Found == nullptr || Found->NumBooks() == 0)
+	{
+		return;
+	}
+	Steps.Add({ TEXT("popup hover"), [this, Weak]() -> float
+	{
+		AWTAPopUpBookActor* Book = Weak.Get();
+		AWTAPlayerController* Controller = PC();
+		if (Book == nullptr || Controller == nullptr || Controller->Interaction == nullptr)
+		{
+			return 0.f;
+		}
+		const bool bHover = Controller->Interaction->GetHovered() == Book;
+		Report(TEXT("popup"), bHover ? EResult::Pass : EResult::Fail, TEXT("the crosshair names it"),
+			bHover ? IWTAInteractable::Execute_GetInteractLabel(Book).ToString() : DescribeAim(Book));
+		Shot(TEXT("popup_display"), false);
+		return 0.2f;
+	} });
+	Steps.Add({ TEXT("popup sit"), [this, Weak]() -> float
+	{
+		AWTAPopUpBookActor* Book = Weak.Get();
+		AWTAPlayerController* Controller = PC();
+		if (Book == nullptr || Controller == nullptr)
+		{
+			return 0.f;
+		}
+		IWTAInteractable::Execute_Interact(Book, Controller);
+		return 1.0f;
+	} });
+	Steps.Add({ TEXT("popup seated"), [this, Weak]() -> float
+	{
+		AWTAPopUpBookActor* Book = Weak.Get();
+		if (Book == nullptr)
+		{
+			return 0.f;
+		}
+		const AWTACharacter* Reader = Player();
+		const AWTASeatActor* Seat = Reader != nullptr && Reader->IsSeated() ? Cast<AWTASeatActor>(Reader->GetSeat()) : nullptr;
+		Report(TEXT("popup"), Book->IsReaderSeated() ? EResult::Pass : EResult::Fail, TEXT("E sits the reader facing the book"),
+			FString::Printf(TEXT("in %s (the reader's is %s); \"%s\"; caption \"%s\""), Seat != nullptr ? *Seat->SeatId.ToString() : TEXT("no seat"),
+				*Book->ReaderSeatId.ToString(), *IWTAInteractable::Execute_GetInteractLabel(Book).ToString(), *Book->GetCaption().ToString()));
+		Shot(TEXT("popup_seated"));
+		return 0.2f;
+	} });
+	// Round the table once: per book its turns, its close and the next book's opening, so from the first book open at
+	// its first spread the presses end where they began.
+	const int32 Presses = Found->TotalSpreads() + Found->NumBooks();
+	const float Wait = Found->OpenSeconds + Found->CloseSeconds + 0.6f;
+	for (int32 i = 0; i < Presses; ++i)
+	{
+		Steps.Add({ FString::Printf(TEXT("popup press %d"), i + 1), [this, Weak]() -> float
+		{
+			AWTAPopUpBookActor* Book = Weak.Get();
+			AWTAPlayerController* Controller = PC();
+			if (Book == nullptr || Controller == nullptr)
+			{
+				return 0.f;
+			}
+			IWTAInteractable::Execute_Interact(Book, Controller);
+			return 0.f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("popup settle %d"), i + 1), [Weak, Wait]() -> float
+		{
+			const AWTAPopUpBookActor* Book = Weak.Get();
+			return Book != nullptr ? Wait : 0.f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("popup look %d"), i + 1), [this, Weak, i]() -> float
+		{
+			const AWTAPopUpBookActor* Book = Weak.Get();
+			if (Book == nullptr)
+			{
+				return 0.f;
+			}
+			const EWTAPopUpState St = Book->GetState();
+			const bool bStill = St == EWTAPopUpState::Open || St == EWTAPopUpState::Closed;
+			const bool bShut = St == EWTAPopUpState::Closed;
+			const bool bLayersUp = bShut || (FMath::Abs(Book->GetBackdropAngle()) < 0.5f);
+			Report(TEXT("popup"), bStill && bLayersUp ? EResult::Pass : EResult::Fail,
+				bShut ? FString::Printf(TEXT("press %d shuts it: %s on the table"), i + 1, *Book->GetBookId().ToString())
+					: FString::Printf(TEXT("press %d: %s spread %d of %d"), i + 1, *Book->GetBookId().ToString(), Book->GetSpread() + 1, Book->NumSpreads()),
+				Book->Describe() + FString::Printf(TEXT("; caption \"%s\""), bShut ? TEXT("") : *Book->GetCaption().ToString()));
+			const FString Key = Book->GetBookId().ToString().Replace(TEXT("-"), TEXT("_"));
+			Shot(bShut ? FString::Printf(TEXT("popup_%s_cover"), *Key) : FString::Printf(TEXT("popup_%s_s%d"), *Key, Book->GetSpread()), false);
+			return 0.2f;
+		} });
+	}
+	Steps.Add({ TEXT("popup stand"), [this]() -> float
+	{
+		if (AWTACharacter* Reader = Player())
+		{
+			Reader->StandUp(true);
+		}
 		return 0.3f;
 	} });
 }
