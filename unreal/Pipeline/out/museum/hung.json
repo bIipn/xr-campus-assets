@@ -1,0 +1,151 @@
+{
+ "source": "bl/museum.py hang_in_panel",
+ "units": "metres, three.js campus axes (y up)",
+ "note": "the artwork of each exhibit scaled to fill its bay's gilt panel: its centre and size",
+ "exhibits": {
+  "ca-200": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -9.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "charleston": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -33.0
+   ],
+   "size_m": [
+    1.6558,
+    2.1857
+   ],
+   "scale": 1.6558
+  },
+  "cil-talks": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -15.0
+   ],
+   "size_m": [
+    1.6558,
+    2.1857
+   ],
+   "scale": 1.6558
+  },
+  "dialysis": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -27.0
+   ],
+   "size_m": [
+    2.1405,
+    2.1405
+   ],
+   "scale": 1.8613
+  },
+  "mission": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -9.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "nv-1100": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -21.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "nv-2017": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -15.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "sandi": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -21.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "seeking": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -39.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  },
+  "showcase": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -27.0
+   ],
+   "size_m": [
+    2.1405,
+    2.1405
+   ],
+   "scale": 1.8613
+  },
+  "ukraine": {
+   "centre_m": [
+    5.943,
+    2.835,
+    -39.0
+   ],
+   "size_m": [
+    2.1405,
+    2.1405
+   ],
+   "scale": 1.8613
+  },
+  "way-out": {
+   "centre_m": [
+    -5.943,
+    2.835,
+    -33.0
+   ],
+   "size_m": [
+    3.0118,
+    2.1083
+   ],
+   "scale": 2.0079
+  }
+ }
+}

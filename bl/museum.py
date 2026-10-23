@@ -58,6 +58,7 @@ HALL = ((-12.0, -6.0), (6.0, 12.0)); HZ0, HZ1 = -4.6, -1.4
 # the halls' walls and ceiling start at the Reading Room's outer face (x -11.55): its door reveal fills the
 # last 45 cm (bl/library.py), and two faces in one plane flicker. The floor still runs to -12.
 HALL_WALLS = ((-11.55, -6.0), (6.0, 12.0))
+HALL_END_GAP = 0.01               # the halls' runs stop this short of the walls at their ends (see halls())
 SIDE_DOOR = (-4.2, -1.8)          # lobby -> halls, 2.4 x 3.1 at x = +-6
 # Hall R's north wall opens into the talks wing's foyer (bl/auditorium.py): a 2.2 x 2.8 m door through a wall
 # from the hall's face (z -4.6) to the foyer's (FOYER_FACE, built by bl/auditorium.py); the museum builds the hall's
@@ -340,7 +341,10 @@ def archivolt(origin, out, w, spring, bs, gold, depth=0.12):
     O = D(out[0], 0, out[1])
     for i in range(n):
         a0 = math.pi * i / n; a1 = math.pi * (i + 1) / n
-        for (rr0, rr1, dep, bld) in ((R + 0.02, R + 0.32, depth, bs), (R + 0.0, R + 0.06, depth * 0.4, gold)):
+        # the gilt bead's inner edge stands 1.5 cm out from the opening: at the opening's own radius its soffit lay
+        # in the passage lining's surface (the drum's arches are lined through their depth) and the two flickered in
+        # dashes all round the arch
+        for (rr0, rr1, dep, bld) in ((R + 0.02, R + 0.32, depth, bs), (R + 0.015, R + 0.06, depth * 0.4, gold)):
             def ring(a, r): return P(ox - r * math.cos(a), spring + r * math.sin(a), oz)
             p = [ring(a0, rr0) + O * dep, ring(a0, rr1) + O * dep, ring(a1, rr1) + O * dep, ring(a1, rr0) + O * dep]
             bld.face(p, O)
@@ -379,7 +383,12 @@ def chandelier(pd, pb, px, pz, ceil, hang):
 def halls():
     wl = builder('walls', 'lime', tile=3.0); gold = builder('gilt_trim', 'gilt')
     bs = builder('aedicule', 'stone', tile=2.0); bc = builder('capitals', 'gilt'); bb = builder('bases', 'stone', tile=2.0)
-    for (xa, xb) in HALL_WALLS:
+    for (xa_, xb_) in HALL_WALLS:
+        # Every run along a hall (its walls with their thickness, the dado, the cornice, the ceiling) stops 1 cm short
+        # of the walls it meets at either end - the lobby's side wall, the School's west wall, the Reading Room's face -
+        # so its end caps lie inside those walls instead of in their face: the cornice's stone ends flickered over the
+        # plaster at the top of every hall door (seen as a ghost of the moulding beside the door's surround).
+        xa, xb = xa_ + HALL_END_GAP, xb_ - HALL_END_GAP
         for (z, out) in ((HZ0, (0, 1)), (HZ1, (0, -1))):
             door = HALL_R_DOOR if (xa > 0 and z == HZ0) else None
             if door:
@@ -402,7 +411,9 @@ def halls():
                 wall_face(wl, (xa, z), (xb, z), out, DADO_H - 0.02, HALL_H, nu=3, nv=1)
                 dado_run((xa, z), (xb, z), out)
             run_boxes(bs, (xa, z), (xb, z), out, [(HALL_H - 0.30, HALL_H - 0.22, 0.10), (HALL_H - 0.22, HALL_H - 0.12, 0.16), (HALL_H - 0.12, HALL_H, 0.22)])
-            for x in ((xa + 0.6, xb - 0.6) if door else (xa + 0.6, (xa + xb) / 2, xb - 0.6)):
+            # a pilaster near each end only: the middle of each wall is where the web hung the hall's poster
+            # (HALL_POSTERS), and a pilaster there stood across it
+            for x in (xa + 0.6, xb - 0.6):
                 pilaster(bs, bc, bb, (x, z), out, 0.36, HALL_H - 0.30, depth=0.10)
         coffered_flat(builder('ceiling', 'lime', tile=3.0), gold, xa, xb, HZ0, HZ1, HALL_H, 3, 2, rib=0.26, depth=0.18, inset=0.09)
         xm = (xa + xb) / 2
@@ -738,6 +749,25 @@ MOVES = {
 }
 
 
+# The halls' posters (0.76 x 1.02 m, the web's, one mid-way along each side wall). Hall R's north one hung where the
+# talks wing's door now opens (x 7.9..10.1): it joins its partner on the south wall, the two either side of the
+# wall's middle. Each entry: the poster's centre on the wall it goes to (campus x, z) and the turn (degrees about
+# the vertical) from where the web hung it.
+HALL_POSTERS = {'M_Material_86': ((10.25, -1.46), 180.0), 'M_Material_87': ((7.75, -1.46), 0.0)}
+
+
+def rehang(o, to, turn_deg):
+    """Turn a flat web piece about the vertical through its own centre and put that centre at campus (x, z) `to`."""
+    from mathutils import Matrix
+    mw = o.matrix_world
+    vs = [mw @ v.co for v in o.data.vertices]
+    c = sum(vs, Vector()) / len(vs)
+    m = (Matrix.Translation(Vector((to[0], -to[1], c.z))) @ Matrix.Rotation(math.radians(turn_deg), 4, 'Z')
+         @ Matrix.Translation(-c))
+    o.data.transform(m @ mw)
+    o.matrix_world = Matrix.Identity(4)
+
+
 def import_pieces():
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=PIECES)
@@ -750,9 +780,111 @@ def import_pieces():
         mv = MOVES.get(base)
         if mv:
             o.location += D(*mv)
+        if base in HALL_POSTERS:
+            bpy.context.view_layer.update()
+            rehang(o, *HALL_POSTERS[base])
+        if base.startswith('item__'):
+            if not hang_in_panel(o, base[len('item__'):].replace('_', '-')) and base in LABEL_LEFT:
+                label_to_left(o)
         count += 1
     # the bench slab the web left floating gets its supports
+    write_hung_json()
     return count
+
+
+# ---------------------------------------------------------------- the exhibits fill their bays' gilt panels
+# The web hung each framed exhibit at eye level with its label beside it: on these walls that put the frame's foot
+# behind the dado cap, the gilt panel's lower rail across the frame and the label, and a small picture at the
+# bottom of a 4.2 x 3.2 m gilt frame. Each one on the long walls is scaled in the wall's plane (not in depth) to fill
+# its bay's panel with an even margin, and its label is hung, a little larger, centred under it, both above the
+# panel's lower rail. HUNG (written to out/museum/hung.json) tells data/build_data.py where the artwork now is and how
+# big, so the catalog card, the season picture over it and the view in front of it agree.
+FRAME_MAX = (3.5, 2.55)           # the frame's largest width and height inside the panel's 4.2 x 3.2 m
+FRAME_Y0 = 1.56                   # the frame's foot: above the label and the panel's lower rail (y 1.15)
+LABEL_SCALE = 1.25
+LABEL_Y0 = 1.25                   # the label's foot
+HUNG = {}
+
+
+def label_slots(o):
+    """The exhibit's vertex indices by material slot (0 frame, 1 mat, 2 artwork, 3 label), or None when it is not
+    such a framed piece (or a label shares vertices with the frame)."""
+    from collections import defaultdict
+    by = defaultdict(set)
+    for p in o.data.polygons:
+        by[p.material_index].update(p.vertices)
+    if set(by) != {0, 1, 2, 3} or by[3] & (by[0] | by[1] | by[2]):
+        return None
+    return by
+
+
+# End-wall exhibits whose label the web hung on the door's side, where the aedicule's pilaster stands across it:
+# the label goes to the frame's other side.
+LABEL_LEFT = ('item__pollinators',)
+
+
+def label_to_left(o):
+    """Move the label (slot 3) from the frame's right (campus +x) to its left, 14 cm off the frame."""
+    by = label_slots(o)
+    if by is None:
+        return
+    me = o.data
+    fx0 = min(me.vertices[i].co.x for i in by[0])
+    lx0 = min(me.vertices[i].co.x for i in by[3]); lx1 = max(me.vertices[i].co.x for i in by[3])
+    dx = (fx0 - 0.14 - (lx1 - lx0)) - lx0
+    for i in by[3]:
+        me.vertices[i].co.x += dx
+    me.update()
+
+
+def hang_in_panel(o, item_id):
+    """Scale one framed exhibit (slots: 0 the frame box, 1 the mat, 2 the artwork, 3 the label) to fill its bay's
+    gilt panel. Only the long walls' exhibits (x = +-6) have panels; the rest stay as the web hung them. Returns
+    True when it hung one."""
+    me = o.data
+    mw = o.matrix_world
+    if len(o.material_slots) != 4 or o.dimensions.x > 0.08:
+        return False
+    cx = (mw @ Vector(o.bound_box[0])).x
+    if abs(abs(cx) - 5.97) > 0.06:
+        return False
+    # the mesh's own coordinates (the web baked its world transform in, but keep to the object's frame anyway)
+    by = label_slots(o)
+    if by is None:
+        return False
+    def bounds(idx):
+        vs = [me.vertices[i].co for i in idx]
+        return [min(v[k] for v in vs) for k in range(3)], [max(v[k] for v in vs) for k in range(3)]
+    (f_lo, f_hi) = bounds(by[0])
+    (l_lo, l_hi) = bounds(by[3])
+    yc, zc = (f_lo[1] + f_hi[1]) / 2, (f_lo[2] + f_hi[2]) / 2
+    fw, fh = f_hi[1] - f_lo[1], f_hi[2] - f_lo[2]
+    k = min(FRAME_MAX[0] / fw, FRAME_MAX[1] / fh)
+    zc_new = FRAME_Y0 + k * fh / 2
+    for i in by[0] | by[1] | by[2]:
+        v = me.vertices[i].co
+        v.y = yc + k * (v.y - yc)
+        v.z = zc_new + k * (v.z - zc)
+    ly, lz = (l_lo[1] + l_hi[1]) / 2, (l_lo[2] + l_hi[2]) / 2
+    lz_new = LABEL_Y0 + LABEL_SCALE * (l_hi[2] - l_lo[2]) / 2
+    for i in by[3]:
+        v = me.vertices[i].co
+        v.y = yc + LABEL_SCALE * (v.y - ly)
+        v.z = lz_new + LABEL_SCALE * (v.z - lz)
+    me.update()
+    (a_lo, a_hi) = bounds(by[2])
+    lo = mw @ Vector(a_lo); hi = mw @ Vector(a_hi)
+    # Blender (x, y, z) = campus (x, -z, y)
+    HUNG[item_id] = {'centre_m': [round((lo.x + hi.x) / 2, 4), round((lo.z + hi.z) / 2, 4), round(-(lo.y + hi.y) / 2, 4)],
+                     'size_m': [round(abs(hi.y - lo.y), 4), round(abs(hi.z - lo.z), 4)], 'scale': round(k, 4)}
+    return True
+
+
+def write_hung_json():
+    with open(os.path.join(PIPE, 'hung.json'), 'w') as f:
+        json.dump({'source': 'bl/museum.py hang_in_panel', 'units': 'metres, three.js campus axes (y up)',
+                   'note': 'the artwork of each exhibit scaled to fill its bay\'s gilt panel: its centre and size',
+                   'exhibits': HUNG}, f, indent=1)
 
 
 # ---------------------------------------------------------------- lights, renders, export

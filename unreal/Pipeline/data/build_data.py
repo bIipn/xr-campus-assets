@@ -145,10 +145,20 @@ def build_galleries():
              'Years': txt(g['years']), 'WallColor': color(g['wall'])} for g in load('galleries.json')]
 
 
+def load_hung():
+    """bl/museum.py scales the framed exhibits on the galleries' long walls to fill their bays' gilt panels and
+    writes where each artwork now hangs (centre, size) to out/museum/hung.json; {} before that build has run."""
+    try:
+        return load_out(os.path.join('museum', 'hung.json')).get('exhibits', {})
+    except (OSError, ValueError):
+        return {}
+
+
 def build_exhibits(L):
     kinds = {k['id']: k['label'] for k in load('exhibit_kinds.json')}
     lay = {e['id']: e for e in L['exhibits']}
     stages = {s['id']: s for s in L['wax_hall']['stages']}
+    hung = load_hung()
     rows = []
     # exhibits.json is extracted from the web campus; library_fittings.json is written by hand for the Reading
     # Room's own furniture and fittings, which the web build never had cards for.
@@ -161,6 +171,18 @@ def build_exhibits(L):
             sz = le.get('size_m') or [0.62, 1.0]
             size = {'X': round(100 * sz[0], 2), 'Y': round(100 * sz[1], 2)}
             view = view_from_layout(le['view'])
+            h = hung.get(e['id'])
+            if h:
+                # The artwork fills its bay's gilt panel now: its centre's height and its size from the museum's
+                # build (the wall plane and the bay stay the web's); the view keeps its spot on the floor and
+                # tilts up to the artwork's centre.
+                cx, cy, cz = h['centre_m']
+                loc = vec(le['ue_location_cm'][0], le['ue_location_cm'][1], 100.0 * cy)
+                size = {'X': round(100 * h['size_m'][0], 2), 'Y': round(100 * h['size_m'][1], 2)}
+                if view['bValid']:
+                    vl = view['Location']
+                    run = math.hypot(loc['X'] - vl['X'], loc['Y'] - vl['Y']) or 1.0
+                    view['Pitch'] = round(math.degrees(math.atan2(loc['Z'] - vl['Z'], run)), 3)
         elif e.get('lib'):
             # A Reading Room fitting: the 'lib' block gives the object's centre (campus metres), how deep it is
             # from that centre to the face the visitor sees, the pick slab's width and height, and where to stand.

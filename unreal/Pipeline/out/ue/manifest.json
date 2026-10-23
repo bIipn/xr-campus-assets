@@ -29,8 +29,8 @@
     "seat__mus3b_f180",
     "token__t_museum"
    ],
-   "triangles": 174146,
-   "bytes": 55261888
+   "triangles": 173978,
+   "bytes": 55246140
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -85,7 +85,14 @@
     "token__t_library"
    ],
    "triangles": 908,
-   "bytes": 8401256
+   "bytes": 8403516,
+   "refit": {
+    "dropped": [],
+    "moved": [],
+    "flushed": [
+     "the displayed books' covers, onto their blocks: 30 of 30"
+    ]
+   }
   },
   "School": {
    "file": "School.glb",
@@ -232,7 +239,7 @@
     "spot__forecourt_f90"
    ],
    "triangles": 168910,
-   "bytes": 40110252
+   "bytes": 40110640
   },
   "Yard": {
    "file": "Yard.glb",

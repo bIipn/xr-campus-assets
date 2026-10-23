@@ -123,10 +123,62 @@ def apply_refit(name, meshes):
             bm.to_mesh(me); bm.free()
             n += len(gone)
         clipped.append('%s: %d faces' % (cp.get('what', 'box'), n))
+    flushed = []
+    for fl in spec.get('flush', []):
+        covers = [o for o in keep if matches(o, fl['meshes'])]
+        n = sum(1 for o in covers if flush_onto_face(o, [m for m in keep if m not in covers]))
+        flushed.append('%s: %d of %d' % (fl.get('what', 'covers'), n, len(covers)))
     out = {'dropped': dropped_names, 'moved': moved}
     if clipped:
         out['clipped'] = clipped
+    if flushed:
+        out['flushed'] = flushed
     return keep, out
+
+
+def flush_onto_face(cover, others, reach=0.08, lift=0.002, snap=0.03):
+    """Lay a flat cover (a book's cover picture) onto the face it belongs on: the face of another mesh that looks
+    the same way (within 25 degrees), lies within `reach` of the cover's plane and under it, and stands furthest
+    forward; the cover's corners go onto that face's plane `lift` in front of it, each snapped to the face's nearest
+    corner when one is within `snap`. The web tilted the covers but not the book blocks behind them, so in Unreal
+    the block's front cut through the cover and hid the half of it behind its face."""
+    import math
+    from mathutils import Vector
+    me = cover.data
+    if not me.polygons:
+        return False
+    n = me.polygons[0].normal.copy()
+    if n.length < 1e-6:
+        return False
+    n.normalize()
+    pts = [v.co.copy() for v in me.vertices]
+    c = sum(pts, Vector()) / len(pts)
+    half = max((p - c).length for p in pts)
+    best = None
+    for o in others:
+        om = o.data
+        for p in om.polygons:
+            pn = p.normal
+            if pn.dot(n) < math.cos(math.radians(25.0)):
+                continue
+            pc = p.center
+            if (pc - c).length > half + 0.06 or abs((pc - c).dot(n)) > reach:
+                continue
+            # the face must lie under the cover: its centre's projection within the cover's extent
+            off = (pc - c).dot(pn)
+            if best is None or off > best[0]:
+                best = (off, pc.copy(), pn.copy(), [om.vertices[i].co.copy() for i in p.vertices])
+    if best is None:
+        return False
+    _, pc, pn, corners = best
+    for v in me.vertices:
+        q = v.co - pn * (v.co - pc).dot(pn)
+        near = min(corners, key=lambda k: (k - q).length)
+        if (near - q).length < snap:
+            q = near.copy()
+        v.co = q + pn * lift
+    me.update()
+    return True
 
 
 def process(name, rel):

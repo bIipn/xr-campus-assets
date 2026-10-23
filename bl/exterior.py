@@ -112,9 +112,11 @@ WINDOWS = [('training', 'E', -21.9, -20.5, 1.15, 2.35), ('training', 'E', -17.5,
 CANOPIES = [('training', 'E', -26.7, -24.9, 2.4)]           # a small canopy over a door: (shell, wall, u0, u1, door h)
 # web tree positions kept (parts/outdoor.js), minus the two that stood where the rotunda and forecourt now are
 # (the ones at (9, -9.5), (9, -17), (9, -25), (9, -34), (19, -17.5) and (14, -25) gave way to the talks wing, the
-# ones at (27, -18.5) and (25, -27.5) to the training wing; one moved north of it)
+# ones at (27, -18.5) and (25, -27.5) to the training wing; one moved north of it). The two beside the galleries'
+# west wall stood at x -8.5 and -9: their crowns reach 4.3 and 4.8 m and came in through the wall of galleries 2 and
+# 3, so they stand at -11.4 and -11.8 now, the crowns' edge 40 cm short of the wall (x -6.46)
 CAMPUS_TREES = [(9, 3.8), (16, 11.5), (24.5, 12.5), (-20, 12), (-28.5, 11), (24.0, -30.0),
-                (-8.5, -20), (-9, -31), (-22, -18), (-30, -21), (24.5, -33.0)]
+                (-11.4, -20), (-11.8, -31), (-22, -18), (-30, -21), (24.5, -33.0)]
 YARD_TREES = [(47.5, 23.4), (54, 23.8), (60.5, 23.2), (71.5, 23.6), (78, 23.2), (84.5, 23.6), (90, 22), (89.8, 15.5), (90, 8), (89.6, 1.2),
               (89.8, -5.5), (61.2, 11.6), (69.5, 1.6), (84.8, 7.4), (46.7, 8.4), (69.5, 16.6), (58.2, -6.2), (37.2, 6.4)]
 # new: an allee either side of the path, and groves on the meadow
