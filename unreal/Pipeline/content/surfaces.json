@@ -80,12 +80,9 @@
       "cls_walnut": {"set": "Wood026", "tint": [0.62, 0.46, 0.34]}
     },
     "Training": {
-      "trn_floor": {"set": "Concrete034", "tint": [0.62, 0.64, 0.67]},
-      "trn_wall": {"set": "PaintedPlaster017", "tint": [0.86, 0.84, 0.80]},
+      "trn_floor": {"set": "Tiles040", "tint": [0.78, 0.80, 0.82]},
+      "trn_wall": {"set": "Plaster001", "tint": [0.90, 0.89, 0.86]},
       "trn_ceiling": {"set": "Plaster001", "tint": [0.94, 0.94, 0.92]},
-      "trn_steel": {"set": "Metal034"},
-      "trn_chrome": {"set": "Metal034", "tint": [1.0, 1.0, 1.0]},
-      "trn_vinyl": {"set": "Leather037", "tint": [0.55, 0.72, 0.85]},
       "trn_oak": {"set": "Wood027", "tint": [0.95, 0.86, 0.74]},
       "trn_fabric": {"set": "Fabric030", "tint": [0.22, 0.23, 0.26]}
     }
