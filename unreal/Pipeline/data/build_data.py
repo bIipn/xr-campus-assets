@@ -998,7 +998,9 @@ def lang_file(lang, name):
 def build_strings(lang):
     """DT_Strings: the engine's words (extract_strings.py lists the keys) in the pack's language; empty in English."""
     words = lang_file(lang, 'strings.json') or {}
-    return [{'Name': k, 'Text': txt(v)} for k, v in words.items() if str(v).strip() and v != k]
+    rows = [(k, v) for k, v in words.items() if str(v).strip() and v != k]
+    # The row name cannot be the English (the importer drops spaces, commas and quotes from names): Key holds it.
+    return [{'Name': 's%04d' % (i + 1), 'Key': k, 'Text': txt(v)} for i, (k, v) in enumerate(rows)]
 
 
 def merge_lang(target, override, where):

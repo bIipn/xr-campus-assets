@@ -20,7 +20,7 @@
       "fields": [["Id", "Name"], ["Kind", "Name"], ["WebIndex", "Int"], ["Keys", "Array<FWTAWaxPropKey>"]]},
 
     "FWTASourceRow": {"row": true, "table": "DT_Sources", "file": "Sources.json", "fields": [["Label", "Text"], ["Url", "String"]]},
-    "FWTAStringRow": {"row": true, "table": "DT_Strings", "file": "Strings.json", "doc": "The engine's own words in the pack's language: the row name is the English the C++ writes (WTAText), Text what shows instead. Empty = English. From content/lang/<lang>/strings.json (WTA_LANG).", "fields": [["Text", "Text"]]},
+    "FWTAStringRow": {"row": true, "table": "DT_Strings", "file": "Strings.json", "doc": "The engine's own words in the pack's language: Key is the English the C++ writes (WTAText), exactly; Text what shows instead. The row name is just s0001, s0002, ... (the importer drops spaces, commas and quotes from row names, so the English cannot be the name). Empty table = English. From content/lang/<lang>/strings.json (WTA_LANG).", "fields": [["Key", "String"], ["Text", "Text"]]},
     "FWTAGalleryRow": {"row": true, "table": "DT_Galleries", "file": "Galleries.json",
       "fields": [["Index", "Int"], ["Label", "Text"], ["DisplayName", "Text"], ["Years", "Text"], ["WallColor", "Color"]]},
     "FWTAExhibitRow": {"row": true, "table": "DT_Exhibits", "file": "Exhibits.json", "doc": "15 gallery exhibits + the Freedom to Read board + the 12 Wax Hall reenactment cards (bWax). Location = centre of the artwork; Yaw = direction the artwork faces; Size = artwork width x height in cm.",

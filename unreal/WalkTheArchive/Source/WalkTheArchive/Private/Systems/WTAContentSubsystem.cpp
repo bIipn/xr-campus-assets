@@ -111,7 +111,7 @@ void UWTAContentSubsystem::ReloadTables()
 			const FWTAStringRow* Row = reinterpret_cast<const FWTAStringRow*>(Pair.Value);
 			if (Row != nullptr && !Row->Text.IsEmpty())
 			{
-				GStrings.Add(Pair.Key.ToString(), Row->Text);
+				GStrings.Add(Row->Key.IsEmpty() ? Pair.Key.ToString() : Row->Key, Row->Text);
 			}
 		}
 	}
