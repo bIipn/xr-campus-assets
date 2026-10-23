@@ -35,6 +35,7 @@
 #include "Components/WidgetInteractionComponent.h"
 #include "World/WTATalkActor.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/LocalPlayer.h"
@@ -2366,13 +2367,13 @@ void AWTAPlayerController::AddToScreen(UUserWidget* Widget, int32 ZOrder)
 
 void AWTAPlayerController::MoveWidgetsToScreens(bool bVR)
 {
-	UUserWidget* Layers[] = { Hud.Get(), Panel.Get(), Certificate.Get(), Chat.Get(), VisitCard.Get(), Menu.Get() };
+	UUserWidget* Widgets[] = { Hud.Get(), Panel.Get(), Certificate.Get(), Chat.Get(), VisitCard.Get(), Menu.Get() };
 	const int32 Orders[] = { 0, 10, 15, 20, 25, 30 };
 	for (int32 i = 0; i < 6; ++i)
 	{
-		if (Layers[i] != nullptr)
+		if (Widgets[i] != nullptr)
 		{
-			AddToScreen(Layers[i], Orders[i]);
+			AddToScreen(Widgets[i], Orders[i]);
 		}
 	}
 	UE_LOG(LogWTA, Log, TEXT("WTA_VR widgets on the %s"), bVR ? TEXT("VR screens") : TEXT("viewport"));

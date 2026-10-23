@@ -5222,7 +5222,7 @@ void UWTAPlayTest::AddVRPhase()
 		int32 StopBefore = -1;
 		FString Aim;
 	};
-	TSharedRef<FVRRun> Run = MakeShared<FVRRun>();
+	TSharedRef<FVRRun> State = MakeShared<FVRRun>();
 	auto Press = [this](const FString& Name, float After)
 	{
 		Steps.Add({ Name + TEXT(" trigger down"), [this]() -> float { if (AWTAPlayerController* Controller = PC()) { Controller->VRSelect(true); } return 0.12f; } });
@@ -5259,7 +5259,7 @@ void UWTAPlayTest::AddVRPhase()
 	} });
 
 	// The trigger on the floor 2.5 m ahead steps there.
-	Steps.Add({ TEXT("vr aim floor"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr aim floor"), [this, State]() -> float
 	{
 		const AWTACharacter* Me = Player();
 		const AWTAPlayerController* Controller = PC();
@@ -5271,35 +5271,35 @@ void UWTAPlayTest::AddVRPhase()
 		double FloorZ = Me->GetActorLocation().Z - 90.0;
 		FloorUnder(GetWorld(), Ahead.X, Ahead.Y, Me->GetActorLocation().Z, Me, FloorZ);
 		AimAt(FVector(Ahead.X, Ahead.Y, FloorZ));
-		Run->Before = Me->GetActorLocation();
+		State->Before = Me->GetActorLocation();
 		return 0.4f;
 	} });
 	Steps.Add({ TEXT("vr floor shot"), [this]() -> float { Shot(TEXT("vr_floor_aim")); return 0.3f; } });
 	Press(TEXT("vr floor"), 0.9f);
-	Steps.Add({ TEXT("vr stepped"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr stepped"), [this, State]() -> float
 	{
 		const AWTACharacter* Me = Player();
-		const float Moved = Me != nullptr ? static_cast<float>(FVector::Dist2D(Run->Before, Me->GetActorLocation())) : 0.f;
+		const float Moved = Me != nullptr ? static_cast<float>(FVector::Dist2D(State->Before, Me->GetActorLocation())) : 0.f;
 		Report(TEXT("vr"), Moved > 150.f && Moved < 400.f ? EResult::Pass : EResult::Fail, TEXT("the trigger on the floor steps there"),
 			FString::Printf(TEXT("moved %.0f cm (the floor point was 250 cm ahead)"), Moved));
 		return 0.3f;
 	} });
 
 	// The right stick turns 30 degrees.
-	Steps.Add({ TEXT("vr turn"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr turn"), [this, State]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
 		if (Controller != nullptr)
 		{
-			Run->YawBefore = static_cast<float>(Controller->GetControlRotation().Yaw);
+			State->YawBefore = static_cast<float>(Controller->GetControlRotation().Yaw);
 			Controller->OnVRTurn(FInputActionValue(1.f));
 		}
 		return 0.2f;
 	} });
-	Steps.Add({ TEXT("vr turned"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr turned"), [this, State]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
-		const float Turned = Controller != nullptr ? FMath::FindDeltaAngleDegrees(Run->YawBefore, static_cast<float>(Controller->GetControlRotation().Yaw)) : 0.f;
+		const float Turned = Controller != nullptr ? FMath::FindDeltaAngleDegrees(State->YawBefore, static_cast<float>(Controller->GetControlRotation().Yaw)) : 0.f;
 		Report(TEXT("vr"), FMath::Abs(Turned - 30.f) < 1.f ? EResult::Pass : EResult::Fail, TEXT("the right stick turns 30 degrees"), FString::Printf(TEXT("turned %.1f"), Turned));
 		if (Controller != nullptr)
 		{
@@ -5346,14 +5346,14 @@ void UWTAPlayTest::AddVRPhase()
 	} });
 
 	// The laser on an exhibit names it; the trigger opens its card on the card screen.
-	Steps.Add({ TEXT("vr aim exhibit"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr aim exhibit"), [this, State]() -> float
 	{
 		for (TActorIterator<AWTAExhibitActor> It(GetWorld()); It; ++It)
 		{
 			FWTAView View;
 			if (!It->ItemId.IsNone() && FindAimView(*It, View))
 			{
-				Run->Exhibit = *It;
+				State->Exhibit = *It;
 				StandAt(View);
 				return 1.5f;
 			}
@@ -5361,15 +5361,15 @@ void UWTAPlayTest::AddVRPhase()
 		Report(TEXT("vr"), EResult::Skip, TEXT("the laser names the exhibit it is on"), TEXT("no exhibit with a clear view"));
 		return 0.f;
 	} });
-	Steps.Add({ TEXT("vr laser on exhibit"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr laser on exhibit"), [this, State]() -> float
 	{
 		const AWTAPlayerController* Controller = PC();
 		const UWTAVRRig* Rig = Controller != nullptr ? Controller->GetVRRig() : nullptr;
 		const AActor* Hovered = Controller != nullptr && Controller->Interaction != nullptr ? Controller->Interaction->GetHovered() : nullptr;
 		const FString Label = Rig != nullptr ? Rig->GetLabel().ToString() : FString();
-		const bool bOk = Run->Exhibit.IsValid() && Hovered == Run->Exhibit.Get() && !Label.IsEmpty();
+		const bool bOk = State->Exhibit.IsValid() && Hovered == State->Exhibit.Get() && !Label.IsEmpty();
 		Report(TEXT("vr"), bOk ? EResult::Pass : EResult::Fail, TEXT("the laser names the exhibit it is on"),
-			FString::Printf(TEXT("hovered %s, label \"%s\"%s"), *GetNameSafe(Hovered), *Label, bOk ? TEXT("") : *(TEXT("; ") + DescribeAim(Run->Exhibit.Get()))));
+			FString::Printf(TEXT("hovered %s, label \"%s\"%s"), *GetNameSafe(Hovered), *Label, bOk ? TEXT("") : *(TEXT("; ") + DescribeAim(State->Exhibit.Get()))));
 		Shot(TEXT("vr_laser_exhibit"));
 		return 0.4f;
 	} });
@@ -5388,7 +5388,7 @@ void UWTAPlayTest::AddVRPhase()
 		Shot(TEXT("vr_card"));
 		return 0.3f;
 	} });
-	Steps.Add({ TEXT("vr aim close"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr aim close"), [this, State]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
 		AWTAVRScreenActor* CardScreen = Controller != nullptr ? Controller->GetCardScreen() : nullptr;
@@ -5396,22 +5396,22 @@ void UWTAPlayTest::AddVRPhase()
 		if (CardScreen != nullptr && Controller->Panel != nullptr && FindButtonPixel(Controller->Panel, FName(TEXT("Close")), Pixel))
 		{
 			AimAt(CardScreen->PixelToWorld(Pixel));
-			Run->Aim = FString::Printf(TEXT("Close at %.0f, %.0f"), Pixel.X, Pixel.Y);
+			State->Aim = FString::Printf(TEXT("Close at %.0f, %.0f"), Pixel.X, Pixel.Y);
 		}
 		else
 		{
-			Run->Aim = TEXT("no Close button found");
+			State->Aim = TEXT("no Close button found");
 		}
 		return 0.4f;
 	} });
-	Steps.Add({ TEXT("vr laser on close"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr laser on close"), [this, State]() -> float
 	{
 		const AWTAPlayerController* Controller = PC();
 		const UWTAVRRig* Rig = Controller != nullptr ? Controller->GetVRRig() : nullptr;
 		const UWidgetInteractionComponent* Pointer = Rig != nullptr ? Rig->GetPointer() : nullptr;
 		const bool bOk = Controller != nullptr && Controller->IsVRPointerOnScreen() && Pointer != nullptr && Pointer->IsOverInteractableWidget();
 		Report(TEXT("vr"), bOk ? EResult::Pass : EResult::Fail, TEXT("the laser rests on the card's Close button"),
-			FString::Printf(TEXT("%s; on the screen %s, over a button %s"), *Run->Aim, Controller != nullptr && Controller->IsVRPointerOnScreen() ? TEXT("yes") : TEXT("no"),
+			FString::Printf(TEXT("%s; on the screen %s, over a button %s"), *State->Aim, Controller != nullptr && Controller->IsVRPointerOnScreen() ? TEXT("yes") : TEXT("no"),
 				Pointer != nullptr && Pointer->IsOverInteractableWidget() ? TEXT("yes") : TEXT("no")));
 		Shot(TEXT("vr_card_close"));
 		return 0.3f;
@@ -5436,7 +5436,7 @@ void UWTAPlayTest::AddVRPhase()
 		}
 		return 1.f;
 	} });
-	Steps.Add({ TEXT("vr aim resume"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr aim resume"), [this, State]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
 		AWTAVRScreenActor* CardScreen = Controller != nullptr ? Controller->GetCardScreen() : nullptr;
@@ -5462,7 +5462,7 @@ void UWTAPlayTest::AddVRPhase()
 	} });
 
 	// The tour's Next button on the HUD screen moves the tour on.
-	Steps.Add({ TEXT("vr tour"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr tour"), [this, State]() -> float
 	{
 		if (UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this))
 		{
@@ -5470,40 +5470,40 @@ void UWTAPlayTest::AddVRPhase()
 		}
 		return 2.5f;
 	} });
-	Steps.Add({ TEXT("vr aim next"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr aim next"), [this, State]() -> float
 	{
 		AWTAPlayerController* Controller = PC();
 		AWTAVRScreenActor* HudScreen = Controller != nullptr ? Controller->GetHudScreen() : nullptr;
 		const UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
-		Run->StopBefore = Tour != nullptr ? Tour->GetIndex() : -1;
+		State->StopBefore = Tour != nullptr ? Tour->GetIndex() : -1;
 		FVector2D Pixel;
 		if (HudScreen != nullptr && Controller->Hud != nullptr && FindButtonPixel(Controller->Hud, FName(TEXT("TourNext")), Pixel))
 		{
 			AimAt(HudScreen->PixelToWorld(Pixel));
-			Run->Aim = FString::Printf(TEXT("Next at %.0f, %.0f"), Pixel.X, Pixel.Y);
+			State->Aim = FString::Printf(TEXT("Next at %.0f, %.0f"), Pixel.X, Pixel.Y);
 		}
 		else
 		{
-			Run->Aim = TEXT("no Next button found");
+			State->Aim = TEXT("no Next button found");
 		}
 		return 0.5f;
 	} });
-	Steps.Add({ TEXT("vr laser on next"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr laser on next"), [this, State]() -> float
 	{
 		const AWTAPlayerController* Controller = PC();
 		const bool bOn = Controller != nullptr && Controller->IsVRPointerOnScreen();
 		Report(TEXT("vr"), bOn ? EResult::Pass : EResult::Fail, TEXT("the laser rests on the tour's Next button on the HUD screen"),
-			FString::Printf(TEXT("%s, stop %d"), *Run->Aim, Run->StopBefore));
+			FString::Printf(TEXT("%s, stop %d"), *State->Aim, State->StopBefore));
 		Shot(TEXT("vr_tour"));
 		return 0.3f;
 	} });
 	Press(TEXT("vr next"), 2.5f);
-	Steps.Add({ TEXT("vr tour on"), [this, Run]() -> float
+	Steps.Add({ TEXT("vr tour on"), [this, State]() -> float
 	{
 		UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
 		const int32 Stop = Tour != nullptr ? Tour->GetIndex() : -1;
-		Report(TEXT("vr"), Run->StopBefore >= 0 && Stop == Run->StopBefore + 1 ? EResult::Pass : EResult::Fail, TEXT("Next on the HUD screen moves the tour on"),
-			FString::Printf(TEXT("stop %d -> %d"), Run->StopBefore, Stop));
+		Report(TEXT("vr"), State->StopBefore >= 0 && Stop == State->StopBefore + 1 ? EResult::Pass : EResult::Fail, TEXT("Next on the HUD screen moves the tour on"),
+			FString::Printf(TEXT("stop %d -> %d"), State->StopBefore, Stop));
 		if (Tour != nullptr && Tour->IsTouring())
 		{
 			Tour->End();

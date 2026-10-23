@@ -58,10 +58,10 @@ void UWTAVRRootWidget::AddLayer(UUserWidget* Widget, int32 ZOrder)
 			Index = i + 1;
 		}
 	}
-	if (UOverlaySlot* Slot = Cast<UOverlaySlot>(Layers->InsertChildAt(Index, Widget)))
+	if (UOverlaySlot* Placed = Cast<UOverlaySlot>(Layers->InsertChildAt(Index, Widget)))
 	{
-		Slot->SetHorizontalAlignment(HAlign_Fill);
-		Slot->SetVerticalAlignment(VAlign_Fill);
+		Placed->SetHorizontalAlignment(HAlign_Fill);
+		Placed->SetVerticalAlignment(VAlign_Fill);
 	}
 }
 
