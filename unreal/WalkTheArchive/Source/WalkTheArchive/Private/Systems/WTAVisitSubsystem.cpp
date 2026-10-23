@@ -22,7 +22,9 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "NavigationSystem.h"
+#include "Modules/ModuleManager.h"
 #include "SocketSubsystem.h"
+#include "SocketSubsystemModule.h"
 #include "Sockets.h"
 #include "UObject/UObjectGlobals.h"
 #include "UObject/UObjectIterator.h"
@@ -45,12 +47,25 @@ namespace
 		return View;
 	}
 
-	/** A non-blocking UDP socket (the Sockets module, which the Engine module already brings): broadcasting for the
-	    guide's beacon, or bound to BindPort for listening to the beacons (BindPort < 0: not bound). */
+	const FName NAME_IPv4(TEXT("IPv4"));
+
+	/**
+	 * The platform's socket subsystem, reached through the Sockets module's interface: every call made on it here
+	 * (and on its sockets and addresses) is virtual, so this module needs no link to Sockets and Build.cs stays as
+	 * it is (a changed Build.cs recompiles the build-rules assembly; see CONTRACT.md section 4).
+	 */
+	ISocketSubsystem* SocketSubsystem()
+	{
+		FSocketSubsystemModule* Module = FModuleManager::GetModulePtr<FSocketSubsystemModule>(FName(TEXT("Sockets")));
+		return Module ? Module->GetSocketSubsystem() : nullptr;
+	}
+
+	/** A non-blocking UDP socket: broadcasting for the guide's beacon, or bound to BindPort for listening to the
+	    beacons (BindPort < 0: not bound). */
 	FSocket* MakeUdpSocket(const TCHAR* Description, bool bBroadcast, int32 BindPort)
 	{
-		ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
-		FSocket* Socket = Sockets ? Sockets->CreateSocket(NAME_DGram, Description, FNetworkProtocolTypes::IPv4) : nullptr;
+		ISocketSubsystem* Sockets = SocketSubsystem();
+		FSocket* Socket = Sockets ? Sockets->CreateSocket(NAME_DGram, Description, NAME_IPv4) : nullptr;
 		if (Socket == nullptr)
 		{
 			return nullptr;
@@ -63,7 +78,7 @@ namespace
 		}
 		if (BindPort >= 0)
 		{
-			TSharedRef<FInternetAddr> Any = Sockets->CreateInternetAddr(FNetworkProtocolTypes::IPv4);
+			TSharedRef<FInternetAddr> Any = Sockets->CreateInternetAddr(NAME_IPv4);
 			Any->SetAnyAddress();
 			Any->SetPort(BindPort);
 			if (!Socket->Bind(*Any))
@@ -274,13 +289,13 @@ TArray<FWTAVisitPerson> UWTAVisitSubsystem::GetPeople() const
 TArray<FString> UWTAVisitSubsystem::GetLocalAddresses() const
 {
 	TArray<FString> Out;
-	ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+	ISocketSubsystem* Sockets = SocketSubsystem();
 	TArray<TSharedPtr<FInternetAddr>> Addresses;
 	if (Sockets != nullptr && Sockets->GetLocalAdapterAddresses(Addresses))
 	{
 		for (const TSharedPtr<FInternetAddr>& Address : Addresses)
 		{
-			if (!Address.IsValid() || Address->GetProtocolType() != FNetworkProtocolTypes::IPv4)
+			if (!Address.IsValid() || Address->GetProtocolType() != NAME_IPv4)
 			{
 				continue;
 			}
@@ -468,7 +483,7 @@ void UWTAVisitSubsystem::CloseSocket(FSocket*& Socket)
 		return;
 	}
 	Socket->Close();
-	if (ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM))
+	if (ISocketSubsystem* Sockets = SocketSubsystem())
 	{
 		Sockets->DestroySocket(Socket);
 	}
@@ -489,7 +504,7 @@ void UWTAVisitSubsystem::SendBeacon()
 	{
 		return;
 	}
-	ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+	ISocketSubsystem* Sockets = SocketSubsystem();
 	if (Sockets == nullptr)
 	{
 		return;
@@ -518,7 +533,7 @@ void UWTAVisitSubsystem::SendBeacon()
 	const UWTASettings* Settings = UWTASettings::Get();
 	const FString Message = FString::Printf(TEXT("WTAVISIT1|%s|%d|%d|%s"), *GetGuideName().Replace(TEXT("|"), TEXT(" ")), Port,
 		State ? State->PlayerArray.Num() : 1, Settings ? *Settings->CampusTitle.Replace(TEXT("|"), TEXT(" ")) : TEXT(""));
-	TSharedRef<FInternetAddr> To = Sockets->CreateInternetAddr();
+	TSharedRef<FInternetAddr> To = Sockets->CreateInternetAddr(NAME_IPv4);
 	To->SetBroadcastAddress();
 	To->SetPort(BeaconPort);
 	const FTCHARToUTF8 Utf8(*Message);
@@ -528,7 +543,7 @@ void UWTAVisitSubsystem::SendBeacon()
 
 void UWTAVisitSubsystem::ReadBeacons()
 {
-	ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+	ISocketSubsystem* Sockets = SocketSubsystem();
 	if (Sockets == nullptr || SearchSocket == nullptr)
 	{
 		return;
@@ -540,7 +555,7 @@ void UWTAVisitSubsystem::ReadBeacons()
 		TArray<uint8> Buffer;
 		Buffer.SetNumZeroed(static_cast<int32>(FMath::Min<uint32>(Pending, 1024u)) + 1);
 		int32 Read = 0;
-		TSharedRef<FInternetAddr> From = Sockets->CreateInternetAddr();
+		TSharedRef<FInternetAddr> From = Sockets->CreateInternetAddr(NAME_IPv4);
 		if (!SearchSocket->RecvFrom(Buffer.GetData(), Buffer.Num() - 1, Read, *From) || Read <= 0)
 		{
 			break;
