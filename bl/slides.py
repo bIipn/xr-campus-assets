@@ -5,6 +5,9 @@ titles, Inter for the points.
 
     python3 bl/slides.py            ->  unreal/Pipeline/out/slides/<talk>/<nn>.png + index.json
 
+In another language (WTA_LANG, or the pack's "language") the slides' words come from lang/<lang>/tables.json
+(the DT_Talks rows) and the builder's own few words ("A talk", the venue names) from lang/<lang>/builders.json.
+
 Each slide is drawn at 1920 x 1080 and stored at 2048 x 1024 (a power of two, so Unreal can mip it; the screen quads
 are 16:9 with UVs 0..1, so the squeeze is undone on the wall). index.json lists the slides per talk for the importer.
 """
@@ -44,6 +47,53 @@ def talks_file():
         if os.path.exists(p):
             return p
     return os.path.join(CONTENT, 'talks.json')
+
+
+def language():
+    """WTA_LANG (build_client.py sets it from the pack's campus.json "language"), else the pack's, else English."""
+    return (os.environ.get('WTA_LANG') or clientpack.get('language') or 'en').strip().lower()
+
+
+def builder_words(lang):
+    """lang/<lang>/builders.json: the few words this builder draws itself ("A talk", the venue names); English otherwise."""
+    p = os.path.join(CONTENT, 'lang', lang, 'builders.json')
+    if lang == 'en' or not os.path.exists(p):
+        return {}
+    with open(p, 'r', encoding='utf-8') as fh:
+        return json.load(fh)
+
+
+def apply_language(talks, lang):
+    """The talks' words from lang/<lang>/tables.json (the DT_Talks rows, the shape extract_tables.py lists; the
+    slides line up with talks.json's one for one) over talks.json, so the slides are drawn in the pack's language.
+    Returns how many fields changed."""
+    p = os.path.join(CONTENT, 'lang', lang, 'tables.json')
+    if lang == 'en' or not os.path.exists(p):
+        return 0
+    with open(p, 'r', encoding='utf-8') as fh:
+        rows = json.load(fh).get('DT_Talks', {})
+    n = 0
+    for talk in talks:
+        row = rows.get(talk['id']) or {}
+        for src, dst in (('Title', 'title'), ('Subtitle', 'subtitle')):
+            if row.get(src):
+                talk[dst] = row[src]
+                n += 1
+        if row.get('SpeakerRole') and isinstance(talk.get('speaker'), dict):
+            talk['speaker']['role'] = row['SpeakerRole']
+            n += 1
+        for i, over in enumerate(row.get('Slides') or []):
+            if not over or i >= len(talk['slides']):
+                continue
+            slide = talk['slides'][i]
+            if over.get('Title'):
+                slide['title'] = over['Title']
+                n += 1
+            if over.get('Points'):
+                old = slide.get('points', [])
+                slide['points'] = [pt if pt is not None else (old[j] if j < len(old) else '') for j, pt in enumerate(over['Points'])]
+                n += 1
+    return n
 
 
 def font(kind, size):
@@ -289,8 +339,9 @@ def draw_slide(talk, i, slide, n, campus, client=''):
     d.text((W - 100 - d.textlength(page, font=ft), H - 106), page, font=ft, fill=BONE_DIM)
 
     if layout in ('title', 'end'):
-        kind = 'A class' if talk.get('kind') == 'class' else 'A talk'
+        kind = WORDS.get('A class', 'A class') if talk.get('kind') == 'class' else WORDS.get('A talk', 'A talk')
         venue = VENUES.get(talk.get('venue'), talk.get('subtitle', ''))
+        venue = WORDS.get(venue, venue)
         kicker(d, (140, 230), ('%s  ·  %s' % (kind, venue)) if layout == 'title' else talk['title'], size=28)
         tf = font('title', 124 if len(slide['title']) < 22 else 104)
         y = 290
@@ -355,10 +406,18 @@ def draw_slide(talk, i, slide, n, campus, client=''):
     return im
 
 
+WORDS = {}
+
+
 def main():
-    global BG
+    global BG, WORDS
     with open(talks_file(), 'r', encoding='utf-8') as fh:
         talks = json.load(fh)['talks']
+    lang = language()
+    WORDS = builder_words(lang)
+    changed = apply_language(talks, lang)
+    if lang != 'en':
+        print('language %s: %d talk fields from lang/%s/tables.json, %d builder words' % (lang, changed, lang, len(WORDS)), flush=True)
     campus = clientpack.get('campus', 'Walk the Archive')
     client = clientpack.get('client', '')
     BG = background()

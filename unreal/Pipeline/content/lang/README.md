@@ -25,7 +25,11 @@ A client pack names its language in `campus.json` (`"language": "es"`); `build_c
   Kokoro's Spanish voices (ef_dora, em_alex) into `out/voice/es/`; the clip names stay the same, so the
   language's clips are imported in place of the English ones for that build.
 
-One language per build: the tables, the voices and the slides (`bl/slides.py` draws the pack's `talks.json`)
-are all in it. What stays English for now: the words drawn into the builders' textures (signs, the course board,
-the classroom board) and the staff's regex macros (`data/staff_rules_ue.py`), which a language extends with its
-own alternatives in `tables.json`.
+- Slides: `bl/slides.py` draws them in the language too (the DT_Talks rows of `tables.json` over `talks.json`,
+  slide for slide), and its own few words ("A talk", the venue names) come from `lang/<lang>/builders.json`
+  (`{"English": "translation"}`).
+
+One language per build: the tables, the voices and the slides are all in it. What stays English for now: the
+words the other builders draw into textures (the room signs, the course board, the classroom board, the shop
+screens; `builders.json` is where their words go once they read it) and the staff's regex macros
+(`data/staff_rules_ue.py`), which a language extends with its own alternatives in `tables.json`.
