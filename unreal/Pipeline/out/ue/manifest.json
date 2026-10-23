@@ -104,10 +104,12 @@
     "token__t_library"
    ],
    "triangles": 908,
-   "bytes": 8403516,
+   "bytes": 8403520,
    "refit": {
     "dropped": [],
-    "moved": [],
+    "moved": [
+     "the reference desk's sign, centred on the Reading Room's desk front (it hung half off the desk's east end, in the front's own plane): 1 of 1"
+    ],
     "flushed": [
      "the displayed books' covers, onto their blocks: 30 of 30"
     ]
@@ -261,7 +263,7 @@
     "spot__forecourt_f90"
    ],
    "triangles": 168910,
-   "bytes": 40110640
+   "bytes": 40110624
   },
   "Yard": {
    "file": "Yard.glb",

@@ -1,5 +1,5 @@
 {
- "_doc": "What each Wax Hall reenactor does over the scene's loop. Hand-authored from parts/waxscenes.js: the web scenes pose joint angles frame by frame, Unreal plays retargeted motion capture instead, so each figure gets a list of beats. A beat is {t: seconds into the loop, a: action id, y: degrees added to the figure's yaw while it plays, r: play rate, b: crossfade seconds, l: centimetres to lift the figure (seated clips sit at the clip's own seat height)}. The action id names an AnimSequence at /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<id>, retargeted from Mixamo by Content/Python/wta_mocap. The last beat runs to the end of the loop and crossfades back into the first, so the loop is seamless. Props ride the figures: each key is {t, f: figure (empty = stands still in the stage's own frame), s: socket (head/hand_l/hand_r/chest), o: offset cm, r: rotation deg, b: seconds to travel from the previous key}. A key in a hand needs no offset: the stage sets the prop's own frame in the palm (+X along the fingers, +Y out of the palm) and closes that hand's fingers round it (World/WTAWaxStageActor.cpp WaxGrip); o and r there are extras on top of that. A prop's web is the index of the S.carry call that made it in parts/waxscenes.js: the web export (unreal/Pipeline/web/export_campus.py) writes that object as the mesh prop__<scene>_<web> of Props.glb, in its own frame, and the stage rides it instead of a block. Carries the acting data does not ride (a laptop on a desk, a case lid) still come across: build_data.py adds them from out/campus/props_rest.json, standing where the web left them. A scene's place {var: {at, ry}} stands that figure somewhere other than the web put it (web metres in the stage group's frame, +z toward the walkway).",
+ "_doc": "What each Wax Hall reenactor does over the scene's loop. Hand-authored from parts/waxscenes.js: the web scenes pose joint angles frame by frame, Unreal plays retargeted motion capture instead, so each figure gets a list of beats. A beat is {t: seconds into the loop, a: action id, y: degrees added to the figure's yaw while it plays, r: play rate, b: crossfade seconds, l: centimetres to lift the figure (seated clips sit at the clip's own seat height)}. The action id names an AnimSequence at /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<id>, retargeted from Mixamo by Content/Python/wta_mocap. The last beat runs to the end of the loop and crossfades back into the first, so the loop is seamless. Props ride the figures: each key is {t, f: figure (empty = stands still in the stage's own frame), s: socket (head/hand_l/hand_r/chest), o: offset cm, r: rotation deg, b: seconds to travel from the previous key}. A key in a hand needs no offset: the stage sets the prop's own frame in the palm (+X along the fingers, +Y out of the palm) and closes that hand's fingers round it (World/WTAWaxStageActor.cpp WaxGrip); o and r there are extras on top of that. A prop's web is the index of the S.carry call that made it in parts/waxscenes.js: the web export (unreal/Pipeline/web/export_campus.py) writes that object as the mesh prop__<scene>_<web> of Props.glb, in its own frame, and the stage rides it instead of a block. Carries the acting data does not ride (a laptop on a desk, a case lid) still come across: build_data.py adds them from out/campus/props_rest.json, standing where the web left them. A scene's place {var: {at, ry}} stands that figure somewhere other than the web put it (web metres in the stage group's frame, +z toward the walkway). Whoever holds or wears a prop keeps still while they have it (a prop is never held perfectly, so a hand or head that moves makes it look glitchy): their beats in that time are their pose's still clip (tablet, phone, carry, idle, sit_idle, kneel), and they do not turn.",
  "actions": {
   "idle": {
    "loop": true,
@@ -179,11 +179,7 @@
     "teen": [
      {
       "t": 0,
-      "a": "talk"
-     },
-     {
-      "t": 2.2,
-      "a": "reach"
+      "a": "idle"
      },
      {
       "t": 4.2,
@@ -210,27 +206,6 @@
      },
      {
       "t": 2.8,
-      "a": "reach"
-     },
-     {
-      "t": 4.6,
-      "a": "idle"
-     },
-     {
-      "t": 6.2,
-      "a": "look_around"
-     },
-     {
-      "t": 9.0,
-      "a": "reach",
-      "y": -20
-     },
-     {
-      "t": 11.0,
-      "a": "cheer"
-     },
-     {
-      "t": 12.8,
       "a": "idle"
      }
     ],
@@ -313,21 +288,8 @@
      },
      {
       "t": 3.4,
-      "a": "reach",
+      "a": "idle",
       "b": 0.8
-     },
-     {
-      "t": 5.2,
-      "a": "present"
-     },
-     {
-      "t": 7.6,
-      "a": "point_fwd",
-      "y": -24
-     },
-     {
-      "t": 9.8,
-      "a": "talk"
      },
      {
       "t": 12.2,
@@ -339,47 +301,12 @@
      {
       "t": 0,
       "a": "tablet"
-     },
-     {
-      "t": 4.2,
-      "a": "nod"
-     },
-     {
-      "t": 6.0,
-      "a": "tablet"
-     },
-     {
-      "t": 9.2,
-      "a": "point_fwd",
-      "y": 20
-     },
-     {
-      "t": 11.2,
-      "a": "tablet"
      }
     ],
     "mover": [
      {
       "t": 0,
       "a": "carry"
-     },
-     {
-      "t": 4.0,
-      "a": "carry",
-      "y": 25,
-      "b": 1.0
-     },
-     {
-      "t": 8.0,
-      "a": "carry",
-      "y": -12,
-      "b": 1.0
-     },
-     {
-      "t": 11.5,
-      "a": "carry",
-      "y": 0,
-      "b": 1.0
      }
     ]
    },
@@ -496,24 +423,7 @@
     "reader": [
      {
       "t": 0,
-      "a": "sit_talk"
-     },
-     {
-      "t": 4.0,
-      "a": "sit_point",
-      "y": 12
-     },
-     {
-      "t": 6.0,
-      "a": "sit_talk"
-     },
-     {
-      "t": 9.6,
       "a": "sit_idle"
-     },
-     {
-      "t": 11.4,
-      "a": "sit_talk"
      }
     ],
     "k1": [
@@ -565,27 +475,6 @@
     "teen": [
      {
       "t": 0,
-      "a": "idle"
-     },
-     {
-      "t": 2.5,
-      "a": "reach"
-     },
-     {
-      "t": 5.0,
-      "a": "look_around"
-     },
-     {
-      "t": 8.0,
-      "a": "reach",
-      "y": -18
-     },
-     {
-      "t": 10.6,
-      "a": "cheer"
-     },
-     {
-      "t": 12.6,
       "a": "idle"
      }
     ]
@@ -697,28 +586,6 @@
      {
       "t": 0,
       "a": "idle"
-     },
-     {
-      "t": 3.0,
-      "a": "look_around"
-     },
-     {
-      "t": 5.2,
-      "a": "reach",
-      "y": 24
-     },
-     {
-      "t": 7.8,
-      "a": "look_around",
-      "y": -20
-     },
-     {
-      "t": 10.4,
-      "a": "talk"
-     },
-     {
-      "t": 12.6,
-      "a": "idle"
      }
     ]
    },
@@ -754,31 +621,6 @@
      {
       "t": 0,
       "a": "sit_idle"
-     },
-     {
-      "t": 3.2,
-      "a": "sit_talk"
-     },
-     {
-      "t": 5.0,
-      "a": "sit_idle"
-     },
-     {
-      "t": 7.0,
-      "a": "sit_point",
-      "y": 14
-     },
-     {
-      "t": 9.2,
-      "a": "sit_talk"
-     },
-     {
-      "t": 11.4,
-      "a": "sit_cheer"
-     },
-     {
-      "t": 13.4,
-      "a": "sit_idle"
      }
     ],
     "kid": [
@@ -807,12 +649,7 @@
      },
      {
       "t": 1.6,
-      "a": "present"
-     },
-     {
-      "t": 3.0,
-      "a": "reach",
-      "y": -34
+      "a": "idle"
      },
      {
       "t": 4.6,
@@ -1024,58 +861,12 @@
      {
       "t": 0,
       "a": "tablet"
-     },
-     {
-      "t": 6.0,
-      "a": "point_fwd",
-      "y": -30
-     },
-     {
-      "t": 8.4,
-      "a": "tablet"
-     },
-     {
-      "t": 12.0,
-      "a": "look_around"
-     },
-     {
-      "t": 13.6,
-      "a": "tablet"
      }
     ],
     "kid": [
      {
       "t": 0,
-      "a": "idle_happy"
-     },
-     {
-      "t": 2.2,
-      "a": "look_around",
-      "y": 30
-     },
-     {
-      "t": 4.0,
-      "a": "point_fwd",
-      "y": -30
-     },
-     {
-      "t": 6.0,
-      "a": "crouch",
-      "b": 0.8
-     },
-     {
-      "t": 8.0,
-      "a": "talk",
-      "y": -40,
-      "b": 0.8
-     },
-     {
-      "t": 10.0,
-      "a": "cheer"
-     },
-     {
-      "t": 11.6,
-      "a": "idle_happy"
+      "a": "idle"
      }
     ]
    },
@@ -1133,63 +924,11 @@
      {
       "t": 0,
       "a": "idle"
-     },
-     {
-      "t": 1.6,
-      "a": "reach"
-     },
-     {
-      "t": 3.6,
-      "a": "reach",
-      "y": 12
-     },
-     {
-      "t": 5.2,
-      "a": "look_around"
-     },
-     {
-      "t": 6.8,
-      "a": "reach",
-      "y": -10
-     },
-     {
-      "t": 9.6,
-      "a": "talk"
-     },
-     {
-      "t": 11.2,
-      "a": "cheer"
-     },
-     {
-      "t": 12.8,
-      "a": "idle"
      }
     ],
     "coach": [
      {
       "t": 0,
-      "a": "tablet"
-     },
-     {
-      "t": 4.6,
-      "a": "talk",
-      "y": -24
-     },
-     {
-      "t": 6.6,
-      "a": "point_fwd",
-      "y": -24
-     },
-     {
-      "t": 8.6,
-      "a": "tablet"
-     },
-     {
-      "t": 10.8,
-      "a": "present"
-     },
-     {
-      "t": 12.8,
       "a": "tablet"
      }
     ],
@@ -1199,25 +938,12 @@
       "a": "idle"
      },
      {
-      "t": 1.4,
-      "a": "reach"
-     },
-     {
       "t": 5.0,
-      "a": "reach",
-      "y": 14,
+      "a": "idle",
       "r": 0.9
      },
      {
       "t": 9.6,
-      "a": "look_around"
-     },
-     {
-      "t": 11.0,
-      "a": "cheer"
-     },
-     {
-      "t": 12.8,
       "a": "idle"
      }
     ]
@@ -1334,69 +1060,12 @@
      {
       "t": 0,
       "a": "phone"
-     },
-     {
-      "t": 2.4,
-      "a": "phone",
-      "y": 20
-     },
-     {
-      "t": 4.4,
-      "a": "phone",
-      "y": 40
-     },
-     {
-      "t": 6.4,
-      "a": "phone",
-      "y": -20
-     },
-     {
-      "t": 8.6,
-      "a": "phone",
-      "y": 10
-     },
-     {
-      "t": 10.4,
-      "a": "talk"
-     },
-     {
-      "t": 12.6,
-      "a": "phone"
      }
     ],
     "lib2": [
      {
       "t": 0,
-      "a": "look_around"
-     },
-     {
-      "t": 3.0,
-      "a": "look_around",
-      "y": 60,
-      "b": 1.2
-     },
-     {
-      "t": 6.0,
-      "a": "look_around",
-      "y": 170,
-      "b": 1.6
-     },
-     {
-      "t": 9.0,
-      "a": "look_around",
-      "y": 280,
-      "b": 1.6
-     },
-     {
-      "t": 11.0,
-      "a": "cheer",
-      "y": 360,
-      "b": 1.2
-     },
-     {
-      "t": 13.0,
-      "a": "idle",
-      "y": 360
+      "a": "idle"
      }
     ]
    },
@@ -1470,41 +1139,6 @@
      {
       "t": 0,
       "a": "idle"
-     },
-     {
-      "t": 0.9,
-      "a": "reach"
-     },
-     {
-      "t": 2.6,
-      "a": "point_fwd",
-      "y": -14
-     },
-     {
-      "t": 4.2,
-      "a": "reach",
-      "y": 14
-     },
-     {
-      "t": 5.8,
-      "a": "point_fwd"
-     },
-     {
-      "t": 7.4,
-      "a": "reach",
-      "y": -10
-     },
-     {
-      "t": 9.4,
-      "a": "look_around"
-     },
-     {
-      "t": 11.0,
-      "a": "think"
-     },
-     {
-      "t": 12.8,
-      "a": "idle_b"
      }
     ],
     "modeler": [
@@ -1570,32 +1204,6 @@
     "visitor": [
      {
       "t": 0,
-      "a": "idle"
-     },
-     {
-      "t": 3.4,
-      "a": "look_around"
-     },
-     {
-      "t": 5.6,
-      "a": "reach",
-      "y": 20
-     },
-     {
-      "t": 7.8,
-      "a": "look_around",
-      "y": -24
-     },
-     {
-      "t": 10.4,
-      "a": "idle_b"
-     },
-     {
-      "t": 12.4,
-      "a": "think"
-     },
-     {
-      "t": 14.2,
       "a": "idle"
      }
     ],
@@ -1692,91 +1300,18 @@
      {
       "t": 0,
       "a": "tablet"
-     },
-     {
-      "t": 5.2,
-      "a": "look_around"
-     },
-     {
-      "t": 6.6,
-      "a": "look_around",
-      "y": 22
-     },
-     {
-      "t": 8.2,
-      "a": "look_around",
-      "y": -12
-     },
-     {
-      "t": 9.6,
-      "a": "tablet"
-     },
-     {
-      "t": 10.6,
-      "a": "cheer"
-     },
-     {
-      "t": 12.6,
-      "a": "tablet"
      }
     ],
     "k2": [
      {
       "t": 0,
       "a": "tablet"
-     },
-     {
-      "t": 5.4,
-      "a": "look_around"
-     },
-     {
-      "t": 6.8,
-      "a": "look_around",
-      "y": -22
-     },
-     {
-      "t": 8.4,
-      "a": "look_around",
-      "y": 12
-     },
-     {
-      "t": 9.8,
-      "a": "tablet"
-     },
-     {
-      "t": 10.9,
-      "a": "cheer"
-     },
-     {
-      "t": 12.9,
-      "a": "tablet"
      }
     ],
     "dad": [
      {
       "t": 0,
-      "a": "idle"
-     },
-     {
-      "t": 3.0,
-      "a": "point_fwd",
-      "y": -20
-     },
-     {
-      "t": 5.6,
-      "a": "look_around"
-     },
-     {
-      "t": 8.2,
-      "a": "idle_b"
-     },
-     {
-      "t": 9.4,
       "a": "phone"
-     },
-     {
-      "t": 12.8,
-      "a": "idle"
      }
     ],
     "vol": [

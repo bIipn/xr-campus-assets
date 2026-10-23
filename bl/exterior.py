@@ -69,8 +69,10 @@ BAL_H = 0.98                                      # the balustrade round the top
 PED_W = 0.50                                      # the balustrade's pedestals, and the pilasters under them
 STAGE_R, STAGE_BACK = 3.0, 18.95                  # the stage: a half disc about TH_C with a straight back
 STAGE_TOP = TH_Y + 0.40
-SPEAKER = (0.0, 20.65)                            # the speaker's feet, facing +z
-LECTERN = (0.0, 21.25)
+# The lectern stands at the stage's west side, not on the axis: on the axis it stood in the way of the walk from the
+# forecourt (where the visit starts) up the steps to the front door. The speaker's spot is behind it.
+SPEAKER = (-1.9, 20.65)                           # the speaker's feet, facing +z
+LECTERN = (-1.9, 21.25)
 SCREEN_W = 4.0; SCREEN_H = SCREEN_W * 9 / 16
 SCREEN_X, SCREEN_Z, SCREEN_TURN = 7.0, 20.9, math.radians(22.0)
 SCREEN_Y0 = 0.62                                  # the image's bottom edge

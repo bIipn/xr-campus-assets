@@ -39,15 +39,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 2.2,
-      "Action": "reach",
+      "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -106,46 +98,6 @@
      },
      {
       "Time": 2.8,
-      "Action": "reach",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.6,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.2,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.0,
-      "Action": "reach",
-      "Yaw": -20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.0,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
@@ -304,34 +256,10 @@
      },
      {
       "Time": 3.4,
-      "Action": "reach",
+      "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.8,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.2,
-      "Action": "present",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 7.6,
-      "Action": "point_fwd",
-      "Yaw": -24.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.8,
-      "Action": "talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
       "Lift": 0.0
      },
      {
@@ -360,38 +288,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 4.2,
-      "Action": "nod",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.0,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.2,
-      "Action": "point_fwd",
-      "Yaw": 20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.2,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -410,30 +306,6 @@
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.0,
-      "Action": "carry",
-      "Yaw": 25.0,
-      "Rate": 1.0,
-      "Blend": 1.0,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.0,
-      "Action": "carry",
-      "Yaw": -12.0,
-      "Rate": 1.0,
-      "Blend": 1.0,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.5,
-      "Action": "carry",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 1.0,
       "Lift": 0.0
      }
     ]
@@ -606,39 +478,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "sit_talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.0,
-      "Action": "sit_point",
-      "Yaw": 12.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.0,
-      "Action": "sit_talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.6,
       "Action": "sit_idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.4,
-      "Action": "sit_talk",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -743,46 +583,6 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 2.5,
-      "Action": "reach",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.0,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.0,
-      "Action": "reach",
-      "Yaw": -18.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.6,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.6,
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
@@ -1004,46 +804,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 3.0,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.2,
-      "Action": "reach",
-      "Yaw": 24.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 7.8,
-      "Action": "look_around",
-      "Yaw": -20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.4,
-      "Action": "talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.6,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    }
@@ -1142,54 +902,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 3.2,
-      "Action": "sit_talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.0,
-      "Action": "sit_idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 7.0,
-      "Action": "sit_point",
-      "Yaw": 14.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.2,
-      "Action": "sit_talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.4,
-      "Action": "sit_cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 13.4,
-      "Action": "sit_idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -1255,16 +967,8 @@
      },
      {
       "Time": 1.6,
-      "Action": "present",
+      "Action": "idle",
       "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 3.0,
-      "Action": "reach",
-      "Yaw": -34.0,
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
@@ -1761,38 +1465,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 6.0,
-      "Action": "point_fwd",
-      "Yaw": -30.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.4,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.0,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 13.6,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -1807,55 +1479,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "idle_happy",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 2.2,
-      "Action": "look_around",
-      "Yaw": 30.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.0,
-      "Action": "point_fwd",
-      "Yaw": -30.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.0,
-      "Action": "crouch",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.8,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.0,
-      "Action": "talk",
-      "Yaw": -40.0,
-      "Rate": 1.0,
-      "Blend": 0.8,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.0,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.6,
-      "Action": "idle_happy",
+      "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1958,62 +1582,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 1.6,
-      "Action": "reach",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 3.6,
-      "Action": "reach",
-      "Yaw": 12.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.2,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.8,
-      "Action": "reach",
-      "Yaw": -10.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.6,
-      "Action": "talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.2,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -2028,46 +1596,6 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.6,
-      "Action": "talk",
-      "Yaw": -24.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.6,
-      "Action": "point_fwd",
-      "Yaw": -24.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.6,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.8,
-      "Action": "present",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
       "Action": "tablet",
       "Yaw": 0.0,
       "Rate": 1.0,
@@ -2094,39 +1622,15 @@
       "Lift": 0.0
      },
      {
-      "Time": 1.4,
-      "Action": "reach",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
       "Time": 5.0,
-      "Action": "reach",
-      "Yaw": 14.0,
+      "Action": "idle",
+      "Yaw": 0.0,
       "Rate": 0.9,
       "Blend": 0.35,
       "Lift": 0.0
      },
      {
       "Time": 9.6,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.0,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
@@ -2328,54 +1832,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 2.4,
-      "Action": "phone",
-      "Yaw": 20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.4,
-      "Action": "phone",
-      "Yaw": 40.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.4,
-      "Action": "phone",
-      "Yaw": -20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.6,
-      "Action": "phone",
-      "Yaw": 10.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.4,
-      "Action": "talk",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.6,
-      "Action": "phone",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -2390,48 +1846,8 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 3.0,
-      "Action": "look_around",
-      "Yaw": 60.0,
-      "Rate": 1.0,
-      "Blend": 1.2,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.0,
-      "Action": "look_around",
-      "Yaw": 170.0,
-      "Rate": 1.0,
-      "Blend": 1.6,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.0,
-      "Action": "look_around",
-      "Yaw": 280.0,
-      "Rate": 1.0,
-      "Blend": 1.6,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.0,
-      "Action": "cheer",
-      "Yaw": 360.0,
-      "Rate": 1.0,
-      "Blend": 1.2,
-      "Lift": 0.0
-     },
-     {
-      "Time": 13.0,
       "Action": "idle",
-      "Yaw": 360.0,
+      "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
@@ -2564,70 +1980,6 @@
      {
       "Time": 0.0,
       "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 0.9,
-      "Action": "reach",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 2.6,
-      "Action": "point_fwd",
-      "Yaw": -14.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 4.2,
-      "Action": "reach",
-      "Yaw": 14.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.8,
-      "Action": "point_fwd",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 7.4,
-      "Action": "reach",
-      "Yaw": -10.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.4,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 11.0,
-      "Action": "think",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
-      "Action": "idle_b",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -2815,54 +2167,6 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 3.4,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.6,
-      "Action": "reach",
-      "Yaw": 20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 7.8,
-      "Action": "look_around",
-      "Yaw": -24.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.4,
-      "Action": "idle_b",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.4,
-      "Action": "think",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 14.2,
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
@@ -3061,54 +2365,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 5.2,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.6,
-      "Action": "look_around",
-      "Yaw": 22.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.2,
-      "Action": "look_around",
-      "Yaw": -12.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.6,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.6,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.6,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -3128,54 +2384,6 @@
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
-     },
-     {
-      "Time": 5.4,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.8,
-      "Action": "look_around",
-      "Yaw": -22.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.4,
-      "Action": "look_around",
-      "Yaw": 12.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.8,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 10.9,
-      "Action": "cheer",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.9,
-      "Action": "tablet",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
      }
     ]
    },
@@ -3190,47 +2398,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "idle",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 3.0,
-      "Action": "point_fwd",
-      "Yaw": -20.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 5.6,
-      "Action": "look_around",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 8.2,
-      "Action": "idle_b",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 9.4,
       "Action": "phone",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 12.8,
-      "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,

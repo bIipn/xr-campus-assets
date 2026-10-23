@@ -26,9 +26,13 @@
   ]
  },
  "LibraryShell": {
-  "note": "The books on display (the stacks' ends and the table by the reference desk) are each a block and a cover picture. The web export tilted the covers back about 14 degrees but left the blocks upright, so in Unreal each block's front face cut across its cover and hid nearly half of it: the covers are laid flat on their blocks' front faces instead.",
+  "note": "The reference desk's sign (the web's, on the web desk's front) moves onto the front of the Reading Room's desk, which stands further west. The books on display (the stacks' ends and the table by the reference desk) are each a block and a cover picture. The web export tilted the covers back about 14 degrees but left the blocks upright, so in Unreal each block's front face cut across its cover and hid nearly half of it: the covers are laid flat on their blocks' front faces instead.",
   "flush": [
    {"what": "the displayed books' covers, onto their blocks", "meshes": ["book__.*"]}
+  ],
+  "move": [
+   {"what": "the reference desk's sign, centred on the Reading Room's desk front (it hung half off the desk's east end, in the front's own plane)",
+    "meshes": ["Mesh_23"], "pivot": [-17.2, -6.498], "rotate_deg": 0, "to": [-18.6, -6.468]}
   ]
  },
  "WaxHall": {
