@@ -1816,7 +1816,7 @@ void UWTAPlayTest::AddDoorsPhase()
 		{ TEXT("room 101"),       CampusToUE(19.0f,  0.00f,  -3.0f), CampusToUE( 19.0f, 0.0f,  -7.0f) },
 		{ TEXT("room 102"),       CampusToUE(29.0f,  0.00f,  -3.0f), CampusToUE( 29.0f, 0.0f,  -7.0f) },
 		{ TEXT("room 103"),       CampusToUE(19.0f,  0.00f,  -3.0f), CampusToUE( 19.0f, 0.0f,   1.0f) },
-		{ TEXT("room 104"),       CampusToUE(29.0f,  0.00f,  -3.0f), CampusToUE( 29.0f, 0.0f,   1.0f) },
+		{ TEXT("room 104"),       CampusToUE(29.0f,  0.00f,  -3.0f), CampusToUE( 29.0f, 0.0f,  -0.7f) },   // the classroom's desks start 1.6 m in
 		{ TEXT("yard door"),      CampusToUE(31.0f,  0.00f,  -3.0f), CampusToUE( 37.0f, 0.0f,  -3.0f) },
 		{ TEXT("gallery doors"),  CampusToUE( 0.0f,  0.00f,  -9.0f), CampusToUE(  0.0f, 0.0f, -27.0f) },
 		{ TEXT("wax hall door"),  CampusToUE( 0.0f,  0.00f, -39.5f), CampusToUE(  0.0f, 0.0f, -43.9f) },
