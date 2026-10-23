@@ -66,7 +66,7 @@
     "goPlace": "stories",
     "place": {"label": "Lost Stories", "names": ["lost stories", "stories", "story booth", "booth", "story cabin", "cabin", "record a story",
                                                  "tell a story", "oral history", "oral histories", "story wall"],
-              "view": {"x": -4.0, "y": -0.62, "z": 65.75, "yaw": -3.1416, "pitch": 0.04},
+              "view": {"x": -4.0, "y": -0.744, "z": 62.75, "yaw": -3.1416, "pitch": 0.09},
               "say": "the Lost Stories cabin", "directions": "out through the front doors, down the steps and through the theatre, then along the path past the fountain to its end: the timber cabin with the sign over its porch."}
   }
 ]

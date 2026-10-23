@@ -172,6 +172,11 @@ namespace
 		case EWTAPanelMode::Ride: return TEXT("Ride");
 		case EWTAPanelMode::Badges: return TEXT("Badges");
 		case EWTAPanelMode::Places: return TEXT("Places");
+		case EWTAPanelMode::Quiz: return TEXT("Quiz");
+		case EWTAPanelMode::Course: return TEXT("Course");
+		case EWTAPanelMode::Hunt: return TEXT("Hunt");
+		case EWTAPanelMode::Booth: return TEXT("Booth");
+		case EWTAPanelMode::Stories: return TEXT("Stories");
 		default: return TEXT("None");
 		}
 	}
@@ -1118,6 +1123,19 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 		{
 			Expected = TEXT("course card ") + Course->TalkId.ToString();
 			bPass = PanelIs(EWTAPanelMode::Course, Course->TalkId);
+		}
+		else if (Cast<AWTAStoryWallActor>(Target) != nullptr)
+		{
+			Expected = TEXT("the stories card");
+			bPass = PanelIs(EWTAPanelMode::Stories, NAME_None);
+		}
+		else if (const AWTAStoryMicActor* Mic = Cast<AWTAStoryMicActor>(Target))
+		{
+			// The teller's chair first, then the booth card.
+			const AWTACharacter* Player = Controller->GetWTACharacter();
+			const AWTASeatActor* Seat = Player != nullptr && Player->IsSeated() ? Cast<AWTASeatActor>(Player->GetSeat()) : nullptr;
+			Expected = TEXT("seated in ") + Mic->TellerSeatId.ToString() + TEXT(" with the booth card");
+			bPass = PanelIs(EWTAPanelMode::Booth, NAME_None) && Seat != nullptr && Seat->SeatId == Mic->TellerSeatId;
 		}
 		else
 		{

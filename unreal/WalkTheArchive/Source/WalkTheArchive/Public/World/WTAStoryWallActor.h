@@ -11,6 +11,7 @@
 #include "World/WTAPickActor.h"
 #include "WTAStoryWallActor.generated.h"
 
+class UMaterialInterface;
 class UWidgetComponent;
 class UWTAStoryBoardWidget;
 
@@ -29,9 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA")
 	float BoardHeightCm = 120.f;
 
-	/** The cards are drawn unlit: this tint keeps them paper, not lamps, in the cabin's light. */
+	/** The cards are paper lit by the cabin (BoardMaterial): this scales how much light they reflect. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA")
-	float Brightness = 0.62f;
+	float Brightness = 0.9f;
+
+	/** The board's material: the lighting step's lit, masked M_WTA_WidgetLit, so the cards are paper under the picture
+	    light. The engine's own widget material is unlit at 1 cd/m2, which physical exposure shows black. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WTA")
+	TSoftObjectPtr<UMaterialInterface> BoardMaterial;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA")
 	TObjectPtr<UWidgetComponent> Board;

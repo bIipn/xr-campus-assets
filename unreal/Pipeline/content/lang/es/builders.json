@@ -1,8 +1,24 @@
 {
- "_": "The words the builders draw into textures themselves, English key to the language's words. bl/slides.py reads it (the slide kickers); the signs, boards and screens still draw English until their builders read it too.",
+ "_": "The words the builders draw into textures themselves, English key to the language's words. bl/slides.py reads it (the slide kickers) and bl/stories.py (the Lost Stories cabin's sign, its how-it-works card, the ON AIR sign and the archive boxes); the other signs, boards and screens still draw English until their builders read it too.",
  "A talk": "Una charla",
  "A class": "Una clase",
  "The forecourt theatre": "El teatro de la explanada",
  "The auditorium": "El auditorio",
- "Room 104 · XR Classroom": "Sala 104 · Aula XR"
+ "Room 104 · XR Classroom": "Sala 104 · Aula XR",
+ "LOST STORIES": "HISTORIAS PERDIDAS",
+ "tell a story about this place": "cuenta una historia de este lugar",
+ "How it works": "Cómo funciona",
+ "Sit at the microphone.": "Siéntate frente al micrófono.",
+ "Press Record and tell it your own way.": "Pulsa Grabar y cuéntala a tu manera.",
+ "Keep it, and it joins the wall in your own voice.": "Guárdala y se sumará al muro con tu propia voz.",
+ "A librarian looks after every story kept here.": "El personal de la biblioteca cuida cada historia que se guarda aquí.",
+ "ON AIR": "AL AIRE",
+ "ORAL HISTORIES": "HISTORIAS ORALES",
+ "LETTERS": "CARTAS",
+ "PHOTOGRAPHS": "FOTOGRAFÍAS",
+ "RECORDINGS": "GRABACIONES",
+ "box {0}": "caja {0}",
+ "donated": "donadas",
+ "unsorted": "sin ordenar",
+ "tapes": "cintas"
 }

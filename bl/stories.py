@@ -116,10 +116,10 @@ def setup_materials():
     material('st_black', color=(0.025, 0.025, 0.028, 1), roughness=0.45)
     material('st_iron', color=(0.04, 0.04, 0.04, 1), roughness=0.5, metallic=0.6)
     material('st_brass', color=(0.75, 0.56, 0.28, 1), roughness=0.3, metallic=1.0)
-    material('st_green', color=(0.11, 0.22, 0.17, 1), roughness=0.5)                    # the door, the pendants' shades
+    material('st_green', color=(0.03, 0.075, 0.055, 1), roughness=0.5)                  # the door, the pendants' shades
     material('st_card', color=(0.82, 0.76, 0.64, 1), roughness=0.85)                    # archive boxes' board
-    material('st_pot', color=(0.55, 0.30, 0.20, 1), roughness=0.8)
-    material('st_leaf', color=(0.12, 0.30, 0.12, 1), roughness=0.8)
+    material('st_pot', color=(0.40, 0.15, 0.08, 1), roughness=0.8)                      # terracotta
+    material('st_leaf', color=(0.045, 0.13, 0.04, 1), roughness=0.8)
     material('glass', color=(0.9, 0.95, 1.0, 1), roughness=0.05, alpha=0.12)
     material('st_sign', 'stories_sign', roughness=0.6)
     material('st_how', 'stories_how', roughness=0.7)
@@ -213,6 +213,39 @@ def font(names, size):
 
 
 CREAM = (238, 228, 205); FOREST = (24, 52, 40); BRASS = (190, 150, 80); INK = (40, 34, 26); RED = (150, 28, 22)
+SPINES = []                       # the spine sheet's stripes, (x, width) in pixels: one book's spine each
+
+
+def language_words():
+    """lang/<lang>/builders.json for the pack's language (WTA_LANG, which build_client.py sets, else the pack's own
+    "language"): the words this builder paints itself, English key to the language's words; {} for English."""
+    import clientpack
+    lang = (os.environ.get('WTA_LANG') or clientpack.get('language') or 'en').strip().lower()
+    p = os.path.join(SP, 'unreal', 'Pipeline', 'content', 'lang', lang, 'builders.json')
+    if lang == 'en' or not os.path.exists(p):
+        return {}
+    with open(p, 'r', encoding='utf-8') as fh:
+        return json.load(fh)
+
+
+def text_width(d, text, f, tracking=0):
+    if tracking:
+        return sum(d.textlength(ch, font=f) for ch in text) + tracking * (len(text) - 1)
+    return d.textlength(text, font=f)
+
+
+def fitted(d, text, make, size, maxw, tracking=0):
+    """make(size), smaller until the text fits maxw (a longer language's words); returns (font, size)."""
+    s = size
+    while s > 14 and text_width(d, text, make(s), tracking) > maxw:
+        s = int(s * 0.95)
+    return make(s), s
+
+
+def centred_fit(d, y, text, make, size, fill, W, maxw, tracking=0):
+    """centred() at the largest size up to `size` that fits maxw, kept on the same middle line."""
+    f, s = fitted(d, text, make, size, maxw, tracking)
+    centred(d, y + (size - s) * 0.5, text, f, fill, W, tracking=tracking)
 
 
 def centred(d, y, text, f, fill, W, tracking=0):
@@ -231,7 +264,9 @@ def make_textures():
     from PIL import Image, ImageDraw, ImageFilter
     import random
     import clientpack
-    words = clientpack.get('stories', {}) or {}
+    words = clientpack.get('stories', {}) or {}          # a pack's own words for the cabin win
+    lw = language_words()
+    tr = lambda text: lw.get(text, text)                  # else the pack language's (lang/<lang>/builders.json)
     cinzel = lambda s: font(['Cinzel.ttf'], s)
     serif_i = lambda s: font(['CormorantGaramond-MediumItalic.ttf'], s)
     serif_b = lambda s: font(['CormorantGaramond-Bold.ttf'], s)
@@ -242,19 +277,19 @@ def make_textures():
     im = Image.new('RGB', (W, H), CREAM); d = ImageDraw.Draw(im)
     d.rectangle((0, 0, W - 1, H - 1), outline=FOREST, width=34)
     d.rectangle((52, 52, W - 53, H - 53), outline=BRASS, width=6)
-    centred(d, 92, words.get('sign', 'LOST STORIES'), cinzel(214), FOREST, W, tracking=26)
+    centred_fit(d, 92, words.get('sign', tr('LOST STORIES')), cinzel, 214, FOREST, W, W - 220, tracking=26)
     d.line((W * 0.30, 352, W * 0.70, 352), fill=BRASS, width=5)
-    centred(d, 372, words.get('sign_sub', 'tell a story about this place'), serif_i(82), INK, W)
+    centred_fit(d, 372, words.get('sign_sub', tr('tell a story about this place')), serif_i, 82, INK, W, W - 220)
     im.save(os.path.join(TEX, 'stories_sign.png'))
 
     # the "how it works" sign by the door: three steps on cream, framed in walnut by the geometry
     W, H = 1024, 1366
     im = Image.new('RGB', (W, H), CREAM); d = ImageDraw.Draw(im)
     d.rectangle((0, 0, W - 1, 210), fill=FOREST)
-    centred(d, 52, words.get('how_kicker', 'LOST STORIES'), cinzel(86), CREAM, W, tracking=10)
-    centred(d, 236, words.get('how_title', 'How it works'), serif_b(104), INK, W)
-    steps = words.get('how_steps') or ['Sit at the microphone.', 'Press Record and tell it your own way.',
-                                       'Keep it, and it joins the wall in your own voice.']
+    centred_fit(d, 52, words.get('how_kicker', tr('LOST STORIES')), cinzel, 86, CREAM, W, W - 120, tracking=10)
+    centred_fit(d, 236, words.get('how_title', tr('How it works')), serif_b, 104, INK, W, W - 120)
+    steps = words.get('how_steps') or [tr('Sit at the microphone.'), tr('Press Record and tell it your own way.'),
+                                       tr('Keep it, and it joins the wall in your own voice.')]
     y = 420
     for i, s in enumerate(steps[:3]):
         d.ellipse((90, y, 210, y + 120), fill=BRASS)
@@ -272,15 +307,22 @@ def make_textures():
         d.text((250, ly), line, font=f2, fill=INK)
         y = max(y + 200, ly + 110)
     d.line((90, H - 220, W - 90, H - 220), fill=BRASS, width=4)
-    note = words.get('how_note', 'A librarian looks after every story kept here.')
-    centred(d, H - 190, note, serif_i(58), INK, W)
+    note = words.get('how_note', tr('A librarian looks after every story kept here.'))
+    fn = serif_i(58)
+    if text_width(d, note, fn) <= W - 80:
+        centred(d, H - 190, note, fn, INK, W)
+    else:                                                   # two lines, broken at the word nearest the middle
+        ws = note.split()
+        cut = min(range(1, len(ws)), key=lambda k: abs(text_width(d, ' '.join(ws[:k]), fn) - text_width(d, ' '.join(ws[k:]), fn)))
+        for k, part in enumerate((' '.join(ws[:cut]), ' '.join(ws[cut:]))):
+            centred_fit(d, H - 200 + k * 66, part, serif_i, 58, INK, W, W - 120)
     im.save(os.path.join(TEX, 'stories_how.png'))
 
     # ON AIR: red glass with the words lit
     W, H = 512, 192
     im = Image.new('RGB', (W, H), (40, 6, 5)); d = ImageDraw.Draw(im)
     d.rectangle((10, 10, W - 11, H - 11), outline=(90, 14, 10), width=6)
-    centred(d, 38, 'ON AIR', sans_b(104), (255, 70, 50), W, tracking=8)
+    centred_fit(d, 38, tr('ON AIR'), sans_b, 104, (255, 70, 50), W, W - 60, tracking=8)
     im = im.filter(ImageFilter.GaussianBlur(0.8))
     im.save(os.path.join(TEX, 'stories_onair.png'))
 
@@ -290,20 +332,24 @@ def make_textures():
     im = Image.new('RGB', (W, H), (70, 50, 35)); d = ImageDraw.Draw(im)
     x = 0
     cols = [(110, 40, 32), (34, 60, 52), (150, 120, 70), (60, 44, 70), (40, 52, 86), (120, 90, 50), (90, 30, 28), (200, 180, 140)]
+    SPINES.clear()
     while x < W:
         w = r.randint(22, 46); c = r.choice(cols)
         d.rectangle((x, 0, x + w - 2, H // 2 - 2), fill=c)
+        if x + w <= W:
+            SPINES.append((x, w))
         for yb in (40, H // 2 - 60):
             d.rectangle((x + 3, yb, x + w - 5, yb + 6), fill=BRASS)
         x += w
-    lab = sans_b(40); small = serif_i(38)
+    small = serif_i(38)
     for k in range(4):
         x0 = (k % 2) * W // 2; y0 = H // 2 + (k // 2) * H // 4
         d.rectangle((x0, y0, x0 + W // 2 - 1, y0 + H // 4 - 1), fill=(214, 200, 170))
         d.rectangle((x0 + 60, y0 + 50, x0 + W // 2 - 60, y0 + H // 4 - 50), fill=(246, 240, 226), outline=INK, width=3)
-        tag = ['ORAL HISTORIES', 'LETTERS', 'PHOTOGRAPHS', 'RECORDINGS'][k]
-        d.text((x0 + (W // 2 - d.textlength(tag, font=lab)) / 2, y0 + 70), tag, font=lab, fill=INK)
-        sub = ['box %d' % (k + 3), 'donated', 'unsorted', 'tapes'][k]
+        tag = tr(['ORAL HISTORIES', 'LETTERS', 'PHOTOGRAPHS', 'RECORDINGS'][k])
+        fl, sl = fitted(d, tag, sans_b, 40, W // 2 - 150)
+        d.text((x0 + (W // 2 - d.textlength(tag, font=fl)) / 2, y0 + 70 + (40 - sl) * 0.5), tag, font=fl, fill=INK)
+        sub = [tr('box {0}').format(k + 3), tr('donated'), tr('unsorted'), tr('tapes')][k]
         d.text((x0 + (W // 2 - d.textlength(sub, font=small)) / 2, y0 + 128), sub, font=small, fill=INK)
     im.save(os.path.join(TEX, 'stories_spines.png'))
 
@@ -671,9 +717,8 @@ def mic(x, z, toward, h=0.30):
 
 
 def build_nook():
-    wl = builder('st_walnut', 'st_walnut', smooth_deg=40)
     tx, tz = TABLE
-    lathe(wl, tx, tz, [(FY, 0.24), (FY + 0.03, 0.24), (FY + 0.05, 0.05), (TABLE_TOP - 0.06, 0.04), (TABLE_TOP - 0.05, 0.12),
+    lathe(builder('st_table', 'st_walnut', smooth_deg=35), tx, tz, [(FY, 0.24), (FY + 0.03, 0.24), (FY + 0.05, 0.05), (TABLE_TOP - 0.06, 0.04), (TABLE_TOP - 0.05, 0.12),
                         (TABLE_TOP - 0.03, 0.36), (TABLE_TOP, 0.36)], n=32)
     armchair(*TELLER, (1, 0), 'st_teal', 'seat__stories_teller_f%d' % seat_yaw(1.0, 0.0))
     armchair(*GUEST, (-1, 0), 'st_rust', 'seat__stories_guest_f%d' % seat_yaw(-1.0, 0.0))
@@ -768,15 +813,23 @@ def bookcase(z0, z1, seed):
                             uvs=[(u0, v0), (u0 + 0.5, v0), (u0 + 0.5, v0 + 0.25), (u0, v0 + 0.25)])
                 z += w + 0.02
             else:
-                # a run of books, their spines a slice of the spines sheet
-                w = r.uniform(0.25, 0.45); h = r.uniform(0.22, min(0.32, row_top - y - 0.01))
-                if z + w > z1 - 0.04: w = z1 - 0.04 - z
-                if w < 0.08: break
-                cd.box(x_back + 0.15, y + h / 2, z + w / 2, 0.26, h, w, faces='yYzZx')
-                u0 = r.uniform(0.0, 0.6)
-                face_uv(sp, [P(x_back + 0.281, y, z), P(x_back + 0.281, y, z + w), P(x_back + 0.281, y + h, z + w), P(x_back + 0.281, y + h, z)],
-                        D(1, 0, 0), [(u0, 0.5), (u0 + w * 0.9, 0.5), (u0 + w * 0.9, 0.5 + h * 1.4), (u0, 0.5 + h * 1.4)])
-                z += w + 0.03
+                # a run of books standing one by one: each its own width, height and depth, its spine one stripe
+                # of the spines sheet (brass bands at its head and foot), its other faces page edges
+                run_end = min(z + r.uniform(0.25, 0.45), z1 - 0.04)
+                if run_end - z < 0.08: break
+                while z < run_end - 0.02:
+                    bw = r.uniform(0.022, 0.046)
+                    if z + bw > run_end: break
+                    bh = r.uniform(0.19, min(0.30, row_top - y - 0.01))
+                    bd = r.uniform(0.17, 0.23)
+                    xf = x_back + 0.29                                     # the spines near the shelf's front
+                    cd.box(xf - bd / 2, y + bh / 2, z + bw / 2, bd, bh, bw, faces='yYzZx')
+                    sx, swd = r.choice(SPINES)
+                    u0, u1 = (sx + 4) / 1024.0, (sx + swd - 6) / 1024.0
+                    face_uv(sp, [P(xf + 0.001, y, z), P(xf + 0.001, y, z + bw), P(xf + 0.001, y + bh, z + bw), P(xf + 0.001, y + bh, z)],
+                            D(1, 0, 0), [(u0, 0.505), (u1, 0.505), (u1, 0.975), (u0, 0.975)])
+                    z += bw + r.uniform(0.0, 0.004)
+                z += 0.03
     # a framed photograph standing on the second shelf from the top and a plant on top
     ph = builder('st_photo', 'st_photo')
     fr = builder('st_walnut', 'st_walnut')
@@ -883,7 +936,7 @@ def write_json(seats, teller_mic):
                 'teller_seat': 'stories_teller'},
         'seats': seats,
         'views': {
-            'outside': view((CX, ZP - 4.6), (CX, ZF), 0.04, gh(CX, ZP - 4.6)),
+            'outside': view((CX, ZP - 7.6), (CX, ZF), 0.09, gh(CX, ZP - 7.6)),
             'inside': view((CX - 0.2, ZI0 + 0.9), (TABLE[0], TABLE[1] + 0.6), -0.12, FY),
             'board': view((CX, ZI1 - 2.4), (CX, ZI1), -0.02, FY),
         },

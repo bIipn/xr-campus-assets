@@ -17,6 +17,7 @@ Unreal scene unchanged (lighting.py explains the exposure):
     colours back (HORIZON_COLOURS).
 Every glow and converted mesh stays out of Lumen's GI: small bright emitters only add noise there, and a
 display-referred one would feed the exposure back into the lighting. Glows also cast no shadow.
+It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards).
 """
 import os
 
@@ -43,6 +44,8 @@ BLENDER_NITS = {
 
 UNLIT_MASTER = paths.MATERIALS_PATH + "/M_WTA_Unlit"
 UNLIT_MASTER_TRANSLUCENT = paths.MATERIALS_PATH + "/M_WTA_UnlitTranslucent"
+# World-space widgets drawn as paper (the Lost Stories wall's cards; AWTAStoryWallActor::BoardMaterial)
+WIDGET_LIT = paths.MATERIALS_PATH + "/M_WTA_WidgetLit"
 INTERCHANGE_UNLIT = "/InterchangeAssets/gltf/MaterialInstances/MI_Unlit"
 UNLIT_POOL_ALPHA = 0.3
 WHITE_TEXTURE = "/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"
@@ -200,6 +203,56 @@ def build_unlit_master(path, translucent):
     return mat
 
 
+def build_widget_material(path=WIDGET_LIT):
+    """A lit, masked, two-sided material for a world-space widget, so what it draws is paper lit by the room.
+
+    The engine's own widget materials are unlit at 1 cd/m2, black under physical exposure. The parameter names are
+    the ones UWidgetComponent sets on its material instance: SlateUI (the widget's render target, as the base colour),
+    TintColorAndOpacity (multiplies the colour; its alpha the mask) and OpacityFromTexture (how much the render
+    target's alpha cuts the shape out).
+    """
+    mel = unreal.MaterialEditingLibrary
+    assets = util.assets()
+    if assets.exists(path):
+        mat = assets.load(path)
+        mel.delete_all_material_expressions(mat)
+    else:
+        folder, name = path.rsplit("/", 1)
+        if not assets.directory_exists(folder):
+            assets.make_directory(folder)
+        mat = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, folder, unreal.Material,
+                                                                      unreal.MaterialFactoryNew())
+    util.set_props(mat, {
+        "shading_model": util.enum_value("MaterialShadingModel", "MSM_DEFAULT_LIT"),
+        "blend_mode": util.enum_value("BlendMode", "BLEND_MASKED"),
+        "two_sided": True,
+        "opacity_mask_clip_value": 0.33,
+    }, label=util.object_name(mat))
+    tex = _expression(mat, "MaterialExpressionTextureSampleParameter2D", -1100, -150,
+                      {"parameter_name": "SlateUI", "texture": unreal.load_asset(WHITE_TEXTURE)})
+    tint = _expression(mat, "MaterialExpressionVectorParameter", -1100, 200,
+                       {"parameter_name": "TintColorAndOpacity", "default_value": unreal.LinearColor(1.0, 1.0, 1.0, 1.0)})
+    from_tex = _expression(mat, "MaterialExpressionScalarParameter", -1100, 450,
+                           {"parameter_name": "OpacityFromTexture", "default_value": 1.0})
+    colour = _expression(mat, "MaterialExpressionMultiply", -700, 0)
+    _connect(tex, "RGB", colour, "A")
+    _connect(tint, "", colour, "B")
+    cut = _expression(mat, "MaterialExpressionLinearInterpolate", -700, 380, {"const_a": 1.0})
+    _connect(tex, "A", cut, "B")
+    _connect(from_tex, "", cut, "Alpha")
+    mask = _expression(mat, "MaterialExpressionMultiply", -400, 400)
+    _connect(cut, "", mask, "A")
+    _connect(tint, "A", mask, "B")
+    rough = _expression(mat, "MaterialExpressionConstant", -400, 150, {"r": 0.85})
+    spec = _expression(mat, "MaterialExpressionConstant", -400, 250, {"r": 0.3})
+    for expr, prop in ((colour, "MP_BASE_COLOR"), (rough, "MP_ROUGHNESS"), (spec, "MP_SPECULAR"), (mask, "MP_OPACITY_MASK")):
+        if not mel.connect_material_property(expr, "", getattr(unreal.MaterialProperty, prop)):
+            raise RuntimeError("could not connect %s of %s" % (prop, path))
+    mel.recompile_material(mat)
+    assets.save(mat)
+    return mat
+
+
 def horizon_colour(extent_m):
     """sRGB hex for the horizon ring this wide, or None."""
     width = max(extent_m[0], extent_m[2])
@@ -289,4 +342,9 @@ def run(report):
         unlit = set()
         errors.append("unlit conversion failed: %s" % exc)
     quiet_emitters(glows, unlit, report)
+    try:
+        build_widget_material()
+        report["widget_material"] = WIDGET_LIT
+    except Exception as exc:
+        errors.append("widget material failed: %s" % exc)
     return errors

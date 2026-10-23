@@ -7,6 +7,7 @@
 #include "Core/WTAPlayerController.h"
 #include "Core/WTAText.h"
 #include "Engine/World.h"
+#include "Materials/MaterialInterface.h"
 #include "Systems/WTAStoriesSubsystem.h"
 #include "UI/WTAStoryBoardWidget.h"
 #include "World/WTAAttractComponent.h"
@@ -24,6 +25,7 @@ AWTAStoryWallActor::AWTAStoryWallActor()
 	Board->SetBlendMode(EWidgetBlendMode::Masked);
 	Board->SetTwoSided(true);                            // drawn from both sides: the board's back is against the wall anyway
 	Board->SetWindowFocusable(false);
+	BoardMaterial = TSoftObjectPtr<UMaterialInterface>(FSoftObjectPath(TEXT("/Game/WTA/Materials/M_WTA_WidgetLit.M_WTA_WidgetLit")));
 	if (Attract != nullptr)
 	{
 		Attract->bEnabled = false;
@@ -39,6 +41,14 @@ void AWTAStoryWallActor::BeginPlay()
 	// the board, a centimetre proud of it.
 	Board->SetRelativeLocationAndRotation(FVector(1.f, 0.f, 0.f), FRotator::ZeroRotator);
 	Board->SetRelativeScale3D(FVector(1.f, BoardWidthCm / Design.X, BoardHeightCm / Design.Y));
+	if (UMaterialInterface* Paper = BoardMaterial.LoadSynchronous())
+	{
+		Board->SetMaterial(0, Paper);                       // the component makes its instance of it and sets SlateUI
+	}
+	else
+	{
+		UE_LOG(LogWTA, Warning, TEXT("WTA_STORY no board material %s: the cards draw unlit (the lighting step builds it)"), *BoardMaterial.ToString());
+	}
 	Board->SetTintColorAndOpacity(FLinearColor(Brightness, Brightness, Brightness, 1.f));
 	Board->SetRedrawTime(0.25f);
 	Face = CreateWidget<UWTAStoryBoardWidget>(GetWorld(), UWTAStoryBoardWidget::StaticClass());
