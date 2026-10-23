@@ -8,6 +8,7 @@
 #include "Core/WTAPlayerState.h"
 #include "Engine/World.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFramework/HUD.h"
 #include "NavigationSystem.h"
 #include "NavMesh/RecastNavMesh.h"
 
@@ -17,8 +18,9 @@ AWTAGameMode::AWTAGameMode()
 	PlayerControllerClass = AWTAPlayerController::StaticClass();
 	GameStateClass = AWTAGameState::StaticClass();
 	PlayerStateClass = AWTAPlayerState::StaticClass();
-	// All UI is UMG owned by the controller, so no AHUD class.
-	HUDClass = nullptr;
+	// All UI is UMG owned by the controller; the plain AHUD draws nothing (with no class at all the engine logs a
+	// failed spawn for every player).
+	HUDClass = AHUD::StaticClass();
 }
 
 void AWTAGameMode::StartPlay()

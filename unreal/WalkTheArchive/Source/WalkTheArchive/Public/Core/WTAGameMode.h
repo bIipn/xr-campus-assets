@@ -1,6 +1,6 @@
 // Walk the Archive - game mode.
 // Wires the framework classes together: pawn = AWTACharacter, controller = AWTAPlayerController, game state =
-// AWTAGameState, player state = AWTAPlayerState, no HUD class (all UI is UMG owned by the controller). At start it
+// AWTAGameState, player state = AWTAPlayerState, the plain AHUD (all UI is UMG owned by the controller). At start it
 // builds the NavMesh when the level has none built.
 //
 // Guided visits (UWTAVisitSubsystem): the guide's machine runs this as a listen server. PostLogin makes the guide's
