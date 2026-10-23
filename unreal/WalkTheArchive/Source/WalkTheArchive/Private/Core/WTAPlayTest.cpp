@@ -8,6 +8,7 @@
 #include "Interaction/WTAInteractable.h"
 #include "Interaction/WTAInteractionComponent.h"
 #include "Systems/WTAContentSubsystem.h"
+#include "Systems/WTADialogueSubsystem.h"
 #include "Systems/WTAGraphicsLibrary.h"
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTAVisitLogSubsystem.h"
@@ -481,6 +482,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("wall")))
 	{
 		AddWallPhase();
+	}
+	if (Want(TEXT("season")))
+	{
+		AddSeasonPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3969,6 +3974,143 @@ void UWTAPlayTest::AddWallPhase()
 	{
 		Shot(TEXT("gallery_wall"), false);
 		return 0.4f;
+	} });
+}
+
+void UWTAPlayTest::AddSeasonPhase()
+{
+	// The season folder: a gallery exhibit's title changed in Saved/Season/DT_Exhibits.json and a postcard taken now
+	// as its picture in Saved/Season/art; the tables read again without a rebuild, the card shows both, the frame on
+	// the wall takes the picture; then the files are removed and the exhibit is itself again.
+	const TSharedRef<FName> Id = MakeShared<FName>();
+	const TSharedRef<FString> Title = MakeShared<FString>();
+	const TSharedRef<FString> Original = MakeShared<FString>();
+	const TSharedRef<FWTAView> View = MakeShared<FWTAView>();
+	const FString Dir = UWTAContentSubsystem::SeasonDir();
+	Steps.Add({ TEXT("season write"), [this, Id, Title, Original, View, Dir]() -> float
+	{
+		CloseAll();
+		const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		if (Content != nullptr)
+		{
+			for (const FName& Name : Content->GetRowNames(EWTATable::Exhibits))
+			{
+				const FWTAExhibitRow* Row = Content->FindExhibit(Name);
+				if (Row != nullptr && !Row->bWax && Row->Size.X > 0.f && Row->View.bValid)
+				{
+					*Id = Name;
+					*Original = Row->Title.ToString();
+					*View = Row->View;
+					break;
+				}
+			}
+		}
+		if (Id->IsNone())
+		{
+			Report(TEXT("season"), EResult::Fail, TEXT("an exhibit to swap"), TEXT("no gallery exhibit with a frame in DT_Exhibits"));
+			return 0.f;
+		}
+		*Title = FString::Printf(TEXT("Season test %s"), *FDateTime::Now().ToString(TEXT("%H%M%S")));
+		IFileManager::Get().MakeDirectory(*FPaths::Combine(Dir, TEXT("art")), true);
+		const FString Json = FString::Printf(TEXT("[{\"Name\": \"%s\", \"Title\": \"%s\", \"Description\": \"This card's title and picture came from the season folder, read without a rebuild.\"}]"), *Id->ToString(), **Title);
+		const bool bWrote = FFileHelper::SaveStringToFile(Json, *FPaths::Combine(Dir, TEXT("DT_Exhibits.json")));
+		AWTAPlayerController* Controller = PC();
+		const FString Card = Controller != nullptr ? Controller->TakePostcard() : FString();
+		Report(TEXT("season"), bWrote ? EResult::Info : EResult::Fail, TEXT("season files"), FString::Printf(TEXT("%s: \"%s\" over \"%s\"; picture %s"), *Id->ToString(), **Title, **Original, Card.IsEmpty() ? TEXT("not taken") : TEXT("a postcard")));
+		return bWrote ? 1.2f : 0.f;
+	} });
+	Steps.Add({ TEXT("season reload"), [this, Id, Title, Dir]() -> float
+	{
+		if (Id->IsNone())
+		{
+			return 0.f;
+		}
+		AWTAPlayerController* Controller = PC();
+		UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		const FString Card = Controller != nullptr ? Controller->GetLastPostcard() : FString();
+		const FString Art = FPaths::Combine(Dir, TEXT("art"), Id->ToString() + TEXT(".png"));
+		const bool bPicture = !Card.IsEmpty() && IFileManager::Get().Copy(*Art, *Card) == COPY_OK;
+		if (Content != nullptr)
+		{
+			Content->ReloadTables();
+		}
+		if (UWTADialogueSubsystem* Dialogue = UWTADialogueSubsystem::Get(this))
+		{
+			Dialogue->RebuildIndex();
+		}
+		const FWTAExhibitRow* Row = Content ? Content->FindExhibit(*Id) : nullptr;
+		const bool bRow = Row != nullptr && Row->Title.ToString() == *Title && Content->NumSeasonRows() >= 1;
+		Report(TEXT("season"), bRow ? EResult::Pass : EResult::Fail, TEXT("the tables read the season folder"),
+			FString::Printf(TEXT("%d season rows; %s titled \"%s\""), Content ? Content->NumSeasonRows() : 0, *Id->ToString(), Row ? *Row->Title.ToString() : TEXT("(no row)")));
+		bool bHung = false;
+		for (TActorIterator<AWTAExhibitActor> It(GetWorld()); It; ++It)
+		{
+			if (It->ItemId == *Id)
+			{
+				bHung = It->HangSeasonPicture();
+				break;
+			}
+		}
+		Report(TEXT("season"), (bPicture && bHung) ? EResult::Pass : (bPicture ? EResult::Fail : EResult::Skip), TEXT("the frame takes the season's picture"),
+			bPicture ? (bHung ? TEXT("hung over the frame") : TEXT("the actor did not hang it")) : TEXT("no postcard to use as the picture"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("season card"), [this, Id, Title]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		if (Id->IsNone() || Controller == nullptr || Controller->Panel == nullptr)
+		{
+			return 0.f;
+		}
+		Controller->OpenExhibit(*Id);
+		const FString Shown = Controller->Panel->GetTitle().ToString();
+		const bool bOk = Controller->Panel->IsOpen() && Shown == *Title;
+		Report(TEXT("season"), bOk ? EResult::Pass : EResult::Fail, TEXT("the card shows the season's title"), FString::Printf(TEXT("\"%s\""), *Shown));
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("season card shot"), [this]() -> float { Shot(TEXT("season_card")); return 0.3f; } });
+	Steps.Add({ TEXT("season frame"), [this, View]() -> float
+	{
+		CloseAll();
+		if (View->bValid)
+		{
+			StandAt(*View);
+		}
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("season frame shot"), [this]() -> float { Shot(TEXT("season_frame"), false); return 0.3f; } });
+	Steps.Add({ TEXT("season clean"), [this, Id, Original, Dir]() -> float
+	{
+		if (Id->IsNone())
+		{
+			return 0.f;
+		}
+		IFileManager::Get().Delete(*FPaths::Combine(Dir, TEXT("DT_Exhibits.json")), false, true, true);
+		IFileManager::Get().Delete(*FPaths::Combine(Dir, TEXT("art"), Id->ToString() + TEXT(".png")), false, true, true);
+		UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		if (Content != nullptr)
+		{
+			Content->ReloadTables();
+		}
+		if (UWTADialogueSubsystem* Dialogue = UWTADialogueSubsystem::Get(this))
+		{
+			Dialogue->RebuildIndex();
+		}
+		bool bStillHung = false;
+		for (TActorIterator<AWTAExhibitActor> It(GetWorld()); It; ++It)
+		{
+			if (It->ItemId == *Id)
+			{
+				It->HangSeasonPicture();
+				bStillHung = It->HasSeasonPicture();
+				break;
+			}
+		}
+		const FWTAExhibitRow* Row = Content ? Content->FindExhibit(*Id) : nullptr;
+		const bool bBack = Row != nullptr && Row->Title.ToString() == *Original && Content->NumSeasonRows() == 0 && !bStillHung;
+		Report(TEXT("season"), bBack ? EResult::Pass : EResult::Fail, TEXT("the exhibit is itself again"),
+			FString::Printf(TEXT("%d season rows; titled \"%s\"; picture %s"), Content ? Content->NumSeasonRows() : 0, Row ? *Row->Title.ToString() : TEXT("(no row)"), bStillHung ? TEXT("still hangs") : TEXT("down")));
+		return 0.f;
 	} });
 }
 

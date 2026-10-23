@@ -21,7 +21,9 @@ public class WalkTheArchive : ModuleRules
 			"SlateCore",
 			"AIModule",
 			"NavigationSystem",
-			"DeveloperSettings"
+			"DeveloperSettings",
+			"Json",
+			"JsonUtilities"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "AnimationCore" });

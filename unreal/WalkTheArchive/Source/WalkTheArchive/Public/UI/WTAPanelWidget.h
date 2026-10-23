@@ -140,6 +140,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	FName GetCurrentId() const { return CurrentId; }
 
+	/** The card's title as shown. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	FText GetTitle() const;
+
 	/** Book page showing (-1 cover) when Mode is Book; stations finished on a course card; stamps on the library card. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	int32 GetCurrentPage() const { return CurrentPage; }
@@ -178,6 +182,7 @@ protected:
 
 	/** Loads the soft texture synchronously and adds it at MaxWidth keeping its aspect. Skips unset textures. */
 	void AddImage(const TSoftObjectPtr<UTexture2D>& Texture, float MaxWidth);
+	void AddImage(UTexture2D* Loaded, float MaxWidth);
 
 	/** A button row entry; bPrimary = brass. Bound to HandleAction. */
 	UWTAActionButton* AddButton(const FText& Label, FName Action, FName Arg, int32 Index, bool bPrimary);

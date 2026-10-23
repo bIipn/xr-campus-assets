@@ -118,6 +118,8 @@ private:
 	void AddVisitsPhase();
 	/** wall: a postcard taken now hangs on the visitors' wall; a no-HUD shot of it. */
 	void AddWallPhase();
+	/** season: an exhibit's title and picture written to Saved/Season, read again without a rebuild; the card and the frame show them; the files are removed after. */
+	void AddSeasonPhase();
 	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
 	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */

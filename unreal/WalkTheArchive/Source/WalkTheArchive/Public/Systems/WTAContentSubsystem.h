@@ -3,6 +3,12 @@
 // Loads every DataTable from UWTASettings on Initialize (LoadSynchronous; a missing table logs a LogWTA warning and
 // its getters return null). Typed getters return pointers into the table; callers copy what they keep.
 // Row order is the converter's order (web order), so GetRowNames gives galleries, tour stops etc. in sequence.
+//
+// The season folder, <Saved>/Season: a library changes content without a rebuild. A <DT_Name>.json there (DT_Exhibits.json,
+// DT_Facts.json, ...; the row shape of Data/*.json, "Name" plus the fields that change) is read at start: a row with a
+// known Name is replaced field by field (the fields left out keep the built values), a new Name is added. The table in
+// memory is a copy, so the built asset is never changed. Season/art/<row>.png (or .jpg) is the season's picture for an
+// exhibit: the card shows it and the exhibit's frame on the wall is covered with it.
 
 #pragma once
 
@@ -11,6 +17,8 @@
 #include "Engine/DataTable.h"
 #include "Data/WTATypes.h"
 #include "WTAContentSubsystem.generated.h"
+
+class UTexture2D;
 
 /** One value per table in UWTASettings. */
 UENUM(BlueprintType)
@@ -49,9 +57,21 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	/** Load (or reload) all tables from the settings. */
+	/** Load (or reload) all tables from the settings, then the season folder over them. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ReloadTables();
+
+	/** <Saved>/Season: the folder a library drops this season's rows and pictures in. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	static FString SeasonDir();
+
+	/** Rows added or replaced from the season folder by the last ReloadTables. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	int32 NumSeasonRows() const { return SeasonRows; }
+
+	/** The season's picture for a row (Season/art/<row>.png or .jpg), loaded once; null when there is none. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	UTexture2D* SeasonTexture(FName RowId) const;
 
 	/** The loaded table or null. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
@@ -139,6 +159,14 @@ public:
 	bool GetTourStop(FName Id, FWTATourStopRow& OutRow) const;
 
 protected:
+	/** The season file for a table (DT_<Name>.json or <Name>.json in SeasonDir) laid over a copy of the table; returns
+	    the table to use (the copy when the file changed anything, else the table itself). */
+	UDataTable* ApplySeason(UDataTable* Table, const TCHAR* Name);
+
+	UPROPERTY(Transient) mutable TMap<FName, TObjectPtr<UTexture2D>> SeasonTextures;
+	mutable TSet<FName> SeasonTextureMisses;
+	int32 SeasonRows = 0;
+
 	template <typename TRow>
 	const TRow* FindRowIn(const UDataTable* Table, FName Id) const
 	{

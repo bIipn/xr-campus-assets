@@ -114,7 +114,7 @@ def main():
         lflat = {}
         walk({k: v for k, v in lang.items() if not k.startswith('_')}, [], lflat)
         missing = [k for k in flat if k not in lflat]
-        stale = [k for k in lflat if k not in flat]
+        stale = [k for k in lflat if k not in flat and not re.search(r'\.Aliases\.\d+$', k)]    # a language may add aliases
         same = [k for k in flat if k in lflat and lflat[k] == flat[k] and len(flat[k]) > 3 and not flat[k].startswith('http')]
         for k in missing[:40]:
             print('MISSING: %s' % k)

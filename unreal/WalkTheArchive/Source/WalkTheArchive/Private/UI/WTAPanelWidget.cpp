@@ -315,7 +315,14 @@ void UWTAPanelWidget::ShowExhibit(FName ItemId)
 	// Museum-label header: kicker, big year, title, and the place in italics under it.
 	BeginCard(EWTAPanelMode::Exhibit, ItemId, Kicker, Row->Title);
 	SetHeaderExtras(Row->Date, Row->Where);
-	AddImage(Row->Art, 820.f);
+	if (UTexture2D* Season = Data->SeasonTexture(ItemId))      // this season's picture (Saved/Season/art) over the built art
+	{
+		AddImage(Season, 820.f);
+	}
+	else
+	{
+		AddImage(Row->Art, 820.f);
+	}
 
 	// A wax scene first says what the figures are acting out, then tells the story behind it.
 	if (Row->bWax)
@@ -1472,14 +1479,23 @@ void UWTAPanelWidget::AddSpacer(float Height)
 	PanelAddRow(Content, Spacer, FMargin(0.f));
 }
 
+FText UWTAPanelWidget::GetTitle() const
+{
+	return TitleText != nullptr ? TitleText->GetText() : FText::GetEmpty();
+}
+
 void UWTAPanelWidget::AddImage(const TSoftObjectPtr<UTexture2D>& Texture, float MaxWidth)
 {
 	if (Content == nullptr || Texture.IsNull())
 	{
 		return;
 	}
-	UTexture2D* Loaded = Texture.LoadSynchronous();
-	if (Loaded == nullptr)
+	AddImage(Texture.LoadSynchronous(), MaxWidth);
+}
+
+void UWTAPanelWidget::AddImage(UTexture2D* Loaded, float MaxWidth)
+{
+	if (Content == nullptr || Loaded == nullptr)
 	{
 		return;
 	}

@@ -197,6 +197,19 @@ file; JSZip from cdnjs), opens from disk or any web host, and is also published 
 download capability. `clients/make_start.py` rebuilds it from `clients/start.template.html` with the XR Libraries
 pack inlined as the example it opens on.
 
+## The season folder: content swapped without a rebuild
+
+A library changes what a card says, or an exhibit's picture, without the pipeline or the editor: it drops files in
+the game's `Saved/Season/` folder (next to the postcards and the visit logs) and starts the campus. A
+`DT_<Name>.json` there (`DT_Exhibits.json`, `DT_Facts.json`, `DT_StaffRules.json`, ...) is a JSON list of rows in
+the shape of `WalkTheArchive/Data/<Name>.json` - `"Name"` and the fields that change; a known Name is replaced
+field by field (the fields left out keep the built values), a new Name is added (a new fact or staff answer works
+at once; a new exhibit needs a frame in the level, so for exhibits it is the swap that counts). The built tables are
+never changed: the engine lays the season over a copy at start (`UWTAContentSubsystem::ReloadTables`, logged
+`WTA_SEASON`). `Saved/Season/art/<row>.png` (or `.jpg`) is the season's picture for an exhibit: its card shows it and
+its frame on the wall is covered with it, the picture's proportions kept inside the frame. Remove the files and the
+exhibit is itself again. The play QA's `season` phase does exactly this with the first gallery exhibit and a postcard.
+
 ## What is in `out/ue/`
 
 | Asset | Meshes | Triangles | Notes |

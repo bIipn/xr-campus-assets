@@ -8,6 +8,15 @@
 #include "Engine/World.h"
 #include "Subsystems/SubsystemCollection.h"
 #include "UObject/SoftObjectPtr.h"
+#include "Dom/JsonObject.h"
+#include "Dom/JsonValue.h"
+#include "Engine/Texture2D.h"
+#include "ImageUtils.h"
+#include "JsonObjectConverter.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 
 namespace
 {
@@ -67,25 +76,32 @@ void UWTAContentSubsystem::ReloadTables()
 	{
 		return;
 	}
-	ExhibitsTable   = LoadTable(Settings->Exhibits,   TEXT("Exhibits"),   FWTAExhibitRow::StaticStruct());
-	BooksTable      = LoadTable(Settings->Books,      TEXT("Books"),      FWTABookRow::StaticStruct());
-	SourcesTable    = LoadTable(Settings->Sources,    TEXT("Sources"),    FWTASourceRow::StaticStruct());
-	GalleriesTable  = LoadTable(Settings->Galleries,  TEXT("Galleries"),  FWTAGalleryRow::StaticStruct());
-	SubjectsTable   = LoadTable(Settings->Subjects,   TEXT("Subjects"),   FWTASubjectRow::StaticStruct());
-	RoomsTable      = LoadTable(Settings->Rooms,      TEXT("Rooms"),      FWTARoomRow::StaticStruct());
-	PlacesTable     = LoadTable(Settings->Places,     TEXT("Places"),     FWTAPlaceRow::StaticStruct());
-	TourTable       = LoadTable(Settings->Tour,       TEXT("Tour"),       FWTATourStopRow::StaticStruct());
-	StaffTable      = LoadTable(Settings->Staff,      TEXT("Staff"),      FWTAStaffRow::StaticStruct());
-	StaffRulesTable = LoadTable(Settings->StaffRules, TEXT("StaffRules"), FWTAStaffRuleRow::StaticStruct());
-	FactsTable      = LoadTable(Settings->Facts,      TEXT("Facts"),      FWTAFactRow::StaticStruct());
-	LessonsTable    = LoadTable(Settings->Lessons,    TEXT("Lessons"),    FWTALessonRow::StaticStruct());
-	BadgesTable     = LoadTable(Settings->Badges,     TEXT("Badges"),     FWTABadgeRow::StaticStruct());
-	TokensTable     = LoadTable(Settings->Tokens,     TEXT("Tokens"),     FWTATokenRow::StaticStruct());
-	WaxScenesTable  = LoadTable(Settings->WaxScenes,  TEXT("WaxScenes"),  FWTAWaxSceneRow::StaticStruct());
-	StationsTable   = LoadTable(Settings->Stations,   TEXT("Stations"),   FWTAStationRow::StaticStruct());
-	RidesTable      = LoadTable(Settings->Rides,      TEXT("Rides"),      FWTARideRow::StaticStruct());
-	TalksTable      = LoadTable(Settings->Talks,      TEXT("Talks"),      FWTATalkRow::StaticStruct());
-	StringsTable    = Settings->Strings.IsNull() ? nullptr : LoadTable(Settings->Strings, TEXT("Strings"), FWTAStringRow::StaticStruct());
+	SeasonRows = 0;
+	SeasonTextures.Reset();
+	SeasonTextureMisses.Reset();
+	ExhibitsTable   = ApplySeason(LoadTable(Settings->Exhibits,   TEXT("Exhibits"),   FWTAExhibitRow::StaticStruct()),   TEXT("Exhibits"));
+	BooksTable      = ApplySeason(LoadTable(Settings->Books,      TEXT("Books"),      FWTABookRow::StaticStruct()),      TEXT("Books"));
+	SourcesTable    = ApplySeason(LoadTable(Settings->Sources,    TEXT("Sources"),    FWTASourceRow::StaticStruct()),    TEXT("Sources"));
+	GalleriesTable  = ApplySeason(LoadTable(Settings->Galleries,  TEXT("Galleries"),  FWTAGalleryRow::StaticStruct()),   TEXT("Galleries"));
+	SubjectsTable   = ApplySeason(LoadTable(Settings->Subjects,   TEXT("Subjects"),   FWTASubjectRow::StaticStruct()),   TEXT("Subjects"));
+	RoomsTable      = ApplySeason(LoadTable(Settings->Rooms,      TEXT("Rooms"),      FWTARoomRow::StaticStruct()),      TEXT("Rooms"));
+	PlacesTable     = ApplySeason(LoadTable(Settings->Places,     TEXT("Places"),     FWTAPlaceRow::StaticStruct()),     TEXT("Places"));
+	TourTable       = ApplySeason(LoadTable(Settings->Tour,       TEXT("Tour"),       FWTATourStopRow::StaticStruct()),  TEXT("Tour"));
+	StaffTable      = ApplySeason(LoadTable(Settings->Staff,      TEXT("Staff"),      FWTAStaffRow::StaticStruct()),     TEXT("Staff"));
+	StaffRulesTable = ApplySeason(LoadTable(Settings->StaffRules, TEXT("StaffRules"), FWTAStaffRuleRow::StaticStruct()), TEXT("StaffRules"));
+	FactsTable      = ApplySeason(LoadTable(Settings->Facts,      TEXT("Facts"),      FWTAFactRow::StaticStruct()),      TEXT("Facts"));
+	LessonsTable    = ApplySeason(LoadTable(Settings->Lessons,    TEXT("Lessons"),    FWTALessonRow::StaticStruct()),    TEXT("Lessons"));
+	BadgesTable     = ApplySeason(LoadTable(Settings->Badges,     TEXT("Badges"),     FWTABadgeRow::StaticStruct()),     TEXT("Badges"));
+	TokensTable     = ApplySeason(LoadTable(Settings->Tokens,     TEXT("Tokens"),     FWTATokenRow::StaticStruct()),     TEXT("Tokens"));
+	WaxScenesTable  = ApplySeason(LoadTable(Settings->WaxScenes,  TEXT("WaxScenes"),  FWTAWaxSceneRow::StaticStruct()),  TEXT("WaxScenes"));
+	StationsTable   = ApplySeason(LoadTable(Settings->Stations,   TEXT("Stations"),   FWTAStationRow::StaticStruct()),   TEXT("Stations"));
+	RidesTable      = ApplySeason(LoadTable(Settings->Rides,      TEXT("Rides"),      FWTARideRow::StaticStruct()),      TEXT("Rides"));
+	TalksTable      = ApplySeason(LoadTable(Settings->Talks,      TEXT("Talks"),      FWTATalkRow::StaticStruct()),      TEXT("Talks"));
+	StringsTable    = Settings->Strings.IsNull() ? nullptr : ApplySeason(LoadTable(Settings->Strings, TEXT("Strings"), FWTAStringRow::StaticStruct()), TEXT("Strings"));
+	if (SeasonRows > 0)
+	{
+		UE_LOG(LogWTA, Display, TEXT("WTA_SEASON %d rows from %s"), SeasonRows, *SeasonDir());
+	}
 	// The words the C++ writes, in the pack's language, for Tr(): keyed by the English text.
 	GStrings.Reset();
 	if (StringsTable != nullptr)
@@ -117,6 +133,116 @@ FText UWTAContentSubsystem::Tr(const FString& English)
 int32 UWTAContentSubsystem::NumStrings() const
 {
 	return GStrings.Num();
+}
+
+FString UWTAContentSubsystem::SeasonDir()
+{
+	return FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Season"));
+}
+
+UDataTable* UWTAContentSubsystem::ApplySeason(UDataTable* Table, const TCHAR* Name)
+{
+	if (Table == nullptr || Table->GetRowStruct() == nullptr)
+	{
+		return Table;
+	}
+	FString File = FPaths::Combine(SeasonDir(), FString::Printf(TEXT("DT_%s.json"), Name));
+	if (!FPaths::FileExists(File))
+	{
+		File = FPaths::Combine(SeasonDir(), FString::Printf(TEXT("%s.json"), Name));
+		if (!FPaths::FileExists(File))
+		{
+			return Table;
+		}
+	}
+	FString Json;
+	if (!FFileHelper::LoadFileToString(Json, *File))
+	{
+		UE_LOG(LogWTA, Warning, TEXT("Season: could not read %s"), *File);
+		return Table;
+	}
+	TArray<TSharedPtr<FJsonValue>> Rows;
+	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Json);
+	if (!FJsonSerializer::Deserialize(Reader, Rows))
+	{
+		UE_LOG(LogWTA, Warning, TEXT("Season: %s is not a JSON list of rows (%s)"), *File, *Reader->GetErrorMessage());
+		return Table;
+	}
+
+	// The season lies over a copy, so the built asset stays as it was.
+	const UScriptStruct* RowStruct = Table->GetRowStruct();
+	UDataTable* Copy = NewObject<UDataTable>(this, NAME_None, RF_Transient);
+	Copy->RowStruct = const_cast<UScriptStruct*>(RowStruct);
+	for (const TPair<FName, uint8*>& Pair : Table->GetRowMap())
+	{
+		Copy->AddRow(Pair.Key, Pair.Value, RowStruct);
+	}
+	int32 Replaced = 0, Added = 0;
+	uint8* Buffer = static_cast<uint8*>(FMemory::Malloc(RowStruct->GetStructureSize()));
+	for (const TSharedPtr<FJsonValue>& Value : Rows)
+	{
+		const TSharedPtr<FJsonObject>* Object = nullptr;
+		FString RowName;
+		if (!Value.IsValid() || !Value->TryGetObject(Object) || !(*Object)->TryGetStringField(TEXT("Name"), RowName) || RowName.IsEmpty())
+		{
+			UE_LOG(LogWTA, Warning, TEXT("Season: a row in %s has no \"Name\""), *File);
+			continue;
+		}
+		const FName Id(*RowName);
+		RowStruct->InitializeStruct(Buffer);
+		const uint8* Existing = Copy->FindRowUnchecked(Id);
+		if (Existing != nullptr)
+		{
+			RowStruct->CopyScriptStruct(Buffer, Existing);     // the fields the file leaves out keep the built values
+		}
+		if (!FJsonObjectConverter::JsonObjectToUStruct(Object->ToSharedRef(), RowStruct, Buffer, 0, 0))
+		{
+			UE_LOG(LogWTA, Warning, TEXT("Season: row %s in %s did not read; skipped"), *RowName, *File);
+			RowStruct->DestroyStruct(Buffer);
+			continue;
+		}
+		Copy->AddRow(Id, Buffer, RowStruct);
+		RowStruct->DestroyStruct(Buffer);
+		(Existing != nullptr ? Replaced : Added) += 1;
+	}
+	FMemory::Free(Buffer);
+	SeasonRows += Replaced + Added;
+	UE_LOG(LogWTA, Display, TEXT("WTA_SEASON DT_%s: %d replaced, %d added from %s"), Name, Replaced, Added, *FPaths::GetCleanFilename(File));
+	return Copy;
+}
+
+UTexture2D* UWTAContentSubsystem::SeasonTexture(FName RowId) const
+{
+	if (RowId.IsNone())
+	{
+		return nullptr;
+	}
+	if (const TObjectPtr<UTexture2D>* Found = SeasonTextures.Find(RowId))
+	{
+		return *Found;
+	}
+	if (SeasonTextureMisses.Contains(RowId))
+	{
+		return nullptr;
+	}
+	const FString Folder = FPaths::Combine(SeasonDir(), TEXT("art"));
+	for (const TCHAR* Ext : { TEXT("png"), TEXT("jpg"), TEXT("jpeg") })
+	{
+		const FString File = FPaths::Combine(Folder, FString::Printf(TEXT("%s.%s"), *RowId.ToString(), Ext));
+		if (FPaths::FileExists(File))
+		{
+			UTexture2D* Texture = FImageUtils::ImportFileAsTexture2D(File);
+			if (Texture != nullptr)
+			{
+				SeasonTextures.Add(RowId, Texture);
+				UE_LOG(LogWTA, Display, TEXT("WTA_SEASON picture %s (%d x %d)"), *FPaths::GetCleanFilename(File), Texture->GetSizeX(), Texture->GetSizeY());
+				return Texture;
+			}
+			UE_LOG(LogWTA, Warning, TEXT("Season: %s did not load as a picture"), *File);
+		}
+	}
+	SeasonTextureMisses.Add(RowId);
+	return nullptr;
 }
 
 UDataTable* UWTAContentSubsystem::GetTable(EWTATable Table) const
