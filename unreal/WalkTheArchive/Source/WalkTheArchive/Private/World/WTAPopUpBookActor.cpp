@@ -421,14 +421,14 @@ void AWTAPopUpBookActor::Tick(float DeltaSeconds)
 	{
 		const bool bOpening = State == EWTAPopUpState::Opening;
 		Phase = FMath::Min(1.f, Phase + DeltaSeconds / FMath::Max(0.05f, bOpening ? OpenSeconds : CloseSeconds));
-		float Layers[3];
+		float LayerDeg[3];   // (AActor has a Layers of its own)
 		float Back;
 		if (bOpening)
 		{
 			Back = 90.f * (1.f - PopUpEaseInOut(Phase / PopUpOpenBackEnd));
 			for (int32 K = 0; K < 3; ++K)
 			{
-				Layers[K] = 90.f * (1.f - PopUpEaseOutBack((Phase - PopUpOpenDelay[K]) / PopUpOpenSpan));
+				LayerDeg[K] = 90.f * (1.f - PopUpEaseOutBack((Phase - PopUpOpenDelay[K]) / PopUpOpenSpan));
 			}
 		}
 		else
@@ -436,10 +436,10 @@ void AWTAPopUpBookActor::Tick(float DeltaSeconds)
 			Back = 90.f * PopUpEaseInOut((Phase - PopUpCloseBackStart) / (1.f - PopUpCloseBackStart));
 			for (int32 K = 0; K < 3; ++K)
 			{
-				Layers[K] = 90.f * PopUpEaseInOut((Phase - PopUpCloseDelay[K]) / PopUpCloseSpan);
+				LayerDeg[K] = 90.f * PopUpEaseInOut((Phase - PopUpCloseDelay[K]) / PopUpCloseSpan);
 			}
 		}
-		Pose(Back, Layers);
+		Pose(Back, LayerDeg);
 		if (Phase >= 1.f)
 		{
 			FinishAnimation();
