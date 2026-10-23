@@ -29,6 +29,22 @@ UMaterialInterface* AWTAVRScreenActor::ScreenMaterial()
 	return Cached.Get();
 }
 
+void AWTAVRScreenActor::FitToWidget(UWidgetComponent* Component)
+{
+	UUserWidget* Content = Component != nullptr ? Component->GetUserWidgetObject() : nullptr;
+	if (Content == nullptr)
+	{
+		return;
+	}
+	Content->TakeWidget();                                   // its Slate widget, if the component has not drawn it yet
+	Content->ForceLayoutPrepass();
+	const FVector2D Want = Content->GetDesiredSize();
+	if (Want.X >= 1.0 && Want.Y >= 1.0)
+	{
+		Component->SetDrawSize(FVector2D(FMath::CeilToDouble(Want.X), FMath::CeilToDouble(Want.Y)));
+	}
+}
+
 AWTAVRScreenActor::AWTAVRScreenActor()
 {
 	PrimaryActorTick.bCanEverTick = false;

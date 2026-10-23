@@ -114,13 +114,19 @@ void UWTAVRRig::Start(bool bInHeadset)
 	UCameraComponent* Camera = Me->Camera;
 
 	// The looks: a dark lacquered handle and a brass ring (the figure's material, else the engine's basic one), the laser
-	// display-referred like the campus's other self-lit things (M_WTA_Unlit, else lit).
+	// display-referred like the campus's other self-lit things and drawn over the VR screens (M_WTA_Overlay: the screens'
+	// after-motion-blur pass has no depth test, so an opaque laser would vanish behind a card it points at; else
+	// M_WTA_Unlit, else lit).
 	UMaterialInterface* Lit = LoadByPath<UMaterialInterface>(TEXT("/Game/WTA/Materials/M_WTA_Figure.M_WTA_Figure"));
 	if (Lit == nullptr)
 	{
 		Lit = LoadByPath<UMaterialInterface>(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	}
-	UMaterialInterface* Glow = LoadByPath<UMaterialInterface>(TEXT("/Game/WTA/Materials/M_WTA_Unlit.M_WTA_Unlit"));
+	UMaterialInterface* Glow = LoadByPath<UMaterialInterface>(TEXT("/Game/WTA/Materials/M_WTA_Overlay.M_WTA_Overlay"));
+	if (Glow == nullptr)
+	{
+		Glow = LoadByPath<UMaterialInterface>(TEXT("/Game/WTA/Materials/M_WTA_Unlit.M_WTA_Unlit"));
+	}
 	if (Lit != nullptr)
 	{
 		HandleLook = UMaterialInstanceDynamic::Create(Lit, this);
@@ -193,6 +199,9 @@ void UWTAVRRig::Start(bool bInHeadset)
 	Dot->SetUsingAbsoluteScale(true);
 	Dot->SetWorldScale3D(FVector(0.012f));
 	Dot->SetVisibility(false);
+	// After the screens (sort priority 0) and the label (5) in the after-motion-blur pass: over a card it points at.
+	Beam->SetTranslucentSortPriority(10);
+	Dot->SetTranslucentSortPriority(10);
 
 	// The label over the dot.
 	Label = NewObject<UWidgetComponent>(Me, UniqueName(TEXT("WTAVRLabel"), UWidgetComponent::StaticClass()));
@@ -201,7 +210,8 @@ void UWTAVRRig::Start(bool bInHeadset)
 	Label->SetUsingAbsoluteRotation(true);
 	Label->SetUsingAbsoluteScale(true);
 	Label->SetWidgetSpace(EWidgetSpace::World);
-	Label->SetDrawAtDesiredSize(true);
+	Label->SetDrawAtDesiredSize(false);                      // sized to the widget by FitToWidget as the text changes
+	Label->SetTranslucentSortPriority(5);                    // over the HUD screen where the two meet
 	Label->SetPivot(FVector2D(0.5f, 1.f));
 	Label->SetBlendMode(EWidgetBlendMode::Transparent);
 	Label->SetTwoSided(false);
@@ -350,7 +360,11 @@ void UWTAVRRig::SetLaser(const FVector& End, bool bHit, bool bActive)
 	bLaserHit = bHit;
 	if (Dot != nullptr)
 	{
-		Dot->SetWorldLocation(LaserEnd - Direction * 0.6f);
+		// The same size to the eye wherever it lands (about half a degree: 8 mm at a metre, 2.4 cm at three).
+		const float Away = static_cast<float>(FVector::Dist(GetEyeLocation(), LaserEnd));
+		const float Across = FMath::Clamp(Away * 0.008f, 0.6f, 8.f);
+		Dot->SetWorldLocation(LaserEnd - Direction * (Across * 0.5f));
+		Dot->SetWorldScale3D(FVector(Across / 100.f));    // the basic sphere is a metre across
 		Dot->SetVisibility(bHit && !bVisualsHidden);
 	}
 	if (BeamLook != nullptr && LaserActive != (bActive ? 1 : 0))
@@ -383,8 +397,9 @@ void UWTAVRRig::SetLabel(const FText& Text)
 	if (Widget != nullptr && !Widget->GetLabel().EqualTo(Text))
 	{
 		Widget->SetLabel(Text);
+		AWTAVRScreenActor::FitToWidget(Label);
 	}
-	// Hidden while empty: a widget drawn at its desired size keeps its last picture when it shrinks to nothing.
+	// Hidden while empty (an empty plate collapses to nothing to draw).
 	bLabelShown = !Text.IsEmpty() && !bVisualsHidden && Widget != nullptr;
 	Label->SetHiddenInGame(!bLabelShown);
 }

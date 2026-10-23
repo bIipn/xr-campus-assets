@@ -240,7 +240,7 @@ UWidgetComponent* AWTACharacter::WorldNameTag()
 		NameTagWorld->SetUsingAbsoluteRotation(true);
 		NameTagWorld->SetUsingAbsoluteScale(true);
 		NameTagWorld->SetWidgetSpace(EWidgetSpace::World);
-		NameTagWorld->SetDrawAtDesiredSize(true);
+		NameTagWorld->SetDrawAtDesiredSize(false);           // sized to the tag by FitToWidget when the person is set
 		NameTagWorld->SetPivot(FVector2D(0.5f, 1.f));
 		NameTagWorld->SetBlendMode(EWidgetBlendMode::Transparent);
 		NameTagWorld->SetTwoSided(false);
@@ -429,6 +429,10 @@ void AWTACharacter::RefreshFigureLook()
 	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(ActiveNameTag()->GetUserWidgetObject()))
 	{
 		Tag->SetPerson(FText::FromString(Name), Person->bGuide, Color);
+		if (bTagInWorld)
+		{
+			AWTAVRScreenActor::FitToWidget(NameTagWorld);
+		}
 	}
 	else
 	{

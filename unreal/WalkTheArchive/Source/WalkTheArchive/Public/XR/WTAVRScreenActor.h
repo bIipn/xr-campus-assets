@@ -1,10 +1,11 @@
 // Walk the Archive - a screen in the world for VR: the player controller's widgets drawn where the headset sees them.
 //
 // One UWidgetComponent (world space, pivot at its centre, one-sided, no collision) showing a UWTAVRRootWidget, drawn
-// with M_WTA_WidgetScreen (emissive.py: unlit, translucent, display referred, depth tested so the hands and the laser
-// in front of it show over it). Its face is the component's +X side: PlaceFacing turns it to face the eye. The player
-// controller stands it nearer, and smaller by as much (SetSizeScale), when a wall is closer than it would be, so a
-// wall never cuts through a card and the card looks the same size.
+// with M_WTA_WidgetScreen (emissive.py: unlit, translucent, display referred, after motion blur: a pass with no depth
+// buffer, so it shows over everything; the laser and its dot draw after it). Its face is the component's +X side:
+// PlaceFacing turns it to face the eye. The player controller stands it nearer, and smaller by as much
+// (SetSizeScale), when a wall is closer than it would be, so a wall never cuts through a card and the card looks the
+// same size.
 // The laser finds it with Trace (a ray against its plane) rather than collision, so a screen's empty parts never stop
 // the laser on its way to the world: AWTAPlayerController asks which pixel the ray is on and whether a button is
 // there (IsInteractiveAt), and hands the widget interaction component a hit on the screen only when it counts.
@@ -64,6 +65,11 @@ public:
 	/** M_WTA_WidgetScreen, the material every VR widget draws with (the laser's label and the visit's name tags too);
 	    null before the lighting step has built it (logged once). */
 	static class UMaterialInterface* ScreenMaterial();
+
+	/** Size a world-space widget component to its widget's own desired size; call it when the widget's content
+	    changes. (The engine's draw-at-desired-size measures the component's whole virtual window, which came out
+	    far taller than one line of text: an 86 px plate round a 28 px label.) */
+	static void FitToWidget(UWidgetComponent* Component);
 
 protected:
 	FIntPoint Size = FIntPoint(1280, 800);

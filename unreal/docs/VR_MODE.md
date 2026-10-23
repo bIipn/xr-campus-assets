@@ -71,7 +71,11 @@ card screen (Panel, Certificate, Chat, VisitCard, Menu) and the HUD screen, each
 `UWTAVRRootWidget` that stacks the widgets in their viewport z-order. The cards' scrims go clear so the cards float.
 `M_WTA_WidgetScreen` (built by the lighting step, `emissive.py`) draws them: unlit, translucent, display referred (the
 widget's colours divided by the eye adaptation, so the campus's physical exposure leaves them as the desktop shows
-them), depth tested so the hands and the laser show over them. `UpdateVRPointer` finds what the laser is on every
+them), after motion blur so the text stays crisp. The engine draws that pass with no depth buffer, so a screen shows
+over everything: the controller keeps the screens in front of walls, the name tags hide behind walls by a line check,
+and the laser and its dot (`M_WTA_Overlay`, a higher translucency sort priority) draw after the screens, so the laser
+shows on a card it points at. The laser's label and the name tags are sized to their widget (`FitToWidget`), not by
+the engine's draw-at-desired-size, which measured them far too tall. `UpdateVRPointer` finds what the laser is on every
 frame: a screen first (the card screen anywhere on its face, the HUD screen only on a button, found by a ray against
 its plane, not collision, so a screen's empty parts never block the laser), then the world (the interaction component
 traces along the laser, `SetRayOverride`).

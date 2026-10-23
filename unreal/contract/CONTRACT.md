@@ -34,7 +34,7 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 | Exhibit art textures | `/Game/WTA/Art/T_Art_<id>` (id with `-` → `_`), source `unreal/Pipeline/out/campus/art/<id>.png` |
 | Data tables | `/Game/WTA/Data/DT_<Table>` (see structs.json `table`), source `unreal/WalkTheArchive/Data/<File>.json` |
 | Main level | `/Game/WTA/Maps/L_Campus` (not World Partition: the campus is small; Ocean Dive sits 420 m east in the same level) |
-| Materials | `/Game/WTA/Materials/` (the ones C++ loads by path, built by the lighting step: `M_WTA_Unlit`, `M_WTA_WidgetLit`, `M_WTA_Figure`, `M_WTA_WidgetScreen`) |
+| Materials | `/Game/WTA/Materials/` (the ones C++ loads by path, built by the lighting step: `M_WTA_Unlit`, `M_WTA_WidgetLit`, `M_WTA_Figure`, `M_WTA_WidgetScreen`, `M_WTA_Overlay`) |
 | Characters (MetaHumans) | `/Game/WTA/Characters/<PersonId>/MHC_<PersonId>` (MetaHuman Character) and `BP_<PersonId>` (built actor), one folder per id in `Content/Python/wta_people/people.json` (staff ids and Wax Hall `<sceneId>-<role>`); shared build assets `/Game/WTA/Characters/Common/`, the idle `/Game/WTA/Characters/Common/Anims/AS_WTA_StandIdle` |
 
 ## 4. C++ classes (module `WalkTheArchive`)
