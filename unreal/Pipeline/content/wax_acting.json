@@ -114,7 +114,7 @@
   "crouch": {
    "loop": true,
    "seated": false,
-   "note": "Crouching Idle"
+   "note": "Crouching Idle (leans the head half a metre forward of the hips: kneel where something stands in front)"
   },
   "kneel": {
    "loop": true,
@@ -309,7 +309,7 @@
     "tech": [
      {
       "t": 0,
-      "a": "crouch"
+      "a": "kneel"
      },
      {
       "t": 3.4,
@@ -331,7 +331,7 @@
      },
      {
       "t": 12.2,
-      "a": "crouch",
+      "a": "kneel",
       "b": 0.8
      }
     ],
@@ -990,7 +990,7 @@
     "star": [
      {
       "t": 0,
-      "a": "crouch"
+      "a": "kneel"
      },
      {
       "t": 2.4,
@@ -1016,7 +1016,7 @@
      },
      {
       "t": 12.6,
-      "a": "crouch",
+      "a": "kneel",
       "b": 0.8
      }
     ],

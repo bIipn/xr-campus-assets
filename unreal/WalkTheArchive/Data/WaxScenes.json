@@ -296,7 +296,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "crouch",
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -336,7 +336,7 @@
      },
      {
       "Time": 12.2,
-      "Action": "crouch",
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.8,
@@ -1689,7 +1689,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "crouch",
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1737,7 +1737,7 @@
      },
      {
       "Time": 12.6,
-      "Action": "crouch",
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.8,

@@ -132,7 +132,7 @@
     "token__t_world"
    ],
    "triangles": 42190,
-   "bytes": 12679200,
+   "bytes": 13446608,
    "refit": {
     "dropped": [
      "Mesh_21",
@@ -171,6 +171,9 @@
      "the layer table, turned so its label faces the class: 4 of 4",
      "the beanbags, to the back-left corner: 2 of 2",
      "the World Builder book with its stand and label, onto the teacher's desk facing the class: 4 of 4"
+    ],
+    "clipped": [
+     "the desk pad on the school office counter, 1 mm over the top (it flickered): 2 faces up 3.0 mm"
     ]
    }
   },
@@ -273,12 +276,14 @@
     "token__t_yard"
    ],
    "triangles": 72844,
-   "bytes": 10173684,
+   "bytes": 10173792,
    "refit": {
     "dropped": [],
     "moved": [],
     "clipped": [
-     "the yard fence inside the Training Wing's east wall: 232 faces"
+     "the yard fence inside the Training Wing's east wall: 232 faces",
+     "the playground's mulch, over the end of the tiled path (they lay in one plane and flickered): 2 faces up 5.0 mm",
+     "the merry-go-round's navy spokes, over the red ones where they cross: 6 faces up 3.0 mm"
     ]
    }
   },
