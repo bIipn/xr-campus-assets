@@ -14,7 +14,8 @@ Every piece Unreal moves is its own mesh, built standing (open) and tagged
   popup__<book>_s<n>_floor   the near page's printed art and caption
   popup__base                the book's base (the back cover and the page block), shared by every spread
 AWTAPopUpBookActor spawns them, hinges each moving piece on its bottom edge and folds it toward the reader to
-close the book (the backdrop's cover then lies face up). out/popup/layout.json says where the book is, which
+close the book (the backdrop's cover then lies face up, the board turned end for end so the cover, printed to read
+from the far side of the table while it stands, reads from the reader's chair). out/popup/layout.json says where the book is, which
 books there are and which DT_Books page each spread shows.
 
 Writes unreal/Pipeline/out/popup/PopUp.glb, layout.json; assets/tex/popup_*.png; previews in assets/popup/.
@@ -828,8 +829,11 @@ def build_spread(book_id, n, total, page_index, scene, title, heads, colour_cove
     zi, zo = SPINE_Z + BOARD_T / 2, SPINE_Z - BOARD_T / 2
     b.poly([(x0, y0, zi), (x1, y0, zi), (x1, y1, zi), (x0, y1, zi)], (0, 0, 1), 'pp_' + back_png,
            uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
+    # the cover reads the right way up from the far side of the table while the board stands (people sit there);
+    # once the book is shut, AWTAPopUpBookActor turns the board end for end in its own plane as it lies down, so
+    # the cover then reads from the reader's chair
     b.poly([(x0, y0, zo), (x0, y1, zo), (x1, y1, zo), (x1, y0, zo)], (0, 0, -1), 'pp_' + cover_png,
-           uvs=[(0, 1), (0, 0), (1, 0), (1, 1)])                     # the cover reads from the reader's side once closed
+           uvs=[(1, 0), (1, 1), (0, 1), (0, 0)])
     b.box((BX, (y0 + y1) / 2, SPINE_Z), (PAGE_W, PAGE_D, BOARD_T), 'pp_board', faces='xXyY')
     obs.append(b.finish())
     # the near page's print

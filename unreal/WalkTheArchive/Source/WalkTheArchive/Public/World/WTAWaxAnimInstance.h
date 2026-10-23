@@ -124,6 +124,15 @@ struct FWTAWaxAnimProxy : public FAnimInstanceProxy
 	float LookWeightTarget = 0.f;
 
 	/**
+	 * After the clips, first: each body keeps its own proportions. The clips were retargeted onto one body and
+	 * every person plays them (reenactors, statues, speakers, staff) whatever their height; played as keyed, every
+	 * body would take that one body's bone lengths and be squashed or stretched to it. So every bone but the root
+	 * and the pelvis takes this mesh's own reference translation, and the pelvis keeps the clip's motion with its
+	 * offset from the root scaled by how much longer this body's legs are than the clip's, so the feet stay on the
+	 * floor; the scaling fades out as the hips come down to sitting height, where the seat holds them, not the legs.
+	 */
+	void ApplyOwnBody(FPoseContext& Output) const;
+	/**
 	 * After the clips: every bone below a wrist keeps the reference pose's length (the retargeted clips squash
 	 * the hands) and the metacarpals its rotation; each gripping hand's finger joints turn from the reference
 	 * pose into Pose, blended by Grip (local space); a pose with a shape closes the fingers on it (SolveContact).

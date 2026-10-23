@@ -241,8 +241,10 @@ def run(clip_folder=CLIP_FOLDER):
     made = retarget(clips, mesh, retargeter)
     unreal.EditorAssetLibrary.save_directory(MOCAP_ROOT, False, True)
     unreal.EditorAssetLibrary.save_directory(OUT_PATH, False, True)
-    # the retarget points the standing clips' feet straight down: turn them back (fix_feet.py)
-    from . import fix_feet
+    # the retarget points the standing clips' feet straight down: turn them back (fix_feet.py); it also keys the
+    # pelvis 17 cm above the hips: bring it down to them (fix_hips.py)
+    from . import fix_feet, fix_hips
     fix_feet.run()
+    fix_hips.run()
     _log('done: %d clips at %s' % (len(made), OUT_PATH))
     return made

@@ -32,6 +32,7 @@ namespace
 	constexpr float PopUpCloseSpan = 0.42f;
 	constexpr float PopUpCloseBackStart = 0.2f;
 	constexpr float PopUpHideLayersAt = 88.f;     // the backdrop this far down covers the layers lying under it
+	constexpr float PopUpCoverTurnAt = 50.f;      // the backdrop leaning further than this lies turned end for end
 	constexpr float PopUpNearCm = 2500.f;         // the light is off with nobody nearer than this
 
 	float PopUpEaseInOut(float T)
@@ -241,6 +242,7 @@ void AWTAPopUpBookActor::BuildPieces()
 		const double Front = FMath::Abs(Reader.X) * E.X + FMath::Abs(Reader.Y) * E.Y;
 		// The hinge: the bottom edge on the reader's side, so nothing of the piece swings below it as it folds.
 		Piece.Hinge = FVector(C.X, C.Y, Box.Min.Z) + Reader * Front;
+		Piece.Centre = C;
 		Piece.Height = static_cast<float>(Box.Max.Z - Box.Min.Z);
 		Piece.Thickness = static_cast<float>(2.0 * Front);
 		return Piece;
@@ -388,7 +390,17 @@ void AWTAPopUpBookActor::Pose(float BackDeg, const float LayerDeg[3])
 	const FSpread& Spread = Spreads[ShownBook][ShownSpread];
 	if (UStaticMeshComponent* Back = PieceComp(Spread.Back))
 	{
-		Back->SetWorldTransform(PopUpFold(Spread.Back.Hinge, FoldAxis, Reader, BackDeg, 1.f));
+		FTransform Fold = PopUpFold(Spread.Back.Hinge, FoldAxis, Reader, BackDeg, 1.f);
+		if (BackDeg > PopUpCoverTurnAt)
+		{
+			// The cover is printed to read from the far side of the table while the board stands. Lying down, the
+			// board is turned end for end in its own plane (about its normal, which standing is the reader
+			// direction, through its middle: it covers the same rectangle), so the cover reads from the reader's
+			// chair; the art inside faces the page by then.
+			const FQuat Turn(Reader, PI);
+			Fold = FTransform(Turn, Spread.Back.Centre - Turn.RotateVector(Spread.Back.Centre)) * Fold;
+		}
+		Back->SetWorldTransform(Fold);
 	}
 	// Lying under a backdrop that is all but down, the layers cannot be seen: hidden, they cannot show through it.
 	const bool bLayers = BackDeg < PopUpHideLayersAt;

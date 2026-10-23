@@ -142,6 +142,7 @@ bool FWTAWaxAnimProxy::Evaluate(FPoseContext& Output)
 	const UAnimSequence* PreviousAnim = Previous.Anim.Get();
 	if (PreviousAnim == nullptr || BlendAlpha >= 1.f)
 	{
+		ApplyOwnBody(Output);
 		ApplyGrip(Output);
 		ApplyArmIK(Output);
 		ApplyLookAt(Output);
@@ -159,10 +160,79 @@ bool FWTAWaxAnimProxy::Evaluate(FPoseContext& Output)
 	const float Alpha = FMath::SmoothStep(0.f, 1.f, BlendAlpha);
 	FAnimationRuntime::BlendTwoPosesTogether(CurrentPose, FadingPose, Alpha, BlendedPose);
 	Output = Blended;
+	ApplyOwnBody(Output);
 	ApplyGrip(Output);
 	ApplyArmIK(Output);
 	ApplyLookAt(Output);
 	return true;
+}
+
+void FWTAWaxAnimProxy::ApplyOwnBody(FPoseContext& Output) const
+{
+	// Hips this high over the floor (cm, in the clip) stand on the legs; this low sit on a seat. Between, the two
+	// blend, so a figure that sits down or gets up never jumps.
+	static constexpr float SeatedHips = 60.f;
+	static constexpr float StandingHips = 80.f;
+	static const FName PelvisName(TEXT("pelvis"));
+	static const FName LegNames[4] = { FName(TEXT("calf_l")), FName(TEXT("foot_l")), FName(TEXT("calf_r")), FName(TEXT("foot_r")) };
+
+	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
+	const int32 PelvisMesh = Bones.GetPoseBoneIndexForBoneName(PelvisName);
+	if (PelvisMesh == INDEX_NONE)
+	{
+		return;
+	}
+	const FCompactPoseBoneIndex Pelvis = Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(PelvisMesh));
+	if (Pelvis.GetInt() == INDEX_NONE)
+	{
+		return;
+	}
+	const FCompactPoseBoneIndex Root = Bones.GetParentBoneIndex(Pelvis);
+
+	// The legs' length in the clip and in this body: thigh to knee plus knee to ankle (the calf's and the foot's
+	// offsets from their parents), both legs. Read before the bones take this body's offsets.
+	float ClipLegs = 0.f;
+	float OwnLegs = 0.f;
+	for (const FName& Name : LegNames)
+	{
+		const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Name);
+		if (MeshIndex == INDEX_NONE)
+		{
+			continue;
+		}
+		const FCompactPoseBoneIndex Index = Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex));
+		if (Index.GetInt() == INDEX_NONE)
+		{
+			continue;
+		}
+		ClipLegs += static_cast<float>(Output.Pose[Index].GetTranslation().Size());
+		OwnLegs += static_cast<float>(Bones.GetRefPoseTransform(Index).GetTranslation().Size());
+	}
+
+	// Every bone below the pelvis (and any other the root carries) keeps its offset from its parent as this body has it.
+	const int32 Num = Output.Pose.GetNumBones();
+	for (int32 i = 0; i < Num; ++i)
+	{
+		const FCompactPoseBoneIndex Index(i);
+		if (Index == Pelvis || Bones.GetParentBoneIndex(Index).GetInt() == INDEX_NONE)
+		{
+			continue;   // the root and the pelvis carry the motion
+		}
+		Output.Pose[Index].SetTranslation(Bones.GetRefPoseTransform(Index).GetTranslation());
+	}
+
+	if (ClipLegs < 1.f || OwnLegs < 1.f)
+	{
+		return;
+	}
+	// The pelvis's offset from the root (the root stands on the floor) grows or shrinks with the legs while the
+	// figure stands, and stays where the clip has it once the hips are down on a seat.
+	FTransform& Hips = Output.Pose[Pelvis];
+	const FTransform RootPose = Root.GetInt() != INDEX_NONE ? Output.Pose[Root] : FTransform::Identity;
+	const FVector Over = RootPose.TransformVector(Hips.GetTranslation());
+	const float Standing = FMath::Clamp((static_cast<float>(Over.Z) - SeatedHips) / (StandingHips - SeatedHips), 0.f, 1.f);
+	const float Scale = FMath::Lerp(1.f, OwnLegs / ClipLegs, Standing);
+	Hips.SetTranslation(Hips.GetTranslation() * Scale);
 }
 
 void FWTAWaxAnimProxy::ApplyGrip(FPoseContext& Output) const

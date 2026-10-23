@@ -185,6 +185,7 @@ protected:
 	{
 		int32 Comp = INDEX_NONE;
 		FVector Hinge = FVector::ZeroVector;
+		FVector Centre = FVector::ZeroVector;   // the mesh's middle, standing (its vertices are in world space)
 		float Height = 0.f;          // cm, bottom to top standing
 		float Thickness = 0.f;       // cm along the reader direction (a layer's pieces step toward the reader)
 		float FromSpine = 0.f;       // cm from the backdrop's hinge toward the reader
