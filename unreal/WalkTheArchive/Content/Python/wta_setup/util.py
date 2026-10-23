@@ -15,7 +15,7 @@ import unreal
 from . import log
 from . import paths
 
-TAG_RE = re.compile(r"^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot|popup)__")
+TAG_RE = re.compile(r"^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot|popup|spin)__")
 
 # ---------------------------------------------------------------------------
 # Subsystems and libraries

@@ -4,7 +4,7 @@
   "Museum": {
    "file": "Museum.glb",
    "source": "unreal/Pipeline/out/museum/Museum.glb",
-   "meshes": 69,
+   "meshes": 71,
    "tagged": [
     "item__ca_200",
     "item__charleston",
@@ -27,10 +27,11 @@
     "seat__mus2b_f180",
     "seat__mus3a_f180",
     "seat__mus3b_f180",
+    "spin__vr_headset",
     "token__t_museum"
    ],
-   "triangles": 173978,
-   "bytes": 55246140
+   "triangles": 174458,
+   "bytes": 55316084
   },
   "WaxIntro": {
    "file": "WaxIntro.glb",
@@ -58,8 +59,17 @@
     "item__wax_2024",
     "item__wax_2025"
    ],
-   "triangles": 35870,
-   "bytes": 15670940
+   "triangles": 34942,
+   "bytes": 15845240,
+   "refit": {
+    "dropped": [],
+    "moved": [],
+    "clipped": [
+     "the brass rope post under the 2024 scene's card (its ball came up through the card): 464 faces",
+     "the brass rope post under the 2025 scene's card: 464 faces",
+     "rail desks turned to their cards: 12"
+    ]
+   }
   },
   "LibraryShell": {
    "file": "LibraryShell.glb",

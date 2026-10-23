@@ -42,6 +42,7 @@ def create_or_load_level():
 def spawn_meshes():
     counts = {}
     labels_tagged = []
+    spins = []
     for asset, _glb in paths.mesh_assets():
         folder = paths.campus_asset_path(asset)
         meshes = util.static_meshes_under(folder)
@@ -67,6 +68,9 @@ def spawn_meshes():
                     actor.set_actor_enable_collision(False)
                 except Exception:
                     pass
+            if tag and tag[0] == "spin":
+                spins.append(make_spin(actor, mesh, label))
+                continue
             # Static mobility keeps Nanite and Lumen happy; it is the StaticMeshActor default.
             try:
                 comp = actor.get_editor_property("static_mesh_component")
@@ -74,7 +78,42 @@ def spawn_meshes():
                     comp.set_mobility(unreal.ComponentMobility.STATIC)
             except Exception:
                 pass
+    if spins:
+        log.info("%s: turning %s" % (STEP, ", ".join(spins)))
     return counts, labels_tagged
+
+
+SPIN_DEG_PER_S = 24.0
+
+
+def make_spin(actor, mesh, label):
+    """A spin__ mesh (the museum's turning VR headset, bl/museum.py) turns about its own centre: the actor goes
+    Movable and gets a RotatingMovementComponent whose pivot is the mesh's centre (the mesh is baked in world space
+    and the actor stands at the origin, so the centre in the actor's frame is the world centre). Returns a word for
+    the log: the label, or why it does not turn."""
+    try:
+        comp = actor.get_editor_property("static_mesh_component")
+        comp.set_mobility(unreal.ComponentMobility.MOVABLE)
+        bounds = util.mesh_bounds(mesh)
+        if bounds is None:
+            return label + " (no bounds)"
+        centre = bounds[0]
+        sds = unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)
+        handles = sds.k2_gather_subobject_data_for_instance(actor)
+        if not handles:
+            return label + " (no subobjects)"
+        params = unreal.AddNewSubobjectParams(parent_handle=handles[0], new_class=unreal.RotatingMovementComponent,
+                                              blueprint_context=None)
+        handle, fail = sds.add_new_subobject(params)
+        data = unreal.SubobjectDataBlueprintFunctionLibrary.get_data(handle)
+        rot = unreal.SubobjectDataBlueprintFunctionLibrary.get_object(data)
+        if rot is None:
+            return label + " (could not add a RotatingMovementComponent: %s)" % fail
+        rot.set_editor_property("rotation_rate", unreal.Rotator(roll=0.0, pitch=0.0, yaw=SPIN_DEG_PER_S))
+        rot.set_editor_property("pivot_translation", unreal.Vector(*centre))
+        return label
+    except Exception as exc:
+        return "%s (%s)" % (label, exc)
 
 
 def set_game_mode():

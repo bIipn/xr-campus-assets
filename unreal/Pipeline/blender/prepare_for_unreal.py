@@ -8,8 +8,8 @@ when you import meshes as assets). So before Unreal sees them, this pass:
   * joins untagged meshes that share a material into one mesh per material (fewer, bigger meshes:
     ideal for Nanite and quick to place),
   * keeps tagged interactive pieces (item__, token__, ride__, staff__, station__, book__, bp__, seat__, the
-    talk venues' screen__ slide screens and spot__ speaker marks, the pop-up books' popup__ pieces and the visit
-    figure's figure__ parts) as their own meshes with their tag as the name,
+    talk venues' screen__ slide screens and spot__ speaker marks, the pop-up books' popup__ pieces, the visit
+    figure's figure__ parts and the museum's turning spin__ headset) as their own meshes with their tag as the name,
   * applies content/refits.json to the web-exported wings it names (meshes dropped, groups moved, faces clipped
     out of a box), e.g. the School's Room 104 becoming the XR Classroom, the yard fence cut where the Training
     Wing's doorway opens through it,
@@ -52,7 +52,7 @@ SOURCES = [
     ('PopUp', 'unreal/Pipeline/out/popup/PopUp.glb'),                  # bl/popup.py: the pop-up books on the Reading Room's south table
     ('People', 'unreal/Pipeline/out/people/People.glb'),               # bl/figure.py: a guided visit's people (AWTACharacter's figure)
 ]
-TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot|popup|figure)__')
+TAG = re.compile(r'^(item|token|ride|staff|station|book|bp|prop|seat|screen|spot|popup|figure|spin)__')
 REFITS = os.path.join(REPO, 'unreal', 'Pipeline', 'content', 'refits.json')
 
 
@@ -115,7 +115,11 @@ def apply_refit(name, meshes):
                 continue
             me = o.data
             inside = [all(lo[i] <= v.co[i] <= hi[i] for i in range(3)) for v in me.vertices]
-            gone = [p.index for p in me.polygons if all(inside[i] for i in p.vertices)]
+            # an optional material keeps the clip to that material's faces (a post, not the rope tied to it)
+            slots = [s.material.name if s.material else '' for s in o.material_slots]
+            mat_ok = (lambda p: True) if not cp.get('material') else (
+                lambda p: p.material_index < len(slots) and slots[p.material_index] == cp['material'])
+            gone = [p.index for p in me.polygons if mat_ok(p) and all(inside[i] for i in p.vertices)]
             if not gone:
                 continue
             bm = bmesh.new(); bm.from_mesh(me); bm.faces.ensure_lookup_table()
@@ -123,6 +127,8 @@ def apply_refit(name, meshes):
             bm.to_mesh(me); bm.free()
             n += len(gone)
         clipped.append('%s: %d faces' % (cp.get('what', 'box'), n))
+    if spec.get('rail_desks'):
+        clipped.append('rail desks turned to their cards: %d' % turn_rail_desks(keep, spec['rail_desks']))
     flushed = []
     for fl in spec.get('flush', []):
         covers = [o for o in keep if matches(o, fl['meshes'])]
@@ -134,6 +140,103 @@ def apply_refit(name, meshes):
     if flushed:
         out['flushed'] = flushed
     return keep, out
+
+
+def turn_rail_desks(meshes, spec):
+    """The Wax Hall's reading rails (parts/waxhall.js): in each stage's rail group the card (0.9 x 0.56 m, at (0, 0.72,
+    0.06) in the group, turned -0.72 rad about the group's x) sits on a brass desk (0.96 x 0.03 x 0.62 box at
+    (0, 0.68, 0.05)) on two legs (0.04 x 0.84 x 0.04 at (+-0.36, 0.28, -0.08)). The web turned the desk by the same
+    -0.72 as the card, but the desk starts flat and the card upright, so the desk ended up square to the card,
+    leaning back toward the stage, and cut across it. Here every desk is rebuilt parallel to its card, 1.7 cm behind
+    it, and the legs come forward under it so their tops meet its underside. The group's frame is found from each
+    card (its centre and its normal); the desk's and the legs' triangles are those of the brass material lying in
+    their old boxes. Returns how many desks were turned."""
+    import math
+    import bmesh
+    from mathutils import Vector
+    up = Vector((0.0, 0.0, 1.0))
+    cards = [o for o in meshes if any(re.fullmatch(p, o.name) for p in spec.get('cards', []))]
+    brass = [o for o in meshes if o not in cards and any(s.material and s.material.name == spec.get('material') for s in o.material_slots)]
+    th = 0.72
+    turned = 0
+    for card in cards:
+        me = card.data
+        if not me.polygons:
+            continue
+        cc = sum((v.co for v in me.vertices), Vector()) / len(me.vertices)
+        n = max(me.polygons, key=lambda p: p.area).normal.copy().normalized()
+        a = Vector((n.x, n.y, 0.0))
+        if a.length < 1e-6:
+            continue
+        a.normalize()                                            # the group's +z: toward the audience, level
+        xg = up.cross(a).normalized()                            # the group's +x
+        origin = cc - up * 0.72 - a * 0.06
+        def g(x, y, z):                                          # group coordinates -> world
+            return origin + xg * x + up * y + a * z
+        y1 = up * math.cos(th) - a * math.sin(th)                # the group's y and z axes turned by -0.72 about x
+        z1 = up * math.sin(th) + a * math.cos(th)
+        old_desk = (g(0, 0.68, 0.05), [(xg, 0.49), (y1, 0.03), (z1, 0.32)])
+        legs = [(g(s, 0.28, -0.08), [(xg, 0.03), (up, 0.43), (a, 0.03)]) for s in (-0.36, 0.36)]
+        def inside(p, box):
+            c, axes = box
+            return all(abs((p - c).dot(ax)) <= h for ax, h in axes)
+        found = False
+        for o in brass:
+            bm = bmesh.new(); bm.from_mesh(o.data); bm.faces.ensure_lookup_table()
+            mi = None
+            # the old desk's faces: inside its box and square to one of its axes (the rope post beside the rail is
+            # brass too, and its knob reaches into the box)
+            def desk_face(f):
+                if not all(inside(v.co, old_desk) for v in f.verts):
+                    return False
+                f.normal_update()
+                return any(abs(f.normal.dot(ax)) > 0.999 for ax, _h in old_desk[1])
+            gone = [f for f in bm.faces if desk_face(f)]
+            for f in gone:
+                mi = f.material_index
+            moved = set()
+            for f in bm.faces:
+                for box in legs:
+                    if all(inside(v.co, box) for v in f.verts):
+                        for v in f.verts:
+                            moved.add(v)
+            for v in moved:
+                v.co += a * 0.116                                 # under the desk's centre line, whose underside is at 0.70
+            if gone:
+                bmesh.ops.delete(bm, geom=gone, context='FACES')
+                # the new desk: 0.96 x 0.62 x 0.03, parallel to the card, 1.7 cm behind it
+                c0 = cc - n * 0.017
+                v_in = up * math.cos(th) - a * math.sin(th)       # up the card's slope
+                ext = [(xg, 0.48), (v_in, 0.31), (n, 0.015)]
+                corners = {}
+                for sx in (-1, 1):
+                    for sy in (-1, 1):
+                        for sz in (-1, 1):
+                            corners[(sx, sy, sz)] = bm.verts.new(c0 + ext[0][0] * (sx * ext[0][1]) + ext[1][0] * (sy * ext[1][1])
+                                                                 + ext[2][0] * (sz * ext[2][1]))
+                quads = [((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)), ((-1, -1, -1), (-1, -1, 1), (-1, 1, 1), (-1, 1, -1)),
+                         ((-1, 1, -1), (-1, 1, 1), (1, 1, 1), (1, 1, -1)), ((-1, -1, -1), (1, -1, -1), (1, -1, 1), (-1, -1, 1)),
+                         ((-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)), ((-1, -1, -1), (-1, 1, -1), (1, 1, -1), (1, -1, -1))]
+                new_faces = []
+                for q in quads:
+                    f = bm.faces.new([corners[k] for k in q])
+                    if mi is not None:
+                        f.material_index = mi
+                    new_faces.append(f)
+                # each face of the new desk looks away from its centre
+                flip = []
+                for f in new_faces:
+                    f.normal_update()
+                    if (f.calc_center_median() - c0).dot(f.normal) < 0.0:
+                        flip.append(f)
+                if flip:
+                    bmesh.ops.reverse_faces(bm, faces=flip)
+                found = True
+            bm.to_mesh(o.data); bm.free()
+            o.data.update()
+        if found:
+            turned += 1
+    return turned
 
 
 def flush_onto_face(cover, others, reach=0.08, lift=0.002, snap=0.03):

@@ -51,6 +51,19 @@
    ],
    "scale": 1.8613
   },
+  "headset": {
+   "centre_m": [
+    -2.6,
+    1.43,
+    -12.0
+   ],
+   "size_m": [
+    0.9,
+    0.8
+   ],
+   "scale": 2.4,
+   "case": true
+  },
   "mission": {
    "centre_m": [
     5.943,
@@ -86,6 +99,19 @@
     2.1083
    ],
    "scale": 2.0079
+  },
+  "playbooks": {
+   "centre_m": [
+    -2.6,
+    1.43,
+    -24.0
+   ],
+   "size_m": [
+    0.9,
+    0.8
+   ],
+   "scale": 2.2,
+   "case": true
   },
   "sandi": {
    "centre_m": [

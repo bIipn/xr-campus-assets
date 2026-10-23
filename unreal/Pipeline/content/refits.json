@@ -1,5 +1,5 @@
 {
- "about": "Changes to the web-exported wings that unreal/Pipeline/blender/prepare_for_unreal.py makes while it prepares them for Unreal: 'drop' removes meshes (Blender object names as the glTF import gives them, regular expressions matched whole), 'move' carries a group of meshes as one piece: it turns them by rotate_deg about the campus vertical through pivot (campus x, z; +90 turns something facing campus -z, north, to face campus -x, west) and puts the pivot at 'to' (campus x, z), dy metres higher; 'clip' deletes every face whose corners all lie inside 'box' (campus x0, y0, z0, x1, y1, z1), from every mesh or from the 'meshes' named. Campus axes: x east, y up, z south; the import maps campus (x, y, z) to Blender (x, -z, y). 'flush' lays the flat covers named in 'meshes' onto the face each belongs on (the face of another mesh facing the same way just under it, the frontmost within 8 cm), 2 mm in front of it, its corners snapped to that face's corners.",
+ "about": "Changes to the web-exported wings that unreal/Pipeline/blender/prepare_for_unreal.py makes while it prepares them for Unreal: 'drop' removes meshes (Blender object names as the glTF import gives them, regular expressions matched whole), 'move' carries a group of meshes as one piece: it turns them by rotate_deg about the campus vertical through pivot (campus x, z; +90 turns something facing campus -z, north, to face campus -x, west) and puts the pivot at 'to' (campus x, z), dy metres higher; 'clip' deletes every face whose corners all lie inside 'box' (campus x0, y0, z0, x1, y1, z1), from every mesh or from the 'meshes' named, and only the faces of the 'material' named when there is one. Campus axes: x east, y up, z south; the import maps campus (x, y, z) to Blender (x, -z, y). 'flush' lays the flat covers named in 'meshes' onto the face each belongs on (the face of another mesh facing the same way just under it, the frontmost within 8 cm), 2 mm in front of it, its corners snapped to that face's corners. 'rail_desks' turns the Wax Hall reading rails' brass desks (material 'material') to lie behind their cards ('cards': the cards' mesh names) and brings the legs under them.",
  "Yard": {
   "note": "The Training Wing's east wall (bl/training.py, bl/exterior.py SHELLS 'training') stands on the yard fence's west run (x 32.2, z -33.9..-13.2), which stays buried inside the wall except where the wing's double doorway (z -26.7..-24.9) opens through it: the rails and posts along the wall are cut out, the fence north of the wing's corner (z < -27.1) stays.",
   "clip": [
@@ -22,6 +22,14 @@
   "note": "The books on display (the stacks' ends and the table by the reference desk) are each a block and a cover picture. The web export tilted the covers back about 14 degrees but left the blocks upright, so in Unreal each block's front face cut across its cover and hid nearly half of it: the covers are laid flat on their blocks' front faces instead.",
   "flush": [
    {"what": "the displayed books' covers, onto their blocks", "meshes": ["book__.*"]}
+  ]
+ },
+ "WaxHall": {
+  "note": "Each stage's reading rail is a card on a brass desk on two legs. The web turned the desk by the card's own tilt, but the desk starts flat and the card upright, so the desk stood square to the card, leaning back toward the stage, and cut across it (the podium faced the other way): each desk is rebuilt parallel to its card, just behind it, its legs under it.",
+  "rail_desks": {"cards": ["item__wax-.*"], "material": "Material_140"},
+  "clip": [
+   {"what": "the brass rope post under the 2024 scene's card (its ball came up through the card)", "material": "Material_140", "box": [-2.98, -0.01, -77.08, -2.65, 0.975, -76.76]},
+   {"what": "the brass rope post under the 2025 scene's card", "material": "Material_140", "box": [5.32, -0.01, -77.08, 5.65, 0.975, -76.76]}
   ]
  }
 }

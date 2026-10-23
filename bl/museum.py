@@ -784,12 +784,135 @@ def import_pieces():
             bpy.context.view_layer.update()
             rehang(o, *HALL_POSTERS[base])
         if base.startswith('item__'):
-            if not hang_in_panel(o, base[len('item__'):].replace('_', '-')) and base in LABEL_LEFT:
+            if base in VITRINES:
+                enlarge_vitrine(o, base)
+            elif not hang_in_panel(o, base[len('item__'):].replace('_', '-')) and base in LABEL_LEFT:
                 label_to_left(o)
         count += 1
+    spinning_vitrine()
     # the bench slab the web left floating gets its supports
     write_hung_json()
     return count
+
+
+# ---------------------------------------------------------------- the glass cases
+# The web's two cases (a library VR headset in gallery 1, the XR playbooks in gallery 2) were a 0.62 m pedestal under
+# a 0.6 x 0.5 x 0.6 m case with a small object in it. They grow to a 0.9 m pedestal and a 0.9 x 0.8 x 0.9 m case
+# (its base where it was, on the pedestal), the object inside 2.2 to 2.4 times its size, the headset on a stone riser
+# under its middle, the label to the bigger pedestal's face. Gallery 3 gets a third case, the same size, where a
+# VR headset turns slowly (spin__vr_headset: the build_level step gives that mesh a RotatingMovementComponent about
+# its own centre).
+VITRINES = {'item__headset': 2.4, 'item__playbooks': 2.2}
+VIT_TURN_ART = ('item__playbooks',)                      # cases whose flat art the web had upside down
+VIT_W, VIT_CASE_H, VIT_BASE = 0.90, 0.80, 1.03          # pedestal and case width, the case's height, its base
+SPIN_AT = (-2.6, -36.0)                                  # the third case, in gallery 3 where the others stand
+SPIN_SCALE = 2.2
+_VIT_PARTS = {}                                          # the enlarged headset case's pieces, for the third case
+
+
+def enlarge_vitrine(o, base):
+    from collections import defaultdict
+    import bmesh
+    me = o.data
+    by = defaultdict(set)
+    for p in me.polygons:
+        by[p.material_index].update(p.vertices)
+    co = lambda i: me.vertices[i].co
+    ped = {i for i in by.get(0, set()) if co(i).z <= 1.0 + 1e-3}
+    stand = by.get(0, set()) - ped                       # the playbooks' easel, on top of the pedestal
+    glass = by.get(1, set())
+    if not ped or not glass:
+        return
+    xs = [co(i).x for i in ped]; ys = [co(i).y for i in ped]
+    cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+    front = max(xs)
+    label = {i for mi, idx in by.items() if mi >= 2 for i in idx if abs(co(i).x - front) < 0.02}
+    obj = set().union(*[idx for mi, idx in by.items() if mi >= 2]) - label | stand
+    kp = VIT_W / (max(xs) - min(xs))
+    gx = [co(i).x for i in glass]; gz = [co(i).z for i in glass]
+    kg = VIT_W / (max(gx) - min(gx)); kgz = VIT_CASE_H / (max(gz) - min(gz))
+    for i in ped:
+        v = co(i); v.x = cx + kp * (v.x - cx); v.y = cy + kp * (v.y - cy)
+    for i in glass:
+        v = co(i); v.x = cx + kg * (v.x - cx); v.y = cy + kg * (v.y - cy); v.z = VIT_BASE + kgz * (v.z - VIT_BASE)
+    k = VITRINES[base]
+    oz0 = min(co(i).z for i in obj)
+    pivot_z = 1.0 if stand else VIT_BASE
+    ox = [co(i).x for i in obj]; oy = [co(i).y for i in obj]
+    ocx, ocy = (min(ox) + max(ox)) / 2, (min(oy) + max(oy)) / 2
+    for i in obj:
+        v = co(i)
+        v.x = cx + k * (v.x - ocx); v.y = cy + k * (v.y - ocy); v.z = pivot_z + k * (v.z - pivot_z)
+    if base in VIT_TURN_ART and me.uv_layers.active is not None:
+        # the cover on the easel read upside down to a visitor in front of the case: its picture turns half round
+        uv = me.uv_layers.active.data
+        loops = [li for p in me.polygons if p.material_index >= 2 and not set(p.vertices) & label
+                 for li in p.loop_indices]
+        us = [uv[li].uv[0] for li in loops]; vs = [uv[li].uv[1] for li in loops]
+        for li in loops:
+            uv[li].uv = (min(us) + max(us) - uv[li].uv[0], min(vs) + max(vs) - uv[li].uv[1])
+    lx = [co(i).x for i in label]; ly = [co(i).y for i in label]; lz = [co(i).z for i in label]
+    lcy, lcz = (min(ly) + max(ly)) / 2, (min(lz) + max(lz)) / 2
+    for i in label:
+        v = co(i); v.x = cx + VIT_W / 2 + 0.003; v.y = cy + 1.25 * (v.y - lcy); v.z = lcz + 1.25 * (v.z - lcz)
+    me.update()
+    bot = min(co(i).z for i in obj)
+    if not stand and bot > 1.0 + 0.02:
+        # a stone riser under the object's middle, from the pedestal's top to the object's foot
+        bm = bmesh.new(); bm.from_mesh(me)
+        r = bmesh.ops.create_cube(bm, size=1.0)
+        for v in r['verts']:
+            v.co.x = cx + v.co.x * 0.24; v.co.y = cy + v.co.y * 0.24; v.co.z = 1.0 + (v.co.z + 0.5) * (bot - 1.0)
+        for f in {f for v in r['verts'] for f in v.link_faces}:
+            f.material_index = 0
+        bm.to_mesh(me); bm.free(); me.update()
+    oz = [co(i).z for i in obj]
+    item = base[len('item__'):]
+    HUNG[item] = {'centre_m': [round(cx, 4), round((VIT_BASE + VIT_BASE + VIT_CASE_H) / 2, 4), round(-cy, 4)],
+                  'size_m': [VIT_W, VIT_CASE_H], 'scale': k, 'case': True}
+    if base == 'item__headset':
+        _VIT_PARTS['src'] = (o, cx, cy)
+
+
+def spinning_vitrine():
+    """A third case, in gallery 3, the headset case's pedestal, riser and glass, and the web's headset (2.2 times,
+    no label) turning in it: spin__vr_headset is its own mesh so the level can turn it about its centre."""
+    import bmesh
+    src = _VIT_PARTS.get('src')
+    if src is None:
+        return
+    o, cx, cy = src
+    dx, dy = SPIN_AT[0] - cx, -SPIN_AT[1] - cy
+    case = o.copy(); case.data = o.data.copy(); case.name = 'vitrine_spin_case'
+    bpy.context.scene.collection.objects.link(case)
+    head = o.copy(); head.data = o.data.copy(); head.name = 'spin__vr_headset'
+    bpy.context.scene.collection.objects.link(head)
+    # the case keeps the pedestal, the riser and the glass (slots 0 and 1); the headset keeps the rest bar the label.
+    # The headset first: from the gallery 1 case's 2.4 to 2.2 times its size, about its own centre, in the case's
+    # middle; then the case, whose riser grows to just under the headset's foot (a turntable it turns on).
+    foot = None
+    for ob, keep in ((head, lambda p: p.material_index >= 2), (case, lambda p: p.material_index <= 1)):
+        bm = bmesh.new(); bm.from_mesh(ob.data); bm.faces.ensure_lookup_table()
+        front = max(v.co.x for v in bm.verts)
+        gone = [f for f in bm.faces if not keep(f) or (ob is head and all(abs(v.co.x - front) < 0.02 for v in f.verts))]
+        bmesh.ops.delete(bm, geom=gone, context='FACES')
+        bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context='VERTS')
+        if ob is head:
+            vs = list(bm.verts)
+            xs = [v.co.x for v in vs]; ys = [v.co.y for v in vs]; zs = [v.co.z for v in vs]
+            c = Vector(((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, (min(zs) + max(zs)) / 2))
+            s = SPIN_SCALE / VITRINES['item__headset']
+            mid = VIT_BASE + VIT_CASE_H * 0.5
+            for v in vs:
+                v.co = Vector((cx, cy, mid)) + (v.co - c) * s
+            foot = min(v.co.z for v in vs)
+        elif foot is not None:
+            for v in bm.verts:
+                if abs(v.co.x - cx) <= 0.121 and abs(v.co.y - cy) <= 0.121 and 1.05 < v.co.z < 1.4:
+                    v.co.z = foot - 0.004
+        for v in bm.verts:
+            v.co.x += dx; v.co.y += dy
+        bm.to_mesh(ob.data); bm.free(); ob.data.update()
 
 
 # ---------------------------------------------------------------- the exhibits fill their bays' gilt panels
