@@ -10,7 +10,7 @@ data_tables, build_level, lighting, actors, ...).
 
 Steps, in order: textures (the friezes), screens, slides (the talks' slides), props, seats, library, museum,
 exterior, auditorium (the talks wing), classroom (Room 104), training (the Training Wing), maker (Room 101's 360 course),
-stories (the Lost Stories cabin), popup (the pop-up books), data, prepare, voices (the
+stories (the Lost Stories cabin), signs (the signs to it), popup (the pop-up books), data, prepare, voices (the
 talks read aloud; needs the Kokoro model, skipped when it is not there), ini.
 A client pack is a copy of clients/xrlibraries with its own words and content folder (and its own talks.json for the
 talks and classes); the campus is the same. clients/start.html is the sheet that writes one. Its "language" ("es")
@@ -42,10 +42,11 @@ STEPS = [
     ("training", [PY, "bl/training.py"]),              # the Training Wing: the dialysis course's five stations
     ("maker", [PY, "bl/maker.py"]),                    # Room 101's 360 storytelling course: five stations and the desk
     ("stories", [PY, "bl/stories.py"]),                # the Lost Stories cabin at the end of the grounds' path (its sign from the pack)
+    ("signs", [PY, "bl/signs.py"]),                    # the signs to the cabin: the portico, the rotunda, the foyer, the fountain
     ("popup", [PY, "bl/popup.py"]),                    # the pop-up books on the Reading Room's south table (the pack's books)
     ("data", [PY, "unreal/Pipeline/data/build_data.py"]),
     ("prepare", [PY, "unreal/Pipeline/blender/prepare_for_unreal.py", "--", "HandProps", "Seats", "ReadingRoom", "Museum", "Outside",
-                 "Auditorium", "Classroom", "Training", "Maker", "Stories", "PopUp", "School", "Yard"]),
+                 "Auditorium", "Classroom", "Training", "Maker", "Stories", "Signs", "PopUp", "School", "Yard"]),
     ("voices", [PY, "unreal/Tools/voice/make_talk_voices.py"]),
     ("ini", None),
 ]

@@ -655,6 +655,14 @@
    ],
    "triangles": 16488,
    "bytes": 296368
+  },
+  "Signs": {
+   "file": "Signs.glb",
+   "source": "unreal/Pipeline/out/signs/Signs.glb",
+   "meshes": 9,
+   "tagged": [],
+   "triangles": 1872,
+   "bytes": 2297144
   }
  }
 }

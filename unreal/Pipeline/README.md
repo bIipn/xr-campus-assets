@@ -18,13 +18,14 @@ bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json 
 bl/training.py ──► out/training/Training.glb, lights.json, layout.json        (the Training Wing: the dialysis course's five stations)
 bl/maker.py ──► out/maker/Maker.glb, layout.json                              (Room 101's 360 storytelling course: five stations, the desk)
 bl/stories.py ──► out/stories/Stories.glb, lights.json, layout.json           (the Lost Stories cabin at the path's end: the booth and the story wall)
+bl/signs.py ──► out/signs/Signs.glb                                           (the signs to the cabin: the portico stand, the rotunda easel, the foyer poster, the fountain's fingerpost)
 bl/popup.py ──► out/popup/PopUp.glb, layout.json                              (the pop-up books on the Reading Room's south reading table)
 bl/figure.py ──► out/people/People.glb                                        (a guided visit's people: the figure the others see)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
 out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb + Maker.glb
-    + Stories.glb + PopUp.glb + People.glb
+    + Stories.glb + Signs.glb + PopUp.glb + People.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -212,6 +213,14 @@ the board's face (`story_wall`: centre, yaw, width and height, for `AWTAStoryWal
 (`mic`, for `AWTAStoryMicActor`), the seats and three views; `lights.json` the two pendants, the lamp, the board's
 wall-wash spot and the porch lantern. Materials are `st_*` (`content/surfaces.json` has the Stories block); the sign
 and the "How it works" card take a client pack's `stories` words when it has them.
+
+Signs lead to it (`bl/signs.py`, `out/signs/Signs.glb`): a two-sided exhibition stand on the portico west of the doors
+(in view from the forecourt, where a visit starts), a framed notice on a bronze easel inside the front doors facing the
+lobby arch, a poster on the auditorium foyer's west wall by the door from Hall R, and a fingerpost where the path meets
+the fountain's plaza. Each panel has the cabin's name, what it is, a plan of the grounds with the way from where the
+reader stands to the porch, three steps, and "Or open Places and choose Lost Stories". The plans are heads-up (the way
+the reader faces is up: north on the stand's face, south on its back and on the easel, west in the foyer) and drawn from
+the builders' plan constants, so they follow when a building moves; the words come from `lang/<lang>/builders.json`.
 
 The pop-up books (`bl/popup.py`) lie on the Reading Room's south reading table between its two lamps, the spine across
 the table and the near page toward the middle chair on the south side (`seat__lib10`). Each is a theatre pop-up: opened,

@@ -50,3 +50,8 @@ assets/popup/*.blend*
 assets/tex/popup_*.png
 # whisper.cpp for the Lost Stories booth (Tools/win/get_whisper.ps1 fetches it; MIT, with its model): not in git
 unreal/WalkTheArchive/ThirdParty/
+# The signs to the Lost Stories cabin (bl/signs.py): only the prepared out/ue copy is kept; the textures are painted on
+# every run and travel inside the GLB
+unreal/Pipeline/out/signs/Signs.glb
+assets/signs/*.blend*
+assets/tex/signs_*.png

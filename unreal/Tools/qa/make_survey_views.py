@@ -195,8 +195,26 @@ def fix3_views():
             look('body_statue_w', (-1.6, 1.7, 5.8), (-3.9, 2.0, 5.8)), look('body_statue_e', (1.6, 1.7, 5.8), (3.9, 2.0, 5.8))]
     return out
 
+def signs_views():
+    """The signs to the Lost Stories cabin (bl/signs.py): the portico stand from where a visit starts, from the steps
+    and from the doors; the rotunda easel from the lobby arch, close up and from the front door (its back); the foyer
+    poster from Hall R's door and close up; the fountain's fingerpost from the path, beside it and from the plaza."""
+    F = -0.75 + EYE                                   # eye height on the forecourt and the grounds
+    return [look('signs_spawn', (0.0, F, 24.0), (0.0, 1.4, 12.0)),
+            look('signs_stand_far', (-0.8, F, 19.8), (-2.9, 1.3, 14.4)),
+            look('signs_stand_near', (-2.7, EYE, 16.3), (-2.9, 1.3, 14.4)),
+            look('signs_stand_back', (-2.4, EYE, 12.9), (-2.9, 1.3, 14.4)),
+            look('signs_easel_arch', (0.0, EYE, 1.2), (-2.3, 1.35, 8.4)),
+            look('signs_easel_near', (-1.9, EYE, 7.1), (-2.3, 1.35, 8.4)),
+            look('signs_easel_door', (0.0, EYE, 10.6), (-2.3, 1.2, 8.4)),
+            look('signs_poster_door', (9.0, EYE, -5.3), (6.7, 1.95, -6.9)),
+            look('signs_poster_near', (8.0, EYE, -6.9), (6.7, 1.95, -6.9)),
+            look('signs_finger_path', (0.0, F, 35.5), (2.5, 1.2, 41.9)),
+            look('signs_finger_near', (0.9, F, 41.6), (2.5, 1.45, 41.9)),
+            look('signs_finger_plaza', (1.2, F, 46.6), (2.5, 1.4, 41.9))]
+
 OUT = os.path.dirname(os.path.abspath(__file__))
-files = {'survey_fixes3.txt': fix3_views(), 'survey_fixes2.txt': fix2_views(), 'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
+files = {'survey_signs.txt': signs_views(), 'survey_fixes3.txt': fix3_views(), 'survey_fixes2.txt': fix2_views(), 'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
 for fn, ls in files.items():
     open(os.path.join(OUT, fn), "w").write('\n'.join(ls) + '\n')
     print(fn, len(ls))

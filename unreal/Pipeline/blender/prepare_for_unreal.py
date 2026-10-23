@@ -49,6 +49,7 @@ SOURCES = [
     ('Training', 'unreal/Pipeline/out/training/Training.glb'),         # bl/training.py: the Training Wing (the dialysis course's room)
     ('Maker', 'unreal/Pipeline/out/maker/Maker.glb'),                  # bl/maker.py: the 360 storytelling course in Room 101
     ('Stories', 'unreal/Pipeline/out/stories/Stories.glb'),            # bl/stories.py: the Lost Stories cabin at the end of the path
+    ('Signs', 'unreal/Pipeline/out/signs/Signs.glb'),                  # bl/signs.py: the signs to the cabin (portico, rotunda, foyer, fountain)
     ('PopUp', 'unreal/Pipeline/out/popup/PopUp.glb'),                  # bl/popup.py: the pop-up books on the Reading Room's south table
     ('People', 'unreal/Pipeline/out/people/People.glb'),               # bl/figure.py: a guided visit's people (AWTACharacter's figure)
 ]
