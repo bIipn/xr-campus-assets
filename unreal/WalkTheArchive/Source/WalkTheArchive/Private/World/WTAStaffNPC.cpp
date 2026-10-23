@@ -1,6 +1,7 @@
 // Walk the Archive - a virtual staff member with a placeholder body until a MetaHuman is assigned.
 
 #include "World/WTAStaffNPC.h"
+#include "Core/WTAText.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/PlayerCameraManager.h"
@@ -316,9 +317,9 @@ FText AWTAStaffNPC::GetInteractLabel_Implementation() const
 {
 	if (DisplayName.IsEmpty())
 	{
-		return FText::FromString(TEXT("Ask"));
+		return WTAText(TEXT("Ask"));
 	}
-	return FText::Format(FText::FromString(TEXT("Ask {0}")), DisplayName);
+	return FText::Format(WTAText(TEXT("Ask {0}")), DisplayName);
 }
 
 void AWTAStaffNPC::Interact_Implementation(AWTAPlayerController* InController)

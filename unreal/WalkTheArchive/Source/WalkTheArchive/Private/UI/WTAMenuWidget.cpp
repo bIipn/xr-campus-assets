@@ -1,6 +1,7 @@
 // Walk the Archive - the intro / pause menu, built in code.
 
 #include "UI/WTAMenuWidget.h"
+#include "Core/WTAText.h"
 #include "Core/WTASettings.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
@@ -92,19 +93,19 @@ void UWTAMenuWidget::NativeOnInitialized()
 
 	// Enter / Resume, Take the tour.
 	UTextBlock* EnterLabel = nullptr;
-	EnterButton = MakeMenuButton(Tree, FText::FromString(TEXT("Enter")), NAME_MenuEnter, -1,
+	EnterButton = MakeMenuButton(Tree, WTAText(TEXT("Enter")), NAME_MenuEnter, -1,
 		WTAStyle::PrimaryButton(), WTAStyle::Font(16, true), WTAStyle::Ink(), &EnterLabel);
 	EnterText = EnterLabel;
 	EnterButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 	Column->AddChildToVerticalBox(EnterButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
 
-	TourButton = MakeMenuButton(Tree, FText::FromString(TEXT("Take the tour")), NAME_MenuTour, -1,
+	TourButton = MakeMenuButton(Tree, WTAText(TEXT("Take the tour")), NAME_MenuTour, -1,
 		WTAStyle::SecondaryButton(), WTAStyle::Font(15), WTAStyle::Bone());
 	TourButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 	Column->AddChildToVerticalBox(TourButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));
 
 	// Graphics presets.
-	GraphicsLabel = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("GRAPHICS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
+	GraphicsLabel = WTAWidgets::MakeText(Tree, WTAText(TEXT("GRAPHICS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
 	Column->AddChildToVerticalBox(GraphicsLabel)->SetPadding(FMargin(0.f, 0.f, 0.f, 8.f));
 
 	GraphicsRow = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
@@ -124,14 +125,14 @@ void UWTAMenuWidget::NativeOnInitialized()
 	Column->AddChildToVerticalBox(GraphicsRow)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));
 
 	// Quit.
-	QuitButton = MakeMenuButton(Tree, FText::FromString(TEXT("Quit")), NAME_MenuQuit, -1,
+	QuitButton = MakeMenuButton(Tree, WTAText(TEXT("Quit")), NAME_MenuQuit, -1,
 		WTAStyle::SecondaryButton(), WTAStyle::Font(14), WTAStyle::BoneDim());
 	QuitButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 	Column->AddChildToVerticalBox(QuitButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 18.f));
 
 	// Controls line.
 	UTextBlock* Controls = WTAWidgets::MakeText(Tree,
-		FText::FromString(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 Esc menu")),
+		WTAText(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 Esc menu")),
 		WTAStyle::Font(11), WTAStyle::BoneDim(), true);
 	Controls->SetJustification(ETextJustify::Center);
 	Column->AddChildToVerticalBox(Controls);
@@ -146,11 +147,11 @@ void UWTAMenuWidget::Open(bool bInIntro)
 
 	if (EnterText != nullptr)
 	{
-		EnterText->SetText(FText::FromString(bIntro ? TEXT("Enter") : TEXT("Resume")));
+		EnterText->SetText(WTAText(bIntro ? TEXT("Enter") : TEXT("Resume")));
 	}
 	if (SubtitleText != nullptr)
 	{
-		SubtitleText->SetText(FText::FromString(bIntro
+		SubtitleText->SetText(WTAText(bIntro
 			? TEXT("A walkable museum, library and workshop school about XRLibraries and the story of XR in public libraries. Walk in, open things, ask the staff.")
 			: TEXT("The campus keeps running while this is open. Resume to carry on where you were.")));
 	}
@@ -174,7 +175,7 @@ void UWTAMenuWidget::RefreshGraphicsLabel()
 	}
 	const int32 Level = UWTAGraphicsLibrary::GetQualityPreset();
 	const FString Name = UWTAGraphicsLibrary::GetQualityPresetLabel(Level).ToString().ToUpper();
-	GraphicsLabel->SetText(FText::FromString(FString::Printf(TEXT("GRAPHICS \u00B7 %s"), *Name)));
+	GraphicsLabel->SetText(FText::Format(WTAText(TEXT("GRAPHICS \u00B7 {0}")), FText::FromString(Name)));
 }
 
 void UWTAMenuWidget::HandleAction(FName Action, FName Arg, int32 Index)

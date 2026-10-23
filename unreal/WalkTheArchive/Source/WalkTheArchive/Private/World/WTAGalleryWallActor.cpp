@@ -1,6 +1,7 @@
 // Walk the Archive - the visitors' own wall.
 
 #include "World/WTAGalleryWallActor.h"
+#include "Core/WTAText.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -48,7 +49,7 @@ namespace
 AWTAGalleryWallActor::AWTAGalleryWallActor()
 {
 	PickExtent = FVector(60.f, 300.f, 150.f);
-	Title = FText::FromString(TEXT("Your pictures"));
+	Title = WTAText(TEXT("Your pictures"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Plane(PlanePath);
 	if (Plane.Succeeded())
 	{
@@ -105,13 +106,14 @@ FString AWTAGalleryWallActor::CaptionFor(const FString& File, const FDateTime& T
 	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
 		TEXT("July"), TEXT("August"), TEXT("September"), TEXT("October"), TEXT("November"), TEXT("December") };
 	const FDateTime Local = Time;
-	return FString::Printf(TEXT("%s\n%d %s %d"), *Caption, Local.GetDay(), Months[FMath::Clamp(Local.GetMonth() - 1, 0, 11)], Local.GetYear());
+	return Caption + TEXT("\n") + FText::Format(WTAText(TEXT("{0} {1} {2}")), FText::FromString(FString::FromInt(Local.GetDay())),
+		WTAText(Months[FMath::Clamp(Local.GetMonth() - 1, 0, 11)]), FText::FromString(FString::FromInt(Local.GetYear()))).ToString();
 }
 
 void AWTAGalleryWallActor::ReadRow()
 {
 	Super::ReadRow();
-	Label = FText::Format(FText::FromString(TEXT("{0} · {1}")), Title, FText::AsNumber(Hung));
+	Label = FText::Format(WTAText(TEXT("{0} · {1}")), Title, FText::AsNumber(Hung));
 	ViewSpot.Location = GetActorLocation() + GetActorForwardVector() * 300.f + FVector(0.f, 0.f, 162.f - FloorBelowCm);
 	ViewSpot.Yaw = GetActorRotation().Yaw + 180.f;
 	ViewSpot.Pitch = -2.f;
@@ -274,10 +276,10 @@ void AWTAGalleryWallActor::Interact_Implementation(AWTAPlayerController* Control
 	const int32 Now = Refresh();
 	if (Controller != nullptr)
 	{
-		const FString Message = Now == 0
-			? TEXT("Nothing hangs here yet. Press P anywhere on the campus for a postcard; it will appear on this wall.")
-			: (Now > Before ? FString::Printf(TEXT("%d new picture%s hung. Press P anywhere for another."), Now - Before, Now - Before == 1 ? TEXT("") : TEXT("s"))
-			                : FString::Printf(TEXT("%d picture%s on the wall, the newest in the middle. Press P anywhere for another."), Now, Now == 1 ? TEXT("") : TEXT("s")));
-		Controller->ShowToast(FText::FromString(Message), 5.f);
+		const FText Message = Now == 0
+			? WTAText(TEXT("Nothing hangs here yet. Press P anywhere on the campus for a postcard; it will appear on this wall."))
+			: (Now > Before ? FText::Format(WTAText(TEXT("{0} new on the wall. Press P anywhere for another.")), Now - Before)
+			                : FText::Format(WTAText(TEXT("{0} on the wall, the newest in the middle. Press P anywhere for another.")), Now));
+		Controller->ShowToast(Message, 5.f);
 	}
 }

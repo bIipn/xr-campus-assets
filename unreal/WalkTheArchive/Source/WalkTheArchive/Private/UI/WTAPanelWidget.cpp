@@ -1,6 +1,7 @@
 // Walk the Archive - the one modal panel: catalog card, book reader, station, ride, badges, places.
 
 #include "UI/WTAPanelWidget.h"
+#include "Core/WTAText.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
@@ -78,7 +79,7 @@ namespace
 
 	FText PanelText(const TCHAR* Text)
 	{
-		return FText::FromString(Text);
+		return WTAText(Text);                            // DT_Strings: the pack's language, else the English
 	}
 
 	/** Append a row to the content column. */
@@ -699,7 +700,7 @@ void UWTAPanelWidget::HuntPictureSaved()
 {
 	if (AWTAPlayerController* PC = Cast<AWTAPlayerController>(GetOwningPlayer()))
 	{
-		PC->ShowToast(FText::FromString(FString::Printf(TEXT("Saved to %s"), *HuntPictureFile)), 6.f);
+		PC->ShowToast(FText::Format(WTAText(TEXT("Saved to {0}")), FText::FromString(HuntPictureFile)), 6.f);
 	}
 }
 

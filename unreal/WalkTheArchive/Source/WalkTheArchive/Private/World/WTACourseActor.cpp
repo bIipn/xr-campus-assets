@@ -1,6 +1,7 @@
 // Walk the Archive - a course desk.
 
 #include "World/WTACourseActor.h"
+#include "Core/WTAText.h"
 #include "Animation/AnimSequence.h"
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -51,11 +52,11 @@ void AWTACourseActor::ReadRow()
 	if (!bHasRow)
 	{
 		UE_LOG(LogWTA, Warning, TEXT("%s: no DT_Talks row '%s'"), *GetName(), *TalkId.ToString());
-		Label = FText::FromString(TEXT("Course"));
+		Label = WTAText(TEXT("Course"));
 		return;
 	}
 	Row = *Found;
-	Label = FText::Format(FText::FromString(TEXT("Course · {0}")), Row.Title);
+	Label = FText::Format(WTAText(TEXT("Course · {0}")), Row.Title);
 	// where to stand: in front of the desk, facing the lead
 	const FVector Forward = FRotator(0.f, SpeakerYaw, 0.f).Vector();
 	ViewSpot.Location = GetActorLocation() + Forward * 170.f + FVector(0.f, 0.f, 162.f);

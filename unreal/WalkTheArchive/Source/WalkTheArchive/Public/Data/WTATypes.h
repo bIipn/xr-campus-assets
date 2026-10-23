@@ -202,6 +202,18 @@ struct WALKTHEARCHIVE_API FWTAWaxProp
 // Table rows
 // ---------------------------------------------------------------------------
 
+/** DT_Strings: the engine's own words in the pack's language. The row name is the English text the C++ writes
+ *  (WTAText("Close")); Text is what shows instead. Empty table = English. Built by build_data.py from
+ *  Pipeline/content/lang/<lang>/strings.json when WTA_LANG is set. */
+USTRUCT(BlueprintType)
+struct WALKTHEARCHIVE_API FWTAStringRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WTA")
+	FText Text;
+};
+
 /** DT_Sources: a citation the catalog card links to. */
 USTRUCT(BlueprintType)
 struct WALKTHEARCHIVE_API FWTASourceRow : public FTableRowBase

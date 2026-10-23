@@ -1,6 +1,7 @@
 // Walk the Archive - a hidden XR token: a small glowing sphere that spins and bobs when you are near.
 
 #include "World/WTATokenActor.h"
+#include "Core/WTAText.h"
 #include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -131,7 +132,7 @@ void AWTATokenActor::Tick(float DeltaSeconds)
 
 FText AWTATokenActor::GetInteractLabel_Implementation() const
 {
-	return FText::FromString(TEXT("Collect \u00B7 XR token"));
+	return WTAText(TEXT("Collect \u00B7 XR token"));
 }
 
 void AWTATokenActor::Interact_Implementation(AWTAPlayerController* Controller)
@@ -154,7 +155,7 @@ void AWTATokenActor::Interact_Implementation(AWTAPlayerController* Controller)
 		}
 		if (Controller != nullptr)
 		{
-			Controller->ShowToast(FText::Format(FText::FromString(TEXT("Ride the {0} to grab that one!")), RideName));
+			Controller->ShowToast(FText::Format(WTAText(TEXT("Ride the {0} to grab that one!")), RideName));
 		}
 		return;
 	}

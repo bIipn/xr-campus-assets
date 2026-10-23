@@ -33,7 +33,8 @@ enum class EWTATable : uint8
 	WaxScenes,
 	Stations,
 	Rides,
-	Talks
+	Talks,
+	Strings
 };
 
 UCLASS()
@@ -84,6 +85,16 @@ public:
 	const FWTAStationRow*   FindStation(FName Id) const   { return FindRowIn<FWTAStationRow>(StationsTable, Id); }
 	const FWTARideRow*      FindRide(FName Id) const      { return FindRowIn<FWTARideRow>(RidesTable, Id); }
 	const FWTATalkRow*      FindTalk(FName Id) const      { return FindRowIn<FWTATalkRow>(TalksTable, Id); }
+
+	/** The engine's own words in the pack's language: DT_Strings[English].Text, else the English itself. Static so
+	    the widgets' free helpers (PanelText, WTAText) can call it; it reads the table the last content subsystem to
+	    load filled in (one game instance at a time). */
+	static FText Tr(const FString& English);
+	static FText Tr(const TCHAR* English) { return Tr(FString(English)); }
+
+	/** How many words DT_Strings holds (0 = English). */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	int32 NumStrings() const;
 
 	/** The talk or class held in a venue (the first DT_Talks row whose Venue matches), or none. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
@@ -156,4 +167,5 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UDataTable> StationsTable;
 	UPROPERTY(Transient) TObjectPtr<UDataTable> RidesTable;
 	UPROPERTY(Transient) TObjectPtr<UDataTable> TalksTable;
+	UPROPERTY(Transient) TObjectPtr<UDataTable> StringsTable;
 };

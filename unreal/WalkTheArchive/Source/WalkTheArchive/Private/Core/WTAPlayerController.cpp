@@ -5,6 +5,7 @@
 // DefaultPlayerInputClass=/Script/EnhancedInput.EnhancedPlayerInput); SetupInputComponent logs an error otherwise.
 
 #include "Core/WTAPlayerController.h"
+#include "Core/WTAText.h"
 #include "Core/WTACharacter.h"
 #include "Core/WTASettings.h"
 #include "Core/WTALog.h"
@@ -669,7 +670,9 @@ FString AWTAPlayerController::CertificateDate()
 	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
 		TEXT("July"), TEXT("August"), TEXT("September"), TEXT("October"), TEXT("November"), TEXT("December") };
 	const FDateTime Now = FDateTime::Now();
-	return FString::Printf(TEXT("%d %s %d"), Now.GetDay(), Months[FMath::Clamp(Now.GetMonth() - 1, 0, 11)], Now.GetYear());
+	// The day and the year as plain digits (FText::AsNumber would write 2,026).
+	return FText::Format(WTAText(TEXT("{0} {1} {2}")), FText::FromString(FString::FromInt(Now.GetDay())),
+		WTAText(Months[FMath::Clamp(Now.GetMonth() - 1, 0, 11)]), FText::FromString(FString::FromInt(Now.GetYear()))).ToString();
 }
 
 void AWTAPlayerController::ShowCertificate(FName TalkId, const FString& Name)
@@ -847,8 +850,8 @@ void AWTAPlayerController::ShowStoryPlaque(FName ItemId)
 	}
 	const FText Kicker = (Row->bWax && !Row->Hall.IsEmpty()) ? Row->Hall : Row->Kind;
 	const FText Hint = bCursorFree
-		? FText::FromString(TEXT("Click to read the full story"))
-		: FText::FromString(TEXT("Press E to read the full story"));
+		? WTAText(TEXT("Click to read the full story"))
+		: WTAText(TEXT("Press E to read the full story"));
 	Hud->ShowStory(Kicker, Row->Date, Row->Title, WTAStorySummary(Row->Description, 200), Hint);
 }
 
@@ -1100,7 +1103,7 @@ void AWTAPlayerController::SetCursorFree(bool bFree)
 	UpdateInputMode();
 	if (bCursorFree && !bUIMode)
 	{
-		ShowToast(FText::FromString(TEXT("Cursor free: click the floor to walk, click things to open them. Tab goes back to mouse look.")), 0.f);
+		ShowToast(WTAText(TEXT("Cursor free: click the floor to walk, click things to open them. Tab goes back to mouse look.")), 0.f);
 	}
 	// The plaque's key hint ("Press E" / "Click") follows the cursor mode.
 	if (!ShownStoryId.IsNone())
@@ -1678,7 +1681,7 @@ void AWTAPlayerController::FinishPostcard()
 	{
 		Hud->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
-	ShowToast(FText::FromString(FString::Printf(TEXT("Postcard saved to %s"), *LastPostcard)), 6.f);
+	ShowToast(FText::Format(WTAText(TEXT("Postcard saved to {0}")), FText::FromString(LastPostcard)), 6.f);
 }
 
 void AWTAPlayerController::OnChat(const FInputActionValue& Value)
@@ -1755,7 +1758,7 @@ void AWTAPlayerController::HandleBadgeAwarded(FName BadgeId)
 	const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
 	const FWTABadgeRow* Badge = Content ? Content->FindBadge(BadgeId) : nullptr;
 	const FString Name = Badge ? Badge->DisplayName.ToString() : BadgeId.ToString();
-	ShowToast(FText::FromString(FString::Printf(TEXT("Badge unlocked: %s"), *Name)), 3.6f);
+	ShowToast(FText::Format(WTAText(TEXT("Badge unlocked: {0}")), FText::FromString(Name)), 3.6f);
 	if (Hud != nullptr)
 	{
 		if (const UWTAProgressSubsystem* Progress = UWTAProgressSubsystem::Get(this))
@@ -1767,10 +1770,10 @@ void AWTAPlayerController::HandleBadgeAwarded(FName BadgeId)
 
 void AWTAPlayerController::HandleTokenCollected(FName TokenId, int32 Found, int32 Total)
 {
-	const FString Message = (Total > 0 && Found >= Total)
-		? FString::Printf(TEXT("You found all %d XR tokens! Your library card is full: show it at the desk."), Total)
-		: FString::Printf(TEXT("XR token found! %d of %d stamped on your library card."), Found, Total);
-	ShowToast(FText::FromString(Message), 0.f);
+	const FText Message = (Total > 0 && Found >= Total)
+		? FText::Format(WTAText(TEXT("You found all {0} XR tokens! Your library card is full: show it at the desk.")), Total)
+		: FText::Format(WTAText(TEXT("XR token found! {0} of {1} stamped on your library card.")), Found, Total);
+	ShowToast(Message, 0.f);
 }
 
 void AWTAPlayerController::HandleTourChanged(int32 Index)
@@ -1786,7 +1789,7 @@ void AWTAPlayerController::HandleTourChanged(int32 Index)
 			bCursorFreedForTour = true;
 			UpdateInputMode();
 		}
-		ShowToast(FText::FromString(TEXT("Tour: click Next or press T. Tab looks around, Esc ends the tour.")), 0.f);
+		ShowToast(WTAText(TEXT("Tour: click Next or press T. Tab looks around, Esc ends the tour.")), 0.f);
 	}
 	else if (!bTouring && bTourActive && bCursorFreedForTour)
 	{
@@ -1819,5 +1822,5 @@ void AWTAPlayerController::HandleProgressReset()
 			Hud->SetBadgeCount(Progress->NumBadges(), Progress->TotalBadges());
 		}
 	}
-	ShowToast(FText::FromString(TEXT("Progress reset. The tokens are back in their hiding places.")), 0.f);
+	ShowToast(WTAText(TEXT("Progress reset. The tokens are back in their hiding places.")), 0.f);
 }

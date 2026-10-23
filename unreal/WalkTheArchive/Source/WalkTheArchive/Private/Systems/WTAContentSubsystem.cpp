@@ -11,6 +11,9 @@
 
 namespace
 {
+	/** DT_Strings as a map, English -> the pack's words (UWTAContentSubsystem::Tr). */
+	TMap<FString, FText> GStrings;
+
 	/** LoadSynchronous one table reference; null (with a warning) when unset, missing or of the wrong row struct. */
 	UDataTable* LoadTable(const TSoftObjectPtr<UDataTable>& Ref, const TCHAR* Name, const UScriptStruct* ExpectedRow)
 	{
@@ -82,6 +85,38 @@ void UWTAContentSubsystem::ReloadTables()
 	StationsTable   = LoadTable(Settings->Stations,   TEXT("Stations"),   FWTAStationRow::StaticStruct());
 	RidesTable      = LoadTable(Settings->Rides,      TEXT("Rides"),      FWTARideRow::StaticStruct());
 	TalksTable      = LoadTable(Settings->Talks,      TEXT("Talks"),      FWTATalkRow::StaticStruct());
+	StringsTable    = Settings->Strings.IsNull() ? nullptr : LoadTable(Settings->Strings, TEXT("Strings"), FWTAStringRow::StaticStruct());
+	// The words the C++ writes, in the pack's language, for Tr(): keyed by the English text.
+	GStrings.Reset();
+	if (StringsTable != nullptr)
+	{
+		for (const TPair<FName, uint8*>& Pair : StringsTable->GetRowMap())
+		{
+			const FWTAStringRow* Row = reinterpret_cast<const FWTAStringRow*>(Pair.Value);
+			if (Row != nullptr && !Row->Text.IsEmpty())
+			{
+				GStrings.Add(Pair.Key.ToString(), Row->Text);
+			}
+		}
+	}
+	if (GStrings.Num() > 0)
+	{
+		UE_LOG(LogWTA, Display, TEXT("Content: %d of the engine's words come from DT_Strings"), GStrings.Num());
+	}
+}
+
+FText UWTAContentSubsystem::Tr(const FString& English)
+{
+	if (const FText* Found = GStrings.Find(English))
+	{
+		return *Found;
+	}
+	return FText::FromString(English);
+}
+
+int32 UWTAContentSubsystem::NumStrings() const
+{
+	return GStrings.Num();
 }
 
 UDataTable* UWTAContentSubsystem::GetTable(EWTATable Table) const
@@ -106,6 +141,7 @@ UDataTable* UWTAContentSubsystem::GetTable(EWTATable Table) const
 	case EWTATable::Stations:   return StationsTable;
 	case EWTATable::Rides:      return RidesTable;
 	case EWTATable::Talks:      return TalksTable;
+	case EWTATable::Strings:    return StringsTable;
 	default:                    return nullptr;
 	}
 }

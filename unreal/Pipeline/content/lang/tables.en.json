@@ -1,0 +1,3732 @@
+{
+ "DT_Sources": {
+  "about": {
+   "Label": "xrlibraries.com/about"
+  },
+  "home": {
+   "Label": "xrlibraries.com"
+  },
+  "equity": {
+   "Label": "xrlibraries.com/equity-diversity"
+  },
+  "metaverse": {
+   "Label": "xrlibraries.com/metaverse"
+  },
+  "environment": {
+   "Label": "xrlibraries.com/environment"
+  },
+  "fair": {
+   "Label": "xrlibraries.com/mcf2025"
+  },
+  "showcase": {
+   "Label": "xrlibraries.com/xr-showcase"
+  },
+  "playbooks": {
+   "Label": "xrlibraries.com/xr-playbooks"
+  },
+  "sjsu": {
+   "Label": "SJSU School of Information"
+  },
+  "arbor": {
+   "Label": "ArborXR customer story"
+  },
+  "arborPod": {
+   "Label": "ArborXR podcast, 2025"
+  },
+  "working": {
+   "Label": "WorkingNation, 2023"
+  },
+  "cil": {
+   "Label": "Computers in Libraries speaker page"
+  },
+  "wsl": {
+   "Label": "Washington State Library, VR 360"
+  },
+  "cb": {
+   "Label": "CB Insights company profile"
+  },
+  "cenic": {
+   "Label": "CENIC, 2019"
+  },
+  "lj2017": {
+   "Label": "Library Journal, 2017"
+  },
+  "lj2019": {
+   "Label": "Library Journal, 2019"
+  },
+  "vive2018": {
+   "Label": "HTC VIVE news release, 2018"
+  },
+  "carson2018": {
+   "Label": "Carson Now, 2018"
+  },
+  "goed2023": {
+   "Label": "Nevada GOED, 2023"
+  },
+  "sjsu2024": {
+   "Label": "SJSU School of Information news, 2024"
+  }
+ },
+ "DT_Galleries": {
+  "G0": {
+   "Label": "Lobby",
+   "DisplayName": "XRLibraries Campus",
+   "Years": "Start here"
+  },
+  "G1": {
+   "Label": "Gallery 1 of 3",
+   "DisplayName": "Headsets in Libraries",
+   "Years": "2016 to 2022"
+  },
+  "G2": {
+   "Label": "Gallery 2 of 3",
+   "DisplayName": "Learning That Works",
+   "Years": "Careers and resources"
+  },
+  "G3": {
+   "Label": "Gallery 3 of 3",
+   "DisplayName": "Stories Worth Saving",
+   "Years": "Equity, worlds, nature"
+  }
+ },
+ "DT_Exhibits": {
+  "ca-200": {
+   "Kind": "Milestone",
+   "Title": "Over 200 VR Systems in California Libraries",
+   "Date": "2016",
+   "Description": "XRLibraries began in 2016 by installing more than 200 virtual reality systems in California public libraries. Its website calls this the largest VR installation in public libraries.",
+   "Where": "California public libraries"
+  },
+  "mission": {
+   "Kind": "Mission",
+   "Title": "XR Made Easy for Everyone",
+   "Date": "Since 2016",
+   "Description": "XRLibraries works with schools and libraries to bring virtual, augmented and mixed reality into their programs and classes. Its stated goal is equitable access to immersive technology for all communities.",
+   "Quote": "We make XR easy to use for everyone.",
+   "QuoteBy": "XRLibraries, on its About page",
+   "Where": "Libraries and schools"
+  },
+  "headset": {
+   "Kind": "Object",
+   "Title": "A Library VR Headset",
+   "Date": "Today",
+   "Description": "Standalone headsets let a library visitor stand on the moon, swim a coral reef or practice a job, with no computer attached. Meta Quest and Pico both appear on XRLibraries’ partner list, and its Nevada headsets run on Pico.",
+   "Where": "Library program rooms",
+   "Partners": "Meta Quest and Pico are listed partners"
+  },
+  "nv-2017": {
+   "Kind": "Milestone",
+   "Title": "Nevada Follows Marin County",
+   "Date": "2017",
+   "Description": "In 2017 Nevada’s state library put its first VR headsets in public libraries: 22 headsets in 11 libraries, with STEM content. WorkingNation reports that the model followed a program at the Marin County Free Library in California.",
+   "Where": "Nevada public libraries",
+   "Partners": "Nevada State Library"
+  },
+  "cil-talks": {
+   "Kind": "Event",
+   "Title": "XR at Computers in Libraries",
+   "Date": "2020 and 2022",
+   "Description": "XRLibraries’ executive director, John MacLeod, presented “Integrating XR Tech & Programming in Libraries” at Computers in Libraries Connect in 2020 and “Using XR to Discover ‘Lost Stories’ & Pop-Up Books” in 2022.",
+   "Where": "Computers in Libraries conference",
+   "Partners": "Information Today"
+  },
+  "sandi": {
+   "Kind": "Program",
+   "Title": "Project SANDI",
+   "Date": "Began in 2020",
+   "Description": "Supporting and Advancing Nevada’s Dislocated Individuals began during the 2020 downturn with a $13.8 million federal grant. It uses VR to explore careers in five fields: skilled trades, healthcare, IT, advanced manufacturing and logistics.",
+   "More": "The program grew to more than 1,000 headsets at over 80 locations, with 35 VR field trips and five training simulations, including dialysis technician and certified nursing assistant. XRLibraries’ executive director is a partner in the project.",
+   "Where": "Nevada",
+   "Partners": "Nevada Governor’s Office of Economic Development, XRLibraries"
+  },
+  "nv-1100": {
+   "Kind": "Milestone",
+   "Title": "1,100 Headsets in Nevada",
+   "Date": "2020s",
+   "Description": "XRLibraries and Lifeliqe installed VR headsets in Nevada’s community college and public libraries. XRLibraries’ homepage counts more than 1,100.",
+   "More": "XRLibraries uses ArborXR to set up headsets and send updates remotely. Its director told ArborXR the switch cut the time and resources spent by about 60 percent.",
+   "Where": "Nevada community college and public libraries",
+   "Partners": "Lifeliqe, ArborXR"
+  },
+  "dialysis": {
+   "Kind": "Story",
+   "Title": "Training From a Town of 300",
+   "Date": "2020s",
+   "Description": "A remote 12-week dialysis technician certification lets people train without traveling to a training center. In a community of about 300 people, a single mother finished the program, passed her certification and plans to become a registered nurse.",
+   "Quote": "It brought the dialysis concepts to life.",
+   "QuoteBy": "Natasha York, former library assistant, in WorkingNation",
+   "Where": "Rural Nevada",
+   "Partners": "College of Southern Nevada"
+  },
+  "playbooks": {
+   "Kind": "Resource",
+   "Title": "XR Playbooks",
+   "Date": "Ongoing",
+   "Description": "XRLibraries catalogs more than 300 XR apps in categories from astronomy and history to mindfulness and music, then bundles them into themed playbooks that come pre-installed on library headsets.",
+   "Where": "Pre-installed on library headsets"
+  },
+  "showcase": {
+   "Kind": "Resource",
+   "Title": "XR Showcase",
+   "Date": "Video series",
+   "Description": "In this video series, hosts George and Camila try VR and AR apps for libraries, from Tilt Brush and Wander to Apollo 11 VR, and share practical tips like cleaning headsets and setting a guardian boundary.",
+   "More": "Episodes also cover running big VR events with rotating stations, recording video inside a headset and playing media through the Meta Quest TV app.",
+   "Where": "Online",
+   "Partners": "Hosts George and Camila"
+  },
+  "way-out": {
+   "Kind": "Project",
+   "Title": "A Way Out of No Way",
+   "Date": "Lost Stories project",
+   "Description": "Marin City students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told.",
+   "More": "The project ran in three tracks: immersive storytelling, music and VR modeling. It is part of XRLibraries’ Lost Stories work, which plans to look for Latino, Asian-Pacific and Native American stories next.",
+   "Where": "Marin City, California",
+   "Partners": "The Marinovators, Marin City youth"
+  },
+  "charleston": {
+   "Kind": "Project",
+   "Title": "The Black Wall Street of Charleston",
+   "Date": "AR scavenger hunt",
+   "Description": "Career and technical education students at Burke High School built an augmented-reality scavenger hunt that leads players to Charleston’s Black-owned businesses.",
+   "Where": "Charleston, South Carolina",
+   "Partners": "Burke High School CTE students, Preservation Society of Charleston, Burke High School Foundation"
+  },
+  "seeking": {
+   "Kind": "Project",
+   "Title": "Seeking Immortality",
+   "Date": "Browser-based world",
+   "Description": "A browser-based VR world, funded by an IMLS Native American Enhancement Grant, that preserves endangered Cheyenne language and cultural knowledge. Tribal members and students learned 3D scanning so the tribe keeps control of its own data.",
+   "Where": "Northern Cheyenne Tribe",
+   "Partners": "Northern Cheyenne Tribe, SJSU School of Information"
+  },
+  "ukraine": {
+   "Kind": "Project",
+   "Title": "Children Draw War, Not Flowers",
+   "Date": "3D art exhibition",
+   "Description": "An immersive 3D exhibition of art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children. It helps children work through war-related trauma, preserves their artwork, and was honored at the Anthem Awards.",
+   "Where": "Cherkasy region, Ukraine",
+   "Partners": "SJSU School of Information, Ukrainian librarians, children and veterans, 40 regional libraries"
+  },
+  "pollinators": {
+   "Kind": "Event",
+   "Title": "Pollinators at the Marin County Fair",
+   "Date": "2025",
+   "Description": "At XRLibraries’ bug-themed booth, fairgoers used an AR app called Pollinators to plant flowers and release monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+   "Where": "Marin County Fair, California",
+   "Partners": "Artist Cynthia Jensen"
+  },
+  "freedom": {
+   "Kind": "Project",
+   "Title": "Freedom to Read",
+   "Date": "A shared world on FrameVR",
+   "Description": "A VR environment that helps citizens, librarians and students fight book bans, and helps young people in affected areas find challenged books that reflect their lives. It is one of the shared worlds listed on XRLibraries’ metaverse page.",
+   "Where": "Online, in the browser",
+   "Partners": "SJSU School of Information, Unite Against Book Bans, Little Free Library, Books Unbanned"
+  },
+  "lib-globe": {
+   "Kind": "Object",
+   "Title": "The Globe",
+   "Date": "A reading room fixture",
+   "Description": "A terrestrial globe on a brass stand. Every library kept one long before anyone could look a place up in a second: it is the original way to see where a story is set. The places in the books on these shelves are all on it somewhere.",
+   "Where": "The Reading Room, north bay"
+  },
+  "lib-desk": {
+   "Kind": "Object",
+   "Title": "The Reference Desk",
+   "Date": "Ask here",
+   "Description": "Where you ask. Librarians were the first search engine: this is the desk where a question gets answered, a book gets found and a visitor gets pointed the right way. Nobody has ever been turned away from one for not knowing what they were looking for.",
+   "Where": "The Reading Room, by the hall"
+  },
+  "lib-table-north": {
+   "Kind": "Object",
+   "Title": "The North Reading Table",
+   "Date": "Green lamps, leather chairs",
+   "Description": "A long oak table under three green-shaded banker's lamps. The lamps throw their light down on to the page and keep it out of your eyes, which is why reading rooms have used them for over a century. Sit anywhere: the chairs are leather and the table is meant to be leaned on.",
+   "Where": "The Reading Room, north bay"
+  },
+  "lib-table-south": {
+   "Kind": "Object",
+   "Title": "The South Reading Table",
+   "Date": "Green lamps, leather chairs",
+   "Description": "The second of the room's two reading tables, a mirror of the first across the hall. Rooms like this were built so that anyone could walk in off the street and sit down with a book for nothing, which is the oldest promise a public library makes.",
+   "Where": "The Reading Room, south bay"
+  },
+  "lib-piano": {
+   "Kind": "Object",
+   "Title": "The Grand Piano",
+   "Date": "Lid up, bench out",
+   "Description": "A grand piano with its lid propped open, turned so the keyboard faces the room. Libraries have always been about more than books: lectures, readings, recitals. The lid is up because a grand is meant to be heard across a room this size, and the bench is out because someone was just playing.",
+   "Where": "The Reading Room, south-east corner"
+  },
+  "lib-stair": {
+   "Kind": "Object",
+   "Title": "The Spiral Stair",
+   "Date": "Up to the gallery",
+   "Description": "Nineteen treads winding round a brass newel, up to the gallery that runs right round the room. The upper shelves are up there. Go on up: the handrail climbs with you, and the gallery is wide enough to walk the whole way round and look down on the hall.",
+   "Where": "The Reading Room, north-east corner"
+  },
+  "lib-window": {
+   "Kind": "Object",
+   "Title": "The Arched Window",
+   "Date": "West light",
+   "Description": "The room's one great window, set in the west wall so the afternoon sun comes straight down the hall. Reading rooms were laid out this way before electric light: the tables sit where the daylight falls. Beyond the glass are the hills.",
+   "Where": "The Reading Room, west wall"
+  },
+  "lib-gallery": {
+   "Kind": "Object",
+   "Title": "The Gallery",
+   "Date": "The upper tier",
+   "Description": "You made it up. The gallery runs round all four walls behind a panelled parapet, with the upper shelves at your shoulder and the whole hall laid out below: the checkered floor, the runner, the chandeliers at eye level. The quietest seat in the building is the one you are standing in.",
+   "Where": "The Reading Room, up the spiral stair"
+  },
+  "wax-2016": {
+   "Kind": "Living History",
+   "Title": "The First Headsets",
+   "Date": "2016",
+   "Description": "In 2016, libraries in Marin County, California, began offering virtual reality stations as the pilot for the California Virtual Reality Experience. XRLibraries launched that year as the project’s coordinator. Teen volunteers helped first-time visitors into headsets and guided them through their first worlds.",
+   "More": "Library Journal reported that four Marin County libraries had offered VR stations since 2016, with teens from the Marin WebStars volunteer program helping manage the stations and guide new users.",
+   "Where": "Marin County Free Library, California",
+   "Partners": "Califa, Marin County Free Library, XRLibraries",
+   "Hall": "The Wax Hall · Scene 1 of 12"
+  },
+  "wax-2017a": {
+   "Kind": "Living History",
+   "Title": "VR Goes Statewide",
+   "Date": "2017",
+   "Description": "In June 2017 the California State Library, Oculus and the library consortium Califa partnered to bring VR-ready PCs with Rift headsets to more than 90 libraries across California, building on the Marin County pilot. XRLibraries, launched in 2016 as the project’s coordinator, also became a clearinghouse where libraries share what works with VR and AR.",
+   "More": "XRLibraries’ website counts more than 200 VR systems installed in California public libraries, and calls it the largest VR installation in public libraries.",
+   "Where": "More than 90 California libraries",
+   "Partners": "California State Library, Oculus, Califa",
+   "Hall": "The Wax Hall · Scene 2 of 12"
+  },
+  "wax-2017b": {
+   "Kind": "Living History",
+   "Title": "Story Time in 3D",
+   "Date": "2017",
+   "Description": "Library Journal reported in 2017 that young children loved virtual reality story times, while teens gravitated to VR games. In Marin, children listened to stories inside three-dimensional worlds.",
+   "Where": "California libraries",
+   "Partners": "Libraries in the California Virtual Reality Experience",
+   "Hall": "The Wax Hall · Scene 3 of 12"
+  },
+  "wax-2018a": {
+   "Kind": "Living History",
+   "Title": "Nevada Opens Its Stations",
+   "Date": "2018",
+   "Description": "Nevada’s state library set aside $22,000 of a 2017 budget increase for a VR pilot: 22 headsets loaded with STEM content in 11 libraries, modeled on Marin County’s program. In February 2018 the Carson City Library’s grand re-opening featured VR and AR stations, and XRLibraries’ founder presented in a webinar for librarians across the state.",
+   "Where": "Carson City Library and other Nevada libraries",
+   "Partners": "Nevada State Library, XRLibraries",
+   "Hall": "The Wax Hall · Scene 4 of 12"
+  },
+  "wax-2019a": {
+   "Kind": "Living History",
+   "Title": "VR on the Road",
+   "Date": "By 2019",
+   "Description": "Marin’s VR program went out into the community: to schools, senior centers, the county fair, and people displaced by deadly wildfires.",
+   "Where": "Marin County, California",
+   "Partners": "Marin County Free Library",
+   "Hall": "The Wax Hall · Scene 5 of 12"
+  },
+  "wax-2019b": {
+   "Kind": "Living History",
+   "Title": "VR in the World’s Catalog",
+   "Date": "2019",
+   "Description": "Nevada’s state library and its partner XRLibraries set out to catalog VR content so any library could find it. In 2019 Nevada librarians led a first-of-its-kind effort to catalog virtual reality in WorldCat, the world’s largest library catalog, and planned a cataloging hack-a-thon in Marin, California and Carson City, Nevada.",
+   "More": "Nevada’s Governor’s Office of Economic Development says a Carson City librarian cataloged the first VR course companion in WorldCat, and that the work produced a collection of more than 1,000 3D interactive VR objects.",
+   "Where": "Carson City, Nevada",
+   "Partners": "Nevada State Library, XRLibraries, Lifeliqe",
+   "Hall": "The Wax Hall · Scene 6 of 12"
+  },
+  "wax-2019c": {
+   "Kind": "Living History",
+   "Title": "XR Marin and the XR Stars",
+   "Date": "2019",
+   "Description": "XR Marin brought together the Marin County Free Library, XRLibraries, Novato Unified School District and the Marin County Office of Education. Teens served as “XR Stars,” helping patrons use the equipment. Its programs let people make 3D models, design 3D games and produce 360-degree video tours, and one teen at a VR summer camp borrowed the cameras and filmed her family’s farm.",
+   "Where": "Marin County, California",
+   "Partners": "Marin County Free Library, XRLibraries, Novato Unified School District, Marin County Office of Education",
+   "Hall": "The Wax Hall · Scene 7 of 12"
+  },
+  "wax-2020": {
+   "Kind": "Living History",
+   "Title": "Project SANDI",
+   "Date": "2020",
+   "Description": "In October 2020 Nevada won a $13.8 million federal grant for Project SANDI (Supporting and Advancing Nevada’s Dislocated Individuals), which uses VR to explore careers in skilled trades, healthcare, IT, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations. XRLibraries’ executive director is a partner in the project.",
+   "Where": "Nevada",
+   "Partners": "Nevada Governor’s Office of Workforce Innovation, Governor’s Office of Economic Development, Nevada libraries and colleges",
+   "Hall": "The Wax Hall · Scene 8 of 12"
+  },
+  "wax-2022a": {
+   "Kind": "Living History",
+   "Title": "360° Stories in Washington",
+   "Date": "2022",
+   "Description": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program. In 2022 it helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was open to public, tribal and academic libraries and funded by IMLS through the Library Services and Technology Act.",
+   "Where": "Washington State",
+   "Partners": "Washington State Library, IMLS",
+   "Hall": "The Wax Hall · Scene 9 of 12"
+  },
+  "wax-2022b": {
+   "Kind": "Living History",
+   "Title": "Lost Stories",
+   "Date": "2022",
+   "Description": "In Marin City, students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told. XRLibraries’ director presented its Lost Stories work at Computers in Libraries in 2022.",
+   "More": "The project ran in three tracks: immersive storytelling, music and VR modeling.",
+   "Where": "Marin City, California",
+   "Partners": "The Marinovators, Marin City youth",
+   "Hall": "The Wax Hall · Scene 10 of 12"
+  },
+  "wax-2024": {
+   "Kind": "Living History",
+   "Title": "Children Draw War, Not Flowers",
+   "Date": "2024",
+   "Description": "XRLibraries helped design “Children Draw War, Not Flowers,” a browser-based VR art exhibition from the San José State University School of Information. It shows art by Ukrainian children aged 4 to 16 and virtual galleries showing the destruction of Ukrainian libraries, and anyone can visit it free in a web browser.",
+   "More": "XRLibraries lists the exhibition, which was honored at the Anthem Awards, among its shared worlds.",
+   "Where": "Online, in the browser",
+   "Partners": "SJSU School of Information, Ukrainian librarians and children",
+   "Hall": "The Wax Hall · Scene 11 of 12"
+  },
+  "wax-2025": {
+   "Kind": "Living History",
+   "Title": "Pollinators at the Fair",
+   "Date": "2025",
+   "Description": "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an augmented-reality app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+   "Where": "Marin County Fair, California",
+   "Partners": "Artist Cynthia Jensen",
+   "Hall": "The Wax Hall · Scene 12 of 12"
+  }
+ },
+ "DT_Subjects": {
+  "basics": {
+   "DisplayName": "XR Basics"
+  },
+  "programs": {
+   "DisplayName": "Library Programs"
+  },
+  "careers": {
+   "DisplayName": "Careers"
+  },
+  "story": {
+   "DisplayName": "Storytelling"
+  },
+  "equity": {
+   "DisplayName": "Lost Stories"
+  },
+  "environment": {
+   "DisplayName": "Environment"
+  },
+  "worlds": {
+   "DisplayName": "Shared Worlds"
+  },
+  "tech": {
+   "DisplayName": "Technology"
+  }
+ },
+ "DT_Books": {
+  "what-is-xr": {
+   "Title": "What Is XR?",
+   "Subtitle": "Virtual, augmented and mixed reality",
+   "Pages": [
+    {
+     "Heading": "Four kinds of reality",
+     "Blocks": [
+      {
+       "Text": "Extended reality, or XR, is the umbrella word for technology that blends computer-made worlds with the one around you. It covers virtual reality, augmented reality and mixed reality."
+      },
+      {
+       "Text": "Each one changes how much of the real world you still see. Picture a dial that runs from the room you are standing in all the way to a completely made-up place."
+      }
+     ]
+    },
+    {
+     "Heading": "Virtual reality",
+     "Blocks": [
+      {
+       "Text": "Virtual reality, or VR, replaces everything you see with a computer-made world. A headset shows a slightly different picture to each eye, which tricks your brain into seeing depth."
+      },
+      {
+       "Text": "Modern standalone headsets track your head and hands, so you can lean, crouch and reach inside a small play space. One of the first head-mounted displays, built by Ivan Sutherland in 1968, was so heavy it hung from the ceiling."
+      }
+     ]
+    },
+    {
+     "Heading": "Augmented and mixed reality",
+     "Blocks": [
+      {
+       "Text": "Augmented reality, or AR, adds digital things to your view of the real world, usually through a phone camera. Seeing a dinosaur in your living room through your phone is AR."
+      },
+      {
+       "Text": "Mixed reality goes a step further: digital objects understand the room, so a virtual ball can bounce off your real table. Many headsets now use passthrough cameras to show your room with digital objects added."
+      }
+     ]
+    },
+    {
+     "Heading": "360 video",
+     "Blocks": [
+      {
+       "Text": "A 360 video is filmed in every direction at once by a camera with two or more lenses. Viewers can look anywhere, but they cannot walk around inside the scene, because the camera recorded from one spot."
+      },
+      {
+       "Text": "That makes 360 video a great way to visit a historic site, a cultural event or a workplace from a library chair, and it is much easier to make than a full 3D world."
+      }
+     ]
+    },
+    {
+     "Heading": "Why libraries?",
+     "Blocks": [
+      {
+       "Text": "A good headset costs hundreds of dollars, and many people have never tried one. Libraries can give everyone a turn, with help from staff who know the equipment."
+      },
+      {
+       "Text": "XR in libraries is not just games. People use it to explore careers, travel to places they cannot reach, save local stories and learn to make immersive media of their own."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "ar-around-town": {
+   "Title": "AR Around Town",
+   "Subtitle": "Scavenger hunts, fairs and pop-up books",
+   "Pages": [
+    {
+     "Heading": "Digital layers on the real world",
+     "Blocks": [
+      {
+       "Text": "Augmented reality adds pictures, sounds and information to the real world, usually through a phone camera. Unlike VR, you stay connected to the place around you."
+      },
+      {
+       "Text": "That makes AR great for walking tours, scavenger hunts, outdoor events and books that pop off the page. XRLibraries’ XR Showcase features LP Bookspace, AR books with friendly characters that explain the story and quiz readers."
+      }
+     ]
+    },
+    {
+     "Heading": "The Black Wall Street of Charleston",
+     "Blocks": [
+      {
+       "Text": "Career and technical education students at Burke High School in Charleston, South Carolina, built an AR scavenger hunt featuring Charleston’s Black-owned businesses."
+      },
+      {
+       "Text": "Partners included the Preservation Society of Charleston and the Burke High School Foundation. The hunt works as a history lesson and as a way to support local businesses."
+      }
+     ]
+    },
+    {
+     "Heading": "Pollinators at the fair",
+     "Blocks": [
+      {
+       "Text": "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an AR app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them."
+      },
+      {
+       "Text": "Videos about butterfly migration and pollination, and bug sculptures by Marin artist Cynthia Jensen, rounded out the booth."
+      }
+     ]
+    },
+    {
+     "Heading": "Design an AR hunt",
+     "Blocks": [
+      {
+       "Text": "Choose five to eight stops that tell one story. Research each stop, then write a short clue and a fun fact for each one."
+      },
+      {
+       "Text": "Ask business owners and property managers for permission, and pick a route with safe sidewalks and crossings."
+      }
+     ]
+    },
+    {
+     "Heading": "Test it outside",
+     "Blocks": [
+      {
+       "Text": "Walk the route at different times of day. GPS can drift near tall buildings, and screens can be hard to read in bright sun."
+      },
+      {
+       "Text": "Remind players to look up from their phones while they walk. The best AR adds to the real world without making people forget it is there."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "vr-program": {
+   "Title": "Running a VR Program",
+   "Subtitle": "A starter guide for libraries",
+   "Pages": [
+    {
+     "Heading": "Start with a goal",
+     "Blocks": [
+      {
+       "Text": "A VR program works best when it has a purpose: exploring careers, visiting the ocean floor, learning history or making art. Pick a theme, then choose a few apps that fit it."
+      },
+      {
+       "Text": "XRLibraries groups apps into themed playbooks so a librarian can run a program on day one. Its catalog covers categories like astronomy, history, life science, travel, mindfulness and music."
+      }
+     ]
+    },
+    {
+     "Heading": "Before the first visitor",
+     "Blocks": [
+      {
+       "Text": "Charge every headset and test each app. Clear a play area of tables, cords and walls, and set the guardian boundary, the virtual fence that warns players before they bump into something."
+      },
+      {
+       "Text": "Plan how others will watch. Casting the headset view to a TV lets a group follow along, and it keeps the person in the headset from feeling alone."
+      }
+     ]
+    },
+    {
+     "Heading": "Keep it clean",
+     "Blocks": [
+      {
+       "Text": "Headsets touch faces, so clean them between users. XRLibraries’ XR Showcase episodes show how to sanitize headsets and use UV cleaning devices, which matters in any public setting."
+      },
+      {
+       "Text": "Face covers and wipes at every station make cleaning part of the routine instead of an afterthought."
+      }
+     ]
+    },
+    {
+     "Heading": "Welcoming new users",
+     "Blocks": [
+      {
+       "Text": "Many visitors have never worn a headset. Start them with something calm and seated, show them how to adjust the fit, and stay close as a spotter."
+      },
+      {
+       "Text": "Keep first sessions short. If someone feels dizzy or uncomfortable, they should take the headset off and rest. Check the headset maker’s age guidance for younger visitors."
+      }
+     ]
+    },
+    {
+     "Heading": "Big events",
+     "Blocks": [
+      {
+       "Text": "At a busy event, set up several stations and rotate headsets between visitors, a tip from the XR Showcase. A sign-up sheet and a timer keep the line moving fairly."
+      },
+      {
+       "Text": "Afterward, ask people what they tried and what they want next. Their answers help you pick the next playbook."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "xr-careers": {
+   "Title": "XR for Careers",
+   "Subtitle": "Try a job before you train for it",
+   "Pages": [
+    {
+     "Heading": "Step inside a job",
+     "Blocks": [
+      {
+       "Text": "Virtual reality lets people try a job before they commit to training: stand on a factory floor, look inside a dialysis machine or practice a nursing skill."
+      },
+      {
+       "Text": "In Nevada, a program called Project SANDI put that experience in libraries and community colleges across the state."
+      }
+     ]
+    },
+    {
+     "Heading": "Project SANDI",
+     "Blocks": [
+      {
+       "Text": "SANDI stands for Supporting and Advancing Nevada’s Dislocated Individuals. It began in 2020, during the economic downturn, with a $13.8 million federal grant."
+      },
+      {
+       "Text": "The program focuses on five fields: skilled trades, healthcare, information technology, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations."
+      }
+     ]
+    },
+    {
+     "Heading": "What people do in the headset",
+     "Blocks": [
+      {
+       "Text": "Visitors take VR field trips to job sites and practice in training simulations for jobs such as dialysis technician, certified nursing assistant and HVAC technician."
+      },
+      {
+       "Text": "A nursing program coordinator at Great Basin College said the headsets allow “personal viewing and repetition of anatomy and pathophysiology.” That kind of repetition is hard to get with real equipment."
+      }
+     ]
+    },
+    {
+     "Heading": "Why libraries",
+     "Blocks": [
+      {
+       "Text": "Libraries are free, open to everyone and close to home, even in small towns. That makes them a natural place for career exploration."
+      },
+      {
+       "Text": "XRLibraries and its partner Lifeliqe installed VR headsets in Nevada community college and public libraries. XRLibraries’ homepage counts more than 1,100."
+      }
+     ]
+    },
+    {
+     "Heading": "A story from a small town",
+     "Blocks": [
+      {
+       "Text": "A remote 12-week dialysis technician certification let people train without traveling to a training center. In a community of about 300 people, a single mother finished the program and passed her certification."
+      },
+      {
+       "Text": "She plans to become a registered nurse. For many rural learners, the library is the closest classroom."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "first-job": {
+   "Title": "Your First Job",
+   "Subtitle": "Finding it, getting it, keeping it",
+   "Pages": [
+    {
+     "Heading": "Where to start",
+     "Blocks": [
+      {
+       "Text": "First jobs are often in restaurants, stores, summer camps and farms, or helping neighbors with yard work and babysitting. Think about what you like to do and what you are good at."
+      },
+      {
+       "Text": "Ask family, teachers, coaches and neighbors. Many jobs are found through people you know. In many states, workers under 18 need a work permit, often issued through their school."
+      }
+     ]
+    },
+    {
+     "Heading": "Your résumé",
+     "Blocks": [
+      {
+       "Text": "A résumé is a one-page summary of you as a worker. Include your contact information, your school, any jobs or volunteer work, skills like languages, computers or tools, and activities that show responsibility."
+      },
+      {
+       "Text": "Keep it neat, short and honest, and ask someone to proofread it."
+      }
+     ]
+    },
+    {
+     "Heading": "The interview",
+     "Blocks": [
+      {
+       "Text": "Before an interview, learn about the business. Dress a little nicer than the job requires and arrive five to ten minutes early."
+      },
+      {
+       "Text": "Give specific examples. “I walked my neighbor’s dogs every day for a summer” shows reliability better than “I’m responsible.” At the end, ask a question about the job and thank the interviewer."
+      }
+     ]
+    },
+    {
+     "Heading": "On the job",
+     "Blocks": [
+      {
+       "Text": "Show up on time, put your phone away and ask questions when you are not sure. Mistakes happen to everyone. Own them and fix them."
+      },
+      {
+       "Text": "Reliability is the quality employers value most in a new worker, and it is how you earn a good reference for your next job."
+      }
+     ]
+    },
+    {
+     "Heading": "Your rights",
+     "Blocks": [
+      {
+       "Text": "You must be paid at least the minimum wage, which in many places is higher than the federal minimum. Teens have limits on how many hours they can work on school days."
+      },
+      {
+       "Text": "You have the right to a safe workplace and to speak up about unsafe conditions. If something feels wrong, talk to a trusted adult or your state’s labor office."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "making-360": {
+   "Title": "Making 360 Stories",
+   "Subtitle": "Film a place so others can stand in it",
+   "Pages": [
+    {
+     "Heading": "What is a 360 story?",
+     "Blocks": [
+      {
+       "Text": "A 360 story is a short video or photo tour filmed in every direction, so viewers can look around as if they were there. It can show a historic site, a cultural event or how something is made from start to finish."
+      },
+      {
+       "Text": "In 2022 the Washington State Library ran a grant program that gave six libraries the equipment and training to make 360 stories about topics important to their communities. XRLibraries was the trainer."
+      }
+     ]
+    },
+    {
+     "Heading": "Plan with your community",
+     "Blocks": [
+      {
+       "Text": "Pick a story that matters locally, and partner with the people who know it best, such as a historical society, a cultural group, a tribe or a local business."
+      },
+      {
+       "Text": "Write a simple shot list: the places to film, who will speak, and what you want viewers to notice in each scene."
+      }
+     ]
+    },
+    {
+     "Heading": "Filming tips",
+     "Blocks": [
+      {
+       "Text": "Put the camera on a tripod at about eye level, around five feet high, and keep it still. A moving 360 camera can make viewers feel sick."
+      },
+      {
+       "Text": "The camera sees everything, so either step out of the scene or become part of it. Keep important things away from the seam between the lenses, and film in even light."
+      }
+     ]
+    },
+    {
+     "Heading": "Sound and story",
+     "Blocks": [
+      {
+       "Text": "Sound tells viewers where to look. Record clear narration or interviews, and capture the natural sounds of the place."
+      },
+      {
+       "Text": "Keep each scene short, often 30 to 90 seconds, and give viewers time to look around before the next scene starts."
+      }
+     ]
+    },
+    {
+     "Heading": "Sharing it",
+     "Blocks": [
+      {
+       "Text": "Stitch the footage in the camera’s app, then share it on headsets, as a 360 video online or in a virtual tour builder. The XR Showcase features Uptale, a platform for building 360 virtual tours."
+      },
+      {
+       "Text": "Save the original files, notes and permissions with your library’s collection so the story lasts."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "oral-history": {
+   "Title": "Recording an Oral History",
+   "Subtitle": "How to save the stories of your elders",
+   "Pages": [
+    {
+     "Heading": "What is oral history?",
+     "Blocks": [
+      {
+       "Text": "An oral history is a recorded interview with someone about their own memories and experiences. It captures things no newspaper wrote down: how a place smelled, what people joked about, how it felt to live through a flood or a war."
+      },
+      {
+       "Text": "Many of the voices in Lost Stories projects, and in any library’s local history collection, start with interviews like these."
+      }
+     ]
+    },
+    {
+     "Heading": "Before the interview",
+     "Blocks": [
+      {
+       "Text": "Choose someone whose story you want to save, like a grandparent, a neighbor or an elder. Ask permission, explain why you are recording, and tell them where the recording will be kept."
+      },
+      {
+       "Text": "In many communities, including many Native nations, some stories belong to a family or to the community, so ask who has the right to share them."
+      }
+     ]
+    },
+    {
+     "Heading": "Good questions",
+     "Blocks": [
+      {
+       "Text": "Start easy: “Where did you grow up?” Ask open questions that cannot be answered with yes or no, like “What was a normal school day like?” or “Tell me about your first job.”"
+      },
+      {
+       "Text": "Ask for details: “What did it look like? Who was there?” Then listen. Silence is fine. People often remember more if you wait."
+      }
+     ]
+    },
+    {
+     "Heading": "Recording tips",
+     "Blocks": [
+      {
+       "Text": "A phone works well. Find a quiet room away from fans, TVs and kitchens. Set the phone close to the speaker on something soft, and test a short clip first."
+      },
+      {
+       "Text": "At the start, say the date, the place and both of your names. Keep interviews to about an hour so no one gets too tired."
+      }
+     ]
+    },
+    {
+     "Heading": "After the interview",
+     "Blocks": [
+      {
+       "Text": "Thank the person and give them a copy. Label the file with names, the date and the place, write a short summary, and keep a backup."
+      },
+      {
+       "Text": "Ask your local library, historical society or tribal archive whether they collect oral histories. Your recording could help someone a hundred years from now."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "lost-stories": {
+   "Title": "Lost Stories",
+   "Subtitle": "Using XR to bring hidden history back",
+   "Pages": [
+    {
+     "Heading": "Who gets remembered?",
+     "Blocks": [
+      {
+       "Text": "History books leave people out. The stories of workers, immigrants, women and communities of color often survive only in family memories, letters and photographs."
+      },
+      {
+       "Text": "XRLibraries calls its work to recover these histories Lost Stories, using XR to bring marginalized history back into view."
+      }
+     ]
+    },
+    {
+     "Heading": "A Way Out of No Way",
+     "Blocks": [
+      {
+       "Text": "During World War II, thousands of people came to Marin County to build ships, and many African-American workers and their families lived in Marin City."
+      },
+      {
+       "Text": "Marin City students who call themselves the Marinovators built a VR experience of the shipyard and life in Marin City, with a musical tribute to the Black workers whose stories were rarely told."
+      }
+     ]
+    },
+    {
+     "Heading": "From a school bus to the Supreme Court",
+     "Blocks": [
+      {
+       "Text": "Another Lost Stories piece is an animated VR telling of Briggs v. Elliott in South Carolina, a case that grew out of Black families’ fight for a school bus for their children."
+      },
+      {
+       "Text": "Briggs v. Elliott became one of the cases decided together in Brown v. Board of Education in 1954, when the Supreme Court ruled that segregated public schools were unconstitutional."
+      }
+     ]
+    },
+    {
+     "Heading": "What comes next",
+     "Blocks": [
+      {
+       "Text": "XRLibraries plans to search for Latino, Asian-Pacific and Native American lost stories."
+      },
+      {
+       "Text": "Any community can start. Collect oral histories, scan family photos and documents, and ask elders what the official history left out."
+      }
+     ]
+    },
+    {
+     "Heading": "Doing it right",
+     "Blocks": [
+      {
+       "Text": "Lost stories belong to the people who lived them. Ask permission, credit storytellers if they want credit, and let the community decide how its story is told."
+      },
+      {
+       "Text": "For tribal communities, that can mean keeping some knowledge private. Good projects plan for what should not be shared as carefully as for what should."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "reading-past": {
+   "Title": "Reading the Past",
+   "Subtitle": "How to use primary sources",
+   "Pages": [
+    {
+     "Heading": "What is a primary source?",
+     "Blocks": [
+      {
+       "Text": "A primary source is something made at the time you are studying, by people who were there: a newspaper, a photograph, a letter, a map, a diary or a recorded interview."
+      },
+      {
+       "Text": "A secondary source is made later by someone looking back, like a textbook or a documentary. Primary sources let you meet the past up close. Secondary sources help you see the bigger story around them."
+      }
+     ]
+    },
+    {
+     "Heading": "Five questions to ask",
+     "Blocks": [
+      {
+       "Items": [
+        "Who made this?",
+        "When and where was it made?",
+        "Why was it made, and who was it for?",
+        "What does it show or say?",
+        "What does it leave out?"
+       ]
+      },
+      {
+       "Text": "These questions are not about deciding a source is good or bad. They help you understand what each source can and cannot tell you."
+      }
+     ]
+    },
+    {
+     "Heading": "Look closely",
+     "Blocks": [
+      {
+       "Text": "Slow down and describe before you decide. In a photograph, look at clothing, signs, tools and the weather. In a newspaper, read the ads as well as the headlines."
+      },
+      {
+       "Text": "Notice the words people used. Some words from the past are now known to be hurtful. Historians study them carefully without repeating them casually."
+      }
+     ]
+    },
+    {
+     "Heading": "Compare sources",
+     "Blocks": [
+      {
+       "Text": "One source is a clue. Several sources together start to make a case. If a newspaper says a crowd met the first train, does a photograph or a diary agree?"
+      },
+      {
+       "Text": "When sources disagree, ask why. Each person saw the event from a different place, with different reasons for remembering it."
+      }
+     ]
+    },
+    {
+     "Heading": "Find your own",
+     "Blocks": [
+      {
+       "Text": "Many libraries keep local newspapers, photographs and maps. The Library of Congress runs a free website called Chronicling America with millions of digitized newspaper pages."
+      },
+      {
+       "Text": "Your family is an archive too. Old photos, letters, recipes and the stories your elders tell are primary sources for the history of your town."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "oceans-vr": {
+   "Title": "Oceans in VR",
+   "Subtitle": "Reefs, bleaching and acid seas",
+   "Pages": [
+    {
+     "Heading": "Visit the reef",
+     "Blocks": [
+      {
+       "Text": "Most people will never dive a coral reef, but a headset can take them there. Hydrous, a partner listed by XRLibraries, makes VR experiences of the coral reefs of Palau, with turtles, manta rays and sharks."
+      },
+      {
+       "Text": "Its experiences come with lesson plans and activities, so a visit can turn into a science class."
+      }
+     ]
+    },
+    {
+     "Heading": "Coral bleaching",
+     "Blocks": [
+      {
+       "Text": "Corals get much of their food and their color from tiny algae living in their tissues. When the water stays too warm for too long, corals push the algae out and turn white. This is coral bleaching."
+      },
+      {
+       "Text": "Bleached corals are not dead yet, but they are starving. If the water cools in time, the algae can return."
+      }
+     ]
+    },
+    {
+     "Heading": "Ocean acidification",
+     "Blocks": [
+      {
+       "Text": "The ocean absorbs a large share of the carbon dioxide people release into the air, roughly a quarter of it. That carbon dioxide makes seawater more acidic."
+      },
+      {
+       "Text": "More acidic water makes it harder for corals, clams, oysters and some plankton to build shells and skeletons. The Stanford Ocean Experience, one of XRLibraries’ environment projects, is a VR experience about this problem."
+      }
+     ]
+    },
+    {
+     "Heading": "Talk about it",
+     "Blocks": [
+      {
+       "Text": "XRLibraries’ Climate Change Playbook gathers VR apps about climate change for viewing and discussion. The discussion is the important part."
+      },
+      {
+       "Text": "After a VR visit, ask: What surprised you? What would you want to see again? What could our town do?"
+      }
+     ]
+    },
+    {
+     "Heading": "From the ocean to your sink",
+     "Blocks": [
+      {
+       "Text": "The water in the ocean is connected to the water in your sink through the water cycle. What happens to rivers and rain eventually reaches the sea."
+      },
+      {
+       "Text": "The Water Cycle, on the same shelf, follows a drop of water around the planet."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "water-cycle": {
+   "Title": "The Water Cycle",
+   "Subtitle": "Where every drop has been",
+   "Pages": [
+    {
+     "Heading": "Water on the move",
+     "Blocks": [
+      {
+       "Text": "The water you drink today may once have been part of an ocean, a cloud or a glacier. Earth’s water moves in a loop called the water cycle, powered by energy from the sun."
+      },
+      {
+       "Text": "About 97 percent of Earth’s water is salty ocean water. Less than 3 percent is fresh, and most of that is frozen in ice sheets and glaciers."
+      }
+     ]
+    },
+    {
+     "Heading": "Evaporation and transpiration",
+     "Blocks": [
+      {
+       "Text": "Heat from the sun turns liquid water into an invisible gas called water vapor. This is evaporation."
+      },
+      {
+       "Text": "Plants add water vapor too. They pull water up from the soil and release it through tiny pores in their leaves, a process called transpiration."
+      }
+     ]
+    },
+    {
+     "Heading": "Condensation",
+     "Blocks": [
+      {
+       "Text": "As moist air rises, it cools. Cooler air cannot hold as much water vapor, so the vapor condenses into tiny droplets that form clouds."
+      },
+      {
+       "Text": "You can see condensation when a cold glass “sweats” on a hot day."
+      }
+     ]
+    },
+    {
+     "Heading": "Precipitation and collection",
+     "Blocks": [
+      {
+       "Text": "When cloud droplets join into drops heavy enough to fall, we get precipitation: rain, snow, sleet or hail."
+      },
+      {
+       "Text": "Water collects in oceans, lakes and rivers, soaks into the ground to become groundwater, or is stored as snow and ice. Then the cycle starts again."
+      }
+     ]
+    },
+    {
+     "Heading": "California’s water",
+     "Blocks": [
+      {
+       "Text": "In California, much of the year’s water falls as winter snow in the Sierra Nevada. The snowpack works like a frozen reservoir, melting slowly through spring and summer."
+      },
+      {
+       "Text": "In dry years there is less snowpack, and in very wet years rivers can flood. Droughts and floods are part of the same cycle."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "worlds-browser": {
+   "Title": "Worlds in the Browser",
+   "Subtitle": "Shared 3D spaces anyone can open",
+   "Pages": [
+    {
+     "Heading": "A world anyone can open",
+     "Blocks": [
+      {
+       "Text": "Some virtual worlds need a headset or a gaming computer. Others run in a web browser, so anyone with a phone, laptop or library computer can visit."
+      },
+      {
+       "Text": "XRLibraries builds several shared worlds on FrameVR, a browser-based platform it describes as accessible across all devices."
+      }
+     ]
+    },
+    {
+     "Heading": "Freedom to Read",
+     "Blocks": [
+      {
+       "Text": "Freedom to Read is a VR environment built with the SJSU School of Information, Unite Against Book Bans, Little Free Library and Books Unbanned."
+      },
+      {
+       "Text": "It helps citizens, librarians and students fight book bans, and helps young people in affected areas find challenged books that reflect their lives."
+      }
+     ]
+    },
+    {
+     "Heading": "Children Draw War, Not Flowers",
+     "Blocks": [
+      {
+       "Text": "This immersive 3D exhibition shares art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children after the Russian invasion."
+      },
+      {
+       "Text": "Librarians from 40 regional libraries, veterans and SJSU iSchool faculty and students took part. Funds bought a scanner so libraries could digitize the children’s artwork, and the project was honored at the Anthem Awards."
+      }
+     ]
+    },
+    {
+     "Heading": "Seeking Immortality",
+     "Blocks": [
+      {
+       "Text": "Built with the Northern Cheyenne Tribe and funded by an IMLS Native American Enhancement Grant, this browser-based world preserves endangered Cheyenne language and cultural knowledge."
+      },
+      {
+       "Text": "Tribal members and students were trained in 3D scanning and other tools to build and manage the space, so the tribe keeps control of its own data."
+      }
+     ]
+    },
+    {
+     "Heading": "Plan your own world",
+     "Blocks": [
+      {
+       "Text": "Start with who it is for and what it should do. Decide what belongs in public, what should stay private, and who gets to make that call."
+      },
+      {
+       "Text": "Make it simple to enter, label everything clearly and test it on a phone. A world only works if people can find their way around."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "code": {
+   "Title": "How Computers Follow Instructions",
+   "Subtitle": "A first look at code",
+   "Pages": [
+    {
+     "Heading": "Instructions all the way down",
+     "Blocks": [
+      {
+       "Text": "A computer does not think the way you do. It follows instructions very fast and exactly as written."
+      },
+      {
+       "Text": "A list of step-by-step instructions that solves a problem is called an algorithm. A recipe is an algorithm for cooking. A program is an algorithm written in a language a computer can run."
+      }
+     ]
+    },
+    {
+     "Heading": "Bits and bytes",
+     "Blocks": [
+      {
+       "Text": "Inside, computers store everything as bits, which are 1s and 0s. Eight bits make a byte, which can stand for a number from 0 to 255, a letter, or part of a color or a sound."
+      },
+      {
+       "Text": "The letter A, for example, is stored as the number 65, which in binary is 01000001."
+      }
+     ]
+    },
+    {
+     "Heading": "Building blocks",
+     "Blocks": [
+      {
+       "Items": [
+        "Variables are named boxes that hold values, like score = 0.",
+        "Conditionals make choices: if the score is more than 10, show “You win!”",
+        "Loops repeat steps: for each student in the class, print their name.",
+        "Functions bundle steps into a named action you can reuse."
+       ]
+      },
+      {
+       "Text": "Almost every program, from a calculator to a VR game, is built from these few ideas."
+      }
+     ]
+    },
+    {
+     "Heading": "A tiny program",
+     "Blocks": [
+      {
+       "Text": "total = 0\nfor each number from 1 to 5:\n    total = total + number\nshow total"
+      },
+      {
+       "Text": "This program adds 1 + 2 + 3 + 4 + 5 and shows 15. Change the 5 to 100 and the computer adds the numbers from 1 to 100 just as easily. The answer is 5,050."
+      }
+     ]
+    },
+    {
+     "Heading": "Bugs",
+     "Blocks": [
+      {
+       "Text": "A mistake in a program is called a bug. In 1947, engineers working on the Harvard Mark II computer found a real moth stuck in a relay and taped it into their logbook as the “first actual case of bug being found.”"
+      },
+      {
+       "Text": "Every programmer writes bugs. Good programmers test their code, read error messages carefully and fix one thing at a time."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "ai": {
+   "Title": "How AI Works",
+   "Subtitle": "And when to double-check it",
+   "Pages": [
+    {
+     "Heading": "What is AI?",
+     "Blocks": [
+      {
+       "Text": "Artificial intelligence, or AI, is software that learns patterns from examples instead of following only hand-written rules."
+      },
+      {
+       "Text": "A spam filter learns from millions of emails which ones are junk. A photo app learns what faces look like. A chat assistant learns patterns of language from huge amounts of text."
+      }
+     ]
+    },
+    {
+     "Heading": "How a language model writes",
+     "Blocks": [
+      {
+       "Text": "A language model writes a little bit of text at a time, choosing what is likely to come next based on the patterns it learned. That is why it can write smooth sentences on almost any topic."
+      },
+      {
+       "Text": "It is also why it can state something false in a confident voice. People call these mistakes hallucinations."
+      }
+     ]
+    },
+    {
+     "Heading": "Using AI well",
+     "Blocks": [
+      {
+       "Text": "Treat AI like a helpful but imperfect study partner. Ask it to explain ideas in different ways, quiz you or give feedback on your writing."
+      },
+      {
+       "Text": "Check important facts against trusted sources. If you use AI for schoolwork, follow your teacher’s rules and be honest about how you used it."
+      }
+     ]
+    },
+    {
+     "Heading": "Privacy and safety",
+     "Blocks": [
+      {
+       "Text": "Do not share private information like your address, passwords or photos of other people with AI tools or websites you do not trust."
+      },
+      {
+       "Text": "Images, videos and voices can be made by AI, so a shocking clip online may not be real. Look for the original source before you believe it or share it."
+      }
+     ]
+    },
+    {
+     "Heading": "The staff on this campus",
+     "Blocks": [
+      {
+       "Text": "Margaret, Rosa, Mr. Hale and Coach Rae are virtual staff. They answer common questions from what they know about this campus, and when AI is available they can answer more."
+      },
+      {
+       "Text": "They are not real people. A real library would decide what its own guides know and how they speak."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  },
+  "world-builder": {
+   "Title": "World Builder’s Handbook",
+   "Subtitle": "How to make 3D worlds and games like this campus",
+   "Pages": [
+    {
+     "Heading": "Start with why",
+     "Blocks": [
+      {
+       "Text": "Before any 3D work, decide who your world is for and what they will do there. Write one sentence: “In this world, you can …”"
+      },
+      {
+       "Text": "This campus began as a list: a museum that tells a story, a library you can read in, a school where every class is hands-on and a recess yard for fun. Then came a rough map on paper showing how to walk from one to the next."
+      },
+      {
+       "Text": "Start small. A single room that works beats a giant world that doesn’t."
+      }
+     ]
+    },
+    {
+     "Heading": "Free tools to start",
+     "Blocks": [
+      {
+       "Text": "You can build real 3D worlds with free tools:"
+      },
+      {
+       "Items": [
+        "three.js: draws 3D in a web page. This campus runs on it.",
+        "Blender: free, professional software for modeling, sculpting and animation.",
+        "Godot: a free, open-source game engine.",
+        "Unity and Unreal Engine: the engines behind many games and XR apps; both are free to start learning.",
+        "Krita or GIMP: paint textures and images.",
+        "Audacity: record and edit sound.",
+        "VS Code: a free code editor.",
+        "Git and GitHub: save every version of your project and share it.",
+        "Hosting like Vercel, Netlify or itch.io: put your world online."
+       ]
+      },
+      {
+       "Text": "Pick one tool and finish one small project before adding the next."
+      }
+     ]
+    },
+    {
+     "Heading": "Block it out",
+     "Blocks": [
+      {
+       "Text": "Build the layout from plain boxes first, then walk through it. Studios call this a blockout or graybox."
+      },
+      {
+       "Text": "Use real sizes. In this campus your eyes are 1.62 meters off the floor, doorways are 1.8 to 3.2 meters wide and ceilings are 3.4 to 7.6 meters high. You walk at 3 meters per second, about twice as fast as a real walk, because walking feels slow on a screen."
+      },
+      {
+       "Text": "Move walls and rooms around until walking through feels good. Changing a box is quick; changing a finished building is not."
+      }
+     ]
+    },
+    {
+     "Heading": "Models and meshes",
+     "Blocks": [
+      {
+       "Text": "Every 3D model is a mesh: points in space (vertices) joined into triangles. A cube needs 12 triangles; a smooth sphere might use hundreds."
+      },
+      {
+       "Text": "Artists usually model in Blender and export a file like glTF. This campus builds nearly everything from code instead: boxes, cylinders, spheres, lathed shapes like the lab flask and extruded shapes like roofs."
+      },
+      {
+       "Text": "const box = new THREE.Mesh(\n  new THREE.BoxGeometry(1, 1, 1),\n  new THREE.MeshStandardMaterial({ color: '#f2c14e' })\n);\nscene.add(box);"
+      },
+      {
+       "Text": "When a scene needs thousands of copies of one thing, like grass blades or books, instancing draws them all at once."
+      }
+     ]
+    },
+    {
+     "Heading": "Materials",
+     "Blocks": [
+      {
+       "Text": "A material describes a surface. Physically based rendering (PBR) uses a few simple dials:"
+      },
+      {
+       "Items": [
+        "Color (albedo): the surface’s own color.",
+        "Roughness: 0 is perfectly smooth and glossy (a mirror if it’s also metal), 1 is chalk.",
+        "Metalness: metal or not.",
+        "Normal map: fakes small bumps, like brick edges or wood grain, without extra triangles."
+       ]
+      },
+      {
+       "Text": "Textures are images wrapped onto meshes. Most textures here, from the bricks to the blueprints, are drawn by code onto a canvas as the campus loads."
+      }
+     ]
+    },
+    {
+     "Heading": "Light and shadow",
+     "Blocks": [
+      {
+       "Text": "Light makes a scene believable. Common kinds:"
+      },
+      {
+       "Items": [
+        "Directional light: the sun. Parallel rays and crisp shadows.",
+        "Point lights: lamps that shine in every direction.",
+        "Image-based light: a picture of the sky or room that adds soft light and reflections."
+       ]
+      },
+      {
+       "Text": "Shadows are drawn from the light’s point of view into a shadow map. Lights cost speed: every lamp adds work to every lit pixel. This campus keeps 8 lamps switched on at once and moves them to the rooms near you."
+      }
+     ]
+    },
+    {
+     "Heading": "Effects",
+     "Blocks": [
+      {
+       "Text": "Post effects run on the finished picture, like filters:"
+      },
+      {
+       "Items": [
+        "Bloom: bright lights glow and bleed softly.",
+        "Ambient occlusion: darkens corners and creases where light can’t reach.",
+        "Tone mapping: squeezes very bright and very dark light into what a screen can show.",
+        "Color grading: sets the mood, like a filter on a photo."
+       ]
+      },
+      {
+       "Text": "Fog is different: it fades faraway things as each object is drawn, which hints at distance and hides the edge of the world."
+      },
+      {
+       "Text": "Effects are seasoning. Set Graphics to Low in About to see the campus without bloom, ambient occlusion and grading."
+      }
+     ]
+    },
+    {
+     "Heading": "Physics",
+     "Blocks": [
+      {
+       "Text": "A physics engine moves objects with gravity, mass, friction and collisions. Each object has a simple collider shape (a ball, a box or a capsule) that’s much cheaper to test than its full mesh."
+      },
+      {
+       "Text": "The Recess Yard uses the Rapier physics engine and steps the world at a fixed 60 times per second, then smooths the motion between steps so it looks right at any frame rate."
+      },
+      {
+       "Text": "import RAPIER from '@dimforge/rapier3d-compat';\nawait RAPIER.init();\nconst world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });\nconst ball = world.createRigidBody(\n  RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 3, 0)\n);\nworld.createCollider(RAPIER.ColliderDesc.ball(0.11), ball);\nworld.step();"
+      }
+     ]
+    },
+    {
+     "Heading": "Interaction",
+     "Blocks": [
+      {
+       "Text": "To know what you tapped, the campus casts a ray, an invisible line, from the camera through your finger into the scene and finds the first thing it hits."
+      },
+      {
+       "Text": "To walk you somewhere, it lays a grid over the floors and uses A* (A-star) pathfinding to find the shortest route around walls and furniture."
+      },
+      {
+       "Text": "The virtual staff answer common questions from what the campus knows, and can use AI for harder ones when it’s allowed."
+      }
+     ]
+    },
+    {
+     "Heading": "Make it fast",
+     "Blocks": [
+      {
+       "Text": "A smooth world draws a new frame about 60 times per second, which gives the computer about 16 milliseconds for each one."
+      },
+      {
+       "Items": [
+        "Fewer draw calls: merge objects that share a material, and use instancing for repeats.",
+        "Hide what you can’t see: this campus only draws rooms that are in view.",
+        "Quality levels: lower settings for older phones.",
+        "Dynamic resolution: draw fewer pixels when frames run slow, like many console games do."
+       ]
+      }
+     ]
+    },
+    {
+     "Heading": "Your first world in 20 lines",
+     "Blocks": [
+      {
+       "Text": "Paste this into a file named index.html and open it in a browser. You’ll see a spinning box on grass."
+      },
+      {
+       "Text": "<script type=\"importmap\">{\"imports\":{\"three\":\"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js\"}}</script>\n<script type=\"module\">\nimport * as THREE from 'three';\nconst scene = new THREE.Scene();\nscene.background = new THREE.Color('#9cc3e4');\nconst camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 100);\ncamera.position.set(0, 1.6, 5);\nconst renderer = new THREE.WebGLRenderer({ antialias: true });\nrenderer.setSize(innerWidth, innerHeight);\ndocument.body.appendChild(renderer.domElement);\nscene.add(new THREE.HemisphereLight('#ffffff', '#445533', 2));\nconst ground = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: '#5d8f43' }));\nground.rotation.x = -Math.PI / 2;\nscene.add(ground);\nconst box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: '#f2c14e' }));\nbox.position.y = 0.5;\nscene.add(box);\nrenderer.setAnimationLoop(() => { box.rotation.y += 0.01; renderer.render(scene, camera); });\n</script>"
+      },
+      {
+       "Text": "Now change the color, add a second box, or move the camera. That’s world building."
+      }
+     ]
+    },
+    {
+     "Heading": "Ship it and keep going",
+     "Blocks": [
+      {
+       "Text": "Put your world online so people can try it, then watch them use it. Where do they get stuck? What do they love? Fix one thing at a time."
+      },
+      {
+       "Text": "A learning path that works: HTML, CSS and JavaScript, then three.js, then Blender basics, then a weekend game jam with friends."
+      },
+      {
+       "Text": "Jobs in this world include game developer, technical artist, 3D artist, level designer, XR developer and graphics engineer."
+      }
+     ]
+    }
+   ],
+   "CatalogueLabel": "Find it in WorldCat"
+  }
+ },
+ "DT_Rooms": {
+  "lobby": {
+   "Kicker": "Lobby",
+   "DisplayName": "XRLibraries Campus",
+   "Sub": "Museum ahead · Library left · School right",
+   "MapLabel": "L"
+  },
+  "g1": {
+   "Kicker": "Gallery 1 of 3",
+   "DisplayName": "Headsets in Libraries",
+   "Sub": "2016 to 2022",
+   "MapLabel": "1"
+  },
+  "g2": {
+   "Kicker": "Gallery 2 of 3",
+   "DisplayName": "Learning That Works",
+   "Sub": "Careers and resources",
+   "MapLabel": "2"
+  },
+  "g3": {
+   "Kicker": "Gallery 3 of 3",
+   "DisplayName": "Stories Worth Saving",
+   "Sub": "Equity, worlds, nature",
+   "MapLabel": "3"
+  },
+  "wax": {
+   "Kicker": "Museum · Living History",
+   "DisplayName": "The Wax Hall",
+   "Sub": "Walk up to a scene and it comes to life",
+   "MapLabel": "WAX HALL"
+  },
+  "hallL": {
+   "Kicker": "Hall",
+   "DisplayName": "To the Library",
+   "Sub": "Reading room ahead"
+  },
+  "lib": {
+   "Kicker": "Library",
+   "DisplayName": "The Reading Room",
+   "Sub": "Tap a book on display to read it",
+   "MapLabel": "LIBRARY"
+  },
+  "libAisle": {
+   "Kicker": "Library",
+   "DisplayName": "The Stacks",
+   "Sub": "Eight sections · Books on every end"
+  },
+  "hallR": {
+   "Kicker": "Hall",
+   "DisplayName": "To the Workshop School",
+   "Sub": "Every class is a workshop"
+  },
+  "school": {
+   "Kicker": "Workshop School",
+   "DisplayName": "Main Hall",
+   "Sub": "Rooms 101–104 are open · Recess Yard out back"
+  },
+  "studio": {
+   "Kicker": "Room 101",
+   "DisplayName": "3D Art Studio",
+   "Sub": "Brushes, shapes and a blank canvas",
+   "MapLabel": "101"
+  },
+  "lab": {
+   "Kicker": "Room 102",
+   "DisplayName": "Science Lab",
+   "Sub": "Sieve test · Titration · Pendulum",
+   "MapLabel": "102"
+  },
+  "blueprint": {
+   "Kicker": "Room 103",
+   "DisplayName": "Blueprint Lab",
+   "Sub": "Five blueprints · Model bench",
+   "MapLabel": "103"
+  },
+  "world": {
+   "Kicker": "Room 104",
+   "DisplayName": "XR Classroom",
+   "Sub": "Take a seat: class, quiz, certificate · Layer table at the back",
+   "MapLabel": "104"
+  },
+  "yard": {
+   "Kicker": "Recess Yard",
+   "DisplayName": "The Playground",
+   "Sub": "Coaster · Sky Drop · Ocean Dive",
+   "MapLabel": "RECESS YARD"
+  },
+  "rotunda": {
+   "Kicker": "Rotunda",
+   "DisplayName": "XRLibraries Campus",
+   "Sub": "Through the arch to the museum",
+   "MapLabel": "R"
+  },
+  "forecourt": {
+   "Kicker": "The Grounds",
+   "DisplayName": "The Forecourt Theatre",
+   "Sub": "Sit on a bench and the next talk begins",
+   "MapLabel": "F"
+  },
+  "talksFoyer": {
+   "Kicker": "Talks",
+   "DisplayName": "The Auditorium Foyer",
+   "Sub": "Talks run all day · The portal is ahead"
+  },
+  "auditorium": {
+   "Kicker": "Talks",
+   "DisplayName": "The Auditorium",
+   "Sub": "Take a seat and the talk begins",
+   "MapLabel": "TALKS"
+  },
+  "training": {
+   "Kicker": "Training",
+   "DisplayName": "The Training Wing",
+   "Sub": "Five stations, then the quiz at the desk",
+   "MapLabel": "TRAINING"
+  }
+ },
+ "DT_Places": {
+  "lobby": {
+   "Label": "Lobby",
+   "Directions": "the lobby.",
+   "Say": "the lobby"
+  },
+  "g1": {
+   "Label": "Gallery 1: Headsets in Libraries",
+   "Directions": "Gallery 1: Headsets in Libraries, straight ahead from the lobby.",
+   "Say": "Gallery 1: Headsets in Libraries"
+  },
+  "g2": {
+   "Label": "Gallery 2: Learning That Works",
+   "Directions": "Gallery 2: Learning That Works, straight ahead from the lobby.",
+   "Say": "Gallery 2: Learning That Works"
+  },
+  "g3": {
+   "Label": "Gallery 3: Stories Worth Saving",
+   "Directions": "Gallery 3: Stories Worth Saving, straight ahead from the lobby.",
+   "Say": "Gallery 3: Stories Worth Saving"
+  },
+  "library": {
+   "Label": "The Reading Room",
+   "Directions": "the Reading Room, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Reading Room"
+  },
+  "desk": {
+   "Label": "Reference desk",
+   "Directions": "the reference desk, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the reference desk"
+  },
+  "featured": {
+   "Label": "Featured books table",
+   "Directions": "the featured books table, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the featured books table"
+  },
+  "freedomBoard": {
+   "Label": "Freedom to Read display",
+   "Directions": "the Freedom to Read display, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Freedom to Read display"
+  },
+  "window": {
+   "Label": "Library window",
+   "Directions": "the library window, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the library window"
+  },
+  "school": {
+   "Label": "Workshop School hall",
+   "Directions": "the Workshop School hall, through the doorway on the right side of the lobby and down the hall.",
+   "Say": "the Workshop School hall"
+  },
+  "studio": {
+   "Label": "Room 101: 3D Art Studio",
+   "Directions": "Room 101: 3D Art Studio, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
+   "Say": "Room 101: 3D Art Studio"
+  },
+  "lab": {
+   "Label": "Room 102: Science Lab",
+   "Directions": "Room 102: Science Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+   "Say": "Room 102: Science Lab"
+  },
+  "sieve": {
+   "Label": "Sieve shaker",
+   "Directions": "the sieve shaker, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+   "Say": "the sieve shaker"
+  },
+  "titration": {
+   "Label": "Titration station",
+   "Directions": "the titration station, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+   "Say": "the titration station"
+  },
+  "pendulum": {
+   "Label": "Pendulum",
+   "Directions": "the pendulum, through the doorway on the right side of the lobby and down the school hall. It’s in Room 102, the second door on the left.",
+   "Say": "the pendulum"
+  },
+  "blueprints": {
+   "Label": "Room 103: Blueprint Lab",
+   "Directions": "Room 103: Blueprint Lab, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "Room 103: Blueprint Lab"
+  },
+  "bp-car": {
+   "Label": "Automobile blueprint",
+   "Directions": "the automobile blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the automobile blueprint"
+  },
+  "bp-excavator": {
+   "Label": "Excavator blueprint",
+   "Directions": "the excavator blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the excavator blueprint"
+  },
+  "bp-house": {
+   "Label": "House blueprint",
+   "Directions": "the house blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the house blueprint"
+  },
+  "bp-bridge": {
+   "Label": "Truss bridge blueprint",
+   "Directions": "the bridge blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the bridge blueprint"
+  },
+  "bp-computer": {
+   "Label": "Computer blueprint",
+   "Directions": "the computer blueprint, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the computer blueprint"
+  },
+  "modelbench": {
+   "Label": "Model bench",
+   "Directions": "the model bench, through the doorway on the right side of the lobby and down the school hall. It’s in Room 103, the first door on the right.",
+   "Say": "the model bench"
+  },
+  "worldroom": {
+   "Label": "Room 104: XR Classroom",
+   "Directions": "Room 104, the XR Classroom: through the doorway on the right side of the lobby and down the school hall. It is the second door on the right.",
+   "Say": "Room 104: XR Classroom"
+  },
+  "diorama": {
+   "Label": "Layer table",
+   "Directions": "the layer table, through the doorway on the right side of the lobby and down the school hall. It’s in Room 104, the second door on the right.",
+   "Say": "the layer table"
+  },
+  "sculpture": {
+   "Label": "Sample sculpture",
+   "Directions": "the sample sculpture, through the doorway on the right side of the lobby and down the school hall. It’s the first door on the left.",
+   "Say": "the sample sculpture"
+  },
+  "margaret": {
+   "Label": "Margaret",
+   "Directions": "Margaret.",
+   "Say": "Margaret"
+  },
+  "wax": {
+   "Label": "The Wax Hall",
+   "Directions": "the Wax Hall, straight ahead from the lobby through all three galleries and the doorway at the end of Gallery 3.",
+   "Say": "the Wax Hall"
+  },
+  "yard": {
+   "Label": "The Recess Yard",
+   "Directions": "the Recess Yard, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the Recess Yard"
+  },
+  "coaster": {
+   "Label": "Comet Coaster",
+   "Directions": "the Comet Coaster, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the Comet Coaster"
+  },
+  "drop": {
+   "Label": "Sky Drop",
+   "Directions": "the Sky Drop, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the Sky Drop"
+  },
+  "dive": {
+   "Label": "Ocean Dive",
+   "Directions": "the Ocean Dive, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the Ocean Dive"
+  },
+  "rae": {
+   "Label": "Coach Rae",
+   "Directions": "Coach Rae, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "Coach Rae"
+  },
+  "field": {
+   "Label": "Soccer goal",
+   "Directions": "the soccer goal, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the soccer goal"
+  },
+  "blocks": {
+   "Label": "Block tower",
+   "Directions": "the block tower, out the back door of the Workshop School. Take the doorway on the right side of the lobby and go all the way down the school hall.",
+   "Say": "the block tower"
+  },
+  "sec-basics": {
+   "Label": "XR Basics section",
+   "Directions": "the XR Basics section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the XR Basics section"
+  },
+  "sec-programs": {
+   "Label": "Library Programs section",
+   "Directions": "the Library Programs section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Library Programs section"
+  },
+  "sec-careers": {
+   "Label": "Careers section",
+   "Directions": "the Careers section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Careers section"
+  },
+  "sec-story": {
+   "Label": "Storytelling section",
+   "Directions": "the Storytelling section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Storytelling section"
+  },
+  "sec-equity": {
+   "Label": "Lost Stories section",
+   "Directions": "the Lost Stories section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Lost Stories section"
+  },
+  "sec-environment": {
+   "Label": "Environment section",
+   "Directions": "the Environment section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Environment section"
+  },
+  "sec-worlds": {
+   "Label": "Shared Worlds section",
+   "Directions": "the Shared Worlds section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Shared Worlds section"
+  },
+  "sec-tech": {
+   "Label": "Technology section",
+   "Directions": "the Technology section, through the doorway on the left side of the lobby and down the hall.",
+   "Say": "the Technology section"
+  },
+  "rotunda": {
+   "Label": "Rotunda",
+   "Directions": "the domed hall just behind the front doors, before the lobby.",
+   "Say": "the rotunda"
+  },
+  "forecourt": {
+   "Label": "The Forecourt Theatre",
+   "Directions": "out through the rotunda and the front doors, down the steps: the stage is at their foot, the seats rise in front of it.",
+   "Say": "the forecourt theatre"
+  },
+  "auditorium": {
+   "Label": "The Auditorium",
+   "Directions": "through the lobby's right-hand door into Hall R, out through the door at its far end, across the foyer and through the portal.",
+   "Say": "the auditorium"
+  },
+  "training": {
+   "Label": "The Training Wing",
+   "Directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school.",
+   "Say": "the training wing"
+  }
+ },
+ "DT_Tour": {
+  "S01": {
+   "Title": "Welcome to the XRLibraries Campus",
+   "DateLabel": "Lobby",
+   "Body": "Three galleries and the Wax Hall tell XRLibraries’ story. After the museum, the tour visits the reading room, the four workshop rooms of the school and the Recess Yard. Margaret, the guide by the door, answers questions anytime."
+  },
+  "S02": {
+   "Title": "Over 200 VR Systems in California Libraries",
+   "DateLabel": "2016",
+   "Body": "XRLibraries began in 2016 by installing more than 200 virtual reality systems in California public libraries. Its website calls this the largest VR installation in public libraries.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S03": {
+   "Title": "XR Made Easy for Everyone",
+   "DateLabel": "Since 2016",
+   "Body": "XRLibraries works with schools and libraries to bring virtual, augmented and mixed reality into their programs and classes. Its stated goal is equitable access to immersive technology for all communities.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S04": {
+   "Title": "A Library VR Headset",
+   "DateLabel": "Today",
+   "Body": "Standalone headsets let a library visitor stand on the moon, swim a coral reef or practice a job, with no computer attached. Meta Quest and Pico both appear on XRLibraries’ partner list, and its Nevada headsets run on Pico.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S05": {
+   "Title": "Nevada Follows Marin County",
+   "DateLabel": "2017",
+   "Body": "In 2017 Nevada’s state library put its first VR headsets in public libraries: 22 headsets in 11 libraries, with STEM content. WorkingNation reports that the model followed a program at the Marin County Free Library in California.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S06": {
+   "Title": "XR at Computers in Libraries",
+   "DateLabel": "2020 and 2022",
+   "Body": "XRLibraries’ executive director, John MacLeod, presented “Integrating XR Tech & Programming in Libraries” at Computers in Libraries Connect in 2020 and “Using XR to Discover ‘Lost Stories’ & Pop-Up Books” in 2022.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S07": {
+   "Title": "Project SANDI",
+   "DateLabel": "Began in 2020",
+   "Body": "Supporting and Advancing Nevada’s Dislocated Individuals began during the 2020 downturn with a $13.8 million federal grant. It uses VR to explore careers in five fields: skilled trades, healthcare, IT, advanced manufacturing and logistics.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S08": {
+   "Title": "1,100 Headsets in Nevada",
+   "DateLabel": "2020s",
+   "Body": "XRLibraries and Lifeliqe installed VR headsets in Nevada’s community college and public libraries. XRLibraries’ homepage counts more than 1,100.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S09": {
+   "Title": "Training From a Town of 300",
+   "DateLabel": "2020s",
+   "Body": "A remote 12-week dialysis technician certification lets people train without traveling to a training center. In a community of about 300 people, a single mother finished the program, passed her certification and plans to become a registered nurse.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S10": {
+   "Title": "XR Playbooks",
+   "DateLabel": "Ongoing",
+   "Body": "XRLibraries catalogs more than 300 XR apps in categories from astronomy and history to mindfulness and music, then bundles them into themed playbooks that come pre-installed on library headsets.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S11": {
+   "Title": "XR Showcase",
+   "DateLabel": "Video series",
+   "Body": "In this video series, hosts George and Camila try VR and AR apps for libraries, from Tilt Brush and Wander to Apollo 11 VR, and share practical tips like cleaning headsets and setting a guardian boundary.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S12": {
+   "Title": "A Way Out of No Way",
+   "DateLabel": "Lost Stories project",
+   "Body": "Marin City students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S13": {
+   "Title": "The Black Wall Street of Charleston",
+   "DateLabel": "AR scavenger hunt",
+   "Body": "Career and technical education students at Burke High School built an augmented-reality scavenger hunt that leads players to Charleston’s Black-owned businesses.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S14": {
+   "Title": "Seeking Immortality",
+   "DateLabel": "Browser-based world",
+   "Body": "A browser-based VR world, funded by an IMLS Native American Enhancement Grant, that preserves endangered Cheyenne language and cultural knowledge. Tribal members and students learned 3D scanning so the tribe keeps control of its own data.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S15": {
+   "Title": "Children Draw War, Not Flowers",
+   "DateLabel": "3D art exhibition",
+   "Body": "An immersive 3D exhibition of art by children in Ukraine’s Cherkasy region, which took in more than 42,000 displaced children. It helps children work through war-related trauma, preserves their artwork, and was honored at the Anthem Awards.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S16": {
+   "Title": "Pollinators at the Marin County Fair",
+   "DateLabel": "2025",
+   "Body": "At XRLibraries’ bug-themed booth, fairgoers used an AR app called Pollinators to plant flowers and release monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+   "OpenLabel": "Open exhibit"
+  },
+  "S17": {
+   "Title": "The Wax Hall",
+   "DateLabel": "Living History",
+   "Body": "Through the doorway at the end of Gallery 3, wax figures act out XRLibraries’ story in twelve scenes, from the first VR stations in 2016 to the 2025 Marin County Fair. Each scene comes to life as you walk up. The figures are reenactors, not likenesses of real people."
+  },
+  "S18": {
+   "Title": "The First Headsets",
+   "DateLabel": "2016",
+   "Body": "In 2016, libraries in Marin County, California, began offering virtual reality stations as the pilot for the California Virtual Reality Experience. XRLibraries launched that year as the project’s coordinator. Teen volunteers helped first-time visitors into headsets and guided them through their first worlds.",
+   "OpenLabel": "Open scene card"
+  },
+  "S19": {
+   "Title": "VR Goes Statewide",
+   "DateLabel": "2017",
+   "Body": "In June 2017 the California State Library, Oculus and the library consortium Califa partnered to bring VR-ready PCs with Rift headsets to more than 90 libraries across California, building on the Marin County pilot. XRLibraries, launched in 2016 as the project’s coordinator, also became a clearinghouse where libraries share what works with VR and AR.",
+   "OpenLabel": "Open scene card"
+  },
+  "S20": {
+   "Title": "Story Time in 3D",
+   "DateLabel": "2017",
+   "Body": "Library Journal reported in 2017 that young children loved virtual reality story times, while teens gravitated to VR games. In Marin, children listened to stories inside three-dimensional worlds.",
+   "OpenLabel": "Open scene card"
+  },
+  "S21": {
+   "Title": "Nevada Opens Its Stations",
+   "DateLabel": "2018",
+   "Body": "Nevada’s state library set aside $22,000 of a 2017 budget increase for a VR pilot: 22 headsets loaded with STEM content in 11 libraries, modeled on Marin County’s program. In February 2018 the Carson City Library’s grand re-opening featured VR and AR stations, and XRLibraries’ founder presented in a webinar for librarians across the state.",
+   "OpenLabel": "Open scene card"
+  },
+  "S22": {
+   "Title": "VR on the Road",
+   "DateLabel": "By 2019",
+   "Body": "Marin’s VR program went out into the community: to schools, senior centers, the county fair, and people displaced by deadly wildfires.",
+   "OpenLabel": "Open scene card"
+  },
+  "S23": {
+   "Title": "VR in the World’s Catalog",
+   "DateLabel": "2019",
+   "Body": "Nevada’s state library and its partner XRLibraries set out to catalog VR content so any library could find it. In 2019 Nevada librarians led a first-of-its-kind effort to catalog virtual reality in WorldCat, the world’s largest library catalog, and planned a cataloging hack-a-thon in Marin, California and Carson City, Nevada.",
+   "OpenLabel": "Open scene card"
+  },
+  "S24": {
+   "Title": "XR Marin and the XR Stars",
+   "DateLabel": "2019",
+   "Body": "XR Marin brought together the Marin County Free Library, XRLibraries, Novato Unified School District and the Marin County Office of Education. Teens served as “XR Stars,” helping patrons use the equipment. Its programs let people make 3D models, design 3D games and produce 360-degree video tours, and one teen at a VR summer camp borrowed the cameras and filmed her family’s farm.",
+   "OpenLabel": "Open scene card"
+  },
+  "S25": {
+   "Title": "Project SANDI",
+   "DateLabel": "2020",
+   "Body": "In October 2020 Nevada won a $13.8 million federal grant for Project SANDI (Supporting and Advancing Nevada’s Dislocated Individuals), which uses VR to explore careers in skilled trades, healthcare, IT, advanced manufacturing and logistics. It grew to more than 1,000 headsets at over 80 locations. XRLibraries’ executive director is a partner in the project.",
+   "OpenLabel": "Open scene card"
+  },
+  "S26": {
+   "Title": "360° Stories in Washington",
+   "DateLabel": "2022",
+   "Body": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program. In 2022 it helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was open to public, tribal and academic libraries and funded by IMLS through the Library Services and Technology Act.",
+   "OpenLabel": "Open scene card"
+  },
+  "S27": {
+   "Title": "Lost Stories",
+   "DateLabel": "2022",
+   "Body": "In Marin City, students who call themselves the Marinovators built a VR experience of the World War II shipyards and life in Marin City, plus a musical tribute to the African-American workers whose stories were rarely told. XRLibraries’ director presented its Lost Stories work at Computers in Libraries in 2022.",
+   "OpenLabel": "Open scene card"
+  },
+  "S28": {
+   "Title": "Children Draw War, Not Flowers",
+   "DateLabel": "2024",
+   "Body": "XRLibraries helped design “Children Draw War, Not Flowers,” a browser-based VR art exhibition from the San José State University School of Information. It shows art by Ukrainian children aged 4 to 16 and virtual galleries showing the destruction of Ukrainian libraries, and anyone can visit it free in a web browser.",
+   "OpenLabel": "Open scene card"
+  },
+  "S29": {
+   "Title": "Pollinators at the Fair",
+   "DateLabel": "2025",
+   "Body": "At the 2025 Marin County Fair, XRLibraries’ bug-themed booth featured Pollinators, an augmented-reality app where fairgoers planted flowers and released monarch butterflies that flew around pollinating them. Marin artist Cynthia Jensen lent bug sculptures for the booth.",
+   "OpenLabel": "Open scene card"
+  },
+  "S30": {
+   "Title": "The Reading Room",
+   "DateLabel": "Library",
+   "Body": "The library has 15 short books about XR and more, open to read on the featured table and on the ends of the stacks. Rosa at the reference desk answers questions from them.",
+   "OpenLabel": "Read a book"
+  },
+  "S31": {
+   "Title": "Room 101: 3D Art Studio",
+   "DateLabel": "Workshop School",
+   "Body": "Every class in the Workshop School is a hands-on workshop. Here you paint in the air with neon, chrome, ribbon and rainbow brushes, stamp 3D shapes, mirror your strokes and switch to a blank canvas.",
+   "OpenLabel": "Start making art"
+  },
+  "S32": {
+   "Title": "Room 102: Science Lab",
+   "DateLabel": "Workshop School",
+   "Body": "A working lab with goggles on. Run a sieve analysis to measure the grain sizes in a sand sample, find the concentration of a mystery acid by titration, and measure gravity with a pendulum.",
+   "OpenLabel": "Start the sieve test"
+  },
+  "S33": {
+   "Title": "Room 103: Blueprint Lab",
+   "DateLabel": "Workshop School",
+   "Body": "Five real-world blueprints: a car, an excavator, a house, a truss bridge and a computer. Tap any part to learn its name, what it does and how you could build a model, then build a model car or building at the bench.",
+   "OpenLabel": "Open the car blueprint"
+  },
+  "S34": {
+   "Title": "Room 104: World Builder Studio",
+   "DateLabel": "Workshop School",
+   "Body": "How do you build a world like this campus? Build a mini world on the layer table one step at a time, from a sketch to a live website, and read the World Builder’s Handbook to start your own.",
+   "OpenLabel": "Build a world"
+  },
+  "S35": {
+   "Title": "The Recess Yard",
+   "DateLabel": "Out the back of the school",
+   "Body": "Recess is for fun in XR: ride the Comet Coaster, take the Sky Drop for a view of the whole campus, or go on an Ocean Dive with sea creatures. Coach Rae can help, and XR tokens are hidden all over the campus.",
+   "OpenLabel": "Ride the coaster"
+  }
+ },
+ "DT_Staff": {
+  "margaret": {
+   "DisplayName": "Margaret",
+   "Role": "Museum guide",
+   "Monogram": "M",
+   "Greeting": "Welcome to the XRLibraries Campus! I’m Margaret, the museum guide. Ask me about XRLibraries’ story, any exhibit, or where to find the library and the paint studio.",
+   "GreetingShort": "Hello! What would you like to see?",
+   "Help": "Ask me about XRLibraries, any exhibit, or a year, and I’ll show you where to find it. I can walk you to the Wax Hall, where wax figures act out XRLibraries’ story, or to the library, the Workshop School and the Recess Yard.",
+   "Fallback": "I don’t see that in this museum yet. Try asking about Nevada’s headsets, Project SANDI, XR Playbooks or the Lost Stories projects.",
+   "Chips": [
+    "What is XRLibraries?",
+    "When did XRLibraries start?",
+    "Take me to the Wax Hall",
+    "What is Project SANDI?"
+   ]
+  },
+  "rosa": {
+   "DisplayName": "Rosa",
+   "Role": "Reference librarian",
+   "Monogram": "R",
+   "Greeting": "Hi, I’m Rosa, the reference librarian. Ask me a question and I’ll find the answer in our books, or name a topic and I’ll find you something to read.",
+   "GreetingShort": "Hi there! What would you like to know?",
+   "Help": "Ask me a question and I’ll find the answer in our books, or name a topic and I’ll recommend something. I can also walk you to any section.",
+   "Fallback": "That one isn’t on my shelves yet. Try asking about VR, AR, 360 video, careers, oceans or how computers work.",
+   "Chips": [
+    "What is the difference between VR and AR?",
+    "How do I make a 360 video?",
+    "Recommend a book",
+    "What is Freedom to Read?"
+   ]
+  },
+  "hale": {
+   "DisplayName": "Mr. Hale",
+   "Role": "Workshop teacher",
+   "Monogram": "H",
+   "Greeting": "Welcome to the Workshop School! I’m Mr. Hale. Room 101 is the 3D Art Studio, 102 is the Science Lab, 103 is the Blueprint Lab and 104 is the World Builder Studio. Ask me about any of them, or say “start painting.”",
+   "GreetingShort": "Hey! What do you want to make today?",
+   "Help": "I teach in all four workshop rooms. Say “start painting” or “give me a blank canvas,” “start the sieve test,” “open the car blueprint” or “build a model car,” or ask me how anything in the school works.",
+   "Fallback": "I’m not sure about that one. Ask me about 3D art, the science labs, the blueprints or how to build a world.",
+   "Chips": [
+    "Start painting",
+    "Give me a blank canvas",
+    "What workshops are there?",
+    "How do blueprints work?"
+   ]
+  },
+  "rae": {
+   "DisplayName": "Coach Rae",
+   "Role": "Recess coach",
+   "Monogram": "C",
+   "Greeting": "Hey, welcome to recess! I’m Coach Rae. Ride the Comet Coaster, take the Sky Drop, or go on an Ocean Dive. Ask me anything about the rides, or about the XR tokens hidden around the campus.",
+   "GreetingShort": "Hey! Ready for recess?",
+   "Help": "I run the Recess Yard. Say “ride the coaster,” “ride the Sky Drop” or “start the dive,” or ask me about the hidden XR tokens and badges.",
+   "Fallback": "I’m not sure about that one. Ask me about the rides, the hidden XR tokens or the badges.",
+   "Chips": [
+    "Ride the coaster",
+    "What’s on the Ocean Dive?",
+    "Where are the hidden tokens?",
+    "Is it scary?"
+   ]
+  }
+ },
+ "DT_StaffRules": {
+  "R002": {
+   "Pattern": "\\b(thanks|thank you|thx|appreciate it)\\b",
+   "Answer": "You’re welcome! Ask me anything else about the campus."
+  },
+  "R003": {
+   "Pattern": "\\b(bye|goodbye|see you|see ya|later)\\b",
+   "Answer": "Come back anytime. The campus never closes."
+  },
+  "R004-hale": {
+   "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+   "Answer": "I’m Mr. Hale, the workshop teacher here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows."
+  },
+  "R004-margaret": {
+   "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+   "Answer": "I’m Margaret, the museum guide here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows."
+  },
+  "R004-rae": {
+   "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+   "Answer": "I’m Coach Rae, the recess coach here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows."
+  },
+  "R004-rosa": {
+   "Pattern": "\\b(who|what) are you\\b|\\byour name\\b|\\bare you (an? )?(ai|robot|bot|real|person|human)\\b",
+   "Answer": "I’m Rosa, the reference librarian here. I’m a virtual staff member, not a real person. I answer common questions from what this campus knows."
+  },
+  "R005-hale": {
+   "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+   "Answer": "I teach in all four workshop rooms. Say “start painting” or “give me a blank canvas,” “start the sieve test,” “open the car blueprint” or “build a model car,” or ask me how anything in the school works."
+  },
+  "R005-margaret": {
+   "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+   "Answer": "Ask me about XRLibraries, any exhibit, or a year, and I’ll show you where to find it. I can walk you to the Wax Hall, where wax figures act out XRLibraries’ story, or to the library, the Workshop School and the Recess Yard."
+  },
+  "R005-rae": {
+   "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+   "Answer": "I run the Recess Yard. Ask me about the Comet Coaster, the Sky Drop or the Ocean Dive, or about the XR tokens hidden around the campus and the badges you can earn."
+  },
+  "R005-rosa": {
+   "Pattern": "\\bhelp\\b|what can you do|what do you do|how does this work",
+   "Answer": "Ask me a question and I’ll find the answer in our books, or name a topic and I’ll recommend something. I can also walk you to any section."
+  },
+  "R006": {
+   "Pattern": "\\bwho (made|built|created) (this|it|the campus)\\b|is this (official|real|xrlibraries)|\\bofficial\\b",
+   "Answer": "This campus is an unofficial concept that Ev Holt made with Walk the Archive for XRLibraries. It is not an official XRLibraries site. The facts come from public sources like xrlibraries.com."
+  },
+  "R007": {
+   "Pattern": "walk the archive",
+   "Answer": "Walk the Archive is Ev Holt’s tool for turning a library’s, museum’s or tribe’s collection into a place you can walk through in a web browser, on a phone, a laptop or a library computer."
+  },
+  "R008": {
+   "Pattern": "\\bwhere am i\\b|what is this place|whats this place|what is this\\b|what am i looking at",
+   "Answer": "You’re in the XRLibraries Campus, a concept made by Ev Holt. The museum tells XRLibraries’ story, the library holds books about XR, the Workshop School has four rooms for art, science, blueprints and world building, and recess is out back in the Recess Yard."
+  },
+  "R009-hale": {
+   "Pattern": "\\bjoke\\b|make me laugh|something funny",
+   "Answer": "Why did the engineer bring a ladder to the Blueprint Lab? To take the design to the next level."
+  },
+  "R009-margaret": {
+   "Pattern": "\\bjoke\\b|make me laugh|something funny",
+   "Answer": "Why do VR headsets make great museum guides? They always help you see the big picture."
+  },
+  "R009-rae": {
+   "Pattern": "\\bjoke\\b|make me laugh|something funny",
+   "Answer": "Why did the roller coaster get good grades? It always stayed on track."
+  },
+  "R009-rosa": {
+   "Pattern": "\\bjoke\\b|make me laugh|something funny",
+   "Answer": "Why was the library so tall? It had a lot of stories."
+  },
+  "R010": {
+   "Pattern": "\\b(bathroom|restroom|toilet)\\b",
+   "Answer": "Good news: nobody needs a restroom in a virtual campus. Anything else I can help with?"
+  },
+  "R011": {
+   "Pattern": "\\b(hours|open|close|closing)\\b.*\\b(when|what time|hours)\\b|\\bwhat time\\b.*\\b(open|close)\\b|\\bwhen (do|does|is|are) (you|it|the campus|campus|this place)\\b.*\\b(open|close|closing)\\b|\\bare you open\\b",
+   "Answer": "The campus never closes. It’s open whenever you are."
+  },
+  "R012": {
+   "Pattern": "how do i (move|walk|look|turn|get around)|controls",
+   "Answer": "Walk with W, A, S and D and look around with the mouse. Hold Shift to run and press Space to jump. Press E or click to open anything that looks interesting, and press Tab to free the cursor so you can click the floor to walk there. M lists every place on the campus, and T starts the guided tour."
+  },
+  "R013": {
+   "Pattern": "^\\s*(start|let'?s|begin) (painting|to paint|the workshop|workshop)|^\\s*start painting\\s*$|\\bstart (the )?paint",
+   "Answer": "Let’s paint! I’ll take you to the easel in Room 101. Painting in the air comes in a later build, so for now its card shows how it works."
+  },
+  "R014": {
+   "Pattern": "\\bblank (canvas|page|room)\\b|\\bempty (canvas|room)\\b|\\bclean canvas\\b|\\bnew canvas\\b",
+   "Answer": "A blank canvas is part of painting in the air, which comes in a later build. I’ll take you to the easel in Room 101 so you can see how it works."
+  },
+  "R015": {
+   "Pattern": "^(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))(?=.*?(?:titration))",
+   "Answer": "Here’s the titration station in Room 102. Its card walks through finding how concentrated the mystery acid is; running it yourself comes in a later build."
+  },
+  "R015a": {
+   "Pattern": "^(?!.*(?:titration))(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))(?=.*?(?:pendulum))",
+   "Answer": "Here’s the pendulum in Room 102. Its card explains how timing ten swings measures gravity; running it yourself comes in a later build."
+  },
+  "R015b": {
+   "Pattern": "^(?!.*(?:titration))(?!.*(?:pendulum))(?=.*?(?:^\\s*(start|begin|do|run|try|let'?s (do|try|run|start)|i want to (do|try|run))\\s+(the |a |an )?(sieve( test| analysis)?|psd|titration|pendulum|lab test)))",
+   "Answer": "Here’s the sieve analysis station in Room 102. Its card walks through testing a sand sample, step by step; running it yourself comes in a later build."
+  },
+  "R016": {
+   "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(car|automobile)\\b))",
+   "Answer": "Follow me to the automobile blueprint in Room 103."
+  },
+  "R016a": {
+   "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(excavator|digger|heavy equipment)\\b))",
+   "Answer": "Follow me to the excavator blueprint in Room 103."
+  },
+  "R016b": {
+   "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(house|building)\\b))",
+   "Answer": "Follow me to the house blueprint in Room 103."
+  },
+  "R016c": {
+   "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\bbridge\\b))",
+   "Answer": "Follow me to the bridge blueprint in Room 103."
+  },
+  "R016d": {
+   "Pattern": "^(?=.*?(?:^\\s*(open|show me|let'?s see|i want to see)\\s+(the |a |an )?(car|automobile|excavator|digger|heavy equipment|house|building|bridge|computer|pc)\\s+blueprint))(?=.*?(?:\\b(computer|pc)\\b))",
+   "Answer": "Follow me to the computer blueprint in Room 103."
+  },
+  "R017": {
+   "Pattern": "\\b(build|make)\\s+(a |an |my own )?(model|mini) (car|house|building)\\b",
+   "Answer": "Here’s the model bench in Room 103, where you’ll put together a rubber-band car or a two-story building with cross-bracing and then test it. That hands-on part comes in a later build."
+  },
+  "R018": {
+   "Pattern": "other (workshops|classes|rooms)|what (workshops|classes|rooms)|which (workshops|classes|rooms)|workshops are there|what can i (do|make|learn) (here|in the school)",
+   "Answer": "All four workshop rooms are open. Room 101 is the 3D Art Studio, Room 102 is the Science Lab, Room 103 is the Blueprint Lab and Room 104 is the World Builder Studio."
+  },
+  "R019": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(world builder|room 104|build (a|my own|your own|a whole) (world|game)|make (a|my own|your own) (world|game|3d world)|game design|how (was|is|did) (this|the campus|you) (made|built|make|build)|how (do|can) (i|you) (make|build) (a world|a game|something like this|this))\\b))",
+   "Answer": "Room 104, the World Builder Studio, shows how a world like this campus gets made. The World Builder’s Handbook there tells you how to start your own, and the layer table, where you build a mini world one layer at a time, comes in a later build.",
+   "OfferLabel": "Open the Handbook"
+  },
+  "R020": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:\\b(sieve|psd|titrat|pendulum)))(?=.*?(?:\\b(science lab|room 102|lab work|experiments?|labs)\\b))",
+   "Answer": "The Science Lab in Room 102 has three lab stations: a sieve analysis that measures the grain sizes in sand, an acid–base titration that finds the concentration of a mystery acid, and a pendulum that measures gravity. Each station’s card walks through how it works.",
+   "OfferLabel": "Take me to the lab"
+  },
+  "R021": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bblueprints?\\b|\\broom 103\\b))",
+   "Answer": "A blueprint is a technical drawing of a design, with every part labeled. The Blueprint Lab, Room 103, has five on its walls (a car, an excavator, a house, a bridge and a computer), plus a model bench.",
+   "OfferLabel": "Take me to the Blueprint Lab"
+  },
+  "R022": {
+   "Pattern": "\\b(paint|draw|tilt brush|brush|sculpt)\\b",
+   "Answer": "In the 3D Art Studio, Room 101, you’ll paint in the air with brushes like Neon, Ribbon, Chrome and Rainbow, stamp 3D shapes like stars, hearts and cubes, and spin your work on a turntable. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured. Painting itself comes in a later build.",
+   "OfferLabel": "Take me to the easel"
+  },
+  "R022a": {
+   "Pattern": "^(?=.*?(?:\\b(paint|draw|tilt brush|brush|sculpt)\\b))(?=.*?(?:\\b(3d|air|studio|tilt)\\b))",
+   "Answer": "In the 3D Art Studio, Room 101, you’ll paint in the air with brushes like Neon, Ribbon, Chrome and Rainbow, stamp 3D shapes like stars, hearts and cubes, and spin your work on a turntable. It’s inspired by VR art apps like Tilt Brush, which XR Showcase featured. Painting itself comes in a later build.",
+   "OfferLabel": "Take me to the easel"
+  },
+  "R023": {
+   "Pattern": "what (is|are|does) xr ?libraries|tell me about xr ?libraries|^\\s*xr ?libraries\\??\\s*$|what do they do",
+   "Answer": "XRLibraries brings virtual, augmented and mixed reality into libraries and schools. Its stated goal is equitable access to immersive technology for all communities. It began in 2016 and is based in Novato, in Marin County, California. Its website is xrlibraries.com.",
+   "OfferLabel": "Show me where it began"
+  },
+  "R024": {
+   "Pattern": "^(?=.*?(?:\\b(director|who runs|who leads|in charge|founder|ceo)\\b))(?=.*?(?:xr|librar|run|lead|charge|director))",
+   "Answer": "John MacLeod is the executive director of XRLibraries. He works with state and local libraries on plans for virtual reality, augmented reality and 360 video, and he is building a national clearinghouse where libraries can share XR best practices. (Source: SJSU School of Information.)"
+  },
+  "R025": {
+   "Pattern": "^(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))",
+   "Answer": "Riding the Comet Coaster comes in a later build. Here’s its sign for now."
+  },
+  "R025a": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))",
+   "Answer": "Riding the Sky Drop comes in a later build. Here’s its sign for now."
+  },
+  "R025b": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:^\\s*(ride|start|try|go on|let'?s (ride|go on|do|try|start)|i want to (ride|go on|try)|can i (ride|go on|try)|take me on)\\b))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))",
+   "Answer": "The Ocean Dive comes in a later build. Here’s its sign for now."
+  },
+  "R026": {
+   "Pattern": "\\b(tokens?|easter eggs?|secrets?|collectibles?)\\b|\\bhidden (things|stuff|items|gems)\\b",
+   "Answer": "There are 11 glowing XR tokens hidden around the campus: in the museum, the library, the school hall, every workshop room and the Recess Yard, plus one on each ride, which you can grab once riding opens in a later build. Look at a token and press E or click to collect it; each one stamps your library card, and a full card wins a prize at the front desk.",
+   "OfferLabel": "Show my library card"
+  },
+  "R027": {
+   "Pattern": "\\b(badges?|achievements?|rewards?|prizes?|trophies|trophy)\\b",
+   "Answer": "There are 19 badges. In this build you can earn First Steps, Museum Explorer, Bookworm, Ask Away, Living Historian, Good Listener (hear a talk to the end), the workshop badges (finish a station: Lab Scientist, Model Maker, World Builder, 3D Artist), Certified: Intro to VR (pass the quiz in Room 104), Trainee (finish a station in the Training Wing) and Certified: Dialysis Foundations (finish its five stations and pass the quiz at the course desk); the ride, soccer and token badges arrive with those features in later builds.",
+   "OfferLabel": "Show me the badges"
+  },
+  "R028": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\bwax\\b|living history|re-?enact\\w*))",
+   "Answer": "The museum’s Wax Hall, through the doorway at the end of Gallery 3, is a living-history wing. Twelve scenes of wax figures act out XRLibraries’ story in date order, from the first VR stations in Marin County’s libraries in 2016 to the Pollinators booth at the 2025 Marin County Fair. Each scene comes to life when you walk up to it. The figures are reenactors made for this concept, not likenesses of real people.",
+   "OfferLabel": "Take me to the Wax Hall"
+  },
+  "R029-2016": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2016\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2016\\b))",
+   "Answer": "From 2016, the campus shows “The First Headsets,” acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2017": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2017\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2017\\b))",
+   "Answer": "From 2017, the campus shows “VR Goes Statewide” and “Story Time in 3D,” each acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2018": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2018\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2018\\b))",
+   "Answer": "From 2018, the campus shows “Nevada Opens Its Stations,” acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2019": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2019\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2019\\b))",
+   "Answer": "From 2019, the campus shows “VR on the Road,” “VR in the World’s Catalog” and “XR Marin and the XR Stars,” each acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2020": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2020\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2020\\b))",
+   "Answer": "From 2020, the campus shows “Project SANDI,” acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2022": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2022\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2022\\b))",
+   "Answer": "From 2022, the campus shows “360° Stories in Washington” and “Lost Stories,” each acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2024": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2024\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2024\\b))",
+   "Answer": "From 2024, the campus shows “Children Draw War, Not Flowers,” acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R029-2025": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?=.*?(?:\\b2025\\b))(?=.*?(?:\\bhappen|\\bwhat\\b|\\b(in|during) 2025\\b))",
+   "Answer": "From 2025, the campus shows “Pollinators at the Fair,” acted out in the Wax Hall.",
+   "OfferLabel": "Show me the scene"
+  },
+  "R030": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?!.*(?:\\bwax\\b|living history|re-?enact\\w*))(?=.*?(?:\\b(history|timeline)\\b|\\bwhen did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bhow did (xr ?libraries|it|they) (start|begin|get started)\\b|\\bfrom the (very )?beginning\\b))",
+   "Answer": "XRLibraries began in 2016 as the coordinator of the California Virtual Reality Experience, which piloted VR stations in Marin County’s libraries. In 2017 the project spread to more than 90 California libraries, and a pilot in Nevada followed. Later milestones include Nevada’s first VR records in WorldCat in 2019, Project SANDI in 2020, 360-degree storytelling training in Washington in 2022 and the Pollinators AR booth at the 2025 Marin County Fair. The Wax Hall acts it all out, scene by scene.",
+   "OfferLabel": "Take me to the Wax Hall"
+  },
+  "R132": {
+   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+   "Answer": "Follow me. The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016."
+  },
+  "R132a": {
+   "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+   "Answer": "Follow me. The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025."
+  },
+  "R132b": {
+   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))",
+   "Answer": "The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016."
+  },
+  "R132c": {
+   "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))",
+   "Answer": "The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025."
+  },
+  "R132d": {
+   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+   "Answer": "Follow me. The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016."
+  },
+  "R132e": {
+   "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",
+   "Answer": "Follow me. The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025."
+  },
+  "R132f": {
+   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))",
+   "Answer": "The earliest dated exhibit is “Over 200 VR Systems in California Libraries,” from 2016."
+  },
+  "R132g": {
+   "Pattern": "^(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\bexhibits?\\b))",
+   "Answer": "The most recent dated exhibit is “Pollinators at the Marin County Fair,” from 2025."
+  },
+  "R133": {
+   "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:book))",
+   "Answer": "Thousands of books line the shelves, and 15 of them are open to read right now, on the featured table and on the ends of the stacks.",
+   "OfferLabel": "Take me to the featured table"
+  },
+  "R134": {
+   "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:section|categor))",
+   "Answer": "The library has eight sections: XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology."
+  },
+  "R135": {
+   "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:ride))",
+   "Answer": "The Recess Yard has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive.",
+   "OfferLabel": "Take me to the yard"
+  },
+  "R136": {
+   "Pattern": "^(?=.*?(?:how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)))(?=.*?(?:scene|wax|figure))",
+   "Answer": "The Wax Hall has 12 living-history scenes, from 2016 to 2025, with wax figures that act each one out.",
+   "OfferLabel": "Take me to the Wax Hall"
+  },
+  "R137": {
+   "Pattern": "how many (exhibits|items|things|books|galleries|sections|rides|scenes|wax figures|figures)",
+   "Answer": "The museum has 15 exhibits in three galleries: Headsets in Libraries, Learning That Works and Stories Worth Saving.",
+   "OfferLabel": "Take me to Gallery 1"
+  },
+  "R138": {
+   "Pattern": "\\b(sections|subjects|categories)\\b",
+   "Answer": "Our eight sections are XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology. Each stack has its featured books on the end facing the aisle."
+  },
+  "R138a": {
+   "Pattern": "\\b(sections|subjects|categories)\\b",
+   "Answer": "The library has eight sections: XR Basics, Library Programs, Careers, Storytelling, Lost Stories, Environment, Shared Worlds and Technology. Rosa, the reference librarian, can recommend a book from any of them."
+  },
+  "R139-01-what-is-xr": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bxr\\b|\\b(?:virt|virtu|virtua|virtual\\w{0,3})\\b|\\b(?:augmen|augment|augmente|augmented\\w{0,3})\\b|\\b(?:mixe|mixed\\w{0,3})\\b|\\b(?:real|reali|realit|reality\\w{0,3})\\b|\\bxr basics\\b))",
+   "Answer": "Try “What Is XR?” in the library’s XR Basics section.",
+   "OfferLabel": "Open “What Is XR?”"
+  },
+  "R139-02-ar-around-town": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bar\\b|\\b(?:town\\w{0,3})\\b|\\b(?:scaven|scaveng|scavenge|scavenger\\w{0,3})\\b|\\b(?:hunt|hunts\\w{0,3})\\b|\\b(?:fair|fairs\\w{0,3})\\b|\\bpop\\b|\\bxr basics\\b))",
+   "Answer": "Try “AR Around Town,” in the library’s XR Basics section.",
+   "OfferLabel": "Open “AR Around Town”"
+  },
+  "R139-03-vr-program": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:runn|runni|runnin|running\\w{0,3})\\b|\\bvr\\b|\\b(?:prog|progr|progra|program\\w{0,3})\\b|\\b(?:librar|librari|librarie|libraries\\w{0,3})\\b|\\blibrary programs\\b))",
+   "Answer": "Try “Running a VR Program,” in the library’s Library Programs section.",
+   "OfferLabel": "Open “Running a VR Program”"
+  },
+  "R139-04-xr-careers": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bxr\\b|\\b(?:care|caree|career|careers\\w{0,3})\\b|\\bjob\\b|\\bcareers\\b))",
+   "Answer": "Try “XR for Careers,” in the library’s Careers section.",
+   "OfferLabel": "Open “XR for Careers”"
+  },
+  "R139-05-first-job": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bjob\\b|\\bcareers\\b))",
+   "Answer": "Try “Your First Job,” in the library’s Careers section.",
+   "OfferLabel": "Open “Your First Job”"
+  },
+  "R139-06-making-360": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:maki|makin|making\\w{0,3})\\b|\\b360\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\b(?:film\\w{0,3})\\b|\\bstorytelling\\b))",
+   "Answer": "Try “Making 360 Stories,” in the library’s Storytelling section.",
+   "OfferLabel": "Open “Making 360 Stories”"
+  },
+  "R139-07-oral-history": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:record|recordi|recordin|recording\\w{0,3})\\b|\\b(?:oral\\w{0,3})\\b|\\b(?:hist|histo|histor|history\\w{0,3})\\b|\\b(?:save\\w{0,3})\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\b(?:elde|elder|elders\\w{0,3})\\b|\\bstorytelling\\b))",
+   "Answer": "Try “Recording an Oral History,” in the library’s Storytelling section.",
+   "OfferLabel": "Open “Recording an Oral History”"
+  },
+  "R139-08-lost-stories": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:lost\\w{0,3})\\b|\\b(?:stor|stori|storie|stories\\w{0,3})\\b|\\bxr\\b|\\b(?:brin|bring\\w{0,3})\\b|\\b(?:hidd|hidde|hidden\\w{0,3})\\b|\\b(?:hist|histo|histor|history\\w{0,3})\\b|\\b(?:back\\w{0,3})\\b|\\blost stories\\b))",
+   "Answer": "Try “Lost Stories,” in the library’s Lost Stories section.",
+   "OfferLabel": "Open “Lost Stories”"
+  },
+  "R139-09-reading-past": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:past\\w{0,3})\\b|\\buse\\b|\\b(?:prim|prima|primar|primary\\w{0,3})\\b|\\b(?:sour|sourc|source|sources\\w{0,3})\\b|\\blost stories\\b))",
+   "Answer": "Try “Reading the Past,” in the library’s Lost Stories section.",
+   "OfferLabel": "Open “Reading the Past”"
+  },
+  "R139-10-oceans-vr": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:ocea|ocean|oceans\\w{0,3})\\b|\\bvr\\b|\\b(?:reef|reefs\\w{0,3})\\b|\\b(?:bleach|bleachi|bleachin|bleaching\\w{0,3})\\b|\\b(?:acid\\w{0,3})\\b|\\b(?:seas\\w{0,3})\\b|\\benvironment\\b))",
+   "Answer": "Try “Oceans in VR,” in the library’s Environment section.",
+   "OfferLabel": "Open “Oceans in VR”"
+  },
+  "R139-11-water-cycle": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:wate|water\\w{0,3})\\b|\\b(?:cycl|cycle\\w{0,3})\\b|\\b(?:drop\\w{0,3})\\b|\\benvironment\\b))",
+   "Answer": "Try “The Water Cycle,” in the library’s Environment section.",
+   "OfferLabel": "Open “The Water Cycle”"
+  },
+  "R139-12-worlds-browser": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:worl|world|worlds\\w{0,3})\\b|\\b(?:brow|brows|browse|browser\\w{0,3})\\b|\\b(?:shar|share|shared\\w{0,3})\\b|\\b3d\\b|\\b(?:spac|space|spaces\\w{0,3})\\b|\\bshared worlds\\b))",
+   "Answer": "Try “Worlds in the Browser,” in the library’s Shared Worlds section.",
+   "OfferLabel": "Open “Worlds in the Browser”"
+  },
+  "R139-13-code": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:comput|compute|computer|computers\\w{0,3})\\b|\\b(?:foll|follo|follow\\w{0,3})\\b|\\b(?:instructi|instructio|instruction|instructions\\w{0,3})\\b|\\b(?:code\\w{0,3})\\b|\\btechnology\\b))",
+   "Answer": "Try “How Computers Follow Instructions,” in the library’s Technology section.",
+   "OfferLabel": "Open “How Computers Follow Instructions”"
+  },
+  "R139-14-ai": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\bai\\b|\\b(?:work|works\\w{0,3})\\b|\\btechnology\\b))",
+   "Answer": "Try “How AI Works,” in the library’s Technology section.",
+   "OfferLabel": "Open “How AI Works”"
+  },
+  "R139-15-world-builder": {
+   "Pattern": "^(?=.*?(?:recommend|suggest a book|what should i read|good book|something to read|\\bbooks? (about|on)\\b|do you have (a |any )?books?))(?=.*?(?:\\b(?:worl|world\\w{0,3})\\b|\\b(?:build|builde|builder|builders\\w{0,3})\\b|\\b(?:handb|handbo|handboo|handbook\\w{0,3})\\b|\\b3d\\b|\\b(?:worl|world|worlds\\w{0,3})\\b|\\b(?:game|games\\w{0,3})\\b|\\bshared worlds\\b))",
+   "Answer": "Try “World Builder’s Handbook,” in the library’s Shared Worlds section.",
+   "OfferLabel": "Open “World Builder’s Handbook”"
+  },
+  "R139a": {
+   "Pattern": "recommend|suggest a book|what should i read|good book|something to read",
+   "Answer": "Three good ones to start with are “Running a VR Program,” “Your First Job” and “What Is XR?”",
+   "OfferLabel": "Open “What Is XR?”"
+  },
+  "R139b": {
+   "Pattern": "\\bbooks? (about|on)\\b|do you have (a |any )?books?",
+   "Answer": "Three good ones to start with are “Running a VR Program,” “Your First Job” and “What Is XR?”",
+   "OfferLabel": "Open “What Is XR?”"
+  },
+  "R140": {
+   "Pattern": "^(?!.*(?:(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)|(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)|(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b))))(?!.*(?:\\b(bearing|pendulum|swing time)\\b))(?=.*?(?:\\b(balls?|kick\\w*|soccer|football|foam blocks?|block tower|blocks|physics|swings?|swinging|merry[- ]?go[- ]?round|spinner)\\b))",
+   "Answer": "Out in the Recess Yard there’s a soccer goal with a shootout scoreboard, a foam-block tower and balls on the grass. Kicking the balls and knocking the tower down come in a later build.",
+   "OfferLabel": "Take me to the soccer goal"
+  },
+  "R140a": {
+   "Pattern": "\\b(soccer|football|kick\\w*|foam blocks?|block tower|merry[- ]?go[- ]?round)\\b",
+   "Answer": "Out in the Recess Yard there’s a soccer goal with a shootout scoreboard, a foam-block tower and balls on the grass. Kicking the balls and knocking the tower down come in a later build.",
+   "OfferLabel": "Take me to the soccer goal"
+  },
+  "R141": {
+   "Pattern": "^(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+   "Answer": "It’s a virtual ride, so you’re safe, but it’s made to feel fast. When riding opens in a later build, Gentle ride will take it at half speed."
+  },
+  "R141a": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+   "Answer": "It’s a virtual ride, so you’re safe, but it’s a big drop. When riding opens in a later build, Gentle ride will lower you slowly."
+  },
+  "R141b": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))",
+   "Answer": "The Ocean Dive is calm and slow, and nothing down there will hurt you. The dive itself comes in a later build."
+  },
+  "R142": {
+   "Pattern": "^(?=.*?(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+   "Answer": "The lift hill is about 19 meters tall, the loop is about 10 meters tall, and the top speed is about 62 km/h (39 mph). The track is about 170 meters long."
+  },
+  "R142a": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+   "Answer": "The Sky Drop tower is about 34 meters tall. The seats ride up to about 30 meters, then free-fall at up to about 68 km/h before the brakes kick in."
+  },
+  "R142b": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))(?=.*?(?:\\bhow (fast|tall|high|long|big|deep)\\b))",
+   "Answer": "The dive goes down to about 12 meters deep and takes about a minute. It’s a calm, slow swim."
+  },
+  "R143": {
+   "Pattern": "\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b",
+   "Answer": "The rides are virtual, so nothing can hurt you, and the Ocean Dive is the calmest of the three. When riding opens in a later build, every ride will have a Gentle mode that moves slower.",
+   "OfferLabel": "Show me the Ocean Dive"
+  },
+  "R143a": {
+   "Pattern": "^(?=.*?(?:\\b(scary|scared|safe|safety|sick|dizzy|motion sick|nause\\w*|afraid|too fast|slow down|gentle)\\b))(?=.*?(?:\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b))",
+   "Answer": "The rides are virtual, so nothing can hurt you, and the Ocean Dive is the calmest of the three. When riding opens in a later build, every ride will have a Gentle mode that moves slower.",
+   "OfferLabel": "Show me the Ocean Dive"
+  },
+  "R144": {
+   "Pattern": "(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)",
+   "Answer": "The Comet Coaster climbs a 19-meter lift hill, drops toward the grass at up to 62 km/h, then flips you through a loop. Riding it opens in a later build."
+  },
+  "R144a": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?=.*?(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))",
+   "Answer": "The Sky Drop lifts you about 30 meters up, high enough to see the whole campus, then drops you back down. Riding it opens in a later build."
+  },
+  "R144b": {
+   "Pattern": "^(?!.*(?:(?:\\b(coaster|roller ?coaster|rollercoaster|comet)\\b)))(?!.*(?:(?:\\b(sky ?drop|drop tower|free ?fall)\\b|\\bdrop\\b)))(?=.*?(?:(?:\\b(dive|diving|underwater|scuba|sea creatures?|manta|whale shark|jellyfish|sea turtle|clownfish|kelp)\\b|\\b(?:ocean|fish|reef|turtle|shark)\\b)))",
+   "Answer": "The Ocean Dive is a guided swim past a coral reef and a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish. It’s inspired by ocean VR like Hydrous, a partner listed by XRLibraries. The dive itself opens in a later build."
+  },
+  "R145": {
+   "Pattern": "\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b",
+   "Answer": "Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive, which open in a later build. There’s also a soccer goal, a foam-block tower and hidden XR tokens to find."
+  },
+  "R145a": {
+   "Pattern": "^(?=.*?(?:\\b(recess|playground|the yard|rides?|games?|have fun|play)\\b))(?=.*?(?:recess|playground|rides?\\b))",
+   "Answer": "Recess has three rides: the Comet Coaster, the Sky Drop and the Ocean Dive, which open in a later build. There’s also a soccer goal, a foam-block tower and hidden XR tokens to find."
+  },
+  "R150": {
+   "Pattern": "^(?=.*?(?:\\b(difference|differences|different|differ|compare|comparison|versus|vs)\\b))(?=.*?(?:\\bvr\\b|virtual reality))(?=.*?(?:\\bar\\b|augmented))",
+   "Answer": "VR replaces everything you see with a computer-made world, so you feel you’re somewhere else. AR adds digital things to your view of the real world, usually through a phone camera, so you stay where you are. “What Is XR?” explains both, and mixed reality too.",
+   "OfferLabel": "Open “What Is XR?”"
+  },
+  "R151": {
+   "Pattern": "^(?=.*?(?:\\b(make|making|film|filming|shoot|shooting|record|recording|create|creating)\\b))(?=.*?(?:\\b360\\b))",
+   "Answer": "“Making 360 Stories” walks you through it: plan a story with the people who know it best, film from a tripod at eye level, record clear sound, keep each scene short, then stitch the footage and share it.",
+   "OfferLabel": "Open “Making 360 Stories”"
+  }
+ },
+ "DT_Facts": {
+  "what": {
+   "Body": "XRLibraries brings virtual, augmented and mixed reality into libraries and schools. Its stated goal is equitable access to immersive technology for all communities. It began in 2016 and is based in Novato, in Marin County, California."
+  },
+  "who": {
+   "Body": "John MacLeod is the executive director of XRLibraries. He works with state and local libraries on plans for virtual reality, augmented reality and 360 video, and he is building a national clearinghouse where libraries can share XR best practices."
+  },
+  "team": {
+   "Body": "The XRLibraries About page lists John MacLeod as executive director, Dane Lancaster of PacificXR, who led the setup of XRMarin as an immersive learning lab, and George Lightfoot and Camila Oates, the XR Showcase team."
+  },
+  "wsl": {
+   "Body": "XRLibraries was the trainer for the Washington State Library’s VR 360 grant program, which in 2022 helped six libraries create 360-degree virtual reality stories about topics important to their communities. The program was funded by IMLS through the Library Services and Technology Act and was open to public, tribal and academic libraries."
+  },
+  "freedom": {
+   "Body": "Freedom to Read is a VR environment built with the SJSU School of Information, Unite Against Book Bans, Little Free Library and Books Unbanned. It helps people fight book bans and helps young people find challenged books that reflect their lives."
+  },
+  "environment": {
+   "Body": "XRLibraries’ environment projects include the Stanford Ocean Experience, a VR experience about ocean acidification; a Climate Change Playbook of VR apps for viewing and discussion; and Hydrous, which takes visitors to the coral reefs of Palau."
+  },
+  "partners": {
+   "Body": "Partners listed on xrlibraries.com include Meta Quest, Pico, Hydrous, the Washington, Nevada and California state libraries, ALA, Internet Librarian, the Marin County Office of Education, XRMarin, New Media Learning, FastForward and the SJSU School of Information."
+  },
+  "sjsu": {
+   "Body": "XRLibraries is a strategic partner of the Library Technology Integration Lab at the San José State University School of Information."
+  },
+  "xrmarin": {
+   "Body": "XRMarin is an immersive learning lab and academy for creating XR content in Marin County. XRLibraries’ director is a partner in the Marinovation Learning Center and the XRMarin academy."
+  },
+  "concept": {
+   "Body": "This campus is an unofficial concept made by Ev Holt with Walk the Archive for XRLibraries. Its facts come from public sources such as xrlibraries.com, the SJSU School of Information, WorkingNation and ArborXR."
+  },
+  "yard": {
+   "Body": "The campus’s Recess Yard has three made-up rides for fun in XR: the Comet Coaster roller coaster, the Sky Drop tower and the Ocean Dive, a guided swim with sea creatures. Visitors can also hunt for hidden XR tokens and unlock badges."
+  },
+  "school": {
+   "Body": "The campus’s Workshop School has four hands-on rooms. Room 101 is the 3D Art Studio, where you paint and stamp shapes in the air. Room 102 is the Science Lab, with a sieve analysis of sand, an acid–base titration and a pendulum. Room 103 is the Blueprint Lab, with blueprints of a car, an excavator, a house, a truss bridge and a computer, and a bench for building models. Room 104 is the World Builder Studio, which shows how a 3D world like this campus gets made."
+  },
+  "wax": {
+   "Body": "The museum’s Wax Hall, through the doorway at the end of Gallery 3, is a living-history wing. Twelve scenes of wax figures act out XRLibraries’ story in date order, from the first VR stations in Marin County’s libraries in 2016 to the Pollinators booth at the 2025 Marin County Fair. Each scene comes to life when you walk up to it. The figures are reenactors made for this concept, not likenesses of real people."
+  },
+  "history": {
+   "Body": "XRLibraries began in 2016 as the coordinator of the California Virtual Reality Experience, which piloted VR stations in Marin County’s libraries. In 2017 the project spread to more than 90 California libraries, and a pilot in Nevada followed. Later milestones include Nevada’s first VR records in WorldCat in 2019, Project SANDI in 2020, 360-degree storytelling training in Washington in 2022 and the Pollinators AR booth at the 2025 Marin County Fair."
+  },
+  "wta": {
+   "Body": "Walk the Archive is Ev Holt’s tool for turning a library’s, museum’s or tribe’s collection into a place you can walk through in a web browser, on a phone, a laptop or a library computer."
+  }
+ },
+ "DT_Lessons": {
+  "lesson-1": {
+   "Title": "How a sieve test works: sieve analysis, particle size distribution, PSD",
+   "Body": "A sieve analysis measures particle size distribution, or PSD: how much of a sample falls in each size range. You split out a representative sample, dry it and weigh it, then shake it through a stack of sieves, coarsest on top and finest at the bottom, and weigh what each sieve holds. Sand and gravel producers use sieve tests to check that their product meets its size specification."
+  },
+  "lesson-2": {
+   "Title": "Sieve mesh numbers and openings",
+   "Body": "A sieve’s mesh number counts the openings per inch, so a bigger number means a finer sieve. A US number 20 sieve has 850 micrometer openings, a number 40 has 425 and a number 100 has 150. One micrometer is a thousandth of a millimeter."
+  },
+  "lesson-3": {
+   "Title": "Cumulative percent passing and D50",
+   "Body": "For each sieve you work out the percent retained, add them up from the top to get the cumulative percent retained, and subtract from 100 to get the percent passing. D50 is the grain size that half the sample is finer than. D10 and D60 give the uniformity coefficient, Cu = D60 ÷ D10; a Cu near 1 means the grains are nearly all the same size."
+  },
+  "lesson-4": {
+   "Title": "AFS grain fineness number GFN",
+   "Body": "The AFS grain fineness number, or GFN, multiplies the percent retained on each sieve by a factor for that sieve, adds them up and divides by the total percent retained. A higher number means finer sand. Foundries use it to describe molding sand."
+  },
+  "lesson-5": {
+   "Title": "Checking a finished sieve run for lost mass",
+   "Body": "After a sieve test, the sieve weights should add back up to the starting weight. ASTM C136, a standard sieve test for aggregates, says that if the difference is more than 0.3 percent of the starting dry mass, the results should not be used for acceptance testing."
+  },
+  "lesson-6": {
+   "Title": "Acid base titration",
+   "Body": "In a titration you add a solution of known concentration from a burette, a little at a time, until it exactly reacts with your sample. An indicator such as phenolphthalein turns pink when the solution turns basic, which marks the endpoint. For an acid like HCl reacting with NaOH, moles of base equal moles of acid, so the acid’s molarity = base molarity × base volume ÷ acid volume."
+  },
+  "lesson-7": {
+   "Title": "pH and the equivalence point",
+   "Body": "pH measures how acidic a solution is: 7 is neutral, lower is acidic and higher is basic, and each step of 1 is a tenfold change. When a strong acid is titrated with a strong base, the pH jumps sharply near the equivalence point, where the moles of base added equal the moles of acid."
+  },
+  "lesson-8": {
+   "Title": "Pendulum period and gravity",
+   "Body": "A simple pendulum’s period, the time for one full swing out and back, is about T = 2π√(L/g) for small swings. It depends on the length, not the mass. Time 10 swings and divide by 10 for a better measurement. Plot T² against L for a few lengths, and the slope equals 4π²/g, so g = 4π² ÷ slope, about 9.8 meters per second squared on Earth."
+  },
+  "lesson-9": {
+   "Title": "Rubber band car model",
+   "Body": "A rubber-band car stores energy in a stretched rubber band. As the band unwinds, it turns the rear axle and drives the car forward. Drinking straws make good bearings, so the axles spin with little friction. Test it, change one thing at a time and test again."
+  },
+  "lesson-10": {
+   "Title": "Cross bracing and shake tables",
+   "Body": "Cross-bracing turns a frame’s rectangles into triangles, and a triangle can’t change shape unless a side changes length, so a braced frame resists racking in earthquakes and wind. Engineers test buildings and models on shake tables that move back and forth like an earthquake."
+  },
+  "lesson-11": {
+   "Title": "How to build a 3D world",
+   "Body": "A 3D world gets built in layers: plan it, block it out with plain boxes, model the shapes, add materials, light it, add effects like glow and fog, add physics, add life like people and rides, then publish it and improve it. This campus runs in a web browser using three.js for 3D and the Rapier physics engine for the playground."
+  }
+ },
+ "DT_Badges": {
+  "first-steps": {
+   "DisplayName": "First Steps",
+   "How": "Walk around the campus"
+  },
+  "explorer": {
+   "DisplayName": "Museum Explorer",
+   "How": "Open 5 exhibits in the museum"
+  },
+  "bookworm": {
+   "DisplayName": "Bookworm",
+   "How": "Read 5 pages of library books"
+  },
+  "curious": {
+   "DisplayName": "Ask Away",
+   "How": "Ask any staff member a question"
+  },
+  "artist": {
+   "DisplayName": "3D Artist",
+   "How": "Make art in the air in Room 101"
+  },
+  "scientist": {
+   "DisplayName": "Lab Scientist",
+   "How": "Finish a lab test in Room 102"
+  },
+  "engineer": {
+   "DisplayName": "Engineer",
+   "How": "Explore 3 blueprints in Room 103"
+  },
+  "maker": {
+   "DisplayName": "Model Maker",
+   "How": "Build and test a model in Room 103"
+  },
+  "worldbuilder": {
+   "DisplayName": "World Builder",
+   "How": "Build a world on the layer table in Room 104"
+  },
+  "coaster": {
+   "DisplayName": "Coaster Rider",
+   "How": "Ride the Comet Coaster"
+  },
+  "drop": {
+   "DisplayName": "Sky Dropper",
+   "How": "Ride the Sky Drop"
+  },
+  "diver": {
+   "DisplayName": "Deep Diver",
+   "How": "Finish the Ocean Dive"
+  },
+  "striker": {
+   "DisplayName": "Striker",
+   "How": "Kick a ball into the yard’s soccer goal"
+  },
+  "hunter": {
+   "DisplayName": "Token Hunter",
+   "How": "Find every hidden XR token"
+  },
+  "historian": {
+   "DisplayName": "Living Historian",
+   "How": "Watch 6 scenes come to life in the Wax Hall"
+  },
+  "listener": {
+   "DisplayName": "Good Listener",
+   "How": "Hear a talk through to the end, in the auditorium or the forecourt theatre"
+  },
+  "certified-vr": {
+   "DisplayName": "Certified: Intro to VR",
+   "How": "Pass the Intro to VR quiz in Room 104"
+  },
+  "trainee": {
+   "DisplayName": "Trainee",
+   "How": "Finish a station in the Training Wing"
+  },
+  "certified-dialysis": {
+   "DisplayName": "Certified: Dialysis Foundations",
+   "How": "Finish the five stations of the Training Wing and pass the quiz at the course desk"
+  }
+ },
+ "DT_Tokens": {
+  "t-museum": {
+   "Place": "Museum",
+   "Hint": "A far corner of Gallery 3"
+  },
+  "t-library": {
+   "Place": "Library",
+   "Hint": "The sill of the big library window"
+  },
+  "t-school": {
+   "Place": "Workshop School",
+   "Hint": "On top of the lockers by the back door"
+  },
+  "t-studio": {
+   "Place": "Room 101",
+   "Hint": "The chalkboard ledge in the art studio"
+  },
+  "t-lab": {
+   "Place": "Room 102",
+   "Hint": "On top of the glassware cabinet in the lab"
+  },
+  "t-blueprint": {
+   "Place": "Room 103",
+   "Hint": "On top of the 3D printer"
+  },
+  "t-world": {
+   "Place": "Room 104",
+   "Hint": "Up on the toolkit shelves"
+  },
+  "t-yard": {
+   "Place": "Recess Yard",
+   "Hint": "Behind the Ocean Dive dome"
+  },
+  "t-coaster": {
+   "Place": "Comet Coaster",
+   "Hint": "Ride through the loop"
+  },
+  "t-drop": {
+   "Place": "Sky Drop",
+   "Hint": "Ride the Sky Drop to the very top"
+  },
+  "t-dive": {
+   "Place": "Ocean Dive",
+   "Hint": "Swim over the coral reef"
+  }
+ },
+ "DT_WaxScenes": {
+  "wax-2016": {
+   "Year": "2016",
+   "Title": "The First Headsets",
+   "Lines": [
+    {
+     "Text": "Marin County’s libraries open their first VR stations."
+    },
+    {
+     "Text": "A teen volunteer helps a first-time visitor into a headset."
+    },
+    {
+     "Text": "XRLibraries launches as the pilot’s coordinator."
+    }
+   ]
+  },
+  "wax-2017a": {
+   "Year": "2017",
+   "Title": "VR Goes Statewide",
+   "Lines": [
+    {
+     "Text": "VR stations ship to libraries across California."
+    },
+    {
+     "Text": "More than 90 libraries join, from the north coast to the border."
+    },
+    {
+     "Text": "The Marin pilot becomes a statewide project."
+    }
+   ]
+  },
+  "wax-2017b": {
+   "Year": "2017",
+   "Title": "Story Time in 3D",
+   "Lines": [
+    {
+     "Text": "Story time moves into virtual reality."
+    },
+    {
+     "Text": "The youngest visitors hear stories inside 3D worlds."
+    },
+    {
+     "Text": "Teens, meanwhile, head straight for the VR games."
+    }
+   ]
+  },
+  "wax-2018a": {
+   "Year": "2018",
+   "Title": "Nevada Opens Its Stations",
+   "Lines": [
+    {
+     "Text": "Carson City Library reopens with VR and AR stations."
+    },
+    {
+     "Text": "Nevada’s pilot puts 22 headsets in 11 libraries."
+    },
+    {
+     "Text": "A visitor floats among planets and stars."
+    }
+   ]
+  },
+  "wax-2019a": {
+   "Year": "By 2019",
+   "Title": "VR on the Road",
+   "Lines": [
+    {
+     "Text": "Marin’s VR program goes out into the community."
+    },
+    {
+     "Text": "People displaced by deadly wildfires get a break."
+    },
+    {
+     "Text": "Schools, senior centers and the county fair get visits too."
+    }
+   ]
+  },
+  "wax-2019b": {
+   "Year": "2019",
+   "Title": "VR in the World’s Catalog",
+   "Lines": [
+    {
+     "Text": "Librarians catalog VR so any library can find it."
+    },
+    {
+     "Text": "Record by record, VR titles go into WorldCat."
+    },
+    {
+     "Text": "More than 1,000 interactive 3D objects get cataloged."
+    }
+   ]
+  },
+  "wax-2019c": {
+   "Year": "2019",
+   "Title": "XR Marin and the XR Stars",
+   "Lines": [
+    {
+     "Text": "XR Marin teams libraries with schools."
+    },
+    {
+     "Text": "Teen “XR Stars” help patrons with the gear."
+    },
+    {
+     "Text": "A camper borrows the cameras to film her family’s farm."
+    }
+   ]
+  },
+  "wax-2020": {
+   "Year": "2020",
+   "Title": "Project SANDI",
+   "Lines": [
+    {
+     "Text": "Project SANDI brings VR job training to Nevada."
+    },
+    {
+     "Text": "Trainees practice real tasks, like a dialysis technician’s."
+    },
+    {
+     "Text": "It grows to more than 1,000 headsets at over 80 locations."
+    }
+   ]
+  },
+  "wax-2022a": {
+   "Year": "2022",
+   "Title": "360° Stories in Washington",
+   "Lines": [
+    {
+     "Text": "XRLibraries trains Washington librarians in 360° video."
+    },
+    {
+     "Text": "Six libraries film 360° stories about their communities."
+    },
+    {
+     "Text": "Put on a headset and you are standing in the story."
+    }
+   ]
+  },
+  "wax-2022b": {
+   "Year": "2022",
+   "Title": "Lost Stories",
+   "Lines": [
+    {
+     "Text": "Lost Stories: young people rebuild overlooked history in XR."
+    },
+    {
+     "Text": "Marin City students model the World War II shipyards."
+    },
+    {
+     "Text": "Their music honors the African-American workers who built the ships."
+    }
+   ]
+  },
+  "wax-2024": {
+   "Year": "2024",
+   "Title": "Children Draw War, Not Flowers",
+   "Lines": [
+    {
+     "Text": "A VR gallery of art by Ukrainian children opens online."
+    },
+    {
+     "Text": "Anyone can walk through it free, in a web browser."
+    },
+    {
+     "Text": "XRLibraries helped design the exhibition."
+    }
+   ]
+  },
+  "wax-2025": {
+   "Year": "2025",
+   "Title": "Pollinators at the Fair",
+   "Lines": [
+    {
+     "Text": "At the Marin County Fair, kids plant flowers in AR."
+    },
+    {
+     "Text": "Monarch butterflies hatch and fly from flower to flower."
+    },
+    {
+     "Text": "XRLibraries’ booth turns the fair into a pollinator garden."
+    }
+   ]
+  }
+ },
+ "DT_Stations": {
+  "sieve": {
+   "Kicker": "Room 102 · Science Lab",
+   "Title": "Sieve analysis (PSD)",
+   "Subtitle": "Measure the grain sizes in sand",
+   "GoLabel": "Start the test",
+   "Steps": [
+    "Sieve analysis (PSD)",
+    "Split the sample",
+    "Dry and weigh",
+    "Stack the sieves",
+    "Shake",
+    "Weigh each sieve",
+    "Results"
+   ],
+   "StepTexts": [
+    "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials.",
+    "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams.",
+    "Dry the sample in the oven at about 110 °C until its mass stops changing, and let it cool. Then press TARE with the empty dish on the balance, so the reading only counts the sand, and pour the sample in.",
+    "Nest the sieves with the biggest openings on top and the finest at the bottom, with a pan underneath to catch the dust. Sieves are named by their US mesh number, roughly the number of openings per inch.",
+    "Pour the sample onto the top sieve, put the cover on, clamp the stack and press START. The shaker swirls and taps the stack so every grain gets its chance to fall through. Labs often shake for 10 to 15 minutes; this run is sped up.",
+    "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass.",
+    "The AFS grain fineness number sums each sieve’s % retained times a multiplier, then divides by the total. A bigger number means finer sand. Plants compare it, and the whole curve, against each customer’s spec."
+   ],
+   "Panel": [
+    "A sieve analysis measures how big the grains in a sample are. Labs report it as the particle size distribution, or PSD. Sand plants, concrete labs and foundries rely on this test to check their materials.",
+    "A pile of sand isn’t the same all the way through: big grains and fine grains separate. Pour it through the riffle splitter, which divides it into two matching halves, keep one half, and split again until you have about 100 grams.",
+    "Dry the sample in the oven at about 110 °C until its mass stops changing, and let it cool. Then press TARE with the empty dish on the balance, so the reading only counts the sand, and pour the sample in.",
+    "Nest the sieves with the biggest openings on top and the finest at the bottom, with a pan underneath to catch the dust. Sieves are named by their US mesh number, roughly the number of openings per inch.",
+    "Pour the sample onto the top sieve, put the cover on, clamp the stack and press START. The shaker swirls and taps the stack so every grain gets its chance to fall through. Labs often shake for 10 to 15 minutes; this run is sped up.",
+    "Lift the sieves off one at a time, from the top, and weigh what stayed on each. The balance is tared for each empty sieve, so it reads the retained mass."
+   ]
+  },
+  "titration": {
+   "Kicker": "Room 102 · Science Lab",
+   "Title": "Acid–base titration",
+   "Subtitle": "Find the concentration of a mystery acid",
+   "GoLabel": "Start titrating",
+   "Steps": [
+    "Acid–base titration",
+    "Set up",
+    "Titrate",
+    "Results"
+   ],
+   "StepTexts": [
+    "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid.",
+    "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2.",
+    "Pour exactly 25.00 mL of the mystery acid into the flask and add 2 drops of phenolphthalein. Fill the burette with 0.1000 M sodium hydroxide, then read the starting volume at the bottom of the curved liquid surface, the meniscus, with your eye level with it.",
+    "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
+   ],
+   "Panel": [
+    "A titration finds how concentrated a solution is by reacting it with another solution whose concentration you already know. Here, sodium hydroxide (a base) neutralizes a mystery hydrochloric acid.",
+    "Phenolphthalein, the indicator, stays colorless in acid and turns pink once the solution turns slightly basic, at about pH 8.2.",
+    "Pour exactly 25.00 mL of the mystery acid into the flask and add 2 drops of phenolphthalein. Fill the burette with 0.1000 M sodium hydroxide, then read the starting volume at the bottom of the curved liquid surface, the meniscus, with your eye level with it.",
+    "Hold the flask and swirl it as the base runs in. Add base fast at first. When pink flashes start to linger, slow down and finish one drop at a time. The endpoint is the first drop that keeps the whole flask faint pink for 30 seconds."
+   ]
+  },
+  "pendulum": {
+   "Kicker": "Room 102 · Science Lab",
+   "Title": "Pendulum",
+   "Subtitle": "Measure gravity with a string and a weight",
+   "GoLabel": "Start swinging",
+   "Steps": [
+    "The pendulum",
+    "The math",
+    "Set the length and let go",
+    "Ten swings"
+   ],
+   "StepTexts": [
+    "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
+    "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
+    "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back).",
+    "Swinging… The photogate times each pass. Let it finish 10 full swings."
+   ],
+   "Panel": [
+    "A pendulum’s swing time depends on its length and on gravity, but not on how heavy the bob is. Time 10 full swings, and you can work out the strength of gravity, g.",
+    "The math: one swing takes T = 2π√(L ÷ g), so g = 4π²L ÷ T².",
+    "Set the length from the pivot to the center of the bob. Then take hold of the bob, pull it back to the release angle, keep it still and let go. The photogate counts 10 full swings (there and back)."
+   ]
+  },
+  "bench": {
+   "Kicker": "Room 103 · Model bench",
+   "Title": "Model bench",
+   "Subtitle": "Build a model car or building",
+   "GoLabel": "Start building",
+   "Steps": [
+    "Gather materials",
+    "Chassis",
+    "Bearings",
+    "Axles",
+    "Wheels",
+    "Rubber-band motor",
+    "Body",
+    "Test drive"
+   ],
+   "StepTexts": [
+    "Stiff cardboard or foam board, 2 drinking straws, 2 wooden skewers, 4 bottle caps, a rubber band, a paper clip, tape and glue. It’s all in the kit box. Good engineers start with a plan and a parts list.",
+    "Take the cardboard rectangle, about 20 by 8 centimeters, and rest it on the little stand so you can work underneath. This is the chassis, the frame everything else attaches to. A stiff, light chassis wastes less energy bending.",
+    "Tape the two straws across the bottom, one near each end. Keep them parallel or the car will curve. The straws are bearings: the axles spin inside them with very little friction.",
+    "Slide a skewer through each straw, leaving a little sticking out on both sides. Axles carry the wheels and let each pair turn together.",
+    "Poke a hole in the center of each bottle cap and push one onto each axle end. A dab of glue keeps them on. Wheels that are centered and straight roll farther and wobble less.",
+    "Hook the rubber band on a paper clip taped to the front, and loop the other end around the rear axle. The stretched rubber band stores energy. As it unwinds it spins the rear axle: your engine and drivetrain in one.",
+    "Fold a body from card stock and set it over the chassis. Keep it light. Less weight lets the same stored energy push the car farther.",
+    "Roll the car backward to wind the band around the axle, set it down and let go! Real engineers test, measure, change one thing and test again."
+   ],
+   "Panel": [
+    "Pick a kit. You’ll build it with your own hands, one part at a time, the way you would with real materials, then test it."
+   ]
+  },
+  "diorama": {
+   "Kicker": "Room 104 · Layer table",
+   "Title": "Layer table",
+   "Subtitle": "Build a mini world, one layer at a time",
+   "GoLabel": "Build a world",
+   "Steps": [
+    "Plan",
+    "Block out",
+    "Models",
+    "Materials",
+    "Light",
+    "Effects",
+    "Physics",
+    "Life",
+    "Publish"
+   ],
+   "StepTexts": [
+    "Every world starts as an idea and a sketch. Who is it for, and what will they do there? This campus started as a list (a museum, a library, a school and a recess yard) and a rough map of how to walk between them.",
+    "Build the layout from plain boxes, then walk around it. Is the hall wide enough? Does the coaster fit? Fixing things now is cheap. Game studios call this a blockout, or graybox.",
+    "Swap the boxes for real models. Artists build them in tools like Blender; this campus builds almost everything from code: boxes, cylinders, spheres and extruded shapes. Every model is a mesh of triangles. Turn on X-ray to see them.",
+    "Materials say what a surface is made of: its color, how rough or shiny it is, and whether it’s metal. Physically based materials (PBR) react to light the way real surfaces do. Many of the textures here are drawn by code as the campus loads.",
+    "Light sells the scene. Outdoors, a sun casts shadows and the sky tints everything; indoors, lamps take over. Lights are expensive to draw, so this campus keeps just 8 lamps switched on and moves them to wherever you are.",
+    "Post effects are the finishing pass over the whole picture: glow (bloom) around bright lights, soft shading in corners (ambient occlusion) and color grading.",
+    "A physics engine moves things with gravity, mass and collisions. The Recess Yard runs a physics engine called Rapier, stepping the world 60 times a second. Drop some balls and watch them bounce.",
+    "Life makes a world feel real: people who move, rides that run and things you can tap. Tapping works by casting a ray from your finger into the scene; walking uses A* (A-star) pathfinding on a grid.",
+    "Ship it! This whole campus is one web page, with no app store and no download, so it runs on phones, Chromebooks and laptops. Then watch real people use it, listen, and make it better."
+   ]
+  },
+  "dx-hygiene": {
+   "Kicker": "The Training Wing · Dialysis Technician",
+   "Title": "Hand hygiene and PPE",
+   "Subtitle": "Where every treatment begins and ends",
+   "GoLabel": "Start at the sink",
+   "Steps": [
+    "Why hygiene comes first",
+    "Wash",
+    "Gloves and gown",
+    "The clean and the dirty"
+   ],
+   "StepTexts": [
+    "A dialysis patient's bloodstream is opened at every treatment, so the single most effective protection against infection is clean hands. Every session begins and ends at this sink.",
+    "Wet your hands, soap them, and scrub for at least twenty seconds: palms, backs, between the fingers and under the nails. Rinse, dry with a paper towel, and use the towel to turn off the tap.",
+    "Gloves go on last and come off first. A gown and a face shield protect you wherever a line could spray. Change gloves between every patient and every task.",
+    "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
+   ],
+   "Panel": [
+    "A dialysis patient's bloodstream is opened at every treatment, so the single most effective protection against infection is clean hands. Every session begins and ends at this sink.",
+    "Wet your hands, soap them, and scrub for at least twenty seconds: palms, backs, between the fingers and under the nails. Rinse, dry with a paper towel, and use the towel to turn off the tap.",
+    "Gloves go on last and come off first. A gown and a face shield protect you wherever a line could spray. Change gloves between every patient and every task.",
+    "A technician keeps a clean field, the supplies and the machine's connections, and a dirty one, the used lines and the bins. Nothing crosses back from dirty to clean."
+   ]
+  },
+  "dx-machine": {
+   "Kicker": "The Training Wing · Dialysis Technician",
+   "Title": "The dialysis machine",
+   "Subtitle": "Prime it, fit the dialyzer, check the prescription",
+   "GoLabel": "Start at the machine",
+   "Steps": [
+    "What the machine does",
+    "Power on and self-test",
+    "Prime the lines",
+    "Fit the dialyzer",
+    "Check the prescription"
+   ],
+   "StepTexts": [
+    "A pump moves the patient's blood through the dialyzer, where waste and extra water pass into the dialysate, and the cleaned blood returns. The machine watches pressures, temperature and conductivity the whole time.",
+    "Turn the machine on and let it run its own checks: the alarms, the pumps, the air detector. A machine that fails a check is not used that day.",
+    "Hang the saline, thread the blood lines through the pump and the air detector, and prime them until no bubbles remain. Air in the line is the alarm you never want to hear.",
+    "The cartridge is the artificial kidney: thousands of hollow fibres in a clear case. Fit it in its holder, connect the lines and check that it is the type the order asks for.",
+    "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
+   ],
+   "Panel": [
+    "A pump moves the patient's blood through the dialyzer, where waste and extra water pass into the dialysate, and the cleaned blood returns. The machine watches pressures, temperature and conductivity the whole time.",
+    "Turn the machine on and let it run its own checks: the alarms, the pumps, the air detector. A machine that fails a check is not used that day.",
+    "Hang the saline, thread the blood lines through the pump and the air detector, and prime them until no bubbles remain. Air in the line is the alarm you never want to hear.",
+    "The cartridge is the artificial kidney: thousands of hollow fibres in a clear case. Fit it in its holder, connect the lines and check that it is the type the order asks for.",
+    "The patient's dialysate mix, flow rate, treatment time and fluid removal are set from the order. Every number is read twice, and the second reading is by a second person."
+   ]
+  },
+  "dx-chair": {
+   "Kicker": "The Training Wing · Dialysis Technician",
+   "Title": "The patient chair and vitals",
+   "Subtitle": "Weight, blood pressure, the access, and watching",
+   "GoLabel": "Start at the chair",
+   "Steps": [
+    "Weigh in",
+    "Blood pressure and temperature",
+    "The access",
+    "Watch the patient"
+   ],
+   "StepTexts": [
+    "A patient's weight before treatment tells you how much fluid to remove, so the scale is the first stop. Record it against their dry weight.",
+    "Take them seated and record them. A change from the patient's usual is reported before treatment starts, not after.",
+    "The fistula, graft or catheter is the patient's lifeline. Look at it, listen for the thrill and the bruit, and keep it clean. Only trained hands connect to it.",
+    "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
+   ],
+   "Panel": [
+    "A patient's weight before treatment tells you how much fluid to remove, so the scale is the first stop. Record it against their dry weight.",
+    "Take them seated and record them. A change from the patient's usual is reported before treatment starts, not after.",
+    "The fistula, graft or catheter is the patient's lifeline. Look at it, listen for the thrill and the bruit, and keep it clean. Only trained hands connect to it.",
+    "Through the treatment you check vitals every thirty minutes and watch for cramps, dizziness or bleeding. The patient is the best monitor there is: ask how they feel."
+   ]
+  },
+  "dx-water": {
+   "Kicker": "The Training Wing · Dialysis Technician",
+   "Title": "Water treatment",
+   "Subtitle": "Carbon, softener, reverse osmosis, and the log",
+   "GoLabel": "Start at the water panel",
+   "Steps": [
+    "Why water matters",
+    "The treatment chain",
+    "The checks",
+    "Log it"
+   ],
+   "StepTexts": [
+    "A patient meets hundreds of litres of dialysate a week, so the water it is made from has to be cleaner than drinking water. This panel is where that is checked.",
+    "The carbon tanks take out chlorine and chloramine, the softener takes out hardness, and reverse osmosis takes out nearly everything else. Each stage protects the next.",
+    "Each shift: the chlorine test after the carbon tanks, the conductivity and the pressure on the RO unit, and the temperature. A failed test stops treatment until it is fixed.",
+    "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
+   ],
+   "Panel": [
+    "A patient meets hundreds of litres of dialysate a week, so the water it is made from has to be cleaner than drinking water. This panel is where that is checked.",
+    "The carbon tanks take out chlorine and chloramine, the softener takes out hardness, and reverse osmosis takes out nearly everything else. Each stage protects the next.",
+    "Each shift: the chlorine test after the carbon tanks, the conductivity and the pressure on the RO unit, and the temperature. A failed test stops treatment until it is fixed.",
+    "Every reading goes in the log with the time and your initials. The log is a legal record and the clinic's memory."
+   ]
+  },
+  "dx-charting": {
+   "Kicker": "The Training Wing · Dialysis Technician",
+   "Title": "Charting the session",
+   "Subtitle": "The flowsheet, written as you go",
+   "GoLabel": "Start at the desk",
+   "Steps": [
+    "The flowsheet",
+    "Record as you go",
+    "Hand over"
+   ],
+   "StepTexts": [
+    "Every treatment has a record: the vitals, the machine settings, the alarms, and what was done about each one.",
+    "Numbers written at the time are right. Numbers written at the end of the shift are guesses. Chart each check when you make it.",
+    "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
+   ],
+   "Panel": [
+    "Every treatment has a record: the vitals, the machine settings, the alarms, and what was done about each one.",
+    "Numbers written at the time are right. Numbers written at the end of the shift are guesses. Chart each check when you make it.",
+    "At the end of the shift the next technician reads your notes before they meet the patient. Clear, complete, and signed."
+   ]
+  },
+  "easel": {
+   "Kicker": "Room 101 · 3D Art Studio",
+   "Title": "3D Art Studio",
+   "Subtitle": "Paint in the air with brushes, shapes and symmetry",
+   "GoLabel": "Start making art",
+   "Steps": [
+    "Pick a brush",
+    "Paint in the air",
+    "Add a shape",
+    "Turn the turntable"
+   ],
+   "StepTexts": [
+    "Seven brushes hang on the easel: neon, paint, ribbon, chrome, rainbow, beads and sparkle. Each leaves a different trail in the air. Start with paint.",
+    "Hold the trigger and move your hand: the stroke hangs where you drew it. Step round it. A stroke in the air has a front, a back and sides, like a sculpture.",
+    "Stamp a cube, a sphere, a cone, a ring, a star or a heart, and switch on symmetry to mirror every stroke across the easel.",
+    "Spin the turntable to see your piece from every side, then save a picture of it. Walk-around art is what XR studios make."
+   ],
+   "Panel": [
+    "Paint in the air around the easel. Brushes, stamps, symmetry and a turntable let you build a 3D picture you can walk around."
+   ]
+  }
+ },
+ "DT_Rides": {
+  "coaster": {
+   "DisplayName": "Comet Coaster",
+   "Kicker": "Recess Yard · Ride",
+   "CardText": "Climb a 19-meter lift hill, drop at up to 62 km/h (39 mph), then loop upside down.",
+   "CardNote": "Fast and loopy. Gentle ride goes at half speed.",
+   "About": "The Comet Coaster climbs a 19-meter lift hill, drops toward the grass at up to 62 km/h, then flips you through a loop. Want to ride?",
+   "Stats": "The lift hill is about 19 meters tall, the loop is about 10 meters tall, and the top speed is about 62 km/h (39 mph). The track is about 170 meters long.",
+   "Safety": "It’s a virtual ride, so you’re safe, but it can feel fast. Pick Gentle ride for a slower version, and tap Exit ride any time."
+  },
+  "drop": {
+   "DisplayName": "Sky Drop",
+   "Kicker": "Recess Yard · Ride",
+   "CardText": "Rise about 30 meters for a view of the whole campus, then drop back down.",
+   "CardNote": "A big drop. Gentle ride lowers you slowly.",
+   "About": "The Sky Drop lifts you about 30 meters up, high enough to see the whole campus, then drops you back down.",
+   "Stats": "The Sky Drop tower is about 34 meters tall. The seats ride up to about 30 meters, then free-fall at up to about 68 km/h before the brakes kick in.",
+   "Safety": "It’s a virtual ride, so you’re safe, but it can feel fast. Pick Gentle ride for a slower version, and tap Exit ride any time."
+  },
+  "dive": {
+   "DisplayName": "Ocean Dive",
+   "Kicker": "Recess Yard · Dive",
+   "CardText": "Swim past a coral reef and through a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish.",
+   "CardNote": "A calm, guided swim that takes about a minute.",
+   "About": "The Ocean Dive is a guided swim past a coral reef and a kelp forest, with fish schools, a sea turtle, a whale shark, a manta ray and jellyfish. It’s inspired by ocean VR like Hydrous, a partner listed by XRLibraries.",
+   "Stats": "The dive goes down to about 12 meters deep and takes about a minute. It’s a calm, slow swim.",
+   "Safety": "The Ocean Dive is calm and slow, and nothing down there will hurt you. You can pause or surface any time."
+  }
+ },
+ "DT_Talks": {
+  "welcome": {
+   "Title": "Welcome to the XR Libraries Campus",
+   "Subtitle": "A short talk in the forecourt theatre",
+   "Speaker": "Lena Ortiz",
+   "SpeakerShort": "Lena",
+   "SpeakerRole": "Campus docent",
+   "Slides": [
+    {
+     "Title": "Welcome to the XR Libraries Campus",
+     "Points": [
+      "A short talk in the forecourt theatre"
+     ],
+     "Say": "Hello, and welcome! Find a seat in the theatre. I'm Lena, one of the campus docents, and in the next few minutes I'll show you what this place is and where to go first."
+    },
+    {
+     "Title": "One campus, built from a library's story",
+     "Points": [
+      "Virtual, augmented and mixed reality in libraries and schools",
+      "Every exhibit comes from public sources",
+      "Sit down almost anywhere to read and listen"
+     ],
+     "Say": "This campus tells the story of XR Libraries, which brings virtual, augmented and mixed reality into libraries and schools. Every exhibit here is built from public sources, and you can sit down and listen almost anywhere."
+    },
+    {
+     "Title": "Since 2016",
+     "Points": [
+      "More than 200 VR systems in California public libraries",
+      "More than 90 California libraries by 2017, then Nevada",
+      "More than 1,100 headsets in Nevada's libraries"
+     ],
+     "Say": "XR Libraries began in 2016 with more than two hundred virtual reality systems in California public libraries. By 2017 the program reached more than ninety California libraries, and Nevada followed, where its homepage now counts more than eleven hundred headsets."
+    },
+    {
+     "Title": "The museum, behind me",
+     "Points": [
+      "Gallery 1: headsets in libraries",
+      "Gallery 2: learning that works",
+      "Gallery 3: stories worth saving",
+      "The Wax Hall: twelve scenes that come to life"
+     ],
+     "Say": "Behind me is the museum. Three galleries walk you through headsets in libraries, learning that works, and stories worth saving. At the far end, the Wax Hall acts out the whole story in twelve scenes that come to life when you walk up."
+    },
+    {
+     "Title": "The Reading Room",
+     "Points": [
+      "Books you can open and read",
+      "Rosa, the reference librarian, answers your questions",
+      "A spiral stair to the gallery"
+     ],
+     "Say": "To the left of the lobby is the reading room, with books you can open and read, and Rosa, the reference librarian, who will help you find anything."
+    },
+    {
+     "Title": "The Workshop School",
+     "Points": [
+      "Paint in the air, run a lab test, build a model",
+      "Room 104 is the XR Classroom: take a class",
+      "Pass the quiz and earn a certificate"
+     ],
+     "Say": "To the right is the Workshop School. Paint in the air, run a lab test, build a model, and in Room 104 you can take a real class, finish with a short quiz, and earn a certificate with your name on it."
+    },
+    {
+     "Title": "Talks all day",
+     "Points": [
+      "The auditorium: through the lobby, Hall R, then north",
+      "The forecourt theatre: right here",
+      "Sit down and the next talk begins"
+     ],
+     "Say": "Through the lobby and the hall on the right is the new auditorium, where talks run all day. And whenever you're outside, this theatre is open: just sit down and the next talk begins."
+    },
+    {
+     "Title": "Time for recess",
+     "Points": [
+      "The Recess Yard, behind the school",
+      "A coaster, a sky drop and an ocean dive",
+      "Hidden XR tokens to find"
+     ],
+     "Say": "And when you need a break, the Recess Yard behind the school has a coaster, a sky drop and an ocean dive, plus hidden XR tokens to find."
+    },
+    {
+     "Title": "Enjoy your visit",
+     "Points": [
+      "Press M for the map",
+      "Sit down anywhere to read and listen",
+      "Ask any of the staff a question"
+     ],
+     "Say": "That's it from me. Press M for the map any time, sit down whenever you like, and enjoy your visit."
+    }
+   ]
+  },
+  "next-reality": {
+   "Title": "Libraries and the Next Reality",
+   "Subtitle": "How XR came to public libraries",
+   "Speaker": "Theo Grant",
+   "SpeakerShort": "Theo",
+   "SpeakerRole": "Guest speaker",
+   "Slides": [
+    {
+     "Title": "Libraries and the Next Reality",
+     "Points": [
+      "How XR came to public libraries"
+     ],
+     "Say": "Good afternoon, and thank you for coming. Today's talk is about how virtual and augmented reality found a home in public libraries, and what that means for the people who walk through their doors."
+    },
+    {
+     "Title": "Why libraries?",
+     "Points": [
+      "Free, public and close to home",
+      "Equitable access to immersive technology",
+      "Staff who teach, not just lend"
+     ],
+     "Say": "Why libraries? Because a library is free, public and close to home. XR Libraries' stated goal is equitable access to immersive technology for all communities, and libraries already have the one thing a headset can't supply: people who teach."
+    },
+    {
+     "Title": "2016: the first stations",
+     "Points": [
+      "The California Virtual Reality Experience",
+      "VR stations piloted in Marin County's libraries",
+      "More than 200 systems in California public libraries"
+     ],
+     "Say": "It began in 2016 with the California Virtual Reality Experience, which piloted VR stations in Marin County's libraries. More than two hundred VR systems went into California public libraries, which the program's website calls the largest VR installation in public libraries."
+    },
+    {
+     "Title": "2017: Nevada follows",
+     "Points": [
+      "22 headsets in 11 libraries",
+      "Science and technology content",
+      "A model from Marin County"
+     ],
+     "Say": "In 2017, Nevada's state library put its first headsets in public libraries: twenty-two headsets in eleven libraries, with science and technology content, following a program at the Marin County Free Library."
+    },
+    {
+     "Title": "Playbooks, not just apps",
+     "Points": [
+      "More than 300 XR apps catalogued",
+      "Astronomy and history to mindfulness and music",
+      "Themed playbooks, pre-installed"
+     ],
+     "Say": "A headset is only as good as what's on it. XR Libraries catalogs more than three hundred apps, from astronomy and history to mindfulness and music, and bundles them into themed playbooks that come pre-installed on library headsets."
+    },
+    {
+     "Title": "Careers you can try on",
+     "Points": [
+      "Project SANDI, from 2020",
+      "A $13.8 million federal grant",
+      "Trades, healthcare, IT, manufacturing, logistics"
+     ],
+     "Say": "During the 2020 downturn, Project SANDI used a thirteen point eight million dollar federal grant to let people explore careers in VR: skilled trades, healthcare, IT, advanced manufacturing and logistics."
+    },
+    {
+     "Title": "Training where people live",
+     "Points": [
+      "A 12-week dialysis technician course",
+      "Finished from a town of about 300",
+      "No travel to a training center"
+     ],
+     "Say": "Training can reach people where they live. A remote twelve-week dialysis technician certification let a single mother in a town of about three hundred people train without traveling, pass her certification, and set her sights on nursing."
+    },
+    {
+     "Title": "Stories worth saving",
+     "Points": [
+      "Students rebuild their own history",
+      "A tribe keeps its language and its data",
+      "Children's art kept in 3D"
+     ],
+     "Say": "XR also saves stories. Marin City students rebuilt the World War Two shipyards of their own neighborhood, a Cheyenne project preserves language and cultural knowledge while the tribe keeps control of its data, and art by children in Ukraine lives on in an immersive exhibition."
+    },
+    {
+     "Title": "1,100 headsets and counting",
+     "Points": [
+      "Nevada's community college and public libraries",
+      "Installed with Lifeliqe",
+      "Counted on the XR Libraries homepage"
+     ],
+     "Say": "In Nevada, XR Libraries and Lifeliqe installed headsets in community college and public libraries, and the XR Libraries homepage now counts more than eleven hundred of them."
+    },
+    {
+     "Title": "What comes next",
+     "Points": [
+      "Your library's own stories, in 3D",
+      "Classes that end in a certificate",
+      "A campus like this one, for anyone"
+     ],
+     "Say": "So what comes next? Libraries telling their own stories in 3D, classes that end in a certificate, and campuses like this one that any library can fill with its own collection. Thank you for listening. Room 104 has a class starting whenever you sit down."
+    }
+   ]
+  },
+  "intro-vr": {
+   "Title": "Intro to Virtual Reality",
+   "Subtitle": "Room 104 · XR Classroom",
+   "Speaker": "Mr. Hale",
+   "SpeakerShort": "Mr. Hale",
+   "SpeakerRole": "Workshop teacher",
+   "Slides": [
+    {
+     "Title": "Intro to Virtual Reality",
+     "Points": [
+      "Room 104 · XR Classroom"
+     ],
+     "Say": "Welcome to class! I'm Mr. Hale. In the next few minutes you'll learn what virtual reality is, how a headset works, and how to use one safely. Stay for the quiz at the end and you'll leave with a certificate."
+    },
+    {
+     "Title": "VR, AR and MR",
+     "Points": [
+      "Virtual reality: a whole new world replaces the room",
+      "Augmented reality: digital things on top of the real world",
+      "Mixed reality: digital things that know where your room is"
+     ],
+     "Say": "First, three words you'll hear a lot. Virtual reality replaces the room around you with a whole new world. Augmented reality puts digital things on top of the real world, like a phone app. Mixed reality goes one step further: the digital things know where your walls and tables are."
+    },
+    {
+     "Title": "Inside a headset",
+     "Points": [
+      "Two small screens, one for each eye",
+      "Lenses make the screens fill your view",
+      "Each eye sees a slightly different picture: depth"
+     ],
+     "Say": "Inside a headset are two small screens, one for each eye, and lenses that make them fill your view. Each eye gets a slightly different picture, the same way your eyes do in real life, and that is what makes things look deep."
+    },
+    {
+     "Title": "Tracking: 3DoF and 6DoF",
+     "Points": [
+      "3DoF: it knows when you turn your head",
+      "6DoF: it also knows when you step, lean or crouch",
+      "Inside-out tracking: cameras on the headset watch the room"
+     ],
+     "Say": "Headsets track you. Three degrees of freedom means it knows when you turn your head. Six degrees of freedom means it also knows when you step, lean or crouch. Most standalone headsets today use inside-out tracking: cameras on the headset watch the room."
+    },
+    {
+     "Title": "Standalone or PC VR",
+     "Points": [
+      "Standalone: the computer is inside the headset",
+      "PC VR: linked to a gaming computer",
+      "Most library programs use standalone headsets"
+     ],
+     "Say": "A standalone headset has its computer built in, so there are no cables. PC VR links the headset to a gaming computer for bigger, more detailed worlds. Most library programs use standalone headsets, like Meta Quest and Pico."
+    },
+    {
+     "Title": "Smooth and sharp",
+     "Points": [
+      "The picture is redrawn 72 to 120 times a second",
+      "The faster it follows your head, the more comfortable you are",
+      "A wide view feels natural"
+     ],
+     "Say": "To feel real, the picture has to be smooth. Headsets redraw the image seventy-two to one hundred and twenty times a second, and the faster the picture follows your head, the more comfortable you will be."
+    },
+    {
+     "Title": "Comfort first",
+     "Points": [
+      "Start seated, in short sessions",
+      "Teleport or snap turn if smooth motion feels off",
+      "Feel unwell? Take the headset off right away"
+     ],
+     "Say": "Some people feel queasy in VR, especially when the world moves but their body does not. Start seated with short sessions, use teleport or snap turning if smooth motion bothers you, and take the headset off right away if you feel unwell."
+    },
+    {
+     "Title": "Safety: draw your boundary",
+     "Points": [
+      "Draw a boundary before you play",
+      "Clear the space of chairs, tables and people",
+      "Wrist straps on the controllers"
+     ],
+     "Say": "Before you play, draw a boundary, sometimes called a guardian. The headset shows a wall when you get close to the edge. Clear the space of chairs, tables and people, and slip the controller straps over your wrists."
+    },
+    {
+     "Title": "Sharing headsets",
+     "Points": [
+      "Wipe the face pad and controllers between users",
+      "Lenses: only a dry microfiber cloth",
+      "Keep the lenses out of direct sunlight"
+     ],
+     "Say": "Libraries share headsets, so clean them between users: wipe the face pad and the controllers, and polish the lenses only with a dry microfiber cloth. And keep the lenses out of direct sunlight: they focus it like a magnifying glass and can burn the screens."
+    },
+    {
+     "Title": "What VR is good for",
+     "Points": [
+      "Visit places you can't reach",
+      "Practice skills where mistakes are safe",
+      "Tell your community's own stories"
+     ],
+     "Say": "So what is VR good for? Visiting places you can't reach, practicing skills where mistakes are safe, and telling your community's own stories. That's the lesson. Now let's see what you remember: the quiz is on your screen."
+    }
+   ],
+   "Quiz": [
+    {
+     "Question": "Which one replaces the whole room around you with a new world?",
+     "Options": [
+      "Augmented reality",
+      "Virtual reality",
+      "Mixed reality",
+      "A phone camera"
+     ],
+     "Why": "Virtual reality replaces what you see. Augmented and mixed reality add digital things to the real world."
+    },
+    {
+     "Question": "Why does each eye see a slightly different picture in a headset?",
+     "Options": [
+      "To save battery",
+      "To give a sense of depth",
+      "To make the text bigger",
+      "Because the lenses are different"
+     ],
+     "Why": "Two slightly different views are how your brain sees depth, in real life and in VR."
+    },
+    {
+     "Question": "What does six degrees of freedom (6DoF) add to 3DoF?",
+     "Options": [
+      "Better sound",
+      "Tracking when you step, lean or crouch",
+      "A wider screen",
+      "A longer battery"
+     ],
+     "Why": "3DoF follows your head turning. 6DoF also follows you moving through space."
+    },
+    {
+     "Question": "What should you do before you start playing?",
+     "Options": [
+      "Turn the brightness all the way up",
+      "Draw a boundary and clear the space",
+      "Stand on a chair for a better view",
+      "Hold the controllers by their straps"
+     ],
+     "Why": "The boundary warns you before you walk into something, and a clear space keeps you and others safe."
+    },
+    {
+     "Question": "Smooth motion makes you feel queasy. What helps?",
+     "Options": [
+      "Spin around faster",
+      "Teleport or snap turn, and take a break",
+      "Play longer to get used to it",
+      "Close one eye"
+     ],
+     "Why": "Teleport and snap turning cut the mismatch between what you see and what you feel. Stop if you feel unwell."
+    },
+    {
+     "Question": "How should you clean the lenses of a shared headset?",
+     "Options": [
+      "With an alcohol wipe",
+      "With a dry microfiber cloth",
+      "With soap and water",
+      "Leave them in the sun to dry"
+     ],
+     "Why": "Lens coatings scratch and dissolve easily: only a dry microfiber cloth, and never direct sunlight on the lenses."
+    }
+   ],
+   "Certificate": {
+    "Title": "Certificate of Completion",
+    "Line": "has completed the class",
+    "Place": "Room 104 · XR Classroom",
+    "Signer": "Mr. Hale",
+    "SignerRole": "Workshop teacher",
+    "Org": "XR Libraries Campus",
+    "Note": "A Walk the Archive campus. A record of learning, not an accredited qualification."
+   }
+  },
+  "dialysis": {
+   "Title": "Dialysis Technician: Foundations",
+   "Subtitle": "Five stations, a quiz, a certificate",
+   "Speaker": "Nia Okafor",
+   "SpeakerShort": "Nia",
+   "SpeakerRole": "Course lead, RN",
+   "Quiz": [
+    {
+     "Question": "What is the single most effective protection against infection in the dialysis unit?",
+     "Options": [
+      "A face mask",
+      "Clean hands",
+      "Shorter treatments",
+      "A warmer room"
+     ],
+     "Why": "Clean hands. Every session begins and ends at the sink; gloves and gowns come on top of that, never instead of it."
+    },
+    {
+     "Question": "When do gloves go on, and when do they come off?",
+     "Options": [
+      "On first, off first",
+      "On first, off last",
+      "On last, off first",
+      "On last, off last"
+     ],
+     "Why": "Gloves go on last, after the gown, and come off first, so nothing you touched with them touches you."
+    },
+    {
+     "Question": "What does the dialyzer do?",
+     "Options": [
+      "Pumps the blood",
+      "Takes waste and extra water out of the blood",
+      "Warms the dialysate",
+      "Measures blood pressure"
+     ],
+     "Why": "The dialyzer is the artificial kidney: waste and extra water pass from the blood into the dialysate through thousands of hollow fibres."
+    },
+    {
+     "Question": "Why is a patient weighed before treatment?",
+     "Options": [
+      "To set the chair height",
+      "To choose the dialyzer size",
+      "To know how much fluid to remove",
+      "To check the scale"
+     ],
+     "Why": "The weight against the patient's dry weight tells you how much fluid the treatment has to remove."
+    },
+    {
+     "Question": "Which stage of the water treatment takes out chlorine and chloramine?",
+     "Options": [
+      "The carbon tanks",
+      "The softener",
+      "Reverse osmosis",
+      "The conductivity meter"
+     ],
+     "Why": "The carbon tanks. The softener takes out hardness and reverse osmosis takes out nearly everything else."
+    },
+    {
+     "Question": "When do you write a reading on the flowsheet?",
+     "Options": [
+      "At the end of the shift",
+      "When the patient asks",
+      "As you take it",
+      "Once a week"
+     ],
+     "Why": "As you take it. Numbers written at the time are right; numbers written at the end are guesses."
+    }
+   ],
+   "Certificate": {
+    "Title": "Certificate of Completion",
+    "Line": "has completed the course",
+    "Place": "The Training Wing",
+    "Signer": "Nia Okafor, RN",
+    "SignerRole": "Course lead",
+    "Org": "XR Libraries Campus",
+    "Note": "A Walk the Archive campus. A record of learning, not a clinical qualification."
+   },
+   "Intro": "Welcome to the Training Wing. This course walks you through the five things a dialysis technician does every shift: hand hygiene, the machine, the patient chair, the water and the chart. Finish all five stations, then come back to this desk for the quiz. Pass it and the certificate is yours."
+  }
+ }
+}

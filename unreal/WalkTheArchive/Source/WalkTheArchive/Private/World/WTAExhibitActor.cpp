@@ -1,6 +1,7 @@
 // Walk the Archive - a framed exhibit, the Freedom to Read board, or a Wax Hall reading card.
 
 #include "World/WTAExhibitActor.h"
+#include "Core/WTAText.h"
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Systems/WTAContentSubsystem.h"
@@ -25,11 +26,11 @@ void AWTAExhibitActor::ReadRow()
 	if (Row == nullptr)
 	{
 		UE_LOG(LogWTA, Warning, TEXT("%s: no DT_Exhibits row '%s'"), *GetName(), *ItemId.ToString());
-		Label = FText::FromString(TEXT("Open"));
+		Label = WTAText(TEXT("Open"));
 		return;
 	}
 
-	Label = FText::Format(FText::FromString(TEXT("Open \u00B7 {0}")), Row->Title);
+	Label = FText::Format(WTAText(TEXT("Open \u00B7 {0}")), Row->Title);
 	ViewSpot = Row->View;
 }
 

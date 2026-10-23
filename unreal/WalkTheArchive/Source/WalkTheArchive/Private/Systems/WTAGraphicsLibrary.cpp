@@ -1,6 +1,7 @@
 // Walk the Archive - graphics presets.
 
 #include "Systems/WTAGraphicsLibrary.h"
+#include "Core/WTAText.h"
 #include "Core/WTALog.h"
 #include "Engine/Engine.h"
 #include "GameFramework/GameUserSettings.h"
@@ -52,11 +53,11 @@ FText UWTAGraphicsLibrary::GetQualityPresetLabel(int32 Level)
 {
 	switch (Level)
 	{
-	case 0: return FText::FromString(TEXT("Low"));
-	case 1: return FText::FromString(TEXT("Medium"));
-	case 2: return FText::FromString(TEXT("High"));
-	case 3: return FText::FromString(TEXT("Epic"));
-	case 4: return FText::FromString(TEXT("Cinematic"));
-	default: return FText::FromString(TEXT("Custom"));
+	case 0: return WTAText(TEXT("Low"));
+	case 1: return WTAText(TEXT("Medium"));
+	case 2: return WTAText(TEXT("High"));
+	case 3: return WTAText(TEXT("Epic"));
+	case 4: return WTAText(TEXT("Cinematic"));
+	default: return WTAText(TEXT("Custom"));
 	}
 }

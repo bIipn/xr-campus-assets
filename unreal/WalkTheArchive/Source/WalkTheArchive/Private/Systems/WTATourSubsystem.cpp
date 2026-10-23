@@ -1,6 +1,7 @@
 // Walk the Archive - the guided tour.
 
 #include "Systems/WTATourSubsystem.h"
+#include "Core/WTAText.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Core/WTAPlayerController.h"
 #include "Core/WTALog.h"
@@ -67,7 +68,7 @@ void UWTATourSubsystem::Next()
 		// The web's last stop: the bar goes away and you are on your own.
 		if (AWTAPlayerController* PC = ControllerOf(GetGameInstance()))
 		{
-			PC->ShowToast(FText::FromString(TEXT("That's the end of the tour. Explore on your own.")), 0.f);
+			PC->ShowToast(WTAText(TEXT("That's the end of the tour. Explore on your own.")), 0.f);
 		}
 		End();
 		return;

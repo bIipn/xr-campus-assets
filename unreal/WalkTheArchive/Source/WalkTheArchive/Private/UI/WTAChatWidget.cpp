@@ -1,6 +1,7 @@
 // Walk the Archive - the staff chat, built in code.
 
 #include "UI/WTAChatWidget.h"
+#include "Core/WTAText.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/EditableTextBox.h"
@@ -119,7 +120,7 @@ void UWTAChatWidget::NativeOnInitialized()
 		WhoSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		WhoSlot->SetVerticalAlignment(VAlign_Center);
 
-		CloseButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Close")), NAME_ChatClose, NAME_None, -1,
+		CloseButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("Close")), NAME_ChatClose, NAME_None, -1,
 			WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::Bone());
 		CloseButton->OnAction.AddDynamic(this, &UWTAChatWidget::HandleAction);
 		UHorizontalBoxSlot* CloseSlot = Header->AddChildToHorizontalBox(CloseButton);
@@ -159,13 +160,13 @@ void UWTAChatWidget::NativeOnInitialized()
 	{
 		UHorizontalBox* InputRow = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 		InputBox = Tree->ConstructWidget<UEditableTextBox>(UEditableTextBox::StaticClass());
-		InputBox->SetHintText(FText::FromString(TEXT("Ask a question")));
+		InputBox->SetHintText(WTAText(TEXT("Ask a question")));
 		InputBox->OnTextCommitted.AddDynamic(this, &UWTAChatWidget::HandleTextCommitted);
 		UHorizontalBoxSlot* InputSlot = InputRow->AddChildToHorizontalBox(InputBox);
 		InputSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		InputSlot->SetVerticalAlignment(VAlign_Center);
 
-		SendButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Send")), NAME_ChatSend, NAME_None, -1,
+		SendButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("Send")), NAME_ChatSend, NAME_None, -1,
 			WTAStyle::PrimaryButton(), WTAStyle::Font(13, true), WTAStyle::Ink());
 		SendButton->OnAction.AddDynamic(this, &UWTAChatWidget::HandleAction);
 		UHorizontalBoxSlot* SendSlot = InputRow->AddChildToHorizontalBox(SendButton);
@@ -339,7 +340,7 @@ void UWTAChatWidget::Send(const FString& Question)
 	}
 	else
 	{
-		Reply.Text = FText::FromString(TEXT("The staff are away from their desks right now."));
+		Reply.Text = WTAText(TEXT("The staff are away from their desks right now."));
 	}
 
 	if (!Reply.Text.IsEmpty())
@@ -436,7 +437,7 @@ void UWTAChatWidget::AddOffer(const FText& Label, FName Action, FName Arg)
 		return;
 	}
 	const int32 Index = Offers.Emplace(Action, Arg);
-	UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, Label.IsEmpty() ? FText::FromString(TEXT("Show me")) : Label,
+	UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, Label.IsEmpty() ? WTAText(TEXT("Show me")) : Label,
 		NAME_ChatOffer, NAME_None, Index, WTAStyle::SecondaryButton(), WTAStyle::Font(12), WTAStyle::Bone());
 	Button->OnAction.AddDynamic(this, &UWTAChatWidget::HandleAction);
 	UVerticalBoxSlot* ButtonSlot = MessageList->AddChildToVerticalBox(Button);

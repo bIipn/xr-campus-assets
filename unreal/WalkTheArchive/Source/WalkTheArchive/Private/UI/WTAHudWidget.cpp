@@ -1,6 +1,7 @@
 // Walk the Archive - the always-on HUD, built in code.
 
 #include "UI/WTAHudWidget.h"
+#include "Core/WTAText.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
@@ -93,7 +94,7 @@ void UWTAHudWidget::NativeOnInitialized()
 	// --- Badge counter, top-right ------------------------------------------------
 	BadgePlate = WTAWidgets::MakePlate(Tree, WTAStyle::Plate(), FMargin(14.f, 8.f), 8.f);
 	BadgePlate->SetVisibility(ESlateVisibility::HitTestInvisible);
-	BadgeText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Badges 0 / 0")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
+	BadgeText = WTAWidgets::MakeText(Tree, WTAText(TEXT("Badges 0 / 0")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
 	BadgePlate->SetContent(BadgeText);
 	HudPlace(Canvas, BadgePlate, FAnchors(1.f, 0.f), FVector2D(1.f, 0.f), FVector2D(-24.f, 24.f));
 
@@ -220,7 +221,7 @@ void UWTAHudWidget::NativeOnInitialized()
 		UHorizontalBox* Buttons = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 		Column->AddChildToVerticalBox(Buttons);
 
-		TourBackButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Back")), NAME_HudTourBack, NAME_None, -1,
+		TourBackButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("Back")), NAME_HudTourBack, NAME_None, -1,
 			WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::Bone());
 		TourBackButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
 		Buttons->AddChildToHorizontalBox(TourBackButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
@@ -229,7 +230,7 @@ void UWTAHudWidget::NativeOnInitialized()
 		TourNextButton->SetStyle(WTAStyle::PrimaryButton());
 		TourNextButton->Init(NAME_HudTourNext, NAME_None, -1);
 		TourNextButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
-		TourNextText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Next (T)")), WTAStyle::Font(13, true), WTAStyle::Ink(), false);
+		TourNextText = WTAWidgets::MakeText(Tree, WTAText(TEXT("Next (T)")), WTAStyle::Font(13, true), WTAStyle::Ink(), false);
 		TourNextButton->AddChild(TourNextText);
 		Buttons->AddChildToHorizontalBox(TourNextButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
 
@@ -237,7 +238,7 @@ void UWTAHudWidget::NativeOnInitialized()
 		TourOpenButton->SetStyle(WTAStyle::SecondaryButton());
 		TourOpenButton->Init(NAME_HudTourOpen, NAME_None, -1);
 		TourOpenButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
-		TourOpenText = WTAWidgets::MakeText(Tree, FText::FromString(TEXT("Open")), WTAStyle::Font(13), WTAStyle::Brass(), false);
+		TourOpenText = WTAWidgets::MakeText(Tree, WTAText(TEXT("Open")), WTAStyle::Font(13), WTAStyle::Brass(), false);
 		TourOpenButton->AddChild(TourOpenText);
 		TourOpenButton->SetVisibility(ESlateVisibility::Collapsed);
 		Buttons->AddChildToHorizontalBox(TourOpenButton)->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
@@ -246,7 +247,7 @@ void UWTAHudWidget::NativeOnInitialized()
 		UHorizontalBoxSlot* GapSlot = Buttons->AddChildToHorizontalBox(Gap);
 		GapSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 
-		TourEndButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("End tour")), NAME_HudTourEnd, NAME_None, -1,
+		TourEndButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("End tour")), NAME_HudTourEnd, NAME_None, -1,
 			WTAStyle::SecondaryButton(), WTAStyle::Font(13), WTAStyle::BoneDim());
 		TourEndButton->OnAction.AddDynamic(this, &UWTAHudWidget::HandleAction);
 		Buttons->AddChildToHorizontalBox(TourEndButton);
@@ -413,7 +414,7 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 		return;
 	}
 
-	TourStepText->SetText(FText::Format(FText::FromString(TEXT("STOP {0} OF {1}")), FText::AsNumber(Index + 1), FText::AsNumber(Total)));
+	TourStepText->SetText(FText::Format(WTAText(TEXT("STOP {0} OF {1}")), FText::AsNumber(Index + 1), FText::AsNumber(Total)));
 	TourTitleText->SetText(Title);
 	TourDateText->SetText(DateLabel);
 	TourDateText->SetVisibility(DateLabel.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
@@ -459,7 +460,7 @@ void UWTAHudWidget::SetBadgeCount(int32 Count, int32 Total)
 {
 	if (BadgeText != nullptr)
 	{
-		BadgeText->SetText(FText::Format(FText::FromString(TEXT("Badges {0} / {1}")), FText::AsNumber(Count), FText::AsNumber(Total)));
+		BadgeText->SetText(FText::Format(WTAText(TEXT("Badges {0} / {1}")), FText::AsNumber(Count), FText::AsNumber(Total)));
 	}
 }
 

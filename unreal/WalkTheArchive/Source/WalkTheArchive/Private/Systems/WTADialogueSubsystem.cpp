@@ -2,6 +2,7 @@
 // findPlace and the presetAnswer order). The regex intents live in DT_StaffRules; this file only runs them.
 
 #include "Systems/WTADialogueSubsystem.h"
+#include "Core/WTAText.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Core/WTALog.h"
 #include "Data/WTATypes.h"
@@ -458,33 +459,33 @@ namespace
 	{
 		if (Action == WTAAction::OpenItem())
 		{
-			return FText::FromString(TEXT("Show me the exhibit"));
+			return WTAText(TEXT("Show me the exhibit"));
 		}
 		if (Action == WTAAction::OpenBook())
 		{
-			return FText::FromString(TEXT("Open the book"));
+			return WTAText(TEXT("Open the book"));
 		}
 		if (Action == WTAAction::OpenStation())
 		{
-			return FText::FromString(TEXT("Take me to the station"));
+			return WTAText(TEXT("Take me to the station"));
 		}
 		if (Action == WTAAction::OpenRide())
 		{
-			return FText::FromString(TEXT("Show me the ride"));
+			return WTAText(TEXT("Show me the ride"));
 		}
 		if (Action == WTAAction::OpenBadges())
 		{
-			return FText::FromString(TEXT("Show me the badges"));
+			return WTAText(TEXT("Show me the badges"));
 		}
 		if (Action == WTAAction::GoPlace())
 		{
-			return FText::FromString(TEXT("Take me there"));
+			return WTAText(TEXT("Take me there"));
 		}
 		if (Action == WTAAction::StartTour())
 		{
-			return FText::FromString(TEXT("Start the tour"));
+			return WTAText(TEXT("Start the tour"));
 		}
-		return FText::FromString(TEXT("Show me"));
+		return WTAText(TEXT("Show me"));
 	}
 
 	/** The player asked to be shown or taken somewhere now, so an answer's action runs instead of waiting for its button. */
@@ -560,7 +561,7 @@ FText UWTADialogueSubsystem::GetGreeting(FName StaffId, bool bShort) const
 	const FWTAStaffRow* Staff = Content ? Content->FindStaff(StaffId) : nullptr;
 	if (Staff == nullptr)
 	{
-		return FText::FromString(TEXT("Hello! What would you like to see?"));
+		return WTAText(TEXT("Hello! What would you like to see?"));
 	}
 	if (bShort && !Staff->GreetingShort.IsEmpty())
 	{
@@ -801,11 +802,11 @@ bool UWTADialogueSubsystem::TryDirections(const FString& Question, FWTAReply& Ou
 	}
 	if (bGo || Best->Directions.IsEmpty())
 	{
-		OutReply.Text = FText::FromString(FString::Printf(TEXT("Follow me to %s."), *TextOf(Best->Say.IsEmpty() ? Best->Label : Best->Say)));
+		OutReply.Text = FText::Format(WTAText(TEXT("Follow me to {0}.")), FText::FromString(TextOf(Best->Say.IsEmpty() ? Best->Label : Best->Say)));
 	}
 	else
 	{
-		OutReply.Text = FText::FromString(FString::Printf(TEXT("That\u2019s %s"), *TextOf(Best->Directions)));
+		OutReply.Text = FText::Format(WTAText(TEXT("That\u2019s {0}")), FText::FromString(TextOf(Best->Directions)));
 	}
 	OutReply.Action = WTAAction::GoPlace();
 	OutReply.ActionArg = BestId;
@@ -860,7 +861,7 @@ bool UWTADialogueSubsystem::TryTitleMatch(const FString& Question, FWTAReply& Ou
 			if (Needle.Len() > 5 && Needle.Len() > BestLen && Norm.Contains(Needle, ESearchCase::CaseSensitive))
 			{
 				const FString Sub = Row->Subtitle.IsEmpty() ? FString() : TextOf(Row->Subtitle) + TEXT(". ");
-				OutReply.Text = FText::FromString(FString::Printf(TEXT("%s\u201C%s\u201D is on our shelves. Want to read it?"), *Sub, *TextOf(Row->Title)));
+				OutReply.Text = FText::Format(WTAText(TEXT("{0}\u201C{1}\u201D is on our shelves. Want to read it?")), FText::FromString(Sub), FText::FromString(TextOf(Row->Title)));
 				OutReply.Action = WTAAction::OpenBook();
 				OutReply.ActionArg = Pair.Key;
 				BestLen = Needle.Len();
@@ -1030,7 +1031,7 @@ FWTAReply UWTADialogueSubsystem::Fallback(FName StaffId) const
 	}
 	else
 	{
-		Reply.Text = FText::FromString(TEXT("I\u2019m not sure about that one. Try asking about the museum, the library, the workshop rooms or the Recess Yard."));
+		Reply.Text = WTAText(TEXT("I\u2019m not sure about that one. Try asking about the museum, the library, the workshop rooms or the Recess Yard."));
 	}
 	Reply.Action = NAME_None;
 	Reply.ActionArg = NAME_None;

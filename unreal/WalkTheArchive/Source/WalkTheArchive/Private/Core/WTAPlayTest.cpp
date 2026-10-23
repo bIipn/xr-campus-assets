@@ -921,7 +921,8 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 	const FString Name = FString::Printf(TEXT("%s %s (%s)"), *Kind, *InteractRowId(Actor).ToString(), *Actor->GetName());
 	const FString ShotName = FString::Printf(TEXT("%s_%02d"), *Kind.ToLower(), ClassIndex);
 	const TSharedRef<FState> S = MakeShared<FState>();
-	const bool bToken = Actor->IsA<AWTATokenActor>();
+	// A token and the visitors' wall open nothing (E collects, E refreshes), so Esc would open the pause menu.
+	const bool bToken = Actor->IsA<AWTATokenActor>() || Actor->IsA<AWTAGalleryWallActor>();
 	const bool bBook = Actor->IsA<AWTABookActor>();
 
 	// A token only a ride reaches (the rides are a later build): out of reach on foot is right for it.
@@ -1178,7 +1179,7 @@ void UWTAPlayTest::AddInteractTest(AActor* Actor, int32 ClassIndex)
 		} });
 	}
 
-	// 6. Esc closes it. A token opens nothing, and Esc would open the pause menu.
+	// 6. Esc closes it (not for what opens nothing: see bToken).
 	if (!bToken)
 	{
 		Steps.Add({ Name + TEXT(" esc"), [this, S]() -> float

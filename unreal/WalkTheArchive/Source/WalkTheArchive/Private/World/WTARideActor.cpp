@@ -1,6 +1,7 @@
 // Walk the Archive - a ride entrance (coaster, drop, dive). Phase 0 opens the ride card.
 
 #include "World/WTARideActor.h"
+#include "Core/WTAText.h"
 #include "Core/WTALog.h"
 #include "Core/WTAPlayerController.h"
 #include "Systems/WTAContentSubsystem.h"
@@ -18,11 +19,11 @@ void AWTARideActor::ReadRow()
 	if (Row == nullptr)
 	{
 		UE_LOG(LogWTA, Warning, TEXT("%s: no DT_Rides row '%s'"), *GetName(), *RideId.ToString());
-		Label = FText::FromString(TEXT("Ride"));
+		Label = WTAText(TEXT("Ride"));
 		return;
 	}
 
-	Label = FText::Format(FText::FromString(TEXT("Ride \u00B7 {0}")), Row->DisplayName);
+	Label = FText::Format(WTAText(TEXT("Ride \u00B7 {0}")), Row->DisplayName);
 	// The ride card opens from wherever the player stands; ExitView is for after the ride (phase 1).
 }
 

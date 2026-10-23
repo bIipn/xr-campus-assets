@@ -967,9 +967,81 @@ def check_struct(row, sname, structs, where, is_row=False):
         check_value(row[fname], ftype, structs, '%s.%s' % (where, fname))
 
 
+# ---------- the pack's language (content/lang/<lang>/: strings.json for the engine's own words, tables.json for
+# the content's) ----------
+LANG_DIR = os.path.join(CONTENT, 'lang')
+
+
+def language():
+    """WTA_LANG (build_client.py sets it from the pack's campus.json "language"), else the pack's, else English."""
+    lang = os.environ.get('WTA_LANG')
+    if not lang and pack_dir():
+        try:
+            with open(os.path.join(pack_dir(), 'campus.json'), encoding='utf-8') as f:
+                lang = json.load(f).get('language')
+        except (OSError, ValueError):
+            lang = ''
+    lang = (lang or 'en').strip().lower()
+    if lang != 'en':
+        assert os.path.isdir(os.path.join(LANG_DIR, lang)), 'no content/lang/%s folder' % lang
+    return lang
+
+
+def lang_file(lang, name):
+    path = os.path.join(LANG_DIR, lang, name)
+    if lang == 'en' or not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def build_strings(lang):
+    """DT_Strings: the engine's words (extract_strings.py lists the keys) in the pack's language; empty in English."""
+    words = lang_file(lang, 'strings.json') or {}
+    return [{'Name': k, 'Text': txt(v)} for k, v in words.items() if str(v).strip() and v != k]
+
+
+def merge_lang(target, override, where):
+    """The language's words over the English, by shape: dict keys over dict keys, list items by position (an
+    override list may be shorter), scalars replaced. Only text should differ, and only fields the contract has."""
+    if isinstance(override, dict):
+        assert isinstance(target, dict), '%s: a dict over a %s' % (where, type(target).__name__)
+        for k, v in override.items():
+            assert k in target, '%s: no field %s' % (where, k)
+            target[k] = merge_lang(target[k], v, '%s.%s' % (where, k))
+        return target
+    if isinstance(override, list):
+        assert isinstance(target, list), '%s: a list over a %s' % (where, type(target).__name__)
+        assert len(override) <= len(target), '%s: %d items over %d' % (where, len(override), len(target))
+        for i, v in enumerate(override):
+            if v is not None:
+                target[i] = merge_lang(target[i], v, '%s[%d]' % (where, i))
+        return target
+    assert isinstance(override, str) and isinstance(target, str), '%s: only text is translated' % where
+    return override
+
+
+def apply_language(tables, structs, lang):
+    """tables.json: {"<DT table>": {"<row name>": {<fields in the row's shape>}}} merged over the built rows."""
+    over = lang_file(lang, 'tables.json') or {}
+    by_table = {structs[s]['table']: s for s in structs if structs[s].get('row')}
+    count = 0
+    for table, rows_over in over.items():
+        if table.startswith('_'):
+            continue
+        assert table in by_table, 'tables.json: no table %s' % table
+        rows = {r['Name']: r for r in tables[by_table[table]]}
+        for name, fields in rows_over.items():
+            assert name in rows, 'tables.json: %s has no row %s' % (table, name)
+            merge_lang(rows[name], fields, '%s[%s]' % (table, name))
+            count += 1
+    return count
+
+
 def main():
     with open(STRUCTS, encoding='utf-8') as f:
         structs = json.load(f)['structs']
+    lang = language()
     with open(LAYOUT, encoding='utf-8') as f:
         L = json.load(f)
     tables = {
@@ -982,6 +1054,10 @@ def main():
     }
     # The staff rules come last: their placeholders read the other tables.
     tables['FWTAStaffRuleRow'], replaced, unruled = build_staff_rules(tables)
+    tables['FWTAStringRow'] = build_strings(lang)
+    translated = apply_language(tables, structs, lang)
+    if lang != 'en':
+        print('language %s: %d of the engine\'s words, %d rows with their words' % (lang, len(tables['FWTAStringRow']), translated))
     missing = [s for s, d in structs.items() if d['row'] and s not in tables]
     assert not missing, 'no builder for %s' % missing
     os.makedirs(OUT, exist_ok=True)

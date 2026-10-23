@@ -1,6 +1,7 @@
 // Walk the Archive - the certificate a class gives for passing its quiz.
 
 #include "UI/WTACertificateWidget.h"
+#include "Core/WTAText.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/BorderSlot.h"
@@ -122,12 +123,12 @@ void UWTACertificateWidget::Build(const FWTATalkRow& Talk, FName InTalkId, const
 	ButtonsSlot->SetHorizontalAlignment(HAlign_Center);
 	ButtonsSlot->SetPadding(FMargin(0.f, 18.f, 0.f, 0.f));
 
-	SaveButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Save a picture")), NAME_CertSave, NAME_None, -1,
+	SaveButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("Save a picture")), NAME_CertSave, NAME_None, -1,
 		WTAStyle::SecondaryButton(), WTAStyle::Font(15, true), WTAStyle::Bone());
 	SaveButton->OnAction.AddDynamic(this, &UWTACertificateWidget::HandleAction);
 	Buttons->AddChildToHorizontalBox(SaveButton)->SetPadding(FMargin(0.f, 0.f, 12.f, 0.f));
 
-	DoneButton = WTAWidgets::MakeButton(Tree, FText::FromString(TEXT("Done")), NAME_CertDone, NAME_None, -1,
+	DoneButton = WTAWidgets::MakeButton(Tree, WTAText(TEXT("Done")), NAME_CertDone, NAME_None, -1,
 		WTAStyle::PrimaryButton(), WTAStyle::Font(15, true), WTAStyle::Ink());
 	DoneButton->OnAction.AddDynamic(this, &UWTACertificateWidget::HandleAction);
 	Buttons->AddChildToHorizontalBox(DoneButton);
@@ -166,13 +167,13 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 
 	CentredText(Tree, Column, FText::FromString(Org.ToString().ToUpper() + (Campus.IsEmpty() ? FString() : TEXT("  ·  ") + Campus.ToUpper())),
 		WTAStyle::Kicker(FMath::RoundToInt(16.f * S)), WTAStyle::BrassDark(), 26.f * S);
-	CentredText(Tree, Column, !Row.Certificate.Title.IsEmpty() ? Row.Certificate.Title : FText::FromString(TEXT("Certificate of Completion")),
+	CentredText(Tree, Column, !Row.Certificate.Title.IsEmpty() ? Row.Certificate.Title : WTAText(TEXT("Certificate of Completion")),
 		WTAStyle::Serif(FMath::RoundToInt(72.f * S)), WTAStyle::CardInk(), 10.f * S);
 	Rule(Tree, Column, 360.f * S, 3.f * S, WTAStyle::Brass(), 34.f * S);
-	CentredText(Tree, Column, FText::FromString(TEXT("This certifies that")), WTAStyle::SerifItalic(FMath::RoundToInt(30.f * S)), WTAStyle::CardInkDim(), 6.f * S);
+	CentredText(Tree, Column, WTAText(TEXT("This certifies that")), WTAStyle::SerifItalic(FMath::RoundToInt(30.f * S)), WTAStyle::CardInkDim(), 6.f * S);
 	CentredText(Tree, Column, FText::FromString(VisitorName.IsEmpty() ? TEXT("A Visitor") : VisitorName), WTAStyle::Script(FMath::RoundToInt(112.f * S)), WTAStyle::BrassDark(), 0.f);
 	Rule(Tree, Column, 760.f * S, 1.5f * S, WTAStyle::CardInkDim(), 18.f * S);
-	CentredText(Tree, Column, !Row.Certificate.Line.IsEmpty() ? Row.Certificate.Line : FText::FromString(TEXT("has completed the class")),
+	CentredText(Tree, Column, !Row.Certificate.Line.IsEmpty() ? Row.Certificate.Line : WTAText(TEXT("has completed the class")),
 		WTAStyle::SerifItalic(FMath::RoundToInt(30.f * S)), WTAStyle::CardInkDim(), 10.f * S);
 	CentredText(Tree, Column, Row.Title, WTAStyle::Serif(FMath::RoundToInt(56.f * S), true), WTAStyle::CardInk(), 4.f * S);
 	if (!Row.Certificate.Place.IsEmpty())
@@ -187,7 +188,7 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 	UHorizontalBox* Foot = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 	Column->AddChildToVerticalBox(Foot)->SetPadding(FMargin(0.f, 0.f, 0.f, 22.f * S));
 	{
-		UHorizontalBoxSlot* DateSlot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(DateText), WTAStyle::Serif(FMath::RoundToInt(34.f * S)), FText::FromString(TEXT("Date")), S));
+		UHorizontalBoxSlot* DateSlot = Foot->AddChildToHorizontalBox(SignatureBlock(Tree, FText::FromString(DateText), WTAStyle::Serif(FMath::RoundToInt(34.f * S)), WTAText(TEXT("Date")), S));
 		DateSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		DateSlot->SetHorizontalAlignment(HAlign_Center);
 		DateSlot->SetVerticalAlignment(VAlign_Bottom);
