@@ -442,18 +442,24 @@ namespace
 		return Out.TrimStartAndEnd();
 	}
 
-	/** Where an exhibit hangs, for the "That's from ..." line. */
+	/** Where an exhibit hangs, for the "That's from ..." line (through the language layer). */
 	FString ExhibitWhere(const FWTAExhibitRow& Row)
 	{
 		if (Row.bWax)
 		{
-			return TEXT("in the Wax Hall");
+			return WTAText(TEXT("in the Wax Hall")).ToString();
 		}
 		if (Row.Gallery <= 0)
 		{
-			return TEXT("in the library");
+			return WTAText(TEXT("in the library")).ToString();
 		}
-		return FString::Printf(TEXT("in Gallery %d"), Row.Gallery);
+		return FText::Format(WTAText(TEXT("in Gallery {0}")), FText::FromString(FString::FromInt(Row.Gallery))).ToString();
+	}
+
+	/** "That's from "<title>" <where>." and its kin, through the language layer. */
+	FString Attribution(const TCHAR* Pattern, const FString& A, const FString& B)
+	{
+		return FText::Format(UWTAContentSubsystem::Tr(Pattern), FText::FromString(A), FText::FromString(B)).ToString();
 	}
 
 	const UWTAContentSubsystem* ContentOf(const UGameInstance* GameInstance)
@@ -650,15 +656,15 @@ void UWTADialogueSubsystem::RebuildIndex()
 			}
 			if (!Row->Where.IsEmpty())
 			{
-				Body += TEXT(" Location: ") + TextOf(Row->Where) + TEXT(".");
+				Body += TEXT(" ") + Attribution(TEXT("Location: {0}."), TextOf(Row->Where), FString());
 			}
 			if (!Row->Partners.IsEmpty())
 			{
-				Body += TEXT(" Partners: ") + TextOf(Row->Partners) + TEXT(".");
+				Body += TEXT(" ") + Attribution(TEXT("Partners: {0}."), TextOf(Row->Partners), FString());
 			}
 			AddDoc(TextOf(Row->Title), Body, WTAAction::OpenItem(), Pair.Key);
 			Docs.Last().Kind = KindItem;
-			Docs.Last().Source = FString::Printf(TEXT("That\u2019s from \u201C%s\u201D %s."), *TextOf(Row->Title), *ExhibitWhere(*Row));
+			Docs.Last().Source = Attribution(TEXT("That\u2019s from \u201C{0}\u201D {1}."), TextOf(Row->Title), ExhibitWhere(*Row));
 		}
 	}
 
@@ -679,7 +685,7 @@ void UWTADialogueSubsystem::RebuildIndex()
 			{
 				if (const FWTASourceRow* Source = Content->FindSource(Row->Sources[0]))
 				{
-					Docs.Last().Source = FString::Printf(TEXT("(Source: %s.)"), *TextOf(Source->Label));
+					Docs.Last().Source = Attribution(TEXT("(Source: {0}.)"), TextOf(Source->Label), FString());
 				}
 			}
 		}
@@ -702,7 +708,7 @@ void UWTADialogueSubsystem::RebuildIndex()
 				const FName PageArg(*FString::Printf(TEXT("%s#%d"), *Pair.Key.ToString(), PageIndex));
 				AddDoc(TextOf(Row->Title) + TEXT(" ") + TextOf(Page.Heading), PageText(Page), WTAAction::OpenBook(), PageArg);
 				Docs.Last().Kind = KindPage;
-				Docs.Last().Source = FString::Printf(TEXT("That\u2019s in \u201C%s,\u201D page %d."), *TextOf(Row->Title), PageIndex + 1);
+				Docs.Last().Source = Attribution(TEXT("That\u2019s in \u201C{0},\u201D page {1}."), TextOf(Row->Title), FString::FromInt(PageIndex + 1));
 			}
 		}
 	}
@@ -876,7 +882,7 @@ bool UWTADialogueSubsystem::TryTitleMatch(const FString& Question, FWTAReply& Ou
 			const FString Needle = Normalize(TextOf(Row->Title));
 			if (Needle.Len() > 5 && Needle.Len() > BestLen && Norm.Contains(Needle, ESearchCase::CaseSensitive))
 			{
-				const FString Text = FirstSentences(TextOf(Row->Description), 2) + TEXT(" ") + FString::Printf(TEXT("That\u2019s \u201C%s\u201D %s."), *TextOf(Row->Title), *ExhibitWhere(*Row));
+				const FString Text = FirstSentences(TextOf(Row->Description), 2) + TEXT(" ") + Attribution(TEXT("That\u2019s \u201C{0}\u201D {1}."), TextOf(Row->Title), ExhibitWhere(*Row));
 				OutReply.Text = FText::FromString(Text);
 				OutReply.Action = WTAAction::OpenItem();
 				OutReply.ActionArg = Pair.Key;
