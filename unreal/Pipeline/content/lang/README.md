@@ -33,3 +33,15 @@ One language per build: the tables, the voices and the slides are all in it. Wha
 words the other builders draw into textures (the room signs, the course board, the classroom board, the shop
 screens; `builders.json` is where their words go once they read it) and the staff's regex macros
 (`data/staff_rules_ue.py`), which a language extends with its own alternatives in `tables.json`.
+
+## Spanish (`lang/es`)
+
+The first language in: `es/strings.json` (all 193 of the engine's words, the seven question shapes and the stop
+words with Spanish alternatives), `es/tables.json` (every row of the 18 tables, 2,582 strings; staff rule patterns
+as `english|spanish`; Spanish aliases added to every place) and `es/builders.json` (the slide kickers). Neutral
+Latin American Spanish, the visitor addressed as "tú"; names, product names, URLs and the ride names stay as they
+are; "Mr. Hale" is "Sr. Hale", "Coach Rae" stays. A build in Spanish: `"language": "es"` in the pack's
+`campus.json`, or `WTA_LANG=es` before `build_data.py`, `bl/slides.py` and `make_talk_voices.py`; the
+`data_tables` setup step then writes DT_Strings with 179 rows (the 14 keys that are only slots and marks stay as
+they are) and the rest of the tables in Spanish. Checks: `extract_strings.py --check lang/es/strings.json` and
+`extract_tables.py --check lang/es/tables.json` both report 0 missing.
