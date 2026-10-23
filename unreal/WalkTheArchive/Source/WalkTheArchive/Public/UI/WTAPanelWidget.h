@@ -149,6 +149,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	bool IsOpen() const { return bOpen; }
 
+	/** The height the card lays out in (slate units); 0 is the viewport's. VR sets the card screen's: the card's
+	    scrolling middle is what is left of it after the header and the footer. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetLayoutHeight(float InHeight) { LayoutHeight = FMath::Max(0.f, InHeight); }
+
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	EWTAPanelMode GetMode() const { return Mode; }
 
@@ -287,4 +292,6 @@ protected:
 	int32 CurrentPage = -1;
 	int32 NumPages = 0;
 	bool bOpen = false;
+	/** SetLayoutHeight's height, 0 for the viewport's. */
+	float LayoutHeight = 0.f;
 };

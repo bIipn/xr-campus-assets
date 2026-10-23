@@ -364,12 +364,12 @@ void UWTAVRRig::SetLaser(const FVector& End, bool bHit, bool bActive)
 	}
 	if (Label != nullptr && bLabelShown)
 	{
-		// Over the dot, square on to the eye, a constant size to it (about 0.06 degrees a pixel).
+		// Over the dot, square on to the eye, a constant size to it (0.04 degrees a pixel: the desktop's hover label).
 		const FVector Eye = GetEyeLocation();
-		const FVector Where = LaserEnd + FVector(0.f, 0.f, 3.5f) + (Eye - LaserEnd).GetSafeNormal() * 4.f;
+		const FVector Where = LaserEnd + FVector(0.f, 0.f, 3.f) + (Eye - LaserEnd).GetSafeNormal() * 4.f;
 		const float Away = static_cast<float>(FVector::Dist(Eye, Where));
 		Label->SetWorldLocationAndRotation(Where, (Eye - Where).Rotation());
-		Label->SetWorldScale3D(FVector(FMath::Clamp(Away * 0.0011f, 0.02f, 3.f)));
+		Label->SetWorldScale3D(FVector(FMath::Clamp(Away * 0.0007f, 0.015f, 2.f)));
 	}
 }
 

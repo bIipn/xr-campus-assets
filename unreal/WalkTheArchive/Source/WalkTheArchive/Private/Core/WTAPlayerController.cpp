@@ -32,6 +32,7 @@
 #include "XR/WTAVRScreenActor.h"
 #include "XR/WTAXR.h"
 #include "Components/Border.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "World/WTATalkActor.h"
@@ -2447,6 +2448,10 @@ bool AWTAPlayerController::EnterVR(bool bSimulate)
 		HudScreen->Init(HudRoot, VRHudPixels, VRHudWidth);
 	}
 	MoveWidgetsToScreens(true);
+	if (Panel != nullptr)
+	{
+		Panel->SetLayoutHeight(static_cast<float>(VRCardPixels.Y) - 48.f);   // the card fits the card screen (not the window), with a margin
+	}
 	if (Hud != nullptr)
 	{
 		Hud->SetVRMode(true);
@@ -2517,6 +2522,10 @@ void AWTAPlayerController::ExitVR()
 	if (Hud != nullptr)
 	{
 		Hud->SetVRMode(false);
+	}
+	if (Panel != nullptr)
+	{
+		Panel->SetLayoutHeight(0.f);
 	}
 	if (bVRHeadset)
 	{
@@ -2796,26 +2805,49 @@ void AWTAPlayerController::VRSelect(bool bPressed)
 	if (!StageStoryId.IsNone())
 	{
 		OpenExhibit(StageStoryId);
+		return;
 	}
+	UE_LOG(LogWTA, Log, TEXT("WTA_VR trigger on %s: nothing to open, not a floor"), bVRWorldHit ? *GetNameSafe(VRWorldHit.GetActor()) : TEXT("nothing"));
 }
 
 void AWTAPlayerController::VRStepToFloor(const FVector& Point)
 {
 	AWTACharacter* Me = GetWTACharacter();
 	UWTAVRRig* Rig = Me != nullptr ? Me->GetVRRig() : nullptr;
-	if (Rig == nullptr || FVector::Dist2D(Rig->GetEyeLocation(), Point) > VRStepReach)
+	UWorld* World = GetWorld();
+	if (Rig == nullptr || World == nullptr)
 	{
-		return;                                        // too far for one step
+		return;
 	}
-	FVector Floor = Point;
-	if (UNavigationSystemV1* Nav = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
+	if (FVector::Dist2D(Rig->GetEyeLocation(), Point) > VRStepReach)
 	{
-		FNavLocation Projected;
-		if (!Nav->ProjectPointToNavigation(Point, Projected, FVector(40.f, 40.f, 100.f)))
-		{
-			return;                                    // nowhere a person stands (a table top, a ledge)
-		}
+		UE_LOG(LogWTA, Log, TEXT("WTA_VR no step: %s is over %.0f m away"), *Point.ToCompactString(), VRStepReach / 100.f);
+		return;
+	}
+	// Where the navigation mesh says a person stands; without it there, a floor about as high as the one underfoot
+	// with room for a person (not a table top or a ledge).
+	FVector Floor = Point;
+	FNavLocation Projected;
+	UNavigationSystemV1* Nav = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World);
+	if (Nav != nullptr && Nav->ProjectPointToNavigation(Point, Projected, FVector(40.f, 40.f, 100.f)))
+	{
 		Floor = Projected.Location;
+	}
+	else
+	{
+		const UCapsuleComponent* Capsule = Me->GetCapsuleComponent();
+		const float Half = Capsule->GetScaledCapsuleHalfHeight();
+		const float Radius = Capsule->GetScaledCapsuleRadius();
+		const float FloorNow = static_cast<float>(Me->GetActorLocation().Z) - Half;
+		FCollisionQueryParams Params(FName(TEXT("WTAVRStep")), false, Me);
+		const bool bLevel = FMath::Abs(static_cast<float>(Point.Z) - FloorNow) < 50.f;
+		const bool bRoom = !World->OverlapBlockingTestByChannel(Point + FVector(0.f, 0.f, Half + 3.f), FQuat::Identity, ECC_Pawn,
+			FCollisionShape::MakeCapsule(Radius - 1.f, Half - 1.f), Params);
+		if (!bLevel || !bRoom)
+		{
+			UE_LOG(LogWTA, Log, TEXT("WTA_VR no step to %s: %s"), *Point.ToCompactString(), !bLevel ? TEXT("not level with the floor underfoot") : TEXT("no room to stand"));
+			return;
+		}
 	}
 	const FRotator Head = Rig->GetHeadRotation();
 	FWTAView View;

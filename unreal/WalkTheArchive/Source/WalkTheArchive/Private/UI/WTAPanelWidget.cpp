@@ -2173,10 +2173,11 @@ void UWTAPanelWidget::SetOpen(bool bNewOpen)
 		{
 			const FVector2D Viewport = UWidgetLayoutLibrary::GetViewportSize(this);
 			const float Scale = UWidgetLayoutLibrary::GetViewportScale(this);
-			if (Viewport.Y > 0.f && Scale > 0.f)
+			const float Height = LayoutHeight > 0.f ? LayoutHeight : (Scale > 0.f ? static_cast<float>(Viewport.Y) / Scale : 0.f);
+			if (Height > 0.f)
 			{
 				// Header (kicker, year, title, place) and footer take about 360 px at reading sizes.
-				ScrollHeight->SetMaxDesiredHeight(FMath::Max(220.f, static_cast<float>(Viewport.Y) / Scale - 360.f));
+				ScrollHeight->SetMaxDesiredHeight(FMath::Max(220.f, Height - 360.f));
 			}
 		}
 	}

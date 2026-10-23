@@ -5182,6 +5182,9 @@ bool UWTAPlayTest::FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& O
 	}
 	double BestArea = TNumericLimits<double>::Max();
 	bool bFound = false;
+	// A button nearly the size of the whole widget is a scrim (a click outside the card), not the button meant.
+	const FVector2D RootSize(Root->GetCachedGeometry().GetAbsoluteSize());
+	const double MaxArea = RootSize.X * RootSize.Y > 1.0 ? RootSize.X * RootSize.Y * 0.25 : TNumericLimits<double>::Max();
 	Root->WidgetTree->ForEachWidget([&](UWidget* Widget)
 	{
 		const UWTAActionButton* Button = Cast<UWTAActionButton>(Widget);
@@ -5189,10 +5192,11 @@ bool UWTAPlayTest::FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& O
 		{
 			return;
 		}
+		// Cached geometry is the last frame's; a button scrolled or clipped out of view was not drawn and has none.
 		const FGeometry& Geometry = Button->GetCachedGeometry();
 		const FVector2D Size(Geometry.GetAbsoluteSize());
 		const double Area = Size.X * Size.Y;
-		if (Area > 1.0 && Area < BestArea)
+		if (Area > 1.0 && Area < MaxArea && Area < BestArea)
 		{
 			BestArea = Area;
 			OutPixel = FVector2D(Geometry.GetAbsolutePosition()) + Size * 0.5;
@@ -5218,6 +5222,8 @@ void UWTAPlayTest::AddVRPhase()
 	{
 		TWeakObjectPtr<AActor> Exhibit;
 		FVector Before = FVector::ZeroVector;
+		FVector Floor = FVector::ZeroVector;
+		bool bFloor = false;
 		float YawBefore = 0.f;
 		int32 StopBefore = -1;
 		FString Aim;
@@ -5258,20 +5264,49 @@ void UWTAPlayTest::AddVRPhase()
 		return 0.5f;
 	} });
 
-	// The trigger on the floor 2.5 m ahead steps there.
+	// The trigger on open floor 2.5 m away steps there: the first way round from straight ahead where the floor is
+	// level with this one, a person fits and the eye sees it (the spawn may face a lectern or a step).
 	Steps.Add({ TEXT("vr aim floor"), [this, State]() -> float
 	{
 		const AWTACharacter* Me = Player();
 		const AWTAPlayerController* Controller = PC();
-		if (Me == nullptr || Controller == nullptr)
+		UWorld* World = GetWorld();
+		if (Me == nullptr || Controller == nullptr || World == nullptr)
 		{
 			return 0.f;
 		}
-		const FVector Ahead = Me->GetActorLocation() + FRotator(0.f, Controller->GetControlRotation().Yaw, 0.f).Vector() * 250.f;
-		double FloorZ = Me->GetActorLocation().Z - 90.0;
-		FloorUnder(GetWorld(), Ahead.X, Ahead.Y, Me->GetActorLocation().Z, Me, FloorZ);
-		AimAt(FVector(Ahead.X, Ahead.Y, FloorZ));
-		State->Before = Me->GetActorLocation();
+		const FVector Here = Me->GetActorLocation();
+		const FVector Eye = Me->GetEyeLocation();
+		double FloorHere = Here.Z - 90.0;
+		FloorUnder(World, Here.X, Here.Y, Here.Z, Me, FloorHere);
+		const float Yaw = static_cast<float>(Controller->GetControlRotation().Yaw);
+		State->bFloor = false;
+		for (const float Turn : { 0.f, 40.f, -40.f, 80.f, -80.f, 120.f, -120.f, 160.f, -160.f, 180.f })
+		{
+			const FVector Ahead = Here + FRotator(0.f, Yaw + Turn, 0.f).Vector() * 250.f;
+			double FloorZ = 0.0;
+			if (!FloorUnder(World, Ahead.X, Ahead.Y, Here.Z + 40.0, Me, FloorZ) || FMath::Abs(FloorZ - FloorHere) > 30.0
+				|| !CapsuleFits(World, Ahead.X, Ahead.Y, FloorZ, Me))
+			{
+				continue;
+			}
+			const FVector Point(Ahead.X, Ahead.Y, FloorZ);
+			FCollisionQueryParams Params(FName(TEXT("WTAPlayVRFloor")), false, Me);
+			FHitResult Hit;
+			if (World->LineTraceSingleByChannel(Hit, Eye, Point + FVector(0.f, 0.f, 2.f), ECC_Visibility, Params)
+				&& FVector::Dist(Hit.ImpactPoint, Point) > 15.0)
+			{
+				continue;                                    // something stands between the eye and the floor
+			}
+			State->Floor = Point;
+			State->bFloor = true;
+			break;
+		}
+		if (State->bFloor)
+		{
+			AimAt(State->Floor);
+		}
+		State->Before = Here;
 		return 0.4f;
 	} });
 	Steps.Add({ TEXT("vr floor shot"), [this]() -> float { Shot(TEXT("vr_floor_aim")); return 0.3f; } });
@@ -5279,9 +5314,15 @@ void UWTAPlayTest::AddVRPhase()
 	Steps.Add({ TEXT("vr stepped"), [this, State]() -> float
 	{
 		const AWTACharacter* Me = Player();
+		if (!State->bFloor)
+		{
+			Report(TEXT("vr"), EResult::Skip, TEXT("the trigger on the floor steps there"), TEXT("no open, level floor 2.5 m away"));
+			return 0.f;
+		}
 		const float Moved = Me != nullptr ? static_cast<float>(FVector::Dist2D(State->Before, Me->GetActorLocation())) : 0.f;
-		Report(TEXT("vr"), Moved > 150.f && Moved < 400.f ? EResult::Pass : EResult::Fail, TEXT("the trigger on the floor steps there"),
-			FString::Printf(TEXT("moved %.0f cm (the floor point was 250 cm ahead)"), Moved));
+		const float Off = Me != nullptr ? static_cast<float>(FVector::Dist2D(State->Floor, Me->GetActorLocation())) : -1.f;
+		Report(TEXT("vr"), Moved > 150.f && Moved < 400.f && Off < 60.f ? EResult::Pass : EResult::Fail, TEXT("the trigger on the floor steps there"),
+			FString::Printf(TEXT("moved %.0f cm, %.0f cm from the floor point 250 cm away"), Moved, Off));
 		return 0.3f;
 	} });
 
@@ -5318,6 +5359,24 @@ void UWTAPlayTest::AddVRPhase()
 			Controller->WTAFigures(3);
 		}
 		return 3.5f;
+	} });
+	Steps.Add({ TEXT("vr people look"), [this]() -> float
+	{
+		// The nearest of them, for the picture.
+		const AWTACharacter* Me = Player();
+		const AWTACharacter* Nearest = nullptr;
+		double Best = TNumericLimits<double>::Max();
+		for (TActorIterator<AWTACharacter> It(GetWorld()); It && Me != nullptr; ++It)
+		{
+			const double Distance = FVector::DistSquared(It->GetActorLocation(), Me->GetActorLocation());
+			if (It->bStandIn && Distance < Best)
+			{
+				Best = Distance;
+				Nearest = *It;
+			}
+		}
+		LookAtPerson(Nearest);
+		return 0.8f;
 	} });
 	Steps.Add({ TEXT("vr people names"), [this]() -> float
 	{
@@ -5430,6 +5489,7 @@ void UWTAPlayTest::AddVRPhase()
 	// B opens the menu on the card screen; the laser on Resume closes it.
 	Steps.Add({ TEXT("vr menu"), [this]() -> float
 	{
+		CloseAll();                                          // B on an open card closes the card instead
 		if (AWTAPlayerController* Controller = PC())
 		{
 			Controller->OnBack(FInputActionValue(true));

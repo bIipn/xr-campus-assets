@@ -34,16 +34,18 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 | Exhibit art textures | `/Game/WTA/Art/T_Art_<id>` (id with `-` → `_`), source `unreal/Pipeline/out/campus/art/<id>.png` |
 | Data tables | `/Game/WTA/Data/DT_<Table>` (see structs.json `table`), source `unreal/WalkTheArchive/Data/<File>.json` |
 | Main level | `/Game/WTA/Maps/L_Campus` (not World Partition: the campus is small; Ocean Dive sits 420 m east in the same level) |
-| Materials | `/Game/WTA/Materials/` |
+| Materials | `/Game/WTA/Materials/` (the ones C++ loads by path, built by the lighting step: `M_WTA_Unlit`, `M_WTA_WidgetLit`, `M_WTA_Figure`, `M_WTA_WidgetScreen`) |
 | Characters (MetaHumans) | `/Game/WTA/Characters/<PersonId>/MHC_<PersonId>` (MetaHuman Character) and `BP_<PersonId>` (built actor), one folder per id in `Content/Python/wta_people/people.json` (staff ids and Wax Hall `<sceneId>-<role>`); shared build assets `/Game/WTA/Characters/Common/`, the idle `/Game/WTA/Characters/Common/Anims/AS_WTA_StandIdle` |
 
 ## 4. C++ classes (module `WalkTheArchive`)
 
 Headers live in `Source/WalkTheArchive/Public/<Area>/`, sources in `Source/WalkTheArchive/Private/<Area>/`.
-Include as `#include "Area/File.h"`. Areas: `Core`, `Data`, `Interaction`, `World`, `Systems`, `UI`.
+Include as `#include "Area/File.h"`. Areas: `Core`, `Data`, `Interaction`, `World`, `Systems`, `UI`, `XR`.
 Module dependencies (Build.cs, public): Core, CoreUObject, Engine, InputCore, EnhancedInput, UMG, Slate, SlateCore,
 AIModule, NavigationSystem, DeveloperSettings, Json, JsonUtilities; private: AnimationCore, AudioCaptureCore (the Lost
 Stories microphone). The guided visits' beacon uses the Sockets module the Engine module already brings in publicly.
+VR mode (`XR/`, `docs/VR_MODE.md`) links no XR module: the headset library (XRBase), OpenXR's session start (OpenXRInput)
+and the motion controller component (HeadMountedDisplay) are reached by name through reflection (`XR/WTAXR`).
 Change Build.cs only when there is no other way: a changed Build.cs recompiles the build-rules assembly, and on Ev's
 PC Smart App Control blocks a freshly compiled one ("An Application Control policy has blocked this file").
 
@@ -64,7 +66,7 @@ Values also written to `Config/DefaultGame.ini` section `[/Script/WalkTheArchive
 | `AWTAGameMode` | `AGameModeBase` | DefaultPawnClass = `AWTACharacter`, PlayerControllerClass = `AWTAPlayerController`, GameStateClass = `AWTAGameState`, PlayerStateClass = `AWTAPlayerState`, HUDClass the plain `AHUD`; `PostLogin` gives a guided visit's people their slots (0 the guide); pawns always spawn (no PlayerStart) |
 | `AWTAGameState` | `AGameStateBase` | Guided visits: replicated `TourStop`, `TourSerial`, `GatherSerial`, `GatherFloor`, `GatherYaw`; `LeadStop(int32)`, `Gather(FVector, float)` (server); OnReps hand them to `UWTAVisitSubsystem` |
 | `AWTAPlayerState` | `APlayerState` | Guided visits: replicated `bGuide`, `Slot`; `GetVisitColor()`, `GetVisitName()`, `SetVisitName(FString)` (server) |
-| `AWTAPlayerController` | `APlayerController` | Builds Enhanced Input **in code** at BeginPlay (NewObject `UInputAction`/`UInputMappingContext`, no assets). PC-game controls: WASD move, mouse look (captured), Shift sprint, Space jump, LMB or E interact with what the crosshair points at, Tab = free cursor (click UI / click floor to walk), T tour next, Esc close top panel / open menu, M map/places, Enter = chat focus, P = a framed postcard of the view written to `Saved/Postcards/`. Gamepad: left stick move, right stick look, A jump, X interact, B back, Y postcard. Owns `UWTAInteractionComponent* Interaction`. `UFUNCTION(BlueprintCallable) void GoToView(const FWTAView& View, bool bWalk)`; `void SetUIMode(bool bPanelOpen)` |
+| `AWTAPlayerController` | `APlayerController` | Builds Enhanced Input **in code** at BeginPlay (NewObject `UInputAction`/`UInputMappingContext`, no assets). PC-game controls: WASD move, mouse look (captured), Shift sprint, Space jump, LMB or E interact with what the crosshair points at, Tab = free cursor (click UI / click floor to walk), T tour next, Esc close top panel / open menu, M map/places, Enter = chat focus, P = a framed postcard of the view written to `Saved/Postcards/`. Gamepad: left stick move, right stick look, A jump, X interact, B back, Y postcard. In VR (`docs/VR_MODE.md`): left stick walk, right stick 30° turns (and scrolls a card), right trigger points the laser and presses / opens / steps, A next stop, B back, left menu the menu. Owns `UWTAInteractionComponent* Interaction`. `UFUNCTION(BlueprintCallable) void GoToView(const FWTAView& View, bool bWalk)`; `void SetUIMode(bool bPanelOpen)` |
 | `AWTACharacter` | `ACharacter` | First-person camera at eye 162 cm (capsule half-height 90, radius 30), MaxWalkSpeed 300, sprint 560, JumpZVelocity 520, GravityScale 1.63, head-bob (2.6 cm, stride 155 cm). `UFUNCTION(BlueprintCallable) void WalkTo(FVector Dest)` (NavMesh, `UAIBlueprintHelperLibrary::SimpleMoveToLocation`), `void TeleportToView(const FWTAView& View)`, `bool IsAutoWalking() const` |
 
 ### 4.4 Interaction (`Interaction/`)
@@ -124,9 +126,20 @@ Fonts: engine default (`/Engine/EngineFonts/Roboto`) via `FSlateFontInfo`; palet
 | `UWTAMenuWidget` | the intro/pause menu: title "Walk the Archive", Enter / Take the tour / Visit together / Graphics (Low, Medium, High, Epic, Cinematic, Auto) / Quit |
 | `UWTAVisitWidget` | the Visit together card (V): your name, Lead a visit, the visits on this network with Join, join by address; in a visit who is here, Gather / Start the tour / Walk to the guide / Leave or End the visit |
 | `UWTANameTagWidget` | the name over another person's figure in a guided visit (their colour, GUIDE kicker for the guide) |
+| `UWTAVRRootWidget` | VR: a world screen's content, the controller's own widgets stacked in their viewport z-order (`AWTAVRScreenActor`) |
+| `UWTAVRLabelWidget` | VR: the laser's label (what it is on), on the HUD's hover-label plate |
 
 `AWTAPlayerController` owns one instance of each and switches input mode (`FInputModeGameAndUI` + cursor when any
-panel/chat/menu is open; `FInputModeGameOnly` + no cursor otherwise).
+panel/chat/menu is open; `FInputModeGameOnly` + no cursor otherwise). In VR the widgets go on two screens in the world
+instead of the viewport (the HUD screen and the card screen, `AWTAVRScreenActor`, drawn with `M_WTA_WidgetScreen`),
+input stays `FInputModeGameOnly` and the right hand's laser is the pointer (a `UWidgetInteractionComponent` fed its hit).
+
+### 4.9 VR (`XR/`) — PC headsets through OpenXR, and `-vrsim` on a desktop
+| Class | Parent | Must have |
+|---|---|---|
+| `WTAXR` (namespace) | — | the headset by reflection: connected / enabled / enable, `BeginSession(UInputMappingContext*)` (OpenXR reads a session's controller bindings only as it starts), LocalFloor tracking, motion controllers by class path; `-headset`, `-vrsim` |
+| `AWTAVRScreenActor` | `AActor` | one world-space `UWidgetComponent` (no collision; the laser finds it with a ray against its plane), `M_WTA_WidgetScreen`, placed facing the eye, pixel ↔ world |
+| `UWTAVRRig` | `UActorComponent` | on the player: the floor-level origin carrying the headset camera and the motion controllers (the capsule follows the head), or the simulation's hands on the camera; the wands, the laser, its dot and label, the screens' pointer; snap turns and arrivals about the head; the seated eye height |
 
 ### 4.8 Actions
 One action vocabulary for tour stops, staff answers and buttons (`FName`, `None` = no action):

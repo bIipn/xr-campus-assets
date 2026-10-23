@@ -321,5 +321,13 @@
  "End the visit": "Terminar la visita",
  "You are in a visit": "Estás en una visita",
  "You are in {0}'s visit": "Estás en la visita de {0}",
- "At each stop you walk to your own place round it. Between stops, look around as you like; the next stop brings you back.": "En cada parada vas a tu propio lugar alrededor. Entre paradas, mira lo que quieras; la siguiente parada te trae de vuelta."
+ "At each stop you walk to your own place round it. Between stops, look around as you like; the next stop brings you back.": "En cada parada vas a tu propio lugar alrededor. Entre paradas, mira lo que quieras; la siguiente parada te trae de vuelta.",
+ "Pull the trigger to read the full story": "Aprieta el gatillo para leer la historia completa",
+ "Tour: press A or point at Next. B ends the tour.": "Recorrido: presiona A o apunta a Siguiente. B termina el recorrido.",
+ "No headset is running. Start Meta Quest Link or SteamVR, put the headset on, then choose Enter VR again.": "No hay ningún visor en marcha. Abre Meta Quest Link o SteamVR, ponte el visor y vuelve a elegir Entrar en RV.",
+ "VR: the left stick walks, the right stick turns, the trigger opens what the laser is on or steps where it points. B goes back.": "RV: la palanca izquierda camina, la derecha gira, el gatillo abre lo que señala el láser o te lleva adonde apunta. B vuelve atrás.",
+ "Next (A)": "Siguiente (A)",
+ "Enter VR": "Entrar en RV",
+ "Leave VR": "Salir de RV",
+ "Left stick walk · right stick turns · trigger points, opens and steps where it points · A next stop · B back · menu button: this menu": "Palanca izquierda caminar · palanca derecha girar · gatillo apunta, abre y te lleva adonde apunta · A siguiente parada · B atrás · botón de menú: este menú"
 }
