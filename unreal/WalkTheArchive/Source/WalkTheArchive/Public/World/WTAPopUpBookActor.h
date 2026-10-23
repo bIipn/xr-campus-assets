@@ -223,7 +223,6 @@ protected:
 	FVector SceneCentre = FVector::ZeroVector;
 	float PageZ = 0.f;                 // the near page's surface (the base's top)
 	bool bHaveScene = false;
-	double LastPrestream = -1.0e9;     // when the pages' textures were last asked to stay sharp
 
 	EWTAPopUpState State = EWTAPopUpState::Closed;
 	int32 BookIndex = 0;

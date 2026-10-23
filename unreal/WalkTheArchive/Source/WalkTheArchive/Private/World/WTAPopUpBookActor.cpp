@@ -850,21 +850,6 @@ void AWTAPopUpBookActor::CheckPlayerNear()
 		bPlayerNear = bNear;
 		UpdateLight(0.f);
 	}
-	// The printed pages of every spread kept at full resolution while someone is near, so a spread that pops up is
-	// sharp at once rather than streaming in from a blur (twenty-odd small textures).
-	const UWorld* World = GetWorld();
-	const double Now = World != nullptr ? World->GetTimeSeconds() : 0.0;
-	if (bNear && Pawn != nullptr && Now - LastPrestream > 240.0)
-	{
-		LastPrestream = Now;
-		for (UStaticMeshComponent* Comp : PieceComponents)
-		{
-			if (Comp != nullptr)
-			{
-				Comp->PrestreamTextures(600.f, false);
-			}
-		}
-	}
 }
 
 FString AWTAPopUpBookActor::Describe() const

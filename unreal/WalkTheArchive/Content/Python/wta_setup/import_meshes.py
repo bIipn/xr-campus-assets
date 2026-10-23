@@ -2,9 +2,11 @@
 
 Interchange handles glTF; one AssetImportTask per file (automated, replace existing, save). After the import
 every StaticMesh gets Nanite (opaque meshes only; glass and other blended or masked materials stay
-non-Nanite) and double-sided complex-as-simple collision so the player walks on the architecture and
-cannot pass through the one-sided wall planes from behind. Assets that already exist are not imported
-again unless WTA_FORCE=1, but their Nanite and collision settings are still applied.
+non-Nanite, and so do the wings in paths.NO_NANITE_ASSETS) and double-sided complex-as-simple collision so the
+player walks on the architecture and cannot pass through the one-sided wall planes from behind. Every texture a
+material uses as its base colour is made colour again where Unreal's normal map detection took a mostly blue
+one for a normal map, and the wings in paths.NEVER_STREAM_ASSETS have their textures fully loaded. Assets that
+already exist are not imported again unless WTA_FORCE=1, but these settings are still applied.
 """
 import os
 
@@ -144,6 +146,35 @@ def triangle_count(mesh):
     return -1
 
 
+def fix_colour_textures(folder):
+    """Unreal's normal map detection looks at a new texture's pixels and makes a mostly light blue one a normal map
+    (two channels, blue rebuilt): a printed page of sea or sky then shows yellow and green. Every texture a material
+    under the wing uses as its base colour goes back to colour (sRGB, default compression). Returns how many."""
+    used = set()
+    for _path, mi in util.find_assets(folder, "MaterialInstanceConstant", recursive=True):
+        try:
+            for tp in mi.get_editor_property("texture_parameter_values"):
+                name = str(tp.parameter_info.name)
+                if tp.parameter_value is not None and ("BaseColor" in name or "Diffuse" in name or "Emissive" in name):
+                    used.add(tp.parameter_value.get_path_name())
+        except Exception as exc:
+            log.warn("%s: texture parameters unreadable: %s" % (util.object_name(mi), exc))
+    fixed = 0
+    normal = unreal.TextureCompressionSettings.TC_NORMALMAP
+    for path, tex in util.find_assets(folder, "Texture2D", recursive=True):
+        if tex.get_path_name() not in used:
+            continue
+        try:
+            if tex.get_editor_property("compression_settings") == normal:
+                tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
+                tex.set_editor_property("srgb", True)
+                util.assets().save(tex)
+                fixed += 1
+        except Exception as exc:
+            log.warn("%s: compression not reset: %s" % (path, exc))
+    return fixed
+
+
 def never_stream_textures(folder):
     """Every texture under the wing's folder fully loaded rather than streamed (paths.NEVER_STREAM_ASSETS)."""
     changed = 0
@@ -249,6 +280,7 @@ def run():
         entry["nanite"] = nanite_on
         entry["collision"] = collision_on
         entry["tagged"] = tagged
+        entry["colour_textures_fixed"] = fix_colour_textures(dest)
         if asset in paths.NEVER_STREAM_ASSETS:
             entry["never_stream"] = never_stream_textures(dest)
         report["meshes"] += len(meshes)
