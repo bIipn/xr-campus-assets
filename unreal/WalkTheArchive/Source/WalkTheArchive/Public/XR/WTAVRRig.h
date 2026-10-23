@@ -63,6 +63,9 @@ public:
 	/** The label's text now (empty when hidden). */
 	FText GetLabel() const;
 
+	/** The label's widget component (its draw size, for the play test). */
+	UWidgetComponent* GetLabelComponent() const { return Label; }
+
 	/** Hide the hands and the laser for a moment (a postcard is being taken). */
 	void SetVisualsHidden(bool bHidden);
 
@@ -127,6 +130,8 @@ protected:
 	bool bVisualsHidden = false;
 	bool bLaserHit = false;
 	bool bLabelShown = false;
+	/** The label's draw size matches its text (AWTAVRScreenActor::FitToWidget, retried until it takes). */
+	bool bLabelFitted = false;
 	int32 LaserActive = -1;
 	FVector LaserEnd = FVector::ZeroVector;
 };

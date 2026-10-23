@@ -429,10 +429,7 @@ void AWTACharacter::RefreshFigureLook()
 	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(ActiveNameTag()->GetUserWidgetObject()))
 	{
 		Tag->SetPerson(FText::FromString(Name), Person->bGuide, Color);
-		if (bTagInWorld)
-		{
-			AWTAVRScreenActor::FitToWidget(NameTagWorld);
-		}
+		bTagFitted = false;                              // the world tag measures the new name (UpdateFigure)
 	}
 	else
 	{
@@ -539,7 +536,13 @@ void AWTACharacter::UpdateFigure(float DeltaSeconds)
 				TagWidget ? TagWidget->GetDesiredSize().X : 0.f, TagWidget ? TagWidget->GetDesiredSize().Y : 0.f);
 		}
 	}
-	// A tag in the world turns to the eye and keeps one size to it (about 0.05 degrees a pixel).
+	// A tag in the world turns to the eye and keeps one size to it (about 0.05 degrees a pixel), once it fits its name
+	// (until then it would draw at the component's default 500 px square).
+	if (bTagInWorld && !bTagHidden && NameTagWorld != nullptr && !bTagFitted)
+	{
+		bTagFitted = AWTAVRScreenActor::FitToWidget(NameTagWorld);
+		NameTagWorld->SetHiddenInGame(!bTagFitted);
+	}
 	if (bTagInWorld && !bTagHidden && NameTagWorld != nullptr)
 	{
 		const FVector Where = NameTagWorld->GetComponentLocation();

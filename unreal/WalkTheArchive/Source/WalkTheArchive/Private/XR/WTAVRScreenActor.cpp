@@ -29,20 +29,34 @@ UMaterialInterface* AWTAVRScreenActor::ScreenMaterial()
 	return Cached.Get();
 }
 
-void AWTAVRScreenActor::FitToWidget(UWidgetComponent* Component)
+bool AWTAVRScreenActor::FitToWidget(UWidgetComponent* Component)
 {
 	UUserWidget* Content = Component != nullptr ? Component->GetUserWidgetObject() : nullptr;
 	if (Content == nullptr)
 	{
-		return;
+		return false;
 	}
-	Content->TakeWidget();                                   // its Slate widget, if the component has not drawn it yet
-	Content->ForceLayoutPrepass();
-	const FVector2D Want = Content->GetDesiredSize();
-	if (Want.X >= 1.0 && Want.Y >= 1.0)
+	// Its Slate widget (made now if the component has not drawn it yet), measured at one Slate unit a pixel, the
+	// scale the component draws it at.
+	const TSharedRef<SWidget> Slate = Content->TakeWidget();
+	Slate->SlatePrepass(1.f);
+	const FVector2D Want = Slate->GetDesiredSize();
+	if (Want.X < 1.0 || Want.Y < 1.0)
 	{
-		Component->SetDrawSize(FVector2D(FMath::CeilToDouble(Want.X), FMath::CeilToDouble(Want.Y)));
+		static int32 Misses = 0;
+		if (Misses++ < 5)
+		{
+			UE_LOG(LogWTA, Log, TEXT("WTA_VR %s has no size yet (%.1f x %.1f)"), *Component->GetName(), Want.X, Want.Y);
+		}
+		return false;
 	}
+	const FVector2D Size(FMath::CeilToDouble(Want.X), FMath::CeilToDouble(Want.Y));
+	if (!Component->GetDrawSize().Equals(Size))
+	{
+		Component->SetDrawSize(Size);
+		UE_LOG(LogWTA, Log, TEXT("WTA_VR %s fitted to %.0f x %.0f"), *Component->GetName(), Size.X, Size.Y);
+	}
+	return true;
 }
 
 AWTAVRScreenActor::AWTAVRScreenActor()

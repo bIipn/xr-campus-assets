@@ -196,6 +196,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA|Visit")
 	bool IsNameTagShown() const { return bFigureShown && !bTagHidden; }
 
+	/** VR's name tag in the world (null until the VR presentation first needs it). */
+	UWidgetComponent* GetWorldNameTag() const { return NameTagWorld; }
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// --- VR ----------------------------------------------------------------------------
@@ -288,6 +291,8 @@ protected:
 
 	/** The tag in use is the world one (VR). */
 	bool bTagInWorld = false;
+	/** The world tag's draw size matches the person on it (AWTAVRScreenActor::FitToWidget, retried until it takes). */
+	bool bTagFitted = false;
 
 	bool bFigureShown = false;
 	bool bFigureLaidSeated = false;

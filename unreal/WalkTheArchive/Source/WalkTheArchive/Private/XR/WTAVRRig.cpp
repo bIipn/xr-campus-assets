@@ -397,11 +397,15 @@ void UWTAVRRig::SetLabel(const FText& Text)
 	if (Widget != nullptr && !Widget->GetLabel().EqualTo(Text))
 	{
 		Widget->SetLabel(Text);
-		AWTAVRScreenActor::FitToWidget(Label);
+		bLabelFitted = false;
 	}
 	// Hidden while empty (an empty plate collapses to nothing to draw).
 	bLabelShown = !Text.IsEmpty() && !bVisualsHidden && Widget != nullptr;
-	Label->SetHiddenInGame(!bLabelShown);
+	if (bLabelShown && !bLabelFitted)
+	{
+		bLabelFitted = AWTAVRScreenActor::FitToWidget(Label);
+	}
+	Label->SetHiddenInGame(!bLabelShown || !bLabelFitted);
 }
 
 FText UWTAVRRig::GetLabel() const

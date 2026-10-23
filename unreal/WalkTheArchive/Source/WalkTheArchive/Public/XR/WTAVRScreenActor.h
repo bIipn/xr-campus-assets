@@ -66,10 +66,11 @@ public:
 	    null before the lighting step has built it (logged once). */
 	static class UMaterialInterface* ScreenMaterial();
 
-	/** Size a world-space widget component to its widget's own desired size; call it when the widget's content
-	    changes. (The engine's draw-at-desired-size measures the component's whole virtual window, which came out
-	    far taller than one line of text: an 86 px plate round a 28 px label.) */
-	static void FitToWidget(UWidgetComponent* Component);
+	/** Size a world-space widget component to its widget's own desired size, after its content changes; false while
+	    the widget has no size yet (not made, or not laid out: call again next frame). (The engine's
+	    draw-at-desired-size measures the component's whole virtual window, which came out far taller than one line
+	    of text: an 86 px plate round a 28 px label.) */
+	static bool FitToWidget(UWidgetComponent* Component);
 
 protected:
 	FIntPoint Size = FIntPoint(1280, 800);

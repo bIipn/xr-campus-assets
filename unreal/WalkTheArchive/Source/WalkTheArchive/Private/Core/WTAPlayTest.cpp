@@ -46,6 +46,7 @@
 #include "XR/WTAVRRig.h"
 #include "XR/WTAVRScreenActor.h"
 #include "Blueprint/WidgetTree.h"
+#include "Components/WidgetComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "Components/EditableTextBox.h"
 #include "HAL/FileManager.h"
@@ -5380,18 +5381,23 @@ void UWTAPlayTest::AddVRPhase()
 	} });
 	Steps.Add({ TEXT("vr people names"), [this]() -> float
 	{
+		// Shown, in the world, and the size of one name (not the widget component's default 500 px square).
 		int32 People = 0;
 		int32 Named = 0;
+		TArray<FString> Sizes;
 		for (TActorIterator<AWTACharacter> It(GetWorld()); It; ++It)
 		{
 			if (It->bStandIn)
 			{
 				++People;
-				Named += It->IsNameTagShown() ? 1 : 0;
+				const UWidgetComponent* Tag = It->GetWorldNameTag();
+				const FVector2D Size = Tag != nullptr ? Tag->GetDrawSize() : FVector2D::ZeroVector;
+				Sizes.Add(FString::Printf(TEXT("%.0fx%.0f"), Size.X, Size.Y));
+				Named += It->IsNameTagShown() && Tag != nullptr && !Tag->bHiddenInGame && Size.X < 400.0 && Size.Y < 90.0 ? 1 : 0;
 			}
 		}
-		Report(TEXT("vr"), People > 0 && Named == People ? EResult::Pass : EResult::Fail, TEXT("the people's names show in the world"),
-			FString::Printf(TEXT("%d of %d named"), Named, People));
+		Report(TEXT("vr"), People > 0 && Named == People ? EResult::Pass : EResult::Fail, TEXT("the people's names show in the world, each on a tag its size"),
+			FString::Printf(TEXT("%d of %d named (%s)"), Named, People, *FString::Join(Sizes, TEXT(", "))));
 		Shot(TEXT("vr_people"));
 		return 0.5f;
 	} });
@@ -5426,9 +5432,13 @@ void UWTAPlayTest::AddVRPhase()
 		const UWTAVRRig* Rig = Controller != nullptr ? Controller->GetVRRig() : nullptr;
 		const AActor* Hovered = Controller != nullptr && Controller->Interaction != nullptr ? Controller->Interaction->GetHovered() : nullptr;
 		const FString Label = Rig != nullptr ? Rig->GetLabel().ToString() : FString();
-		const bool bOk = State->Exhibit.IsValid() && Hovered == State->Exhibit.Get() && !Label.IsEmpty();
-		Report(TEXT("vr"), bOk ? EResult::Pass : EResult::Fail, TEXT("the laser names the exhibit it is on"),
-			FString::Printf(TEXT("hovered %s, label \"%s\"%s"), *GetNameSafe(Hovered), *Label, bOk ? TEXT("") : *(TEXT("; ") + DescribeAim(State->Exhibit.Get()))));
+		const UWidgetComponent* LabelTag = Rig != nullptr ? Rig->GetLabelComponent() : nullptr;
+		const FVector2D LabelSize = LabelTag != nullptr ? LabelTag->GetDrawSize() : FVector2D::ZeroVector;
+		const bool bOk = State->Exhibit.IsValid() && Hovered == State->Exhibit.Get() && !Label.IsEmpty() && LabelTag != nullptr && !LabelTag->bHiddenInGame
+			&& LabelSize.Y < 60.0;
+		Report(TEXT("vr"), bOk ? EResult::Pass : EResult::Fail, TEXT("the laser names the exhibit it is on, on a plate one line high"),
+			FString::Printf(TEXT("hovered %s, label \"%s\" %.0fx%.0f%s"), *GetNameSafe(Hovered), *Label, LabelSize.X, LabelSize.Y,
+				bOk ? TEXT("") : *(TEXT("; ") + DescribeAim(State->Exhibit.Get()))));
 		Shot(TEXT("vr_laser_exhibit"));
 		return 0.4f;
 	} });
