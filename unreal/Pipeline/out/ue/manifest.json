@@ -608,6 +608,20 @@
    ],
    "triangles": 18146,
    "bytes": 2776056
+  },
+  "People": {
+   "file": "People.glb",
+   "source": "unreal/Pipeline/out/people/People.glb",
+   "meshes": 5,
+   "tagged": [
+    "figure__body",
+    "figure__collar",
+    "figure__head",
+    "figure__seated",
+    "figure__visor"
+   ],
+   "triangles": 16488,
+   "bytes": 296368
   }
  }
 }

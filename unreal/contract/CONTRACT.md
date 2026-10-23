@@ -30,7 +30,7 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 
 | Asset | Path |
 |---|---|
-| Imported campus meshes | `/Game/WTA/Campus/<Asset>/` for Asset in Museum, WaxIntro, WaxHall, LibraryShell, School, Outside, Yard, OceanDive, ReadingRoom (source `unreal/Pipeline/out/ue/<Asset>.glb`) |
+| Imported campus meshes | `/Game/WTA/Campus/<Asset>/` for Asset in Museum, WaxIntro, WaxHall, LibraryShell, School, Outside, Yard, OceanDive, ReadingRoom and the later wings in `Pipeline/out/ue/manifest.json` (source `unreal/Pipeline/out/ue/<Asset>.glb`); `People` (a guided visit's figure) is never placed |
 | Exhibit art textures | `/Game/WTA/Art/T_Art_<id>` (id with `-` → `_`), source `unreal/Pipeline/out/campus/art/<id>.png` |
 | Data tables | `/Game/WTA/Data/DT_<Table>` (see structs.json `table`), source `unreal/WalkTheArchive/Data/<File>.json` |
 | Main level | `/Game/WTA/Maps/L_Campus` (not World Partition: the campus is small; Ocean Dive sits 420 m east in the same level) |

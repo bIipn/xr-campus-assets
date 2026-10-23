@@ -49,9 +49,10 @@ def spawn_meshes():
         for _path, mesh in meshes:
             name = util.object_name(mesh)
             tag = util.mesh_tag(name)
-            if tag and tag[0] in ("prop", "popup"):
+            if tag and tag[0] in ("prop", "popup", "figure"):
                 # the Wax Hall's props (Props, HandProps) stand in their own frames: the stages spawn them; the
-                # pop-up books' pieces move, so AWTAPopUpBookActor spawns them (the actors step)
+                # pop-up books' pieces move, so AWTAPopUpBookActor spawns them (the actors step); a guided visit's
+                # people (People, bl/figure.py) are AWTACharacter's figure, never placed
                 counts[asset] -= 1
                 continue
             label = name if tag else "%s_%s" % (asset, name)

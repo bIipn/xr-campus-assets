@@ -18,7 +18,8 @@ Unreal scene unchanged (lighting.py explains the exposure):
 Every glow and converted mesh stays out of Lumen's GI: small bright emitters only add noise there, and a
 display-referred one would feed the exposure back into the lighting. Glows also cast no shadow, except lit fabric
 round a light (KEEP_SHADOW: a lamp's shade, which throws the light down in a pool and up in a circle).
-It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards).
+It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards), and
+M_WTA_Figure, the people of a guided visit (AWTACharacter's figure).
 """
 import os
 
@@ -53,6 +54,8 @@ UNLIT_MASTER = paths.MATERIALS_PATH + "/M_WTA_Unlit"
 UNLIT_MASTER_TRANSLUCENT = paths.MATERIALS_PATH + "/M_WTA_UnlitTranslucent"
 # World-space widgets drawn as paper (the Lost Stories wall's cards; AWTAStoryWallActor::BoardMaterial)
 WIDGET_LIT = paths.MATERIALS_PATH + "/M_WTA_WidgetLit"
+# The people of a guided visit (AWTACharacter's figure from bl/figure.py): one colour per person and part
+FIGURE_MATERIAL = paths.MATERIALS_PATH + "/M_WTA_Figure"
 INTERCHANGE_UNLIT = "/InterchangeAssets/gltf/MaterialInstances/MI_Unlit"
 UNLIT_POOL_ALPHA = 0.3
 WHITE_TEXTURE = "/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"
@@ -271,6 +274,55 @@ def build_widget_material(path=WIDGET_LIT):
     return mat
 
 
+def build_figure_material(path=FIGURE_MATERIAL):
+    """The figure's lit material: Color (the person's colour, linear), Roughness and Sheen, a soft brightening toward
+    the edges as cloth has (BaseColor = Color + (1 - Color) x Fresnel x Sheen x 0.5). AWTACharacter makes one dynamic
+    instance per part: the robe, the head and hands, the visor (dark, glossy, no sheen) and the collar ring."""
+    mel = unreal.MaterialEditingLibrary
+    assets = util.assets()
+    if assets.exists(path):
+        mat = assets.load(path)
+        mel.delete_all_material_expressions(mat)
+    else:
+        folder, name = path.rsplit("/", 1)
+        if not assets.directory_exists(folder):
+            assets.make_directory(folder)
+        mat = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, folder, unreal.Material,
+                                                                      unreal.MaterialFactoryNew())
+    util.set_props(mat, {
+        "shading_model": util.enum_value("MaterialShadingModel", "MSM_DEFAULT_LIT"),
+        "blend_mode": util.enum_value("BlendMode", "BLEND_OPAQUE"),
+        "two_sided": False,
+    }, label=util.object_name(mat))
+    colour = _expression(mat, "MaterialExpressionVectorParameter", -1100, -100,
+                         {"parameter_name": "Color", "default_value": unreal.LinearColor(0.5, 0.5, 0.5, 1.0)})
+    rough = _expression(mat, "MaterialExpressionScalarParameter", -400, 250,
+                        {"parameter_name": "Roughness", "default_value": 0.6})
+    sheen = _expression(mat, "MaterialExpressionScalarParameter", -1100, 300,
+                        {"parameter_name": "Sheen", "default_value": 0.3})
+    fresnel = _expression(mat, "MaterialExpressionFresnel", -1100, 150, {"exponent": 3.5, "base_reflect_fraction": 0.0})
+    rim = _expression(mat, "MaterialExpressionMultiply", -850, 200)
+    _connect(fresnel, "", rim, "A")
+    _connect(sheen, "", rim, "B")
+    half = _expression(mat, "MaterialExpressionMultiply", -650, 200, {"const_b": 0.5})
+    _connect(rim, "", half, "A")
+    room = _expression(mat, "MaterialExpressionOneMinus", -850, 0)
+    _connect(colour, "", room, "")
+    lift = _expression(mat, "MaterialExpressionMultiply", -500, 50)
+    _connect(room, "", lift, "A")
+    _connect(half, "", lift, "B")
+    base = _expression(mat, "MaterialExpressionAdd", -300, -50)
+    _connect(colour, "", base, "A")
+    _connect(lift, "", base, "B")
+    spec = _expression(mat, "MaterialExpressionConstant", -400, 350, {"r": 0.45})
+    for expr, prop in ((base, "MP_BASE_COLOR"), (rough, "MP_ROUGHNESS"), (spec, "MP_SPECULAR")):
+        if not mel.connect_material_property(expr, "", getattr(unreal.MaterialProperty, prop)):
+            raise RuntimeError("could not connect %s of %s" % (prop, path))
+    mel.recompile_material(mat)
+    assets.save(mat)
+    return mat
+
+
 def horizon_colour(extent_m):
     """sRGB hex for the horizon ring this wide, or None."""
     width = max(extent_m[0], extent_m[2])
@@ -367,4 +419,9 @@ def run(report):
         report["widget_material"] = WIDGET_LIT
     except Exception as exc:
         errors.append("widget material failed: %s" % exc)
+    try:
+        build_figure_material()
+        report["figure_material"] = FIGURE_MATERIAL
+    except Exception as exc:
+        errors.append("figure material failed: %s" % exc)
     return errors

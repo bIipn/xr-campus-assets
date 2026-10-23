@@ -78,7 +78,8 @@ NEVER_STREAM_ASSETS = ("PopUp",)
 # Wings kept off Nanite: the pop-up books' paper is layered at fractions of a millimetre (a print 0.4 mm over its
 # page, cut-outs 0.35 mm apart), finer than Nanite's position quantisation for meshes that size, so the layers
 # z-fought into stripes; at 18k triangles they need no Nanite.
-NO_NANITE_ASSETS = ("PopUp",)
+# The people's figure (bl/figure.py) is a few thousand triangles a part on a moving pawn: plain meshes too.
+NO_NANITE_ASSETS = ("PopUp", "People")
 
 # Tag every actor the setup spawns so a re-run can delete and respawn it.
 SETUP_TAG = "WTA_Setup"

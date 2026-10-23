@@ -15,6 +15,7 @@
 #include "Materials/MaterialInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "UObject/ConstructorHelpers.h"
+#include "UObject/SoftObjectPath.h"
 #include "AITypes.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
@@ -38,6 +39,30 @@ namespace
 	constexpr float CapsuleHalfHeight = 90.f;
 	/** A seated capsule: 120 cm tall, standing on the floor at the sit point. */
 	constexpr float SeatedHalfHeight = 60.f;
+
+	/** A mesh of the designed figure (bl/figure.py), where the Interchange import files the People wing. */
+	UStaticMesh* FindFigureMesh(const TCHAR* Name)
+	{
+		const FString Paths[2] = {
+			FString::Printf(TEXT("/Game/WTA/Campus/People/People/StaticMeshes/%s.%s"), Name, Name),
+			FString::Printf(TEXT("/Game/WTA/Campus/People/StaticMeshes/%s.%s"), Name, Name),
+		};
+		for (const FString& Path : Paths)
+		{
+			if (UStaticMesh* Mesh = Cast<UStaticMesh>(FSoftObjectPath(Path).TryLoad()))
+			{
+				return Mesh;
+			}
+		}
+		return nullptr;
+	}
+
+	/** bl/figure.py's layout (cm over the figure's root, the floor): the seated body sits on a 45 cm seat, the head
+	    and visor turn about the neck joint, the collar ring rings the neck's base under it. */
+	constexpr float DesignedSeatZ = 45.f;
+	constexpr float DesignedJointStanding = 150.f;
+	constexpr float DesignedJointSeated = DesignedSeatZ + 63.f;
+	constexpr float DesignedCollarDrop = 3.4f;
 
 	/** Size Part's mesh by Scale and stand its bounds' bottom at BottomZ (cm over the figure's root, the floor).
 	    The engine's basic shapes are 100 cm across; their bounds say where their pivot is. */
@@ -128,6 +153,7 @@ AWTACharacter::AWTACharacter()
 		Part->SetCastShadow(true);
 		return Part;
 	};
+	ShapeLook = ShapeMaterial.Object;
 	FigureBase = MakePart(TEXT("FigureBase"), CylinderMesh.Object, Figure);
 	FigureBody = MakePart(TEXT("FigureBody"), ConeMesh.Object, Figure);
 	FigureShoulders = MakePart(TEXT("FigureShoulders"), SphereMesh.Object, Figure);
@@ -161,6 +187,18 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 	bFigureLaidSeated = bSitting;
 	const float Half = GetCapsuleComponent() ? GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() : CapsuleHalfHeight;
 	Figure->SetRelativeLocation(FVector(0.f, 0.f, -Half));
+	if (bDesignedFigure)
+	{
+		const float JointZ = bSitting ? DesignedJointSeated : DesignedJointStanding;
+		FigureBody->SetStaticMesh(bSitting ? SeatedMesh.Get() : StandingMesh.Get());
+		FigureBody->SetRelativeLocation(FVector(0.f, 0.f, bSitting ? DesignedSeatZ : 0.f));
+		FigureShoulders->SetRelativeLocation(FVector(0.f, 0.f, JointZ - DesignedCollarDrop));
+		FigureNeck->SetRelativeLocation(FVector(0.f, 0.f, JointZ));
+		FigureHead->SetRelativeLocation(FVector::ZeroVector);
+		FigureVisor->SetRelativeLocation(FVector::ZeroVector);
+		NameTag->SetRelativeLocation(FVector(0.f, 0.f, JointZ + 48.f));
+		return;
+	}
 	// Standing: a turned base, a tapered body to 1.23 m, shoulders, the head at 1.46 m (the eye is at 1.62).
 	// Seated: no base, the body sitting on a 45 cm seat, the head at 1.27 m.
 	const float BodyBottom = bSitting ? 45.f : 5.f;
@@ -174,6 +212,43 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 	PlacePart(FigureHead, -9.f, FVector(0.27f, 0.27f, 0.29f));
 	PlacePart(FigureVisor, 2.f, FVector(0.07f, 0.19f, 0.075f), 11.f);
 	NameTag->SetRelativeLocation(FVector(0.f, 0.f, NeckZ + 40.f));
+}
+
+void AWTACharacter::LoadFigureMeshes()
+{
+	if (bFigureMeshesTried)
+	{
+		return;
+	}
+	bFigureMeshesTried = true;
+	UStaticMesh* Body = FindFigureMesh(TEXT("figure__body"));
+	UStaticMesh* Seated = FindFigureMesh(TEXT("figure__seated"));
+	UStaticMesh* Head = FindFigureMesh(TEXT("figure__head"));
+	UStaticMesh* Visor = FindFigureMesh(TEXT("figure__visor"));
+	UStaticMesh* Collar = FindFigureMesh(TEXT("figure__collar"));
+	if (Body == nullptr || Seated == nullptr || Head == nullptr || Visor == nullptr || Collar == nullptr)
+	{
+		UE_LOG(LogWTA, Log, TEXT("Figure: the designed figure is not imported (Campus/People); the basic shapes stand in"));
+		return;
+	}
+	StandingMesh = Body;
+	SeatedMesh = Seated;
+	FigureHead->SetStaticMesh(Head);
+	FigureVisor->SetStaticMesh(Visor);
+	FigureShoulders->SetStaticMesh(Collar);
+	for (UStaticMeshComponent* Part : { FigureBody.Get(), FigureShoulders.Get(), FigureHead.Get(), FigureVisor.Get() })
+	{
+		Part->SetRelativeScale3D(FVector::OneVector);
+	}
+	FigureBase->SetVisibility(false);
+	if (UMaterialInterface* Look = Cast<UMaterialInterface>(FSoftObjectPath(TEXT("/Game/WTA/Materials/M_WTA_Figure.M_WTA_Figure")).TryLoad()))
+	{
+		FigureLook = Look;
+	}
+	bDesignedFigure = true;
+	FigureMaterial = nullptr;                        // the colours are made again on the new meshes
+	ShownSlot = -1;
+	LayoutFigure(bFigureLaidSeated);
 }
 
 void AWTACharacter::BeginPlay()
@@ -260,23 +335,45 @@ void AWTACharacter::RefreshFigureLook()
 	ShownSlot = Person->Slot;
 	bShownGuide = Person->bGuide;
 	const FLinearColor Color = Person->GetVisitColor();
-	if (FigureMaterial == nullptr && FigureBody->GetMaterial(0) != nullptr)
+	UMaterialInterface* Base = FigureLook != nullptr ? FigureLook.Get() : ShapeLook.Get();
+	if (FigureMaterial == nullptr && Base != nullptr)
 	{
-		UMaterialInterface* Base = FigureBody->GetMaterial(0);
 		FigureMaterial = UMaterialInstanceDynamic::Create(Base, this);
 		HeadMaterial = UMaterialInstanceDynamic::Create(Base, this);
 		VisorMaterial = UMaterialInstanceDynamic::Create(Base, this);
+		CollarMaterial = UMaterialInstanceDynamic::Create(Base, this);
 		FigureBase->SetMaterial(0, FigureMaterial);
 		FigureBody->SetMaterial(0, FigureMaterial);
-		FigureShoulders->SetMaterial(0, FigureMaterial);
 		FigureHead->SetMaterial(0, HeadMaterial);
 		FigureVisor->SetMaterial(0, VisorMaterial);
+		if (bDesignedFigure)
+		{
+			FigureBody->SetMaterial(1, HeadMaterial);    // the hands, in the head's warm neutral
+			FigureShoulders->SetMaterial(0, CollarMaterial);
+		}
+		else
+		{
+			FigureShoulders->SetMaterial(0, FigureMaterial);
+		}
 	}
 	if (FigureMaterial != nullptr)
 	{
+		// The robe in the person's colour with a soft sheen, the head and hands a warm neutral touched by it, the
+		// visor dark glass, the collar a deeper shade of the robe (M_WTA_Figure's Roughness and Sheen; the basic
+		// shape material only takes the colour).
 		FigureMaterial->SetVectorParameterValue(TEXT("Color"), Color);
-		HeadMaterial->SetVectorParameterValue(TEXT("Color"), FMath::Lerp(Color, WTAStyle::Bone(), 0.35f));
-		VisorMaterial->SetVectorParameterValue(TEXT("Color"), WTAStyle::FromHex(0x1b2622));
+		FigureMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.62f);
+		FigureMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.35f);
+		HeadMaterial->SetVectorParameterValue(TEXT("Color"), bDesignedFigure ? FMath::Lerp(WTAStyle::FromHex(0xd6c4a8), Color, 0.08f)
+			: FMath::Lerp(Color, WTAStyle::Bone(), 0.35f));
+		HeadMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.5f);
+		HeadMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.15f);
+		VisorMaterial->SetVectorParameterValue(TEXT("Color"), WTAStyle::FromHex(bDesignedFigure ? 0x141c1a : 0x1b2622));
+		VisorMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.12f);
+		VisorMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.f);
+		CollarMaterial->SetVectorParameterValue(TEXT("Color"), Color * 0.55f);
+		CollarMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.38f);
+		CollarMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.2f);
 	}
 	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(NameTag->GetUserWidgetObject()))
 	{
@@ -290,7 +387,7 @@ void AWTACharacter::RefreshFigureLook()
 
 void AWTACharacter::UpdateFigure(float DeltaSeconds)
 {
-	bool bShow = GetNetMode() != NM_Standalone && !IsLocallyControlled() && GetPlayerState() != nullptr;
+	bool bShow = (GetNetMode() != NM_Standalone || bStandIn) && !IsLocallyControlled() && GetPlayerState() != nullptr;
 	const APlayerController* Viewer = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
 	FVector Eye = FVector::ZeroVector;
 	if (bShow && Viewer != nullptr)
@@ -307,6 +404,10 @@ void AWTACharacter::UpdateFigure(float DeltaSeconds)
 	if (bShow != bFigureShown)
 	{
 		bFigureShown = bShow;
+		if (bShow)
+		{
+			LoadFigureMeshes();
+		}
 		for (UStaticMeshComponent* Part : { FigureBase.Get(), FigureBody.Get(), FigureShoulders.Get(), FigureHead.Get(), FigureVisor.Get() })
 		{
 			Part->SetHiddenInGame(!bShow);
@@ -353,6 +454,15 @@ void AWTACharacter::UpdateFigure(float DeltaSeconds)
 		{
 			bTagHidden = bHide;
 			NameTag->SetHiddenInGame(bHide);
+		}
+		if (!bHide && !bTagLogged)
+		{
+			bTagLogged = true;
+			const UUserWidget* TagWidget = NameTag->GetUserWidgetObject();
+			UE_LOG(LogWTA, Log, TEXT("WTA_FIGURE %s: %s figure, name tag %s (widget %s, slate %s, %.0f x %.0f)"), *ShownName,
+				bDesignedFigure ? TEXT("designed") : TEXT("basic"), NameTag->IsVisible() ? TEXT("visible") : TEXT("hidden"),
+				TagWidget ? TEXT("made") : TEXT("missing"), TagWidget && TagWidget->GetCachedWidget().IsValid() ? TEXT("built") : TEXT("not built"),
+				TagWidget ? TagWidget->GetDesiredSize().X : 0.f, TagWidget ? TagWidget->GetDesiredSize().Y : 0.f);
 		}
 	}
 }

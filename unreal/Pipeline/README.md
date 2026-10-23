@@ -19,11 +19,12 @@ bl/training.py ──► out/training/Training.glb, lights.json, layout.json    
 bl/maker.py ──► out/maker/Maker.glb, layout.json                              (Room 101's 360 storytelling course: five stations, the desk)
 bl/stories.py ──► out/stories/Stories.glb, lights.json, layout.json           (the Lost Stories cabin at the path's end: the booth and the story wall)
 bl/popup.py ──► out/popup/PopUp.glb, layout.json                              (the pop-up books on the Reading Room's south reading table)
+bl/figure.py ──► out/people/People.glb                                        (a guided visit's people: the figure the others see)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
 out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb + Maker.glb
-    + Stories.glb + PopUp.glb
+    + Stories.glb + PopUp.glb + People.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -227,6 +228,13 @@ DT_Books page each spread shows); it hinges every piece on its bottom edge and f
 and covers come from the pack's books (its `content` folder, its language's DT_Books); a pack without these books gets
 none. The printed pages (`assets/tex/popup_*.png`) are painted on every run at the pages' proportions, saved at 1024 × 512 (a power of two, so Unreal mips them: a page seen from the chair is foreshortened several times over, and an unmipped one shimmers into grey) and travel in the GLB as JPEGs.
 
+A guided visit's people (`bl/figure.py`) are one calm, abstract person in five parts: a robe that narrows from the hem
+to the waist and broadens over the chest and shoulders, arms at the sides (seated, the forearms rest on the lap), a
+short neck, an egg-shaped head and a headset's visor across the eyes with its strap round the back, and a collar ring.
+The robe takes the person's colour, the head and hands a warm neutral, the visor dark glass. Standing, the eyes are at
+1.62 m (the player's eye height); seated, 75 cm over a 45 cm seat. `assets/people/preview.jpg` shows a visitor, the
+guide and a seated visitor.
+
 ## A client pack, and the sheet a library fills in
 
 `clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit
@@ -273,6 +281,7 @@ exhibit is itself again. The play QA's `season` phase does exactly this with the
 | Maker | 33 | 5k | Blender: Room 101's 360 storytelling course props; `spot__studio_f90`, `seat__studio_edit_f90` |
 | Stories | 38 | 8k | Blender: the Lost Stories cabin at the path's end (porch, booth, story board, shelves); `seat__stories_teller_f0`, `_guest_f180`, `_bench_f270`, `_porch_f270` |
 | PopUp | 46 | 18k | Blender: the pop-up books on the Reading Room's south table, every moving piece its own `popup__` mesh (the actors step's `AWTAPopUpBookActor` places and folds them); not Nanite (its paper lies fractions of a millimetre apart) and its textures never stream |
+| People | 5 | 16k | Blender: a guided visit's person (`figure__body`, `_seated`, `_head`, `_visor`, `_collar`), never placed: `AWTACharacter` loads them for the figure the others see, coloured per person through `M_WTA_Figure`; not Nanite |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,

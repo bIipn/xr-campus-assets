@@ -43,6 +43,8 @@ assets/training/*.blend*
 assets/maker/*.blend*
 assets/stories/*.blend*
 unreal/Pipeline/out/popup/PopUp.glb
+# The visit figure (bl/figure.py): only the prepared out/ue copy is kept
+unreal/Pipeline/out/people/People.glb
 assets/popup/*.blend*
 # the pop-up books' printed pages: bl/popup.py paints them on every run and they travel inside the GLB
 assets/tex/popup_*.png

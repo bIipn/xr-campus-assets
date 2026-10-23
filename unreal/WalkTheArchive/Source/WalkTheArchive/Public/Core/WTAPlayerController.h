@@ -338,11 +338,22 @@ public:
 	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
 	void WTAShotTour(float SecondsPerShot = 5.f);
 
-	/** QA: the same tour over the views listed in Saved/QA/shot_views.txt, one per line:
+	/** QA: the same tour over the views listed in Saved/QA/<File> (shot_views.txt unless named), one per line:
 	    `<name> | <x> <y> <z> | <yaw> [<pitch>]` (Unreal cm and degrees; `#` starts a comment), saved as
-	    Saved/Screenshots/<platform>/QA/<NN>_<name>.png with the HUD off. Console: WTAShotList [Seconds]. */
+	    Saved/Screenshots/<platform>/QA/<NN>_<name>.png with the HUD off (a guided visit's name tags still show).
+	    Console: WTAShotList [Seconds] [File]. */
 	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
-	void WTAShotList(float SecondsPerShot = 5.f);
+	void WTAShotList(float SecondsPerShot = 5.f, const FString& File = TEXT("shot_views.txt"));
+
+	/** Look-dev for guided visits on one computer: Count stand-in people as the others would see them, a guide (slot 0)
+	    at the floor under (X, Y) and visitors at their group places round them (UWTAVisitSubsystem::GroupSpot), all
+	    facing Yaw; without X and Y they stand 4.2 m in front of the player, facing them. The last Seated of them show
+	    their seated figure. WTAFigures 0 takes them away. Logs a WTA_FIGURES line. */
+	UFUNCTION(Exec, BlueprintCallable, Category = "WTA|QA")
+	void WTAFigures(int32 Count = 5, float X = -1.e9f, float Y = 0.f, float Yaw = 0.f, int32 Seated = 0);
+
+	/** WTAFigures waits for the player's pawn (a command line's -ExecCmds can run before it exists). */
+	int32 FiguresTries = 0;
 
 	/** QA: asks every staff member their own chips, then each line of Saved/QA/chat_questions.txt (or a short built-in
 	 *  list); logs one WTA_CHAT line per answer (text, action, arg, offer label) and "WTA_CHAT done N questions". */

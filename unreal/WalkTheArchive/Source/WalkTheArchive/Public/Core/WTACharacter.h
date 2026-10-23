@@ -7,11 +7,12 @@
 //
 // Guided visits (UWTAVisitSubsystem): the pawn replicates, always relevant, and its owner's machine has the say over
 // where it is (client-authoritative movement: teleports, sitting and the tour's walks need no server correction).
-// Other people see it as a figure - a turned base, a tapered body, shoulders and a head that tilts with the
-// person's look, a light visor showing which way they face - in the person's colour (AWTAPlayerState), with their
-// name over it (UWTANameTagWidget). Nobody sees their own figure, and one within arm's reach of the camera hides.
-// Sitting reaches the others through ServerSetSeated (the seated figure is lower, on the seat). Players never
-// block each other.
+// Other people see it as a figure in the person's colour (AWTAPlayerState) with their name over it
+// (UWTANameTagWidget): the designed one from bl/figure.py (/Game/WTA/Campus/People: a robe, arms, a head that tilts
+// with the person's look and a headset visor showing which way they face, a collar ring), or, before that is
+// imported, the engine's basic shapes. Nobody sees their own figure, and one within arm's reach of the camera hides.
+// Sitting reaches the others through ServerSetSeated (the seated figure sits on the seat, hands on the lap).
+// Players never block each other.
 
 #pragma once
 
@@ -23,6 +24,8 @@
 
 class UCameraComponent;
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
+class UStaticMesh;
 class UStaticMeshComponent;
 class UWidgetComponent;
 
@@ -175,6 +178,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA|Visit")
 	bool IsFigureShown() const { return bFigureShown; }
 
+	/** A look-dev stand-in (AWTAPlayerController::WTAFigures): its figure shows in a solo game too. */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Visit")
+	bool bStandIn = false;
+
+	/** True when the figure is the designed one (bl/figure.py) rather than the basic shapes. */
+	UFUNCTION(BlueprintPure, Category = "WTA|Visit")
+	bool IsDesignedFigure() const { return bDesignedFigure; }
+
+	/** True once the name tag shows (in range and not behind a wall). */
+	UFUNCTION(BlueprintPure, Category = "WTA|Visit")
+	bool IsNameTagShown() const { return bFigureShown && !bTagHidden; }
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
@@ -202,6 +217,31 @@ protected:
 
 	/** Lay the parts out standing or seated (lower and shorter, sitting on the seat). */
 	void LayoutFigure(bool bSitting);
+
+	/** The designed figure's meshes (and M_WTA_Figure), the first time a figure shows; the basic shapes stay when they
+	    are not imported. */
+	void LoadFigureMeshes();
+
+	UPROPERTY(Transient)
+	TObjectPtr<UStaticMesh> StandingMesh;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UStaticMesh> SeatedMesh;
+
+	/** What the figure's colours are made on: M_WTA_Figure (Color, Roughness, Sheen), else BasicShapeMaterial (Color). */
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInterface> FigureLook;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> CollarMaterial;
+
+	/** The engine's BasicShapeMaterial, the colours' base when M_WTA_Figure is not built. */
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> ShapeLook;
+
+	bool bFigureMeshesTried = false;
+	bool bDesignedFigure = false;
+	bool bTagLogged = false;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UMaterialInstanceDynamic> FigureMaterial;

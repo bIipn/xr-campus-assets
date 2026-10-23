@@ -33,6 +33,7 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Pawn.h"
@@ -1348,15 +1349,15 @@ void AWTAPlayerController::WTAShotTour(float SecondsPerShot)
 	ShotTourTeleport();
 }
 
-void AWTAPlayerController::WTAShotList(float SecondsPerShot)
+void AWTAPlayerController::WTAShotList(float SecondsPerShot, const FString& File)
 {
 	ShotTourViews.Reset();
 	ShotTourSeconds = FMath::Max(SecondsPerShot, 1.f);
 	TArray<FString> Lines;
-	const FString File = FPaths::ProjectSavedDir() / TEXT("QA") / TEXT("shot_views.txt");
-	if (!FFileHelper::LoadFileToStringArray(Lines, *File))
+	const FString Path = FPaths::ProjectSavedDir() / TEXT("QA") / (File.IsEmpty() ? FString(TEXT("shot_views.txt")) : FPaths::GetCleanFilename(File));
+	if (!FFileHelper::LoadFileToStringArray(Lines, *Path))
 	{
-		UE_LOG(LogWTA, Warning, TEXT("WTA_SHOTTOUR no %s"), *File);
+		UE_LOG(LogWTA, Warning, TEXT("WTA_SHOTTOUR no %s"), *Path);
 		return;
 	}
 	for (const FString& Raw : Lines)
@@ -1391,10 +1392,89 @@ void AWTAPlayerController::WTAShotList(float SecondsPerShot)
 	while (CloseTopPanel())
 	{
 	}
+	// No HUD in these pictures, but the rest of the UI layer (a guided visit's name tags over the people) stays.
 	bShotTourNoHud = true;
+	if (Hud != nullptr)
+	{
+		Hud->SetVisibility(ESlateVisibility::Collapsed);
+	}
 	ShotTourIndex = 0;
 	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR start %d views, %.1f s each"), ShotTourViews.Num(), ShotTourSeconds);
 	ShotTourTeleport();
+}
+
+void AWTAPlayerController::WTAFigures(int32 Count, float X, float Y, float Yaw, int32 Seated)
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return;
+	}
+	for (TActorIterator<AWTACharacter> It(World); It; ++It)
+	{
+		if (It->bStandIn)
+		{
+			if (APlayerState* State = It->GetPlayerState())
+			{
+				State->Destroy();
+			}
+			It->Destroy();
+		}
+	}
+	AWTACharacter* Me = GetWTACharacter();
+	if (Count <= 0)
+	{
+		return;
+	}
+	if (Me == nullptr)
+	{
+		if (FiguresTries++ < 40)
+		{
+			FTimerHandle Retry;
+			GetWorldTimerManager().SetTimer(Retry, FTimerDelegate::CreateUObject(this, &AWTAPlayerController::WTAFigures, Count, X, Y, Yaw, Seated), 0.5f, false);
+		}
+		return;
+	}
+	FiguresTries = 0;
+	FVector Eye;
+	FRotator Look;
+	GetPlayerViewPoint(Eye, Look);
+	FVector Floor;
+	float Facing = Yaw;
+	if (X < -1.e8f)
+	{
+		Floor = UWTAVisitSubsystem::FloorUnder(World, Eye + FRotator(0.f, Look.Yaw, 0.f).Vector() * 420.f, Me->EyeHeight);
+		Facing = Look.Yaw + 180.f;
+	}
+	else
+	{
+		Floor = UWTAVisitSubsystem::FloorUnder(World, FVector(X, Y, Eye.Z), Me->EyeHeight);
+	}
+	static const TCHAR* Names[] = { TEXT("Ms. Keller"), TEXT("Ana"), TEXT("Ben"), TEXT("Chloe"), TEXT("Diego"), TEXT("Eli"),
+		TEXT("Fatima"), TEXT("Grace"), TEXT("Hiro"), TEXT("Isla"), TEXT("Jonah"), TEXT("Kai") };
+	int32 Made = 0;
+	for (int32 Slot = 0; Slot < Count; ++Slot)
+	{
+		const FWTAView Spot = UWTAVisitSubsystem::GroupSpot(World, Floor, Facing, 0.f, Slot, Me->EyeHeight);
+		FActorSpawnParameters Params;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AWTACharacter* Person = World->SpawnActor<AWTACharacter>(AWTACharacter::StaticClass(), Spot.Location, FRotator(0.f, Facing, 0.f), Params);
+		AWTAPlayerState* State = World->SpawnActor<AWTAPlayerState>(AWTAPlayerState::StaticClass());
+		if (Person == nullptr || State == nullptr)
+		{
+			continue;
+		}
+		State->Slot = Slot;
+		State->bGuide = Slot == 0;
+		State->SetVisitName(Names[Slot % UE_ARRAY_COUNT(Names)]);
+		Person->bStandIn = true;
+		Person->SetPlayerState(State);
+		Person->TeleportToView(Spot);
+		Person->bSeatedPose = Slot >= Count - Seated;
+		++Made;
+	}
+	UE_LOG(LogWTA, Display, TEXT("WTA_FIGURES %d stand-ins round (%.0f, %.0f, %.0f) facing %.0f, %d seated"), Made, Floor.X, Floor.Y, Floor.Z,
+		Facing, FMath::Clamp(Seated, 0, Made));
 }
 
 void AWTAPlayerController::WTAChatTest()
@@ -1569,6 +1649,10 @@ void AWTAPlayerController::ShotTourTeleport()
 	{
 		UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR done %d views"), ShotTourViews.Num());
 		ShotTourIndex = INDEX_NONE;
+		if (bShotTourNoHud && Hud != nullptr)
+		{
+			Hud->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
 		bShotTourNoHud = false;
 		return;
 	}
@@ -1585,7 +1669,7 @@ void AWTAPlayerController::ShotTourCapture()
 	// An absolute path: a relative one with a folder in it would land next to the engine binaries.
 	const FString File = FPaths::ConvertRelativePathToFull(FPaths::ScreenShotDir() /
 		FString::Printf(TEXT("QA/%02d_%s.png"), ShotTourIndex, *ShotTourViews[ShotTourIndex].Key));
-	FScreenshotRequest::RequestScreenshot(File, !bShotTourNoHud, false);
+	FScreenshotRequest::RequestScreenshot(File, true, false);
 	UE_LOG(LogWTA, Display, TEXT("WTA_SHOTTOUR %s"), *File);
 	++ShotTourIndex;
 	// Leave the screenshot a few frames before moving on.
