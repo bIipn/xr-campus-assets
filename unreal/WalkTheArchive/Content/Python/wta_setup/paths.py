@@ -45,6 +45,7 @@ AUDITORIUM_LIGHTS_JSON = os.path.join(OUT_DIR, "auditorium", "lights.json")  # b
 CLASSROOM_LIGHTS_JSON = os.path.join(OUT_DIR, "classroom", "lights.json")    # bl/classroom.py (Room 104)
 LAYOUT_JSON = os.path.join(PIPELINE_DIR, "layout", "layout.json")
 STATUES_JSON = os.path.join(PIPELINE_DIR, "content", "statues.json")       # the marble statues (hand-authored)
+GALLERY_WALLS_JSON = os.path.join(PIPELINE_DIR, "content", "gallery_walls.json")   # the visitors' own walls (hand-authored)
 MARBLE_MATERIAL = "/Game/WTA/Materials/M_WTA_Marble"
 STRUCTS_JSON = os.path.join(UNREAL_DIR, "contract", "structs.json")
 

@@ -1,0 +1,17 @@
+{
+  "about": "The visitors' own walls: where the pictures they take (photo mode, Saved/Postcards) and anything dropped into Saved/Maker hang. Campus metres (x east, y up, z south); the actor stands against the wall at the row's height, facing the room (yaw = Unreal degrees, 0 = looking east). width_m = the wall's usable width. wta_setup/actors.py spawns an AWTAGalleryWallActor per entry.",
+  "walls": [
+    {
+      "id": "studio",
+      "room": "studio",
+      "x": 23.94,
+      "y": 1.5,
+      "z": -8.9,
+      "yaw": 180,
+      "width_m": 5.6,
+      "pictures": 6,
+      "title": "Your pictures",
+      "note": "the 3D Art Studio's east wall, the long one with nothing on it"
+    }
+  ]
+}

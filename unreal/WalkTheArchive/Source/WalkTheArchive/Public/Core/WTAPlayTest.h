@@ -116,6 +116,8 @@ private:
 	void AddHuntPhase();
 	/** visits: this session's visit log is being written (rooms, cards, positions). */
 	void AddVisitsPhase();
+	/** wall: a postcard taken now hangs on the visitors' wall; a no-HUD shot of it. */
+	void AddWallPhase();
 	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
 	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */

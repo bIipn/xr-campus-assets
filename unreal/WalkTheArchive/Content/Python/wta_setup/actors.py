@@ -336,13 +336,37 @@ def spawn_talks(report):
     return failed_props
 
 
+def spawn_gallery_walls(report):
+    """One AWTAGalleryWallActor per gallery_walls.json entry: against the wall at the row's height, facing the room."""
+    failed_props, count = [], 0
+    try:
+        doc = paths.read_json(paths.GALLERY_WALLS_JSON)
+    except Exception as exc:
+        log.warn("gallery_walls.json unreadable: %s" % exc)
+        report["gallery_walls"] = 0
+        return failed_props
+    for row in doc.get("walls", []):
+        loc = (100.0 * float(row["x"]), 100.0 * float(row["z"]), 100.0 * float(row.get("y", 1.5)))
+        _a, failed = spawn_wta("WTAGalleryWallActor", loc, float(row.get("yaw", 0.0)), "GalleryWall_%s" % row["id"], "Walls", {
+            "wall_width_cm": 100.0 * float(row.get("width_m", 5.6)),
+            "max_pictures": int(row.get("pictures", 6)),
+            "title": unreal.Text(row.get("title", "Your pictures")),
+            "floor_below_cm": 100.0 * float(row.get("y", 1.5)),
+            "pick_extent": unreal.Vector(60.0, 50.0 * float(row.get("width_m", 5.6)), 120.0),
+        })
+        failed_props += failed
+        count += 1
+    report["gallery_walls"] = count
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
-               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks):
+               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks, spawn_gallery_walls):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

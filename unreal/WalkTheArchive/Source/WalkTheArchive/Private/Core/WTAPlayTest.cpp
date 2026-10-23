@@ -29,6 +29,7 @@
 #include "World/WTAStationActor.h"
 #include "World/WTAStatueActor.h"
 #include "World/WTACourseActor.h"
+#include "World/WTAGalleryWallActor.h"
 #include "World/WTATalkActor.h"
 #include "UI/WTACertificateWidget.h"
 #include "Components/EditableTextBox.h"
@@ -476,6 +477,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("visits")))
 	{
 		AddVisitsPhase();
+	}
+	if (Want(TEXT("wall")))
+	{
+		AddWallPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3906,6 +3911,52 @@ void UWTAPlayTest::AddVisitsPhase()
 			bRead ? FString::Printf(TEXT("%s: %d lines (%d rooms left, %d cards, %d positions; %d written)"), *File, Lines, Rooms, Cards, Positions, Visits->GetLinesWritten())
 			      : FString::Printf(TEXT("could not read %s"), File.IsEmpty() ? TEXT("(no file yet)") : *File));
 		return 0.f;
+	} });
+}
+
+void UWTAPlayTest::AddWallPhase()
+{
+	// The visitors' wall: a postcard taken now hangs there after E; a shot of it from its view spot.
+	const TSharedRef<FString> File = MakeShared<FString>();
+	Steps.Add({ TEXT("wall settle"), [this]() -> float { CloseAll(); return 3.f; } });
+	Steps.Add({ TEXT("wall postcard"), [this, File]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		*File = Controller != nullptr ? Controller->TakePostcard() : FString();
+		return File->IsEmpty() ? 0.f : 1.2f;
+	} });
+	Steps.Add({ TEXT("wall hang"), [this, File]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		AWTAGalleryWallActor* Wall = nullptr;
+		for (TActorIterator<AWTAGalleryWallActor> It(GetWorld()); It; ++It)
+		{
+			Wall = *It;
+			break;
+		}
+		if (Wall == nullptr)
+		{
+			Report(TEXT("wall"), EResult::Fail, TEXT("a visitors' wall"), TEXT("no AWTAGalleryWallActor in the level (content/gallery_walls.json, the actors step)"));
+			return 0.f;
+		}
+		const int32 Before = Wall->NumPictures();
+		FWTAView View;
+		const bool bSpot = IWTAInteractable::Execute_GetViewSpot(Wall, View);
+		if (bSpot)
+		{
+			StandAt(View);
+		}
+		Wall->Refresh();
+		const int32 After = Wall->NumPictures();
+		const bool bOk = After >= 1 && (File->IsEmpty() || After >= Before);
+		Report(TEXT("wall"), bOk ? EResult::Pass : EResult::Fail, TEXT("the wall hangs the pictures"),
+			FString::Printf(TEXT("%d before, %d after the postcard%s; view spot %s"), Before, After, File->IsEmpty() ? TEXT(" (none taken)") : TEXT(""), bSpot ? TEXT("found") : TEXT("missing")));
+		return bOk ? 1.5f : 0.f;
+	} });
+	Steps.Add({ TEXT("wall shot"), [this]() -> float
+	{
+		Shot(TEXT("gallery_wall"), false);
+		return 0.4f;
 	} });
 }
 
