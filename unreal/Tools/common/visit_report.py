@@ -42,7 +42,7 @@ def read_sessions(folder, since=None, until=None):
         if not (name.startswith('visit_') and name.endswith('.csv')):
             continue
         path = os.path.join(folder, name)
-        s = {'file': name, 'start': None, 'end': None, 'rooms': [], 'cards': [], 'tokens': [], 'badges': [], 'pos': []}
+        s = {'file': name, 'start': None, 'end': None, 'rooms': [], 'enters': [], 'cards': [], 'tokens': [], 'badges': [], 'pos': []}
         with open(path, 'r', encoding='utf-8', newline='') as fh:
             for row in csv.DictReader(fh):
                 try:
@@ -63,6 +63,8 @@ def read_sessions(folder, since=None, until=None):
                     s['tokens'].append(a)
                 elif kind == 'badge' and a:
                     s['badges'].append(a)
+                elif kind == 'enter' and a:
+                    s['enters'].append((a, t))
                 elif kind == 'pos':
                     try:
                         s['pos'].append((a, float(b), float(c)))
@@ -70,6 +72,13 @@ def read_sessions(folder, since=None, until=None):
                         pass
         if s['start'] is None:
             continue
+        # A session that ended without closing its last room (the game was killed, or crashed): the time from
+        # the last entry to the last line counts for that room, so a report never loses a visit's tail.
+        closed_until = max((entered + seconds for _r, entered, seconds in s['rooms']), default=s['start'])
+        if s['enters']:
+            room, entered = s['enters'][-1]
+            if entered >= closed_until - 1 and s['end'] > entered:
+                s['rooms'].append((room, entered, s['end'] - entered))
         day = utc_date(s['start'])
         if since and day < since:
             continue

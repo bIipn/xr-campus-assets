@@ -1,15 +1,16 @@
 // Walk the Archive - the visit log: what a visit did, for the library's own reports.
 //
 // One CSV per play session in Saved/Visits/visit_<yyyymmdd-hhmmss>.csv, appended as it happens so a crash loses
-// nothing: a "room" line when a room is left (which room, when it was entered, for how many seconds), a "card"
+// nothing: an "enter" line when a room is entered, a "room" line when it is left (which room, when it was entered,
+// for how many seconds), a "card"
 // line when a card opens (an exhibit, a book, a station, a ride, a talk's quiz, a course, the badges, a staff
 // chat), a "token" line for each token found, a "badge" line for each badge earned, and a "pos" line every
 // SampleSeconds with where the visitor stands (room, x, y in metres) for the heatmap. No names: the file knows
 // the session, not the person. unreal/Tools/common/visit_report.py turns a folder of these into a report with
 // the dwell times per room, the most opened cards and a heatmap over the campus plan.
 //
-// Format: utc,kind,a,b,c  (utc = seconds since 1970; room: a = room id, b = seconds entered at, c = seconds
-// stayed; card: a = kind, b = id; token/badge: a = id; pos: a = room id, b = x m, c = y m).
+// Format: utc,kind,a,b,c  (utc = seconds since 1970; enter: a = room id; room: a = room id, b = seconds entered
+// at, c = seconds stayed; card: a = kind, b = id; token/badge: a = id; pos: a = room id, b = x m, c = y m).
 
 #pragma once
 

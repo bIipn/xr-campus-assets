@@ -100,6 +100,7 @@ void UWTAVisitLogSubsystem::HandleRoomChanged(FName RoomId)
 	CloseRoom();
 	CurrentRoom = RoomId;
 	RoomEnteredAt = UtcSeconds();
+	Write(TEXT("enter"), RoomId.ToString(), FString(), FString());    // the timeline survives a session that never closes its last room
 }
 
 void UWTAVisitLogSubsystem::CloseRoom()
