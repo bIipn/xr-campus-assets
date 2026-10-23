@@ -16,8 +16,8 @@ namespace
 {
 	// MetaHuman blueprints face +Y in their own frame: a yaw of -90 turns the figure to face +X of the actor's yaw.
 	constexpr float MetaHumanYawOffset = -90.f;
-	const TCHAR* AnimFolder = TEXT("/Game/WTA/Characters/Common/Anims/Mocap");
-	const TCHAR* IdleAction = TEXT("idle_b");
+	const TCHAR* CourseAnimFolder = TEXT("/Game/WTA/Characters/Common/Anims/Mocap");
+	const TCHAR* CourseIdleAction = TEXT("idle_b");
 }
 
 AWTACourseActor::AWTACourseActor()
@@ -122,8 +122,8 @@ void AWTACourseActor::SpawnLead()
 		Body->SetAnimInstanceClass(UWTAWaxAnimInstance::StaticClass());
 		if (UWTAWaxAnimInstance* Anim = Cast<UWTAWaxAnimInstance>(Body->GetAnimInstance()))
 		{
-			const FString Name = FString::Printf(TEXT("AS_WTA_%s"), IdleAction);
-			if (UAnimSequence* Idle = Cast<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s.%s"), AnimFolder, *Name, *Name)).TryLoad()))
+			const FString Name = FString::Printf(TEXT("AS_WTA_%s"), CourseIdleAction);
+			if (UAnimSequence* Idle = Cast<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s.%s"), CourseAnimFolder, *Name, *Name)).TryLoad()))
 			{
 				Anim->PlayClip(Idle, true, 1.f, UWTAPeopleLibrary::PersonPhase(Row.Person) * Idle->GetPlayLength(), 0.6f);
 			}

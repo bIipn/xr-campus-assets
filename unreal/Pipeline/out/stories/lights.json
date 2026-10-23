@@ -1,0 +1,111 @@
+{
+ "source": "bl/stories.py",
+ "units": "metres, three.js campus axes (y up)",
+ "lights": [
+  {
+   "name": "porch",
+   "type": "POINT",
+   "campus_pos_m": [
+    -4.93,
+    2.38,
+    71.87
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 40,
+   "color_linear": [
+    1.0,
+    0.8,
+    0.55
+   ],
+   "radius_m": 0.04
+  },
+  {
+   "name": "lamp",
+   "type": "POINT",
+   "campus_pos_m": [
+    -2.72,
+    1.87,
+    75.32
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 25,
+   "color_linear": [
+    1.0,
+    0.78,
+    0.52
+   ],
+   "radius_m": 0.04
+  },
+  {
+   "name": "wallwash",
+   "type": "SPOT",
+   "campus_pos_m": [
+    -4.0,
+    3.2,
+    75.96
+   ],
+   "campus_dir": [
+    0.0,
+    -0.75,
+    0.66
+   ],
+   "blender_watts": 30,
+   "color_linear": [
+    1.0,
+    0.86,
+    0.68
+   ],
+   "radius_m": 0.04
+  },
+  {
+   "name": "pendant",
+   "type": "POINT",
+   "campus_pos_m": [
+    -4.0,
+    3.02,
+    73.62
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 60,
+   "color_linear": [
+    1.0,
+    0.8,
+    0.56
+   ],
+   "radius_m": 0.04
+  },
+  {
+   "name": "pendant",
+   "type": "POINT",
+   "campus_pos_m": [
+    -4.0,
+    3.02,
+    75.3
+   ],
+   "campus_dir": [
+    0,
+    -1,
+    0
+   ],
+   "blender_watts": 60,
+   "color_linear": [
+    1.0,
+    0.8,
+    0.56
+   ],
+   "radius_m": 0.04
+  }
+ ]
+}

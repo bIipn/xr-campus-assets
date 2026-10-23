@@ -5,7 +5,8 @@
   RunUAT.bat BuildCookRun -project=<uproject> -noP4 -platform=Win64 -clientconfig=<Config>
   -build -cook -allmaps -stage -pak -iostore -archive -archivedirectory=unreal\Packaged\Win64
   Output is tee'd to Tools\.cache\package_Win64.log. The playable build lands in
-  unreal\Packaged\Win64\Windows\WalkTheArchive.exe.
+  unreal\Packaged\Win64\Windows\WalkTheArchive.exe; the project's Fonts and ThirdParty\whisper folders are copied
+  into Windows\WalkTheArchive beside it.
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File Tools\win\package_game.ps1
   powershell -ExecutionPolicy Bypass -File Tools\win\package_game.ps1 -Config Shipping
@@ -42,6 +43,22 @@ $code = Invoke-Logged -FilePath $runUat -ArgumentString $argStr -LogPath $log -W
 $exe = Join-Path (Join-Path $Archive 'Windows') ($script:ProjectName + '.exe')
 $present = Test-Path -LiteralPath $exe
 Write-Note ('UAT exit code: ' + $code + '; executable present: ' + $present)
+# What the game reads from its own folder at run time (FPaths::ProjectDir() is <archive>\Windows\WalkTheArchive):
+# the UI's fonts, and whisper for the Lost Stories booth when Tools\win\get_whisper.ps1 has set it up.
+if ($present) {
+    $gameDir = Join-Path (Join-Path $Archive 'Windows') $script:ProjectName
+    foreach ($sub in @('Fonts', 'ThirdParty\whisper')) {
+        $src = Join-Path $script:ProjectDir $sub
+        if (Test-Path -LiteralPath $src) {
+            $dst = Join-Path $gameDir $sub
+            New-Item -ItemType Directory -Path $dst -Force | Out-Null
+            Copy-Item -Path (Join-Path $src '*') -Destination $dst -Recurse -Force
+            Write-Note ('copied ' + $sub + ' next to the game')
+        } elseif ($sub -like 'ThirdParty*') {
+            Write-Note 'no ThirdParty\whisper: stories told in this build are kept but not written down (Tools\win\get_whisper.ps1)'
+        }
+    }
+}
 if ($present) { Write-Note ('run: "' + $exe + '"') }
 Write-ResultLine 'package_game' (($code -eq 0) -and $present) @{ platform = 'Win64'; config = $Config; exit_code = $code; archive = $Archive; exe = $exe; log = $log }
 if ($code -ne 0) { exit $code }

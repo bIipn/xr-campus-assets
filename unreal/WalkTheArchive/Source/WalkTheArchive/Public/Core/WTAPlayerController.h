@@ -209,6 +209,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowCertificate(FName TalkId, const FString& Name);
 
+	/** The Lost Stories booth's card: record a story, listen back, keep it (AWTAStoryMicActor sits you down first). */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void OpenStoryBooth();
+
+	/** The stories on the wall (StoryId None), or one story's whole transcript. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void OpenStories(FName StoryId);
+
 	/** Today, the way a certificate writes it ("22 October 2026"). */
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	static FString CertificateDate();

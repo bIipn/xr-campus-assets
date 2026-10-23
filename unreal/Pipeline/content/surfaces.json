@@ -89,6 +89,25 @@
     "Maker": {
       "mk_oak": {"set": "Wood027", "tint": [0.95, 0.86, 0.74]},
       "mk_fabric": {"set": "Fabric030", "tint": [0.30, 0.55, 0.58]}
+    },
+    "Stories": {
+      "st_cedar": {"set": "Wood026", "tint": [0.95, 0.62, 0.45]},
+      "st_batten": {"set": "Wood026", "tint": [0.80, 0.52, 0.38]},
+      "st_deck": {"set": "Wood026", "tint": [0.66, 0.60, 0.54]},
+      "st_beam": {"set": "Wood026", "tint": [0.55, 0.40, 0.30]},
+      "st_walnut": {"set": "Wood026", "tint": [0.62, 0.46, 0.34]},
+      "st_pine": {"set": "Wood027", "tint": [1.0, 0.86, 0.66]},
+      "st_floor": {"set": "WoodFloor051", "tint": [0.92, 0.78, 0.62]},
+      "st_stone": {"set": "PavingStones128", "tint": [0.86, 0.84, 0.80]},
+      "st_roof": {"set": "Metal034", "tint": [0.20, 0.21, 0.22]},
+      "st_teal": {"set": "Fabric030", "tint": [0.20, 0.40, 0.38]},
+      "st_rust": {"set": "Fabric030", "tint": [0.78, 0.34, 0.20]},
+      "st_felt": {"set": "Fabric030", "tint": [0.16, 0.28, 0.23]},
+      "st_panel_a": {"set": "Fabric030", "tint": [0.70, 0.36, 0.24]},
+      "st_panel_b": {"set": "Fabric030", "tint": [0.52, 0.58, 0.46]},
+      "st_panel_c": {"set": "Fabric030", "tint": [0.86, 0.68, 0.34]},
+      "st_rug": {"set": "Carpet016", "tint": [0.80, 0.38, 0.26]},
+      "st_runner": {"set": "Carpet016", "tint": [0.36, 0.46, 0.46]}
     }
   }
 }

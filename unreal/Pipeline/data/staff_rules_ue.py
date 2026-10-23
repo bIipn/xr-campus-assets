@@ -186,6 +186,13 @@ RULES = [
       'the course desk for a certificate.',
       [r'\b(dialysis|technician|training wing|sandi)\b', r'\b(course|class|certificate|learn|train(ing)?)\b'],
       Not=['{travel}'], **offer('OpenCourse', 'dialysis', 'Open the course')),
+    # the Lost Stories cabin (Unreal only): what it is, with the way there offered (asking the way gets directions)
+    R('R038', None, 38, 'Lost Stories began in Marin City, where young people rebuilt overlooked history in XR (the Wax '
+      'Hall’s tenth scene). Out on the grounds, at the end of the path past the fountain, the Lost Stories cabin '
+      'carries it on: sit at the microphone and tell a story about this place. It is kept in your own voice, written '
+      'down beside it, and goes on the wall inside for the next visitor to hear.',
+      [r'\b(lost stor(y|ies)|oral histor(y|ies)|story (booth|cabin|wall)|(record|tell|leave|share|keep) (a|my|your|our) stor(y|ies)|stories? (booth|cabin))\b'],
+      Not=['{travel}'], **offer('GoPlace', 'stories', 'Take me to the cabin')),
 
     # --- after the directions and title matches (the web's branches after 31) -------------------------------------
     # 32 the earliest / latest dated exhibit; "show me" or "take me" goes now. The web left Mr. Hale out ("the first

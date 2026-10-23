@@ -1,0 +1,109 @@
+{
+ "source": "bl/stories.py",
+ "units": "campus metres (x east, y up, z south); Unreal = (x*100, z*100, y*100)",
+ "room": {
+  "id": "stories",
+  "x0": -7.3,
+  "x1": -0.7000000000000001,
+  "z0": 70.3,
+  "z1": 77.1,
+  "y0": -1.0,
+  "y1": 6.700114004821496
+ },
+ "floor_y": 0.45,
+ "story_wall": {
+  "x": -4.0,
+  "y": 2.05,
+  "z": 76.808,
+  "yaw": -90.0,
+  "width_m": 2.6,
+  "height_m": 1.3
+ },
+ "mic": {
+  "x": -2.633,
+  "y": 1.46,
+  "z": 74.598,
+  "yaw": 180.0,
+  "teller_seat": "stories_teller"
+ },
+ "seats": [
+  "seat__stories_bench_f270",
+  "seat__stories_guest_f180",
+  "seat__stories_porch_f270",
+  "seat__stories_teller_f0"
+ ],
+ "views": {
+  "outside": {
+   "three": {
+    "x": -4.0,
+    "z": 65.75,
+    "y": -0.617,
+    "eye_y": 1.62,
+    "yaw_rad": -3.141593,
+    "pitch_rad": 0.04
+   },
+   "ue": {
+    "location_cm": [
+     -400.0,
+     6575.0,
+     100.3
+    ],
+    "rotation_deg": {
+     "pitch": 2.292,
+     "yaw": 90.0,
+     "roll": 0.0
+    }
+   }
+  },
+  "inside": {
+   "three": {
+    "x": -4.2,
+    "z": 73.04,
+    "y": 0.45,
+    "eye_y": 1.62,
+    "yaw_rad": -2.394637,
+    "pitch_rad": -0.12
+   },
+   "ue": {
+    "location_cm": [
+     -420.0,
+     7304.0,
+     207.0
+    ],
+    "rotation_deg": {
+     "pitch": -6.875,
+     "yaw": 47.203,
+     "roll": 0.0
+    }
+   }
+  },
+  "board": {
+   "three": {
+    "x": -4.0,
+    "z": 74.46,
+    "y": 0.45,
+    "eye_y": 1.62,
+    "yaw_rad": -3.141593,
+    "pitch_rad": -0.02
+   },
+   "ue": {
+    "location_cm": [
+     -400.0,
+     7446.0,
+     207.0
+    ],
+    "rotation_deg": {
+     "pitch": -1.146,
+     "yaw": 90.0,
+     "roll": 0.0
+    }
+   }
+  }
+ },
+ "nav_bounds_m": {
+  "x0": -10.2,
+  "x1": 2.2,
+  "z0": 65.35,
+  "z1": 79.0
+ }
+}

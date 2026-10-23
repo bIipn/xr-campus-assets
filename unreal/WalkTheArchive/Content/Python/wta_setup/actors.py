@@ -17,6 +17,9 @@
   AWTATalkActor      one per Talks.json row, on the venue's speaker spot (the mesh spot__<venue>_f<yaw>: at the
                      bottom of its bounds, the speaker facing world yaw <yaw>); a row whose venue has no spot
                      mesh is skipped and reported
+  AWTAGalleryWallActor one per Pipeline/content/gallery_walls.json entry (the visitors' pictures)
+  AWTAStoryWallActor and AWTAStoryMicActor: the Lost Stories cabin's board and microphone, from
+                     Pipeline/out/stories/layout.json (bl/stories.py)
 Properties are set with set_editor_property using the snake_case names from the contract. Every actor is
 tagged WTA_Setup / WTA_actors and filed under WTA/<Kind>.
 """
@@ -360,13 +363,44 @@ def spawn_gallery_walls(report):
     return failed_props
 
 
+def spawn_story_booth(report):
+    """The Lost Stories cabin (bl/stories.py writes out/stories/layout.json): an AWTAStoryWallActor against the
+    board, facing the room, and an AWTAStoryMicActor over the teller's microphone. Nothing when the cabin's builder
+    has not run."""
+    failed_props = []
+    try:
+        doc = paths.read_json(paths.STORIES_LAYOUT_JSON)
+    except Exception:
+        report["story_booth"] = "no out/stories/layout.json (bl/stories.py has not run)"
+        return failed_props
+    wall, mic = doc.get("story_wall"), doc.get("mic")
+    if wall:
+        loc = (100.0 * float(wall["x"]), 100.0 * float(wall["z"]), 100.0 * float(wall["y"]))
+        _a, failed = spawn_wta("WTAStoryWallActor", loc, float(wall.get("yaw", 0.0)), "StoryWall", "Stories", {
+            "board_width_cm": 100.0 * float(wall["width_m"]),
+            "board_height_cm": 100.0 * float(wall["height_m"]),
+            "pick_extent": unreal.Vector(30.0, 50.0 * float(wall["width_m"]), 50.0 * float(wall["height_m"])),
+        })
+        failed_props += failed
+    if mic:
+        loc = (100.0 * float(mic["x"]), 100.0 * float(mic["z"]), 100.0 * float(mic["y"]))
+        _a, failed = spawn_wta("WTAStoryMicActor", loc, float(mic.get("yaw", 0.0)), "StoryMic", "Stories", {
+            "teller_seat_id": mic.get("teller_seat", "stories_teller"),
+            "pick_extent": unreal.Vector(28.0, 28.0, 24.0),
+        })
+        failed_props += failed
+    report["story_booth"] = {"wall": bool(wall), "mic": bool(mic)}
+    return failed_props
+
+
 def run():
     util.wait_for_asset_registry()
     util.ensure_level_loaded()
     report = {"removed_previous": util.delete_setup_actors(STEP)}
     failed = []
     for fn in (spawn_rooms, spawn_exhibits, spawn_books, spawn_stations, spawn_rides, spawn_tokens,
-               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks, spawn_gallery_walls):
+               spawn_staff, spawn_wax_stages, spawn_statues, spawn_seats, spawn_talks, spawn_gallery_walls,
+               spawn_story_booth):
         failed += fn(report)
     report["failed_props"] = sorted(set(failed))
     report["actors_total"] = len(util.find_actors(tag=util.step_tag(STEP)))

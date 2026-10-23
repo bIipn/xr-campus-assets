@@ -63,7 +63,7 @@ namespace
 		return Block;
 	}
 
-	void Rule(UWidgetTree* Tree, UVerticalBox* Column, float Width, float Height, const FLinearColor& Colour, float Below)
+	void CertificateRule(UWidgetTree* Tree, UVerticalBox* Column, float Width, float Height, const FLinearColor& Colour, float Below)
 	{
 		USizeBox* Box = Tree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
 		Box->SetWidthOverride(Width);
@@ -79,7 +79,7 @@ namespace
 	{
 		UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 		CentredText(Tree, Column, Line, LineFont, WTAStyle::CardInk(), 4.f * S);
-		Rule(Tree, Column, 300.f * S, 1.5f * S, WTAStyle::CardInkDim(), 8.f * S);
+		CertificateRule(Tree, Column, 300.f * S, 1.5f * S, WTAStyle::CardInkDim(), 8.f * S);
 		CentredText(Tree, Column, Caption, WTAStyle::Font(FMath::RoundToInt(15.f * S)), WTAStyle::CardInkDim(), 0.f);
 		return Column;
 	}
@@ -169,10 +169,10 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 		WTAStyle::Kicker(FMath::RoundToInt(16.f * S)), WTAStyle::BrassDark(), 26.f * S);
 	CentredText(Tree, Column, !Row.Certificate.Title.IsEmpty() ? Row.Certificate.Title : WTAText(TEXT("Certificate of Completion")),
 		WTAStyle::Serif(FMath::RoundToInt(72.f * S)), WTAStyle::CardInk(), 10.f * S);
-	Rule(Tree, Column, 360.f * S, 3.f * S, WTAStyle::Brass(), 34.f * S);
+	CertificateRule(Tree, Column, 360.f * S, 3.f * S, WTAStyle::Brass(), 34.f * S);
 	CentredText(Tree, Column, WTAText(TEXT("This certifies that")), WTAStyle::SerifItalic(FMath::RoundToInt(30.f * S)), WTAStyle::CardInkDim(), 6.f * S);
 	CentredText(Tree, Column, FText::FromString(VisitorName.IsEmpty() ? TEXT("A Visitor") : VisitorName), WTAStyle::Script(FMath::RoundToInt(112.f * S)), WTAStyle::BrassDark(), 0.f);
-	Rule(Tree, Column, 760.f * S, 1.5f * S, WTAStyle::CardInkDim(), 18.f * S);
+	CertificateRule(Tree, Column, 760.f * S, 1.5f * S, WTAStyle::CardInkDim(), 18.f * S);
 	CentredText(Tree, Column, !Row.Certificate.Line.IsEmpty() ? Row.Certificate.Line : WTAText(TEXT("has completed the class")),
 		WTAStyle::SerifItalic(FMath::RoundToInt(30.f * S)), WTAStyle::CardInkDim(), 10.f * S);
 	CentredText(Tree, Column, Row.Title, WTAStyle::Serif(FMath::RoundToInt(56.f * S), true), WTAStyle::CardInk(), 4.f * S);

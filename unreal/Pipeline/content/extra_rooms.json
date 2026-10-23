@@ -55,5 +55,18 @@
     "place": {"label": "The Training Wing", "names": ["training", "training wing", "course", "dialysis", "clinic", "workforce", "stations"],
               "view": {"x": 28.0, "y": 0.0, "z": -16.0, "yaw": 0.3, "pitch": -0.05},
               "say": "the training wing", "directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school."}
+  },
+  {
+    "id": "stories",
+    "wing": "outside",
+    "x0": -7.3, "x1": -0.7, "z0": 70.3, "z1": 77.1, "y0": -1.0, "y1": 6.7,
+    "outdoor": false,
+    "info": {"k": "The Grounds", "n": "Lost Stories", "y": "Sit at the microphone and tell a story about this place"},
+    "label": "STORIES",
+    "goPlace": "stories",
+    "place": {"label": "Lost Stories", "names": ["lost stories", "stories", "story booth", "booth", "story cabin", "cabin", "record a story",
+                                                 "tell a story", "oral history", "oral histories", "story wall"],
+              "view": {"x": -4.0, "y": -0.62, "z": 65.75, "yaw": -3.1416, "pitch": 0.04},
+              "say": "the Lost Stories cabin", "directions": "out through the front doors, down the steps and through the theatre, then along the path past the fountain to its end: the timber cabin with the sign over its porch."}
   }
 ]

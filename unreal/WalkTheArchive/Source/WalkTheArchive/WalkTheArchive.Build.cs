@@ -26,6 +26,8 @@ public class WalkTheArchive : ModuleRules
 			"JsonUtilities"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "AnimationCore" });
+		// AudioCaptureCore: the Lost Stories booth's microphone (Audio::FAudioCapture; the AudioCapture plugin, on by
+		// default, loads the platform's capture back end).
+		PrivateDependencyModuleNames.AddRange(new string[] { "AnimationCore", "AudioCaptureCore" });
 	}
 }

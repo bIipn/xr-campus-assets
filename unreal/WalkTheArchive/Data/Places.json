@@ -1063,5 +1063,34 @@
   },
   "Directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school.",
   "Say": "the training wing"
+ },
+ {
+  "Name": "stories",
+  "Label": "Lost Stories",
+  "Aliases": [
+   "lost stories",
+   "stories",
+   "story booth",
+   "booth",
+   "story cabin",
+   "cabin",
+   "record a story",
+   "tell a story",
+   "oral history",
+   "oral histories",
+   "story wall"
+  ],
+  "View": {
+   "Location": {
+    "X": -400.0,
+    "Y": 6575.0,
+    "Z": 100.0
+   },
+   "Yaw": 90.0,
+   "Pitch": 2.292,
+   "bValid": true
+  },
+  "Directions": "out through the front doors, down the steps and through the theatre, then along the path past the fountain to its end: the timber cabin with the sign over its porch.",
+  "Say": "the Lost Stories cabin"
  }
 ]

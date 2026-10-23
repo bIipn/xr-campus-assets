@@ -36,7 +36,11 @@ unreal/Pipeline/out/auditorium/Auditorium.glb
 unreal/Pipeline/out/classroom/Classroom.glb
 unreal/Pipeline/out/training/Training.glb
 unreal/Pipeline/out/maker/Maker.glb
+unreal/Pipeline/out/stories/Stories.glb
 assets/auditorium/*.blend*
 assets/classroom/*.blend*
 assets/training/*.blend*
 assets/maker/*.blend*
+assets/stories/*.blend*
+# whisper.cpp for the Lost Stories booth (Tools/win/get_whisper.ps1 fetches it; MIT, with its model): not in git
+unreal/WalkTheArchive/ThirdParty/

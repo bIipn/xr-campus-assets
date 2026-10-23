@@ -32,6 +32,9 @@
 #include "World/WTAStatueActor.h"
 #include "World/WTACourseActor.h"
 #include "World/WTAGalleryWallActor.h"
+#include "World/WTAStoryMicActor.h"
+#include "World/WTAStoryWallActor.h"
+#include "Systems/WTAStoriesSubsystem.h"
 #include "World/WTATalkActor.h"
 #include "UI/WTACertificateWidget.h"
 #include "Components/EditableTextBox.h"
@@ -487,6 +490,10 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Want(TEXT("season")))
 	{
 		AddSeasonPhase();
+	}
+	if (Want(TEXT("stories")))
+	{
+		AddStoriesPhase();
 	}
 	if (Want(TEXT("ui")))
 	{
@@ -3975,6 +3982,268 @@ void UWTAPlayTest::AddWallPhase()
 	{
 		Shot(TEXT("gallery_wall"), false);
 		return 0.4f;
+	} });
+}
+
+void UWTAPlayTest::AddStoriesPhase()
+{
+	// The Lost Stories booth: the microphone opens and hears something (information only: a machine may have none);
+	// Saved/QA/story_test.wav becomes a take as if recorded, the take card, Keep, whisper writes it down, the thank-you
+	// card, the card on the wall, playing it with captions, the list and the story's own card; then it is deleted.
+	const TSharedRef<FString> Id = MakeShared<FString>();
+	const TSharedRef<int32> Polls = MakeShared<int32>(0);
+	Steps.Add({ TEXT("stories place"), [this]() -> float
+	{
+		CloseAll();
+		AWTAStoryWallActor* Wall = nullptr;
+		for (TActorIterator<AWTAStoryWallActor> It(GetWorld()); It; ++It)
+		{
+			Wall = *It;
+			break;
+		}
+		AWTAStoryMicActor* Mic = nullptr;
+		for (TActorIterator<AWTAStoryMicActor> It(GetWorld()); It; ++It)
+		{
+			Mic = *It;
+			break;
+		}
+		const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		FString Exe, Model;
+		if (Stories != nullptr)
+		{
+			Stories->FindWhisper(Exe, Model);
+		}
+		Report(TEXT("stories"), Wall != nullptr && Mic != nullptr && Stories != nullptr ? EResult::Pass : EResult::Fail, TEXT("the booth is in the level"),
+			FString::Printf(TEXT("wall %s, microphone %s, subsystem %s, %d stories on the wall; whisper %s"),
+				Wall != nullptr ? *Wall->GetName() : TEXT("missing"), Mic != nullptr ? *Mic->GetName() : TEXT("missing"),
+				Stories != nullptr ? TEXT("up") : TEXT("missing"), Stories != nullptr ? Stories->GetWallStories().Num() : 0,
+				Exe.IsEmpty() ? TEXT("not found") : *FPaths::GetCleanFilename(Model)));
+		if (Wall != nullptr)
+		{
+			FWTAView View;
+			if (IWTAInteractable::Execute_GetViewSpot(Wall, View))
+			{
+				StandAt(View);
+			}
+		}
+		return 2.5f;
+	} });
+	Steps.Add({ TEXT("stories wall before"), [this]() -> float
+	{
+		Shot(TEXT("stories_wall_before"), false);
+		return 0.5f;
+	} });
+	Steps.Add({ TEXT("stories mic"), [this]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		const bool bOpened = Stories != nullptr && Stories->StartRecording();
+		Report(TEXT("stories"), EResult::Info, TEXT("the microphone opens"), bOpened
+			? FString::Printf(TEXT("recording from %s"), *Stories->GetDeviceName())
+			: TEXT("no microphone opened (none plugged in, blocked in the privacy settings, or audio is off with -nosound)"));
+		return bOpened ? 2.5f : 0.f;
+	} });
+	Steps.Add({ TEXT("stories mic stop"), [this]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories != nullptr && Stories->GetBoothState() == EWTABoothState::Recording)
+		{
+			const float Level = Stories->GetLevel();
+			Stories->StopRecording();
+			Report(TEXT("stories"), EResult::Info, TEXT("the microphone hears"), FString::Printf(TEXT("%.1f s taken, %s, meter at %.2f"),
+				Stories->GetTakeSeconds(), Stories->IsTakeSilent() ? TEXT("all but silent") : TEXT("sound in it"), Level));
+			Stories->DiscardTake();
+		}
+		return 0.2f;
+	} });
+	Steps.Add({ TEXT("stories take"), [this]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		const FString Wav = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("QA"), TEXT("story_test.wav"));
+		const bool bLoaded = Stories != nullptr && Stories->LoadTakeFromWav(Wav);
+		Report(TEXT("stories"), bLoaded ? EResult::Pass : EResult::Skip, TEXT("a take from a file"), bLoaded
+			? FString::Printf(TEXT("%.1f s from %s"), Stories->GetTakeSeconds(), *FPaths::GetCleanFilename(Wav))
+			: FString::Printf(TEXT("no %s to stand in for a voice; the rest of the phase is skipped"), *Wav));
+		if (!bLoaded)
+		{
+			return 0.f;
+		}
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->OpenStoryBooth();
+		}
+		return 1.2f;
+	} });
+	Steps.Add({ TEXT("stories take card"), [this]() -> float
+	{
+		const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories == nullptr || Stories->GetBoothState() != EWTABoothState::Take)
+		{
+			return 0.f;
+		}
+		AWTAPlayerController* Controller = PC();
+		const bool bCard = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Booth;
+		Report(TEXT("stories"), bCard ? EResult::Pass : EResult::Fail, TEXT("the take card"), bCard ? Controller->Panel->GetTitle().ToString() : TEXT("the booth card did not open"));
+		Shot(TEXT("stories_booth_take"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories keep"), [this, Id]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		AWTAPlayerController* Controller = PC();
+		if (Stories == nullptr || Stories->GetBoothState() != EWTABoothState::Take || Controller == nullptr || Controller->Panel == nullptr)
+		{
+			return 0.f;
+		}
+		// As a visitor would: a title and a first name in the card's boxes, then its Keep my story button.
+		UWTAPanelWidget* Panel = Controller->Panel;
+		if (!Panel->IsOpen() || Panel->GetMode() != EWTAPanelMode::Booth)
+		{
+			Controller->OpenStoryBooth();
+		}
+		if (Panel->StoryTitleBox != nullptr)
+		{
+			Panel->StoryTitleBox->SetText(FText::FromString(TEXT("A sample story (QA)")));
+		}
+		if (Panel->StoryTellerBox != nullptr)
+		{
+			Panel->StoryTellerBox->SetText(FText::FromString(TEXT("QA")));
+		}
+		Panel->HandleAction(FName(TEXT("StoryKeep")), NAME_None, -1);
+		*Id = Panel->KeptStoryId;
+		FWTAStory Story;
+		const bool bKept = !Id->IsEmpty() && Stories->FindStory(*Id, Story) && FPaths::FileExists(Story.WavFile()) && FPaths::FileExists(Story.JsonFile());
+		Report(TEXT("stories"), bKept ? EResult::Pass : EResult::Fail, TEXT("the story is kept"), bKept
+			? FString::Printf(TEXT("%s, \"%s\" told by %s, %.1f s, in %s"), **Id, *Story.Title, *Story.Teller, Story.Seconds, *Story.Folder)
+			: TEXT("Keep my story wrote nothing"));
+		return 0.5f;
+	} });
+	Steps.Add({ TEXT("stories written down"), [this, Id, Polls]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories == nullptr || Id->IsEmpty())
+		{
+			return 0.f;
+		}
+		if (!Stories->CanWriteDown())
+		{
+			Report(TEXT("stories"), EResult::Skip, TEXT("written down"), TEXT("no whisper-cli and model found (UWTASettings::WhisperFolder, WTA_WHISPER, <Project>/ThirdParty/whisper)"));
+			return 0.f;
+		}
+		if (Stories->IsWritingDown(*Id) && ++(*Polls) < 240)
+		{
+			return -0.5f;
+		}
+		FWTAStory Story;
+		Stories->FindStory(*Id, Story);
+		const bool bOk = Story.bTranscribed && !Story.Transcript.IsEmpty() && Story.Lines.Num() > 0;
+		Report(TEXT("stories"), bOk ? EResult::Pass : EResult::Fail, TEXT("written down"), FString::Printf(TEXT("after %.1f s: %d lines, language '%s': \"%s\""),
+			*Polls * 0.5f, Story.Lines.Num(), *Story.Language, *Story.Transcript.Left(160)));
+		return 1.0f;
+	} });
+	Steps.Add({ TEXT("stories thanks"), [this]() -> float
+	{
+		Shot(TEXT("stories_booth_kept"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories on the wall"), [this, Id]() -> float
+	{
+		CloseAll();
+		AWTAStoryWallActor* Wall = nullptr;
+		for (TActorIterator<AWTAStoryWallActor> It(GetWorld()); It; ++It)
+		{
+			Wall = *It;
+			break;
+		}
+		if (Wall == nullptr || Id->IsEmpty())
+		{
+			return 0.f;
+		}
+		FWTAView View;
+		if (IWTAInteractable::Execute_GetViewSpot(Wall, View))
+		{
+			StandAt(View);
+		}
+		Wall->Refresh();
+		const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		bool bListed = false;
+		for (const FWTAStory& Story : Stories != nullptr ? Stories->GetWallStories() : TArray<FWTAStory>())
+		{
+			bListed |= Story.Id == *Id;
+		}
+		Report(TEXT("stories"), bListed && Wall->NumCards() >= 1 ? EResult::Pass : EResult::Fail, TEXT("the card is on the wall"),
+			FString::Printf(TEXT("%d cards; this one %s; label \"%s\""), Wall->NumCards(), bListed ? TEXT("listed") : TEXT("missing"),
+				*IWTAInteractable::Execute_GetInteractLabel(Wall).ToString()));
+		return 2.0f;
+	} });
+	Steps.Add({ TEXT("stories wall shot"), [this]() -> float
+	{
+		Shot(TEXT("stories_wall"), false);
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories play"), [this, Id]() -> float
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		const bool bPlaying = Stories != nullptr && !Id->IsEmpty() && Stories->Play(*Id);
+		Report(TEXT("stories"), bPlaying ? EResult::Pass : EResult::Fail, TEXT("it plays"), bPlaying ? TEXT("in the teller's voice") : TEXT("Play returned false"));
+		return bPlaying ? 2.6f : 0.f;
+	} });
+	Steps.Add({ TEXT("stories caption"), [this, Id]() -> float
+	{
+		const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories == nullptr || !Stories->IsPlaying(*Id))
+		{
+			return 0.f;
+		}
+		FWTAStory Story;
+		Stories->FindStory(*Id, Story);
+		const bool bCaption = Story.Lines.Num() == 0 || !Stories->GetCurrentCaption().IsEmpty();
+		Report(TEXT("stories"), bCaption ? EResult::Pass : EResult::Fail, TEXT("captions while it plays"),
+			FString::Printf(TEXT("%.1f s in: \"%s\""), Stories->GetPlaybackSeconds(), *Stories->GetCurrentCaption()));
+		Shot(TEXT("stories_caption"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories list"), [this, Id]() -> float
+	{
+		if (UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this))
+		{
+			Stories->StopPlayback();
+		}
+		if (AWTAPlayerController* Controller = PC())
+		{
+			Controller->OpenStories(NAME_None);
+		}
+		return 0.8f;
+	} });
+	Steps.Add({ TEXT("stories list shot"), [this, Id]() -> float
+	{
+		AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller != nullptr && Controller->Panel != nullptr && Controller->Panel->IsOpen() && Controller->Panel->GetMode() == EWTAPanelMode::Stories;
+		Report(TEXT("stories"), bOpen ? EResult::Pass : EResult::Fail, TEXT("the stories card"), bOpen ? Controller->Panel->GetTitle().ToString() : TEXT("did not open"));
+		Shot(TEXT("stories_list"));
+		if (Controller != nullptr && !Id->IsEmpty())
+		{
+			Controller->OpenStories(FName(**Id));
+		}
+		return 0.8f;
+	} });
+	Steps.Add({ TEXT("stories read shot"), [this]() -> float
+	{
+		Shot(TEXT("stories_read"));
+		return 0.4f;
+	} });
+	Steps.Add({ TEXT("stories cleanup"), [this, Id]() -> float
+	{
+		CloseAll();
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories == nullptr || Id->IsEmpty())
+		{
+			return 0.f;
+		}
+		FWTAStory Story;
+		Stories->FindStory(*Id, Story);
+		const bool bDeleted = Stories->DeleteOwnStory(*Id) && !FPaths::FileExists(Story.WavFile()) && !FPaths::FileExists(Story.JsonFile());
+		Report(TEXT("stories"), bDeleted ? EResult::Pass : EResult::Fail, TEXT("its teller can delete it"), bDeleted ? TEXT("both files gone") : TEXT("files still there"));
+		return 0.3f;
 	} });
 }
 

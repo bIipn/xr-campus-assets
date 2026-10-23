@@ -18,6 +18,9 @@
 //                from the progress with a Go button each (Action "OpenStation"), "Take the quiz" (Action "OpenQuiz")
 //                once all are finished, "Certified" once passed
 //   ShowHunt     the token hunt's library card: a stamp per token, the hints still open, a picture to show at the desk
+//   ShowBooth    the Lost Stories booth: the prompts and Record, the clock and a level meter while recording, then
+//                Listen back / Keep (an optional title and first name) / Record again / Delete, then thanks
+//   ShowStories  the stories on the wall with Listen and Read each, or one story's whole transcript
 //   ShowQuiz     a class's quiz (DT_Talks), one question at a time: the options as buttons (Action "Answer"), then
 //                the right answer marked and why, "Next question"; the result card scores it and, when passed, asks
 //                for a name and makes the certificate (Action "Certificate" -> AWTAPlayerController::ShowCertificate)
@@ -61,7 +64,9 @@ enum class EWTAPanelMode : uint8
 	Places,
 	Quiz,
 	Course,
-	Hunt
+	Hunt,
+	Booth,
+	Stories
 };
 
 UCLASS()
@@ -112,6 +117,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ShowHunt();
 
+	/** The Lost Stories booth (UWTAStoriesSubsystem): ready (the prompts, Record), recording (the clock, a level
+	    meter, Stop), a take waiting (Listen back, Keep with an optional title and first name, Record again, Delete),
+	    then thanks once kept. Redraws itself as the booth's state changes. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowBooth();
+
+	/** The stories on the wall: each one's title, byline and first words with Listen and Read (StoryId None), or one
+	    story's whole transcript (StoryId = its id). Listen closes the card and plays it with captions. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ShowStories(FName StoryId);
+
 	/** Question Index of the quiz: unanswered (Chosen -1) as option buttons, else marked with the right answer and why. */
 	void ShowQuizQuestion(FName TalkId, int32 Index, int32 Chosen);
 
@@ -156,6 +172,7 @@ protected:
 	friend class UWTAPlayTest;
 
 	virtual void NativeOnInitialized() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 	/** All button clicks land here (see the header comment). */
@@ -209,6 +226,16 @@ protected:
 	/** DT_Sources rows as compact chips that wrap (Action "Link", Arg = the source id). */
 	void AddSourceChips(const TArray<FName>& SourceIds);
 
+	/** A row of buttons side by side (the booth's Keep / Listen back / Record again / Delete). */
+	UHorizontalBox* AddButtonRow();
+	UWTAActionButton* AddRowButton(UHorizontalBox* Row, const FText& Label, FName Action, FName Arg, bool bPrimary);
+
+	/** The booth's level meter: a row of bars lit up to the input level. */
+	void AddLevelMeter();
+
+	/** What the booth or stories card shows, as a string: when it changes, NativeTick draws the card again. */
+	FString StoriesSignature() const;
+
 	void SetOpen(bool bNewOpen);
 
 	/** The card's narration clip: "exhibit"/"station"/"ride" and CurrentId, "quiz" and the question's clip, or none. */
@@ -244,6 +271,16 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UEditableTextBox> NameBox;
 	/** The quiz: the answer chosen per question (-1 = not yet). */
 	TArray<int32> QuizAnswers;
+
+	/** The booth: the meter's bars, the take's title and name boxes (null outside it), what was typed in them (kept
+	    across redraws), the story just kept (its thank-you card), and the signature drawn last. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UBorder>> MeterBars;
+	UPROPERTY(Transient) TObjectPtr<UEditableTextBox> StoryTitleBox;
+	UPROPERTY(Transient) TObjectPtr<UEditableTextBox> StoryTellerBox;
+	FString TypedTitle;
+	FString TypedTeller;
+	FString KeptStoryId;
+	FString DrawnSignature;
 
 	EWTAPanelMode Mode = EWTAPanelMode::None;
 	FName CurrentId;

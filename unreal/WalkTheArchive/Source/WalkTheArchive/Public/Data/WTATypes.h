@@ -948,6 +948,10 @@ namespace WTAAction
 	inline FName OpenHunt()    { static const FName N(TEXT("OpenHunt"));    return N; }
 	/** Start (or restart) a talk from its first slide; arg = DT_Talks row. Sitting in its venue does the same. */
 	inline FName StartTalk()   { static const FName N(TEXT("StartTalk"));   return N; }
+	/** The Lost Stories booth's card (record a story); no arg. */
+	inline FName StoryBooth()  { static const FName N(TEXT("StoryBooth"));  return N; }
+	/** The stories on the wall; arg = a story's id to open that one, or none for all of them. */
+	inline FName OpenStories() { static const FName N(TEXT("OpenStories")); return N; }
 }
 
 /** Badge ids from DT_Badges that the C++ awards itself (the rest are phase 1+ features). */

@@ -667,12 +667,36 @@ void AWTAPlayerController::OpenCourse(FName TalkId)
 
 FString AWTAPlayerController::CertificateDate()
 {
-	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
-		TEXT("July"), TEXT("August"), TEXT("September"), TEXT("October"), TEXT("November"), TEXT("December") };
-	const FDateTime Now = FDateTime::Now();
 	// The day and the year as plain digits (FText::AsNumber would write 2,026).
-	return FText::Format(WTAText(TEXT("{0} {1} {2}")), FText::FromString(FString::FromInt(Now.GetDay())),
-		WTAText(Months[FMath::Clamp(Now.GetMonth() - 1, 0, 11)]), FText::FromString(FString::FromInt(Now.GetYear()))).ToString();
+	return WTADate(FDateTime::Now()).ToString();
+}
+
+void AWTAPlayerController::OpenStoryBooth()
+{
+	if (Panel == nullptr)
+	{
+		return;
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	Panel->ShowBooth();
+	SetUIMode(true);
+}
+
+void AWTAPlayerController::OpenStories(FName StoryId)
+{
+	if (Panel == nullptr)
+	{
+		return;
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	Panel->ShowStories(StoryId);
+	SetUIMode(true);
 }
 
 void AWTAPlayerController::ShowCertificate(FName TalkId, const FString& Name)
@@ -1000,6 +1024,14 @@ void AWTAPlayerController::RunAction(FName Action, FName Arg)
 	else if (Action == WTAAction::OpenHunt())
 	{
 		OpenHunt();
+	}
+	else if (Action == WTAAction::StoryBooth())
+	{
+		OpenStoryBooth();
+	}
+	else if (Action == WTAAction::OpenStories())
+	{
+		OpenStories(Arg);
 	}
 	else if (Action == WTAAction::StartTalk())
 	{

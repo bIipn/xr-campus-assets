@@ -25,7 +25,9 @@ Units and exposure, decided here and consistent with docs/reference/render.md se
     on the columns, torcheres, the lobby chandeliers, the hall lamps, the lanterns at the front door, plus
     RectLights under the vaults' glazed laylights and the rotunda's oculus (BLENDER_LUMENS by fixture name). When
     that file exists the web's museum lamps and ceiling-disc downlights are skipped; the grounds' lamp posts come
-    from Pipeline/out/exterior/lights.json the same way.
+    from Pipeline/out/exterior/lights.json the same way. The Training Wing (out/training/lights.json) and the Lost
+    Stories cabin (out/stories/lights.json: its two pendants, the reading lamp, the picture light washing the story
+    board, the porch lantern) are read the same way, into Lighting/training and Lighting/stories.
   * One SpotLight per gallery exhibit (600 lm, 30 degree cone) 180 cm out from the wall and 100 cm above
     the art, aimed at the art, and two per Wax Hall stage: a steep one over the rope onto the set and a face
     light from the aisle ceiling onto the reenactors' faces. These picture lights carry most of the realism.
@@ -99,6 +101,12 @@ BLENDER_LUMENS = {
     "panel": (3500.0, 900.0, None),
     "screen": (800.0, 700.0, 4.0),
     "theatre": (1400.0, 1400.0, 5.0),
+    # the Lost Stories cabin (bl/stories.py): two warm pendants over the room, the reading lamp by the chairs, a
+    # small spot on the story wall and the porch lantern
+    "pendant": (1600.0, 700.0, 4.0),
+    "lamp": (450.0, 400.0, 2.0),
+    "wallwash": (900.0, 600.0, 2.0),
+    "porch": (500.0, 700.0, 3.0),
 }
 BLENDER_WINGS = {"post": "outside", "lantern": "outside", "theatre": "outside"}
 
@@ -325,7 +333,7 @@ def reading_room_lamps():
 # Fixtures that are aimed lights rather than bare bulbs: SpotLights along the lights.json campus_dir, with this
 # outer cone (degrees). The auditorium's stage wash hangs on a truss 6 m over the stage: a point light there
 # scattered most of its light into the hall, a 50 degree spot puts it on the speaker.
-BLENDER_SPOTS = {"stage": 50.0}
+BLENDER_SPOTS = {"stage": 50.0, "wallwash": 60.0}
 
 
 def blender_fixtures():
@@ -334,7 +342,8 @@ def blender_fixtures():
     A BLENDER_SPOTS fixture carries "spot" (its cone) and "dir" (campus_dir in Unreal axes) in its entry."""
     points, areas = [], []
     for path, default_wing in ((paths.MUSEUM_LIGHTS_JSON, "museum"), (paths.EXTERIOR_LIGHTS_JSON, "outside"),
-                               (paths.AUDITORIUM_LIGHTS_JSON, "museum"), (paths.CLASSROOM_LIGHTS_JSON, "school")):
+                               (paths.AUDITORIUM_LIGHTS_JSON, "museum"), (paths.CLASSROOM_LIGHTS_JSON, "school"),
+                               (paths.TRAINING_LIGHTS_JSON, "training"), (paths.STORIES_LIGHTS_JSON, "stories")):
         try:
             doc = paths.read_json(path)
         except Exception:

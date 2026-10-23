@@ -756,6 +756,19 @@
   "OfferLabel": "Open the course"
  },
  {
+  "Name": "R038",
+  "Order": 38,
+  "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(lost stor(y|ies)|oral histor(y|ies)|story (booth|cabin|wall)|(record|tell|leave|share|keep) (a|my|your|our) stor(y|ies)|stories? (booth|cabin))\\b))",
+  "MaxWords": 0,
+  "StaffOnly": [],
+  "StaffNot": [],
+  "Answer": "Lost Stories began in Marin City, where young people rebuilt overlooked history in XR (the Wax Hall’s tenth scene). Out on the grounds, at the end of the path past the fountain, the Lost Stories cabin carries it on: sit at the microphone and tell a story about this place. It is kept in your own voice, written down beside it, and goes on the wall inside for the next visitor to hear.",
+  "Action": "GoPlace",
+  "ActionArg": "stories",
+  "bOffer": true,
+  "OfferLabel": "Take me to the cabin"
+ },
+ {
   "Name": "R132",
   "Order": 132,
   "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",

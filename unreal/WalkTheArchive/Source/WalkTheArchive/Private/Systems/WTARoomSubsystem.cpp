@@ -11,7 +11,7 @@
 
 namespace
 {
-	const UWTAContentSubsystem* ContentOf(const UWorld* World)
+	const UWTAContentSubsystem* RoomContentOf(const UWorld* World)
 	{
 		const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
 		return GameInstance ? GameInstance->GetSubsystem<UWTAContentSubsystem>() : nullptr;
@@ -43,7 +43,7 @@ void UWTARoomSubsystem::EnterRoom(FName RoomId)
 
 FName UWTARoomSubsystem::RoomAt(FVector Location) const
 {
-	const UWTAContentSubsystem* Content = ContentOf(GetWorld());
+	const UWTAContentSubsystem* Content = RoomContentOf(GetWorld());
 	const UDataTable* Rooms = Content ? Content->GetTable(EWTATable::Rooms) : nullptr;
 	if (Rooms == nullptr)
 	{
@@ -78,7 +78,7 @@ FName UWTARoomSubsystem::RoomAt(FVector Location) const
 
 FName UWTARoomSubsystem::GetStaffForRoom(FName RoomId) const
 {
-	const UWTAContentSubsystem* Content = ContentOf(GetWorld());
+	const UWTAContentSubsystem* Content = RoomContentOf(GetWorld());
 	const FWTARoomRow* Row = Content ? Content->FindRoom(RoomId) : nullptr;
 	return Row ? Row->StaffId : NAME_None;
 }

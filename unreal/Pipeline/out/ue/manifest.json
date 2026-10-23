@@ -540,6 +540,19 @@
    ],
    "triangles": 3702,
    "bytes": 5405996
+  },
+  "Stories": {
+   "file": "Stories.glb",
+   "source": "unreal/Pipeline/out/stories/Stories.glb",
+   "meshes": 38,
+   "tagged": [
+    "seat__stories_bench_f270",
+    "seat__stories_guest_f180",
+    "seat__stories_porch_f270",
+    "seat__stories_teller_f0"
+   ],
+   "triangles": 7944,
+   "bytes": 963420
   }
  }
 }

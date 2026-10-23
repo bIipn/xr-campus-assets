@@ -22,6 +22,16 @@ inline FText WTAText(const FString& English)
 	return UWTAContentSubsystem::Tr(English);
 }
 
+/** A date as the campus writes it, "22 October 2026": the pattern "{0} {1} {2}" and the month go through DT_Strings,
+    so a pack's language orders it its own way ("22 de octubre de 2026"). The day and year stay plain digits. */
+inline FText WTADate(const FDateTime& When)
+{
+	static const TCHAR* Months[] = { TEXT("January"), TEXT("February"), TEXT("March"), TEXT("April"), TEXT("May"), TEXT("June"),
+		TEXT("July"), TEXT("August"), TEXT("September"), TEXT("October"), TEXT("November"), TEXT("December") };
+	return FText::Format(WTAText(TEXT("{0} {1} {2}")), FText::FromString(FString::FromInt(When.GetDay())),
+		WTAText(Months[FMath::Clamp(When.GetMonth() - 1, 0, 11)]), FText::FromString(FString::FromInt(When.GetYear())));
+}
+
 /** Capitals for a kicker in any language: FText::ToUpper (ICU) turns "formación" into "FORMACIÓN", where
     FString::ToUpper only knows a to z. */
 inline FString WTAUpper(const FString& Text)

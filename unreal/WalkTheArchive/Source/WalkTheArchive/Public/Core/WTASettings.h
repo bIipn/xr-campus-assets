@@ -122,4 +122,20 @@ public:
 	/** Show the intro menu on start (off for quick test runs). */
 	UPROPERTY(Config, EditAnywhere, Category = "UI")
 	bool bShowIntroMenu = true;
+
+	// --- Lost Stories (UWTAStoriesSubsystem) --------------------------------
+
+	/** The folder with whisper.cpp's whisper-cli and a ggml-*.bin model, which write the stories down. Empty = the
+	    WTA_WHISPER environment variable, else <Project>/ThirdParty/whisper (Tools/win/get_whisper.ps1 fills it). */
+	UPROPERTY(Config, EditAnywhere, Category = "Lost Stories")
+	FString WhisperFolder;
+
+	/** On: a new story waits in Saved/Stories/New until a librarian moves its two files into Saved/Stories/Wall
+	    (its teller still sees it there for the rest of the visit). Off: it goes straight on the wall. */
+	UPROPERTY(Config, EditAnywhere, Category = "Lost Stories")
+	bool bStoriesNeedReview = true;
+
+	/** The longest story, seconds: the recording stops itself there. */
+	UPROPERTY(Config, EditAnywhere, Category = "Lost Stories")
+	float StoryMaxSeconds = 300.f;
 };

@@ -17,11 +17,29 @@ BRUSH_SIZE = 200.0
 MARGIN = 300.0
 
 
+def builder_nav_bounds():
+    """The bounds the Blender builders outside the web layout ask the navmesh to cover (layout.json nav_bounds_m):
+    the Lost Stories cabin at the end of the grounds' path."""
+    out = []
+    for path in (paths.STORIES_LAYOUT_JSON,):
+        try:
+            nav = paths.read_json(path)["nav_bounds_m"]
+            out.append(((100.0 * nav["x0"], 100.0 * nav["z0"]), (100.0 * nav["x1"], 100.0 * nav["z1"])))
+        except Exception:
+            pass
+    return out
+
+
 def walkable_bounds():
-    """((minx, miny, minz), (maxx, maxy, maxz)) in cm from layout nav bounds, else the rooms union."""
+    """((minx, miny, minz), (maxx, maxy, maxz)) in cm from layout nav bounds (grown to take in the builders' own,
+    builder_nav_bounds), else the rooms union."""
     try:
         nav = paths.read_json(paths.LAYOUT_JSON)["global"]["player"]["nav_bounds_m"]
-        return ((100.0 * nav["x0"], 100.0 * nav["z0"], -100.0), (100.0 * nav["x1"], 100.0 * nav["z1"], 800.0))
+        mn, mx = [100.0 * nav["x0"], 100.0 * nav["z0"], -100.0], [100.0 * nav["x1"], 100.0 * nav["z1"], 800.0]
+        for (a, b) in builder_nav_bounds():
+            mn[0], mn[1] = min(mn[0], a[0]), min(mn[1], a[1])
+            mx[0], mx[1] = max(mx[0], b[0]), max(mx[1], b[1])
+        return (tuple(mn), tuple(mx))
     except Exception:
         pass
     mins, maxs = [1e9, 1e9, 1e9], [-1e9, -1e9, -1e9]

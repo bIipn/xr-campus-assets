@@ -418,5 +418,26 @@
   "StaffId": "None",
   "MapLabel": "TRAINING",
   "GoPlace": "training"
+ },
+ {
+  "Name": "stories",
+  "Kicker": "The Grounds",
+  "DisplayName": "Lost Stories",
+  "Sub": "Sit at the microphone and tell a story about this place",
+  "Wing": "outside",
+  "BoundsMin": {
+   "X": -730.0,
+   "Y": 7030.0,
+   "Z": -100.0
+  },
+  "BoundsMax": {
+   "X": -70.0,
+   "Y": 7710.0,
+   "Z": 670.0
+  },
+  "bOutdoor": false,
+  "StaffId": "None",
+  "MapLabel": "STORIES",
+  "GoPlace": "stories"
  }
 ]

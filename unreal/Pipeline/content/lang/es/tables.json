@@ -1622,6 +1622,12 @@
    "DisplayName": "El Ala de formación",
    "Sub": "Cinco estaciones y luego el cuestionario en el mostrador",
    "MapLabel": "FORMACIÓN"
+  },
+  "stories": {
+   "Kicker": "Los jardines",
+   "DisplayName": "Historias perdidas",
+   "Sub": "Siéntate frente al micrófono y cuenta una historia de este lugar",
+   "MapLabel": "HISTORIAS"
   }
  },
  "DT_Places": {
@@ -2664,6 +2670,40 @@
    ],
    "Directions": "detrás de la puerta del muro este del auditorio, a la altura del pasillo transversal; también se entra desde el patio por la puerta doble bajo la marquesina, al norte de la escuela.",
    "Say": "el Ala de formación"
+  },
+  "stories": {
+   "Label": "Historias perdidas",
+   "Aliases": [
+    "lost stories",
+    "stories",
+    "story booth",
+    "booth",
+    "story cabin",
+    "cabin",
+    "record a story",
+    "tell a story",
+    "oral history",
+    "oral histories",
+    "story wall",
+    "historias perdidas",
+    "las historias perdidas",
+    "historias",
+    "cabaña",
+    "la cabaña",
+    "cabaña de historias",
+    "cabaña de las historias",
+    "cabina",
+    "la cabina",
+    "cabina de historias",
+    "grabar una historia",
+    "contar una historia",
+    "historia oral",
+    "historias orales",
+    "muro de historias",
+    "muro de las historias"
+   ],
+   "Directions": "sal por las puertas principales, baja las escaleras y cruza el teatro; luego sigue el camino más allá de la fuente hasta el final: la cabaña de madera con el letrero sobre el porche.",
+   "Say": "la cabaña de Historias perdidas"
   }
  },
  "DT_Tour": {
@@ -3405,6 +3445,11 @@
    "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(dialysis|technician|training wing|sandi)\\b))(?=.*?(?:\\b(course|class|certificate|learn|train(ing)?)\\b))|^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)|\\bll[eé]va(me|nos)\\b|\\bacomp[aá][ñn]a(me|nos)\\b|\\bgu[ií]a(me|nos)\\b|\\bvamos al?\\b|\\bquiero ir\\b|\\bquisiera ir\\b|\\bc[oó]mo (llego|voy|se llega|se va|puedo (llegar|ir))\\b|\\bir al?\\b|\\bd[oó]nde (est[aá]n?|queda|quedan|hay|puedo (encontrar|ver)|encuentro|se encuentran?)\\b|\\bpor d[oó]nde\\b|\\bc[oó]mo encuentro\\b|\\bdirecci[oó]n(es)?\\b|\\bmu[eé]strame el camino\\b|\\bqu[eé] camino\\b|\\bhacia d[oó]nde\\b))(?=.*?(?:\\b(di[aá]lisis|t[eé]cnicos?|ala de formaci[oó]n|sandi)\\b))(?=.*?(?:\\b(curso|clase|certificado|aprender|capacitaci[oó]n|formaci[oó]n|entrenar)\\b))",
    "Answer": "El Ala de formación, pasando el auditorio, ofrece el curso de técnico en diálisis: la higiene de manos, la máquina, el sillón del paciente, el agua y el registro, una estación para cada paso. Termina las cinco y aprueba el cuestionario en el mostrador del curso para obtener un certificado.",
    "OfferLabel": "Abrir el curso"
+  },
+  "R038": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(lost stor(y|ies)|oral histor(y|ies)|story (booth|cabin|wall)|(record|tell|leave|share|keep) (a|my|your|our) stor(y|ies)|stories? (booth|cabin))\\b))|^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)|\\bll[eé]va(me|nos)\\b|\\bacomp[aá][ñn]a(me|nos)\\b|\\bgu[ií]a(me|nos)\\b|\\bvamos al?\\b|\\bquiero ir\\b|\\bquisiera ir\\b|\\bc[oó]mo (llego|voy|se llega|se va|puedo (llegar|ir))\\b|\\bir al?\\b|\\bd[oó]nde (est[aá]n?|queda|quedan|hay|puedo (encontrar|ver)|encuentro|se encuentran?)\\b|\\bpor d[oó]nde\\b|\\bc[oó]mo encuentro\\b|\\bdirecci[oó]n(es)?\\b|\\bmu[eé]strame el camino\\b|\\bqu[eé] camino\\b|\\bhacia d[oó]nde\\b))(?=.*?(?:\\b(historias? perdidas?|historias? orales?|caba[ñn]a de (las )?historias|cabina de (las )?historias|(muro|pared) de (las )?historias|(grabar|contar|dejar|compartir|guardar) (una|mi|tu|nuestra|alguna) historia)\\b))",
+   "Answer": "Historias perdidas empezó en Marin City, donde jóvenes reconstruyeron en XR una historia pasada por alto (la décima escena de la Sala de Cera). Afuera, al final del camino, pasando la fuente, la cabaña de Historias perdidas la continúa: siéntate frente al micrófono y cuenta una historia de este lugar. Se guarda con tu propia voz, escrita a su lado, y va al muro de adentro para que la escuche el próximo visitante.",
+   "OfferLabel": "Llévame a la cabaña"
   }
  },
  "DT_Facts": {

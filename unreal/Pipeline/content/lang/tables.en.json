@@ -1622,6 +1622,12 @@
    "DisplayName": "The Training Wing",
    "Sub": "Five stations, then the quiz at the desk",
    "MapLabel": "TRAINING"
+  },
+  "stories": {
+   "Kicker": "The Grounds",
+   "DisplayName": "Lost Stories",
+   "Sub": "Sit at the microphone and tell a story about this place",
+   "MapLabel": "STORIES"
   }
  },
  "DT_Places": {
@@ -2183,6 +2189,24 @@
    ],
    "Directions": "through the door in the auditorium's east wall at the cross-aisle, or in from the yard through the double doorway under the canopy, north of the school.",
    "Say": "the training wing"
+  },
+  "stories": {
+   "Label": "Lost Stories",
+   "Aliases": [
+    "lost stories",
+    "stories",
+    "story booth",
+    "booth",
+    "story cabin",
+    "cabin",
+    "record a story",
+    "tell a story",
+    "oral history",
+    "oral histories",
+    "story wall"
+   ],
+   "Directions": "out through the front doors, down the steps and through the theatre, then along the path past the fountain to its end: the timber cabin with the sign over its porch.",
+   "Say": "the Lost Stories cabin"
   }
  },
  "DT_Tour": {
@@ -2701,6 +2725,11 @@
    "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(dialysis|technician|training wing|sandi)\\b))(?=.*?(?:\\b(course|class|certificate|learn|train(ing)?)\\b))",
    "Answer": "The Training Wing, past the auditorium, runs the dialysis technician course: hand hygiene, the machine, the treatment chair, the water and the chart, one station each. Finish all five, then pass the quiz at the course desk for a certificate.",
    "OfferLabel": "Open the course"
+  },
+  "R038": {
+   "Pattern": "^(?!.*(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b|\\bwhere('?s| is| are| can i find| do i find)\\b|\\bwhich way\\b|\\bhow do i (get|find)\\b|\\bdirections?\\b)))(?=.*?(?:\\b(lost stor(y|ies)|oral histor(y|ies)|story (booth|cabin|wall)|(record|tell|leave|share|keep) (a|my|your|our) stor(y|ies)|stories? (booth|cabin))\\b))",
+   "Answer": "Lost Stories began in Marin City, where young people rebuilt overlooked history in XR (the Wax Hall’s tenth scene). Out on the grounds, at the end of the path past the fountain, the Lost Stories cabin carries it on: sit at the microphone and tell a story about this place. It is kept in your own voice, written down beside it, and goes on the wall inside for the next visitor to hear.",
+   "OfferLabel": "Take me to the cabin"
   },
   "R132": {
    "Pattern": "^(?!.*(?:\\b(newest|latest|most recent)\\b))(?=.*?(?:\\b(oldest|earliest|first)\\b.*\\b(exhibit|thing|item|here)\\b|\\b(newest|latest|most recent)\\b))(?=.*?(?:(?:\\b(take|bring|walk|lead) me\\b|\\bgo to\\b|\\bshow me the way\\b|\\bhow do i get to\\b|\\blets? go\\b|\\blet's go\\b)|\\bshow me\\b))",

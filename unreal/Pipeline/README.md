@@ -17,10 +17,12 @@ bl/auditorium.py ──► out/auditorium/Auditorium.glb, lights.json, layout.js
 bl/classroom.py ──► out/classroom/Classroom.glb, lights.json, layout.json     (Room 104 as the XR Classroom: smartboard, desks, signs)
 bl/training.py ──► out/training/Training.glb, lights.json, layout.json        (the Training Wing: the dialysis course's five stations)
 bl/maker.py ──► out/maker/Maker.glb, layout.json                              (Room 101's 360 storytelling course: five stations, the desk)
+bl/stories.py ──► out/stories/Stories.glb, lights.json, layout.json           (the Lost Stories cabin at the path's end: the booth and the story wall)
 bl/screens.py ──► assets/tex/screen_tablet.png, screen_phone.png   (the XR Libraries app mock the lit screens show)
 bl/props.py ──► out/props/HandProps.glb                    (the Wax Hall's held props: headset, tablet, phone, book, clipboard, box)
 bl/seats.py ──► out/props/Seats.glb                        (the Wax Hall settees, the yard's park benches)
 out/campus/*.glb + ReadingRoom.glb + Museum.glb + Outside.glb + HandProps.glb + Seats.glb + Auditorium.glb + Classroom.glb + Training.glb + Maker.glb
+    + Stories.glb
     ──► blender/prepare_for_unreal.py (+ content/refits.json) ──► out/ue/<Asset>.glb   (what Unreal imports)
 ```
 
@@ -195,6 +197,20 @@ task chair that is a seat) and `cr-share` the headset on a pedestal in front of 
 originals; the course board on the west wall, a tablet and the desk card on the teacher desk, and `spot__studio_f90`
 behind it.
 
+The Lost Stories cabin (`bl/stories.py`) stands where the forecourt's path ends in the south meadow (centre x -4, the
+porch at z 70.35, the room from z 72 to 77): a board-and-batten cedar cabin with a charcoal standing-seam roof, a
+covered porch with a bench, a planter and a lantern, the sign "LOST STORIES" in its gable, a barn door slid open on
+its rail and four windows. Inside, under the exposed rafters, the recording nook: a round table with two microphones,
+the recorder and headphones, the teller's teal armchair facing the guest's rust one (`seat__stories_teller_f0`,
+`seat__stories_guest_f180`), a reading lamp, a round rug, three fabric acoustic panels and an ON AIR sign; on the back
+wall the story board (dark green felt in a walnut frame under a brass picture light; Unreal draws the cards on it) with
+the listening bench below (`seat__stories_bench_f270`); two bookcases of oral-history boxes on the west wall, a framed
+print, a coat rail with a scarf and a tote, and "How it works" by the door. `out/stories/layout.json` gives the room,
+the board's face (`story_wall`: centre, yaw, width and height, for `AWTAStoryWallActor`), the teller's microphone
+(`mic`, for `AWTAStoryMicActor`), the seats and three views; `lights.json` the two pendants, the lamp, the board's
+wall-wash spot and the porch lantern. Materials are `st_*` (`content/surfaces.json` has the Stories block); the sign
+and the "How it works" card take a client pack's `stories` words when it has them.
+
 ## A client pack, and the sheet a library fills in
 
 `clients/<name>/campus.json` holds what is the client's rather than the campus's (the names, the app on the lit
@@ -239,6 +255,7 @@ exhibit is itself again. The play QA's `season` phase does exactly this with the
 | Yard | 104 | 73k | Coaster, Sky Drop, dive dome, playground; `ride__` / `token__` tags; the fence clipped at the Training Wing's doorway |
 | Training | 37 | 8k | Blender: the Training Wing's room and its five stations; `spot__training_f0`, `seat__training_*` |
 | Maker | 33 | 5k | Blender: Room 101's 360 storytelling course props; `spot__studio_f90`, `seat__studio_edit_f90` |
+| Stories | 38 | 8k | Blender: the Lost Stories cabin at the path's end (porch, booth, story board, shelves); `seat__stories_teller_f0`, `_guest_f180`, `_bench_f270`, `_porch_f270` |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,

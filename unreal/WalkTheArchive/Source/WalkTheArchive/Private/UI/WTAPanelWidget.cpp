@@ -34,8 +34,10 @@
 #include "TimerManager.h"
 #include "UnrealClient.h"
 #include "Styling/SlateBrush.h"
+#include "Core/WTASettings.h"
 #include "Systems/WTAContentSubsystem.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "Systems/WTAStoriesSubsystem.h"
 #include "Systems/WTAVisitLogSubsystem.h"
 #include "Systems/WTAVoiceSubsystem.h"
 #include "UI/WTAActionButton.h"
@@ -65,6 +67,17 @@ namespace
 	const FName NAME_PanelStationStep(TEXT("StationStep"));
 	const FName NAME_PanelStationFinish(TEXT("StationFinish"));
 	const FName NAME_PanelHuntPicture(TEXT("HuntPicture"));
+	const FName NAME_StoryRecord(TEXT("StoryRecord"));
+	const FName NAME_StoryStop(TEXT("StoryStop"));
+	const FName NAME_StoryListenTake(TEXT("StoryListenTake"));
+	const FName NAME_StoryKeep(TEXT("StoryKeep"));
+	const FName NAME_StoryAgain(TEXT("StoryAgain"));
+	const FName NAME_StoryDiscard(TEXT("StoryDiscard"));
+	const FName NAME_StoryPlay(TEXT("StoryPlay"));
+	const FName NAME_StoryRead(TEXT("StoryRead"));
+	const FName NAME_StoryList(TEXT("StoryList"));
+	const FName NAME_StoryDeleteOwn(TEXT("StoryDeleteOwn"));
+	constexpr int32 MeterBarCount = 32;
 
 	const FName NAME_PanelBlockPara(TEXT("Para"));
 	const FName NAME_PanelBlockList(TEXT("List"));
@@ -100,6 +113,13 @@ namespace
 		case EWTAPanelMode::Book:    return 880.f;
 		default:                     return 780.f;
 		}
+	}
+
+	/** "1:23" */
+	FText BoothClockText(float Seconds)
+	{
+		const int32 S = FMath::Max(0, FMath::FloorToInt(Seconds));
+		return FText::FromString(FString::Printf(TEXT("%d:%02d"), S / 60, S % 60));
 	}
 
 	/** Brass at partial opacity, for hairlines. */
@@ -772,7 +792,10 @@ void UWTAPanelWidget::ShowCourse(FName TalkId)
 		EndCard(false, false, FText::GetEmpty());
 		return;
 	}
-	BeginCard(EWTAPanelMode::Course, TalkId, PanelText(TEXT("The Training Wing · Course")), Row->Title);
+	// The kicker names the course's room: "The Training Wing · Course", "3D Art Studio · Course".
+	const FWTARoomRow* Venue = Data->FindRoom(Row->Venue);
+	BeginCard(EWTAPanelMode::Course, TalkId, Venue != nullptr && !Venue->DisplayName.IsEmpty()
+		? FText::Format(PanelText(TEXT("{0} · Course")), Venue->DisplayName) : PanelText(TEXT("Course")), Row->Title);
 	SetHeaderExtras(FText::GetEmpty(), Row->Subtitle);
 	if (!Row->Intro.IsEmpty())
 	{
@@ -960,9 +983,355 @@ void UWTAPanelWidget::ShowQuizResult(FName TalkId)
 	}
 }
 
+// ---------------------------------------------------------------------------
+// Lost Stories
+// ---------------------------------------------------------------------------
+
+void UWTAPanelWidget::ShowBooth()
+{
+	UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+	if (StoryTitleBox != nullptr)
+	{
+		TypedTitle = StoryTitleBox->GetText().ToString();
+	}
+	if (StoryTellerBox != nullptr)
+	{
+		TypedTeller = StoryTellerBox->GetText().ToString();
+	}
+	MeterBars.Reset();
+	StoryTitleBox = nullptr;
+	StoryTellerBox = nullptr;
+	CurrentPage = -1;
+	NumPages = 0;
+	const FText Kicker = PanelText(TEXT("Lost Stories"));
+	const EWTABoothState State = Stories != nullptr ? Stories->GetBoothState() : EWTABoothState::Idle;
+	const int32 Minutes = FMath::Max(1, FMath::RoundToInt(UWTASettings::Get()->StoryMaxSeconds / 60.f));
+
+	if (Stories == nullptr)
+	{
+		BeginCard(EWTAPanelMode::Booth, NAME_None, Kicker, PanelText(TEXT("Tell a story about this place")));
+		AddParagraph(PanelText(TEXT("The booth is not ready here.")));
+	}
+	else if (State == EWTABoothState::Recording)
+	{
+		BeginCard(EWTAPanelMode::Booth, NAME_None, Kicker, FText::Format(PanelText(TEXT("Recording · {0}")), BoothClockText(Stories->GetTakeSeconds())));
+		AddLevelMeter();
+		AddParagraph(PanelText(TEXT("Take your time. Tell it the way you would tell a friend, and press Stop when you have finished.")));
+		if (!Stories->GetDeviceName().IsEmpty())
+		{
+			AddText(FText::Format(PanelText(TEXT("Listening through {0} · up to {1} minutes")), FText::FromString(Stories->GetDeviceName()), FText::AsNumber(Minutes)),
+				WTAStyle::Font(14), WTAStyle::CardInkDim());
+		}
+		UHorizontalBox* Row = AddButtonRow();
+		AddRowButton(Row, PanelText(TEXT("Stop")), NAME_StoryStop, NAME_None, true);
+	}
+	else if (State == EWTABoothState::Take)
+	{
+		BeginCard(EWTAPanelMode::Booth, NAME_None, Kicker, FText::Format(PanelText(TEXT("Your story · {0}")), BoothClockText(Stories->GetTakeSeconds())));
+		if (Stories->IsTakeSilent())
+		{
+			AddNote(PanelText(TEXT("We could hardly hear anything. Check that the microphone is on and not muted, then record again.")));
+		}
+		AddParagraph(PanelText(TEXT("Listen back if you like. Keep it and it goes on the wall in your own voice, written down beside it. Nothing is kept unless you keep it.")));
+		AddSection(PanelText(TEXT("A title, if you would like one")));
+		StoryTitleBox = WidgetTree->ConstructWidget<UEditableTextBox>(UEditableTextBox::StaticClass());
+		StoryTitleBox->SetHintText(PanelText(TEXT("The winter the river froze")));
+		StoryTitleBox->SetText(FText::FromString(TypedTitle));
+		PanelAddRow(Content, StoryTitleBox, FMargin(0.f, 0.f, 0.f, 12.f));
+		AddSection(PanelText(TEXT("Your first name, if you would like it on the card")));
+		StoryTellerBox = WidgetTree->ConstructWidget<UEditableTextBox>(UEditableTextBox::StaticClass());
+		StoryTellerBox->SetHintText(PanelText(TEXT("First name")));
+		StoryTellerBox->SetText(FText::FromString(TypedTeller));
+		PanelAddRow(Content, StoryTellerBox, FMargin(0.f, 0.f, 0.f, 14.f));
+		UHorizontalBox* Row = AddButtonRow();
+		AddRowButton(Row, PanelText(TEXT("Keep my story")), NAME_StoryKeep, NAME_None, true);
+		AddRowButton(Row, Stories->IsPlaying(TEXT("take")) ? PanelText(TEXT("Stop listening")) : PanelText(TEXT("Listen back")), NAME_StoryListenTake, NAME_None, false);
+		AddRowButton(Row, PanelText(TEXT("Record again")), NAME_StoryAgain, NAME_None, false);
+		AddRowButton(Row, PanelText(TEXT("Delete")), NAME_StoryDiscard, NAME_None, false);
+	}
+	else if (!KeptStoryId.IsEmpty())
+	{
+		FWTAStory Kept;
+		const bool bFound = Stories->FindStory(KeptStoryId, Kept);
+		BeginCard(EWTAPanelMode::Booth, NAME_None, Kicker, PanelText(TEXT("Thank you")));
+		AddParagraph(UWTASettings::Get()->bStoriesNeedReview
+			? PanelText(TEXT("Your story is kept, in your own voice. It is on the wall for the rest of your visit, and a librarian will put it up for everyone."))
+			: PanelText(TEXT("Your story is on the wall now, in your own voice, for the next visitor to hear.")));
+		if (bFound && Kept.bTranscribed && !Kept.Transcript.IsEmpty())
+		{
+			AddSection(PanelText(TEXT("Written down")));
+			AddQuote(FText::FromString(Kept.Transcript.Len() > 420 ? Kept.Transcript.Left(420).TrimEnd() + TEXT("\u2026") : Kept.Transcript), FText::GetEmpty());
+		}
+		else if (bFound && Stories->IsWritingDown(KeptStoryId))
+		{
+			AddNote(PanelText(TEXT("Writing it down now: the words will be on its card in a minute or two.")));
+		}
+		else if (!Stories->CanWriteDown())
+		{
+			AddNote(PanelText(TEXT("It will be written down once the transcriber is set up on this computer.")));
+		}
+		UHorizontalBox* Row = AddButtonRow();
+		AddRowButton(Row, PanelText(TEXT("Hear the stories")), NAME_StoryList, NAME_None, true);
+		AddRowButton(Row, PanelText(TEXT("Tell another")), NAME_StoryRecord, NAME_None, false);
+		if (bFound)
+		{
+			AddRowButton(Row, PanelText(TEXT("Delete my story")), NAME_StoryDeleteOwn, FName(*KeptStoryId), false);
+		}
+	}
+	else
+	{
+		BeginCard(EWTAPanelMode::Booth, NAME_None, Kicker, PanelText(TEXT("Tell a story about this place")));
+		AddParagraph(PanelText(TEXT("Every place has stories nobody wrote down. Tell one here, in your own words and your own voice, and it joins the wall for the next visitor to hear.")));
+		AddSection(PanelText(TEXT("If you need a start")));
+		AddList({ PanelText(TEXT("A place here you remember, and what happened there.")),
+			PanelText(TEXT("Someone who made a difference to this community.")),
+			PanelText(TEXT("How things were when you were young.")) });
+		AddNote(FText::Format(PanelText(TEXT("Say your first name at the start if you would like it on the card. Your story stays on this computer, in your own voice, and a librarian looks after it. Up to {0} minutes.")),
+			FText::AsNumber(Minutes)));
+		UHorizontalBox* Row = AddButtonRow();
+		AddRowButton(Row, PanelText(TEXT("Record")), NAME_StoryRecord, NAME_None, true);
+		AddRowButton(Row, PanelText(TEXT("Hear the stories")), NAME_StoryList, NAME_None, false);
+	}
+	EndCard(false, false, FText::GetEmpty());
+	DrawnSignature = StoriesSignature();
+}
+
+void UWTAPanelWidget::ShowStories(FName StoryId)
+{
+	UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+	MeterBars.Reset();
+	StoryTitleBox = nullptr;
+	StoryTellerBox = nullptr;
+	CurrentPage = -1;
+	NumPages = 0;
+	const FText Kicker = PanelText(TEXT("Lost Stories"));
+	FWTAStory One;
+	if (Stories != nullptr && !StoryId.IsNone() && Stories->FindStory(StoryId.ToString(), One))
+	{
+		BeginCard(EWTAPanelMode::Stories, StoryId, Kicker, One.DisplayTitle());
+		SetHeaderExtras(FText::GetEmpty(), One.Byline());
+		UHorizontalBox* Row = AddButtonRow();
+		AddRowButton(Row, Stories->IsPlaying(One.Id) ? PanelText(TEXT("Stop")) : PanelText(TEXT("Listen")), NAME_StoryPlay, StoryId, true);
+		AddRowButton(Row, PanelText(TEXT("All the stories")), NAME_StoryList, NAME_None, false);
+		if (One.bTranscribed && !One.Transcript.IsEmpty())
+		{
+			AddSection(PanelText(TEXT("Written down")));
+			// The lines in paragraphs of about five, as they were said.
+			FString Paragraph;
+			int32 InParagraph = 0;
+			for (const FWTAStoryLine& Line : One.Lines)
+			{
+				Paragraph += (Paragraph.IsEmpty() ? TEXT("") : TEXT(" ")) + Line.Text;
+				if (++InParagraph >= 5)
+				{
+					AddParagraph(FText::FromString(Paragraph));
+					Paragraph.Reset();
+					InParagraph = 0;
+				}
+			}
+			if (!Paragraph.IsEmpty())
+			{
+				AddParagraph(FText::FromString(Paragraph));
+			}
+			AddText(PanelText(TEXT("Written down by a machine from the recording; the teller's own voice is the true copy.")), WTAStyle::Italic(14), WTAStyle::CardInkDim());
+		}
+		else if (Stories->IsWritingDown(One.Id))
+		{
+			AddNote(PanelText(TEXT("Being written down now; the words will be here in a minute or two.")));
+		}
+		else
+		{
+			AddNote(PanelText(TEXT("Not written down yet: listen to it in the teller's own voice.")));
+		}
+		if (One.bThisVisit)
+		{
+			if (!One.bOnWall)
+			{
+				AddNote(PanelText(TEXT("Only you see this one on the wall until a librarian puts it up.")));
+			}
+			AddButton(PanelText(TEXT("Delete my story")), NAME_StoryDeleteOwn, StoryId, -1, false);
+		}
+	}
+	else
+	{
+		BeginCard(EWTAPanelMode::Stories, NAME_None, Kicker, PanelText(TEXT("Stories from this place")));
+		const TArray<FWTAStory> List = Stories != nullptr ? Stories->GetWallStories() : TArray<FWTAStory>();
+		if (List.Num() == 0)
+		{
+			AddParagraph(PanelText(TEXT("No stories yet. Sit at the microphone and tell the first one.")));
+			AddButton(PanelText(TEXT("Tell a story")), WTAAction::StoryBooth(), NAME_None, -1, true);
+		}
+		for (int32 i = 0; i < FMath::Min(List.Num(), 40); ++i)
+		{
+			const FWTAStory& Story = List[i];
+			const FName Id(*Story.Id);
+			AddHeading(Story.DisplayTitle());
+			AddText(WTAUpper(Story.bThisVisit ? FText::Format(PanelText(TEXT("New · {0}")), Story.Byline()) : Story.Byline()), WTAStyle::Kicker(11), WTAStyle::BrassDark());
+			if (!Story.Transcript.IsEmpty())
+			{
+				const FString Words = Story.Transcript.Len() > 200 ? Story.Transcript.Left(200).TrimEnd() + TEXT("\u2026") : Story.Transcript;
+				if (UTextBlock* Quote = AddText(FText::Format(PanelText(TEXT("\u201C{0}\u201D")), FText::FromString(Words)), WTAStyle::Italic(16), WTAStyle::CardInkDim()))
+				{
+					Quote->SetLineHeightPercentage(1.2f);
+				}
+			}
+			else if (Stories->IsWritingDown(Story.Id))
+			{
+				AddText(PanelText(TEXT("Being written down now.")), WTAStyle::Italic(15), WTAStyle::CardInkDim());
+			}
+			UHorizontalBox* Row = AddButtonRow();
+			AddRowButton(Row, Stories->IsPlaying(Story.Id) ? PanelText(TEXT("Stop")) : PanelText(TEXT("Listen")), NAME_StoryPlay, Id, false);
+			AddRowButton(Row, PanelText(TEXT("Read it")), NAME_StoryRead, Id, false);
+		}
+	}
+	EndCard(false, false, FText::GetEmpty());
+	DrawnSignature = StoriesSignature();
+}
+
+FString UWTAPanelWidget::StoriesSignature() const
+{
+	const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+	if (Stories == nullptr)
+	{
+		return FString();
+	}
+	FString Signature = FString::Printf(TEXT("%d|%d|%d|%s|"), int32(Mode), int32(Stories->GetBoothState()), Stories->IsPlaying(TEXT("take")) ? 1 : 0, *KeptStoryId);
+	if (Mode == EWTAPanelMode::Booth)
+	{
+		FWTAStory Kept;
+		if (!KeptStoryId.IsEmpty() && Stories->FindStory(KeptStoryId, Kept))
+		{
+			Signature += Kept.bTranscribed ? TEXT("w") : (Stories->IsWritingDown(KeptStoryId) ? TEXT("q") : TEXT("n"));
+		}
+		return Signature;
+	}
+	for (const FWTAStory& Story : Stories->GetWallStories())
+	{
+		Signature += Story.Id;
+		Signature += Story.bTranscribed ? TEXT("w") : (Stories->IsWritingDown(Story.Id) ? TEXT("q") : TEXT("n"));
+		if (Stories->IsPlaying(Story.Id))
+		{
+			Signature += TEXT("p");
+		}
+	}
+	return Signature;
+}
+
+void UWTAPanelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	if (!bOpen || (Mode != EWTAPanelMode::Booth && Mode != EWTAPanelMode::Stories))
+	{
+		return;
+	}
+	const UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+	if (Stories == nullptr)
+	{
+		return;
+	}
+	if (StoriesSignature() != DrawnSignature)
+	{
+		if (Mode == EWTAPanelMode::Booth)
+		{
+			ShowBooth();
+		}
+		else
+		{
+			ShowStories(CurrentId);
+		}
+		return;
+	}
+	if (Mode == EWTAPanelMode::Booth && Stories->GetBoothState() == EWTABoothState::Recording)
+	{
+		if (TitleText != nullptr)
+		{
+			TitleText->SetText(FText::Format(PanelText(TEXT("Recording · {0}")), BoothClockText(Stories->GetTakeSeconds())));
+		}
+		const int32 Lit = FMath::RoundToInt(Stories->GetLevel() * MeterBars.Num());
+		for (int32 i = 0; i < MeterBars.Num(); ++i)
+		{
+			if (UBorder* Bar = MeterBars[i])
+			{
+				const bool bHot = i >= FMath::RoundToInt(MeterBars.Num() * 0.85f);
+				Bar->SetBrushColor(i < Lit ? (bHot ? WTAStyle::FromHex(0xb5502f) : WTAStyle::BrassDark()) : FLinearColor(0.17f, 0.14f, 0.10f, 0.10f));
+			}
+		}
+	}
+}
+
+void UWTAPanelWidget::AddLevelMeter()
+{
+	if (Content == nullptr)
+	{
+		return;
+	}
+	UHorizontalBox* Row = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	MeterBars.Reset();
+	for (int32 i = 0; i < MeterBarCount; ++i)
+	{
+		USizeBox* Size = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+		Size->SetWidthOverride(11.f);
+		Size->SetHeightOverride(34.f);
+		// A white brush tinted through the border's colour, so NativeTick can light it.
+		UBorder* Bar = WTAWidgets::MakePlate(WidgetTree, FLinearColor::White, FMargin(0.f), 3.f);
+		Bar->SetBrushColor(FLinearColor(0.17f, 0.14f, 0.10f, 0.10f));
+		Size->SetContent(Bar);
+		UHorizontalBoxSlot* BarSlot = Row->AddChildToHorizontalBox(Size);
+		BarSlot->SetPadding(FMargin(0.f, 0.f, 5.f, 0.f));
+		MeterBars.Add(Bar);
+	}
+	PanelAddRow(Content, Row, FMargin(0.f, 4.f, 0.f, 18.f), HAlign_Left);
+}
+
+UHorizontalBox* UWTAPanelWidget::AddButtonRow()
+{
+	UHorizontalBox* Row = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	if (Content != nullptr)
+	{
+		PanelAddRow(Content, Row, FMargin(0.f, 4.f, 0.f, 14.f), HAlign_Left);
+	}
+	return Row;
+}
+
+UWTAActionButton* UWTAPanelWidget::AddRowButton(UHorizontalBox* Row, const FText& Label, FName Action, FName Arg, bool bPrimary)
+{
+	if (Row == nullptr)
+	{
+		return nullptr;
+	}
+	UWTAActionButton* Button = WTAWidgets::MakeButton(WidgetTree, Label, Action, Arg, -1,
+		bPrimary ? WTAStyle::PrimaryButton() : WTAStyle::CardButton(),
+		WTAStyle::Font(15, bPrimary), bPrimary ? WTAStyle::Ink() : WTAStyle::CardInk());
+	Button->OnAction.AddDynamic(this, &UWTAPanelWidget::HandleAction);
+	UHorizontalBoxSlot* ButtonSlot = Row->AddChildToHorizontalBox(Button);
+	ButtonSlot->SetPadding(FMargin(0.f, 0.f, 10.f, 0.f));
+	ButtonSlot->SetVerticalAlignment(VAlign_Center);
+	return Button;
+}
+
 void UWTAPanelWidget::Close()
 {
 	NameBox = nullptr;
+	if (Mode == EWTAPanelMode::Booth)
+	{
+		// Closing the booth mid-story stops the recording; the take waits for the next time the card opens.
+		if (UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this))
+		{
+			if (Stories->GetBoothState() == EWTABoothState::Recording)
+			{
+				Stories->StopRecording();
+			}
+			if (Stories->IsPlaying(TEXT("take")))
+			{
+				Stories->StopPlayback();
+			}
+		}
+	}
+	MeterBars.Reset();
+	StoryTitleBox = nullptr;
+	StoryTellerBox = nullptr;
+	KeptStoryId.Reset();
+	DrawnSignature.Reset();
 	// Closing the card stops the voice: nothing should still be read once the card is gone.
 	if (UWTAVoiceSubsystem* Voice = UWTAVoiceSubsystem::Get(this))
 	{
@@ -1093,6 +1462,110 @@ void UWTAPanelWidget::HandleAction(FName Action, FName Arg, int32 Index)
 				Name = TEXT("A Visitor");
 			}
 			PC->ShowCertificate(CurrentId, Name);
+		}
+		return;
+	}
+
+	// --- Lost Stories -------------------------------------------------------------
+	if (Action == NAME_StoryRecord || Action == NAME_StoryAgain || Action == NAME_StoryStop || Action == NAME_StoryListenTake ||
+		Action == NAME_StoryKeep || Action == NAME_StoryDiscard || Action == NAME_StoryPlay || Action == NAME_StoryRead ||
+		Action == NAME_StoryList || Action == NAME_StoryDeleteOwn)
+	{
+		UWTAStoriesSubsystem* Stories = UWTAStoriesSubsystem::Get(this);
+		if (Stories == nullptr)
+		{
+			return;
+		}
+		if (StoryTitleBox != nullptr)
+		{
+			TypedTitle = StoryTitleBox->GetText().ToString();
+		}
+		if (StoryTellerBox != nullptr)
+		{
+			TypedTeller = StoryTellerBox->GetText().ToString();
+		}
+		if (Action == NAME_StoryRecord || Action == NAME_StoryAgain)
+		{
+			TypedTitle.Reset();
+			KeptStoryId.Reset();
+			if (!Stories->StartRecording() && PC != nullptr)
+			{
+				PC->ShowToast(PanelText(TEXT("No microphone answered. Plug one in, or let this app use it in the computer's privacy settings, and try again.")), 6.f);
+			}
+			ShowBooth();
+		}
+		else if (Action == NAME_StoryStop)
+		{
+			Stories->StopRecording();
+			ShowBooth();
+		}
+		else if (Action == NAME_StoryListenTake)
+		{
+			Stories->ListenToTake();
+			ShowBooth();
+		}
+		else if (Action == NAME_StoryKeep)
+		{
+			KeptStoryId = Stories->KeepTake(TypedTitle, TypedTeller);
+			TypedTitle.Reset();
+			ShowBooth();
+		}
+		else if (Action == NAME_StoryDiscard)
+		{
+			Stories->DiscardTake();
+			TypedTitle.Reset();
+			ShowBooth();
+		}
+		else if (Action == NAME_StoryPlay)
+		{
+			const FString Id = Arg.ToString();
+			if (Stories->IsPlaying(Id))
+			{
+				Stories->StopPlayback();
+				ShowStories(CurrentId);
+				return;
+			}
+			// Close the card and listen: the words come up as captions while the teller speaks.
+			if (PC != nullptr)
+			{
+				PC->CloseTopPanel();
+			}
+			else
+			{
+				Close();
+			}
+			if (Stories->Play(Id) && PC != nullptr)
+			{
+				PC->ShowToast(PanelText(TEXT("In the teller's own voice. E at the wall stops it; so does walking out.")), 5.f);
+			}
+		}
+		else if (Action == NAME_StoryRead)
+		{
+			ShowStories(Arg);
+		}
+		else if (Action == NAME_StoryList)
+		{
+			ShowStories(NAME_None);
+		}
+		else if (Action == NAME_StoryDeleteOwn)
+		{
+			const FString Id = Arg.ToString();
+			if (Stories->DeleteOwnStory(Id) && PC != nullptr)
+			{
+				PC->ShowToast(PanelText(TEXT("Deleted. Nothing of it is kept.")), 4.f);
+			}
+			if (KeptStoryId == Id)
+			{
+				KeptStoryId.Reset();
+			}
+			if (Mode == EWTAPanelMode::Booth)
+			{
+				ShowBooth();
+			}
+			else
+			{
+				ShowStories(NAME_None);
+			}
 		}
 		return;
 	}
@@ -1231,7 +1704,7 @@ void UWTAPanelWidget::BeginCard(EWTAPanelMode NewMode, FName Id, const FText& Ki
 	CurrentId = Id;
 	if (UWTAVisitLogSubsystem* Visits = UWTAVisitLogSubsystem::Get(this))
 	{
-		static const TCHAR* ModeNames[] = { TEXT("none"), TEXT("exhibit"), TEXT("book"), TEXT("station"), TEXT("ride"), TEXT("badges"), TEXT("places"), TEXT("quiz"), TEXT("course"), TEXT("hunt") };
+		static const TCHAR* ModeNames[] = { TEXT("none"), TEXT("exhibit"), TEXT("book"), TEXT("station"), TEXT("ride"), TEXT("badges"), TEXT("places"), TEXT("quiz"), TEXT("course"), TEXT("hunt"), TEXT("booth"), TEXT("stories") };
 		const int32 ModeIndex = static_cast<int32>(NewMode);
 		Visits->NoteCard(FName(ModeIndex >= 0 && ModeIndex < UE_ARRAY_COUNT(ModeNames) ? ModeNames[ModeIndex] : TEXT("card")), Id);
 	}
