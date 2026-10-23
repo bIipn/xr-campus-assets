@@ -129,6 +129,26 @@ def apply_refit(name, meshes):
         clipped.append('%s: %d faces' % (cp.get('what', 'box'), n))
     if spec.get('rail_desks'):
         clipped.append('rail desks turned to their cards: %d' % turn_rail_desks(keep, spec['rail_desks']))
+    for nd in spec.get('nudge', []):
+        # faces of 'material' lying wholly inside 'box' move up by dy metres (two trims laid in one plane, which
+        # flicker against each other and the floor, are stacked a few millimetres apart)
+        x0, y0, z0, x1, y1, z1 = nd['box']
+        lo = Vector((x0 - 1e-4, -z1 - 1e-4, y0 - 1e-4)); hi = Vector((x1 + 1e-4, -z0 + 1e-4, y1 + 1e-4))
+        n = 0
+        for o in keep:
+            me = o.data
+            slots = [sl.material.name if sl.material else '' for sl in o.material_slots]
+            inside = [all(lo[i] <= v.co[i] <= hi[i] for i in range(3)) for v in me.vertices]
+            moved_v = set()
+            for p in me.polygons:
+                if nd.get('material') and not (p.material_index < len(slots) and slots[p.material_index] == nd['material']):
+                    continue
+                if all(inside[i] for i in p.vertices):
+                    moved_v.update(p.vertices); n += 1
+            for i in moved_v:
+                me.vertices[i].co.z += float(nd.get('dy', 0.0))
+            me.update()
+        clipped.append('%s: %d faces up %.1f mm' % (nd.get('what', 'nudge'), n, 1000.0 * float(nd.get('dy', 0.0))))
     flushed = []
     for fl in spec.get('flush', []):
         covers = [o for o in keep if matches(o, fl['meshes'])]

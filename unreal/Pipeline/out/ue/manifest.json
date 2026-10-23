@@ -60,14 +60,23 @@
     "item__wax_2025"
    ],
    "triangles": 34942,
-   "bytes": 15845240,
+   "bytes": 15845484,
    "refit": {
     "dropped": [],
     "moved": [],
     "clipped": [
      "the brass rope post under the 2024 scene's card (its ball came up through the card): 464 faces",
      "the brass rope post under the 2025 scene's card: 464 faces",
-     "rail desks turned to their cards: 12"
+     "rail desks turned to their cards: 12",
+     "the stages' brass nosing, west: 10 faces up 4.0 mm",
+     "the stages' brass nosing, east: 10 faces up 4.0 mm",
+     "the end stages' brass nosing: 4 faces up 4.0 mm",
+     "the stages' black edge strip, west: 10 faces up 2.0 mm",
+     "the stages' black edge strip, east: 10 faces up 2.0 mm",
+     "the end stages' black edge strip: 4 faces up 2.0 mm"
+    ],
+    "flushed": [
+     "the computer screens (2016, 2022b, 2024), onto their monitors: 3 of 3"
     ]
    }
   },
