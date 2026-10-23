@@ -1470,7 +1470,10 @@ void AWTAPlayerController::WTAFigures(int32 Count, float X, float Y, float Yaw, 
 		State->SetVisitName(Names[Slot % UE_ARRAY_COUNT(Names)]);
 		Person->bStandIn = true;
 		Person->SetPlayerState(State);
-		Person->GetCharacterMovement()->bRunPhysicsWithNoController = true;    // they settle onto the floor, as a person does
+		// They settle onto the floor, as a person does (with no controller the movement mode is only set when this is on
+		// before the pawn's components initialise, so set it here too).
+		Person->GetCharacterMovement()->bRunPhysicsWithNoController = true;
+		Person->GetCharacterMovement()->SetDefaultMovementMode();
 		Person->TeleportToView(Spot);
 		Person->bSeatedPose = Slot >= Count - Seated;
 		++Made;

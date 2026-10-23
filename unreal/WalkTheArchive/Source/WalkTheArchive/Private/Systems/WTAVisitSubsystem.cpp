@@ -649,6 +649,12 @@ FWTAView UWTAVisitSubsystem::GroupSpot(UWorld* World, const FVector& Floor, floa
 			{
 				Ground = Projected.Location;
 				bFloor = true;
+				// The NavMesh lies a few centimetres over the floor: the place is on the floor itself.
+				FHitResult Down;
+				if (World->LineTraceSingleByChannel(Down, Ground + FVector(0.f, 0.f, 40.f), Ground - FVector(0.f, 0.f, 40.f), ECC_Visibility, Params))
+				{
+					Ground = Down.ImpactPoint;
+				}
 			}
 		}
 		else
