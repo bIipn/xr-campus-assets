@@ -4,14 +4,14 @@
     {
       "id": "studio",
       "room": "studio",
-      "x": 23.94,
+      "x": 16.2,
       "y": 1.5,
-      "z": -8.9,
-      "yaw": 180,
-      "width_m": 5.6,
+      "z": -4.81,
+      "yaw": -90,
+      "width_m": 4.2,
       "pictures": 6,
       "title": "Your pictures",
-      "note": "the 3D Art Studio's east wall, the long one with nothing on it"
+      "note": "the 3D Art Studio's south wall, west of its door (the side walls are windows)"
     }
   ]
 }
