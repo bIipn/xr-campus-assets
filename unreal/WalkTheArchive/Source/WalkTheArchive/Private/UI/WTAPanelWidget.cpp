@@ -612,6 +612,7 @@ void UWTAPanelWidget::ShowHunt()
 	TArray<FName> Hiding;
 	UWrapBox* Stamps = WidgetTree->ConstructWidget<UWrapBox>(UWrapBox::StaticClass());
 	Stamps->SetInnerSlotPadding(FVector2D(10.f, 12.f));
+	Stamps->SetHorizontalAlignment(HAlign_Center);
 	if (Data != nullptr)
 	{
 		int32 Number = 0;
