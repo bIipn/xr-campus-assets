@@ -71,7 +71,10 @@ bool AWTAExhibitActor::HangSeasonPicture()
 		SeasonPlane->SetMaterial(0, Mid);
 	}
 	SeasonPlane->RegisterComponent();
-	UE_LOG(LogWTA, Display, TEXT("WTA_SEASON %s hangs this season's picture (%.0f x %.0f cm)"), *ItemId.ToString(), Width, Height);
+	UE_LOG(LogWTA, Display, TEXT("WTA_SEASON %s hangs this season's picture (%.0f x %.0f cm) at %s facing %s, normal %s, scale %s; row at %s yaw %.1f; root at %s"),
+		*ItemId.ToString(), Width, Height, *SeasonPlane->GetComponentLocation().ToString(), *SeasonPlane->GetComponentRotation().ToString(),
+		*SeasonPlane->GetComponentRotation().RotateVector(FVector::UpVector).ToString(), *SeasonPlane->GetComponentScale().ToString(),
+		*Row->Location.ToString(), Row->Yaw, *GetActorLocation().ToString());
 	return true;
 }
 
