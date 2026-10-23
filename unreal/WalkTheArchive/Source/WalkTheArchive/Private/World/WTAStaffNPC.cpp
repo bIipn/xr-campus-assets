@@ -35,6 +35,10 @@ AWTAStaffNPC::AWTAStaffNPC()
 
 	// Staff stand still; no AI controller, no controller-driven rotation.
 	AutoPossessAI = EAutoPossessAI::Disabled;
+	// Each machine in a guided visit runs its own staff (they turn to whoever talks to them on that machine), like
+	// every other actor in the level; only the players replicate.
+	bReplicates = false;
+	SetReplicatingMovement(false);
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;

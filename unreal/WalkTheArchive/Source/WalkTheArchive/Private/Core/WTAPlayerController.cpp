@@ -17,12 +17,15 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
+#include "Systems/WTAVisitSubsystem.h"
+#include "Core/WTAPlayerState.h"
 #include "UI/WTACertificateWidget.h"
 #include "UI/WTAPostcardWidget.h"
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
+#include "UI/WTAVisitWidget.h"
 #include "World/WTAExhibitActor.h"
 #include "World/WTATalkActor.h"
 #include "Blueprint/UserWidget.h"
@@ -164,6 +167,32 @@ void AWTAPlayerController::BeginPlay()
 	{
 		Tour->OnTourChanged.AddDynamic(this, &AWTAPlayerController::HandleTourChanged);
 	}
+	UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+	if (Visit != nullptr)
+	{
+		Visit->OnVisitChanged.AddDynamic(this, &AWTAPlayerController::HandleVisitChanged);
+		if (Visit->IsInVisit())
+		{
+			const FString Name = Visit->GetMyName();
+			if (!Name.IsEmpty())
+			{
+				ServerSetVisitName(Name);
+			}
+		}
+		FText Toast;
+		if (Visit->TakePendingToast(Toast))
+		{
+			ShowToast(Toast, 6.f);
+		}
+		// QA: a play test that changed the map to lead or join a visit goes on here.
+		FString Phases;
+		if (Visit->TakePendingPlayTest(Phases))
+		{
+			FTimerHandle Handle;
+			GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this, Phases]() { WTAPlayTest(Phases); }), 2.f, false);
+		}
+		HandleVisitChanged();
+	}
 	if (UWTARoomSubsystem* Rooms = UWTARoomSubsystem::Get(this))
 	{
 		Rooms->OnRoomChanged.AddDynamic(this, &AWTAPlayerController::HandleRoomChanged);
@@ -178,8 +207,10 @@ void AWTAPlayerController::BeginPlay()
 		}
 	}
 
+	// The intro menu greets a new visit, not a map change made by a guided visit.
 	const UWTASettings* Settings = UWTASettings::Get();
-	if (Settings != nullptr && Settings->bShowIntroMenu && Menu != nullptr)
+	const bool bVisitChange = bArrivedFromVisit || (Visit != nullptr && Visit->IsInVisit());
+	if (Settings != nullptr && Settings->bShowIntroMenu && Menu != nullptr && !bVisitChange)
 	{
 		Menu->Open(true);
 	}
@@ -215,6 +246,8 @@ void AWTAPlayerController::SetupInputComponent()
 	Input->BindAction(PlacesAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnPlaces);
 	Input->BindAction(ChatAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnChat);
 	Input->BindAction(PhotoAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnPhoto);
+	Input->BindAction(VisitAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnVisit);
+	Input->BindAction(GatherAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnGather);
 }
 
 void AWTAPlayerController::Tick(float DeltaSeconds)
@@ -291,11 +324,34 @@ void AWTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	// Start where the web started: the lobby spawn from the settings (the pawn itself spawns at the PlayerStart).
+	// A guided visit changes that: the machine's own player comes back where they stood before the map changed
+	// for the visit, and a visitor joining the guide's machine starts at their place round the guide.
 	const UWTASettings* Settings = UWTASettings::Get();
 	AWTACharacter* PlayerCharacter = Cast<AWTACharacter>(InPawn);
-	if (Settings != nullptr && PlayerCharacter != nullptr && Settings->SpawnView.bValid)
+	UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+	FWTAView Start;
+	bool bStart = false;
+	if (IsLocalController())
 	{
-		PlayerCharacter->TeleportToView(Settings->SpawnView);
+		bStart = Visit != nullptr && Visit->TakeRestoreView(Start);
+		bArrivedFromVisit = bStart;
+	}
+	else if (Visit != nullptr)
+	{
+		bStart = Visit->ArrivalViewFor(GetPlayerState<AWTAPlayerState>(), Start);
+	}
+	if (!bStart && Settings != nullptr && Settings->SpawnView.bValid)
+	{
+		Start = Settings->SpawnView;
+		bStart = true;
+	}
+	if (PlayerCharacter != nullptr && bStart)
+	{
+		PlayerCharacter->TeleportToView(Start);
+		if (!IsLocalController())
+		{
+			ClientSetRotation(FRotator(Start.Pitch, Start.Yaw, 0.f), true);
+		}
 	}
 	bHasPendingView = false;
 	bFaceTravelDirection = false;
@@ -323,6 +379,8 @@ void AWTAPlayerController::CreateInputObjects()
 	PlacesAction       = MakeAction(this, TEXT("IA_Places"), EInputActionValueType::Boolean);
 	ChatAction         = MakeAction(this, TEXT("IA_Chat"), EInputActionValueType::Boolean);
 	PhotoAction        = MakeAction(this, TEXT("IA_Photo"), EInputActionValueType::Boolean);
+	VisitAction        = MakeAction(this, TEXT("IA_Visit"), EInputActionValueType::Boolean);
+	GatherAction       = MakeAction(this, TEXT("IA_Gather"), EInputActionValueType::Boolean);
 
 	// Move: X = right, Y = forward. W/S go through a swizzle into Y; S and A are negated.
 	AddSwizzle(this, MappingContext->MapKey(MoveAction, EKeys::W));
@@ -360,6 +418,8 @@ void AWTAPlayerController::CreateInputObjects()
 	MappingContext->MapKey(ChatAction, EKeys::Enter);
 	MappingContext->MapKey(PhotoAction, EKeys::P);
 	MappingContext->MapKey(PhotoAction, EKeys::Gamepad_FaceButton_Top);
+	MappingContext->MapKey(VisitAction, EKeys::V);
+	MappingContext->MapKey(GatherAction, EKeys::G);
 }
 
 void AWTAPlayerController::CreateWidgets()
@@ -390,6 +450,15 @@ void AWTAPlayerController::CreateWidgets()
 			Chat->Close();
 		}
 	}
+	if (VisitCard == nullptr)
+	{
+		VisitCard = CreateWidget<UWTAVisitWidget>(this, UWTAVisitWidget::StaticClass());
+		if (VisitCard != nullptr)
+		{
+			VisitCard->AddToViewport(25);
+			VisitCard->Close();
+		}
+	}
 	if (Menu == nullptr)
 	{
 		Menu = CreateWidget<UWTAMenuWidget>(this, UWTAMenuWidget::StaticClass());
@@ -414,6 +483,10 @@ void AWTAPlayerController::UpdateInputMode()
 		if (Menu != nullptr && Menu->IsOpen())
 		{
 			Mode.SetWidgetToFocus(Menu->TakeWidget());
+		}
+		else if (VisitCard != nullptr && VisitCard->IsOpen())
+		{
+			Mode.SetWidgetToFocus(VisitCard->TakeWidget());
 		}
 		else if (Chat != nullptr && Chat->IsOpen())
 		{
@@ -744,6 +817,12 @@ bool AWTAPlayerController::CloseTopPanel()
 		SetUIMode(IsAnyPanelOpen());
 		return true;
 	}
+	if (VisitCard != nullptr && VisitCard->IsOpen())
+	{
+		VisitCard->Close();
+		SetUIMode(IsAnyPanelOpen());
+		return true;
+	}
 	if (Certificate != nullptr && Certificate->IsOpen())
 	{
 		Certificate->Close();
@@ -764,7 +843,8 @@ bool AWTAPlayerController::CloseTopPanel()
 	}
 	if (UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this))
 	{
-		if (Tour->IsTouring())
+		// A visitor following a guide's tour cannot end it: Esc goes on to the menu.
+		if (Tour->IsTouring() && !Tour->IsFollowing())
 		{
 			Tour->End();
 			return true;
@@ -791,10 +871,81 @@ void AWTAPlayerController::ToggleMenu()
 	}
 }
 
+void AWTAPlayerController::ToggleVisitCard()
+{
+	if (VisitCard == nullptr)
+	{
+		return;
+	}
+	if (VisitCard->IsOpen())
+	{
+		VisitCard->Close();
+		SetUIMode(IsAnyPanelOpen());
+		return;
+	}
+	if (Menu != nullptr && Menu->IsOpen())
+	{
+		Menu->Close();
+	}
+	if (Chat != nullptr && Chat->IsOpen())
+	{
+		Chat->Close();
+	}
+	if (Panel != nullptr && Panel->IsOpen())
+	{
+		Panel->Close();
+	}
+	VisitCard->Open();
+	SetUIMode(true);
+}
+
+void AWTAPlayerController::ServerSetVisitName_Implementation(const FString& Name)
+{
+	if (AWTAPlayerState* Person = GetPlayerState<AWTAPlayerState>())
+	{
+		Person->SetVisitName(Name);
+		UE_LOG(LogWTA, Log, TEXT("WTA_VISIT name slot %d: %s"), Person->Slot, *Person->GetVisitName());
+	}
+}
+
+void AWTAPlayerController::HandleVisitChanged()
+{
+	const UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+	if (Hud == nullptr || Visit == nullptr)
+	{
+		return;
+	}
+	const EWTAVisitRole Role = Visit->GetRole();
+	if (Role == EWTAVisitRole::Solo)
+	{
+		Hud->SetVisitChip(FText::GetEmpty(), FText::GetEmpty());
+	}
+	else
+	{
+		const int32 Visitors = FMath::Max(0, Visit->GetPeople().Num() - 1);
+		FText Line;
+		if (Role == EWTAVisitRole::Guide)
+		{
+			Line = Visitors == 0 ? WTAText(TEXT("You lead \u00B7 waiting for visitors"))
+				: Visitors == 1 ? WTAText(TEXT("You lead \u00B7 1 visitor"))
+				: FText::Format(WTAText(TEXT("You lead \u00B7 {0} visitors")), FText::AsNumber(Visitors));
+		}
+		else
+		{
+			Line = FText::Format(WTAText(TEXT("With {0} \u00B7 {1} in the group")), FText::FromString(Visit->GetGuideName()), FText::AsNumber(Visitors + 1));
+		}
+		Hud->SetVisitChip(WTAText(TEXT("Guided visit \u00B7 V")), Line);
+	}
+	if (VisitCard != nullptr && VisitCard->IsOpen())
+	{
+		VisitCard->Refresh();
+	}
+}
+
 bool AWTAPlayerController::IsAnyPanelOpen() const
 {
 	return (Panel != nullptr && Panel->IsOpen()) || (Chat != nullptr && Chat->IsOpen()) || (Menu != nullptr && Menu->IsOpen())
-		|| (Certificate != nullptr && Certificate->IsOpen());
+		|| (Certificate != nullptr && Certificate->IsOpen()) || (VisitCard != nullptr && VisitCard->IsOpen());
 }
 
 // --- HUD messages ------------------------------------------------------------------
@@ -1650,6 +1801,34 @@ void AWTAPlayerController::OnPhoto(const FInputActionValue& Value)
 	TakePostcard();
 }
 
+void AWTAPlayerController::OnVisit(const FInputActionValue& Value)
+{
+	ToggleVisitCard();
+}
+
+void AWTAPlayerController::OnGather(const FInputActionValue& Value)
+{
+	UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+	if (Visit == nullptr || IsAnyPanelOpen())
+	{
+		return;
+	}
+	switch (Visit->GetRole())
+	{
+	case EWTAVisitRole::Guide:
+		Visit->GatherHere();
+		break;
+	case EWTAVisitRole::Visitor:
+		if (!Visit->WalkToGuide())
+		{
+			ShowToast(WTAText(TEXT("Your guide is not in sight yet.")), 0.f);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 FString AWTAPlayerController::TakePostcard()
 {
 	if (IsAnyPanelOpen() || (Postcard != nullptr && Postcard->IsShowing()))
@@ -1813,7 +1992,16 @@ void AWTAPlayerController::HandleTourChanged(int32 Index)
 	// A tour frees the cursor so its bar's Back / Next / End buttons can be clicked (T and Esc work too);
 	// mouse look comes back when it ends, unless the player toggled the cursor with Tab in between.
 	const bool bTouring = Index >= 0;
-	if (bTouring && !bTourActive)
+	UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+	const bool bFollowing = Tour != nullptr && Tour->IsFollowing();
+	const UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+	const FText GuideName = Visit != nullptr ? FText::FromString(Visit->GetGuideName()) : FText::GetEmpty();
+	if (bTouring && !bTourActive && bFollowing)
+	{
+		// A visitor's tour follows the guide: no buttons to click, so the mouse keeps looking around.
+		ShowToast(FText::Format(WTAText(TEXT("{0} is starting the tour. You walk to each stop with the group.")), GuideName), 0.f);
+	}
+	else if (bTouring && !bTourActive)
 	{
 		if (!bCursorFree)
 		{
@@ -1834,13 +2022,13 @@ void AWTAPlayerController::HandleTourChanged(int32 Index)
 	{
 		return;
 	}
-	UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
 	FWTATourStopRow Stop;
 	if (Index < 0 || Tour == nullptr || !Tour->GetCurrentStop(Stop))
 	{
 		Hud->HideTour();
 		return;
 	}
+	Hud->SetTourFollowing(bFollowing, GuideName);
 	Hud->ShowTour(Index, Tour->GetNumStops(), Stop.Title, Stop.DateLabel, Stop.Body, Stop.OpenLabel);
 	RefreshTourBar();
 }

@@ -35,8 +35,16 @@
 //             on the head, no bone of the face or body is left at the feet (the drooping face), staff idles move
 //   adapt     (only when named) from the sunny yard into a classroom, the lab, the Wax Hall and the library: no-HUD
 //             shots 0.5, 2, 5 and 8 s after arriving, to see how long the auto exposure leaves a room dark
+//   group_lead / group_join  (only when named; two games, Tools/win visit_qa: one leads, one joins) a guided visit:
+//             group_lead names the guide, reloads the campus as a listen server and goes on as group_guide: a visitor
+//             joins and stands beside the guide as a figure with a name, the tour's first two stops bring the visitor
+//             to their places round each stop, a gathering brings them to the guide, the tour ends, the visitor
+//             leaves. group_join joins host=<address> (127.0.0.1) and goes on as group_guest: the visitor arrives at
+//             the guide's side, follows both stops (T does not move the tour), comes when gathered, sees the tour
+//             end, leaves, and (group_left) is back on their own campus. Shots: play_NN_group_guide_* / _guest_*.
 // Tokens: "only=<text>" keeps the people / interactables whose name contains <text>; "speeddown=<stops per second>"
-// sets every post process volume's auto exposure Speed Down for this run (to compare adaptation speeds).
+// sets every post process volume's auto exposure Speed Down for this run (to compare adaptation speeds);
+// "host=<address>" is the guide group_join joins.
 
 #pragma once
 
@@ -122,6 +130,18 @@ private:
 	void AddSeasonPhase();
 	void AddStoriesPhase();
 	void AddPopUpPhase();
+	/** Guided visits across two games (see the header): the guide's side and the visitor's. */
+	void AddGroupLeadPhase();
+	void AddGroupGuidePhase();
+	void AddGroupJoinPhase();
+	void AddGroupGuestPhase();
+	void AddGroupLeftPhase();
+	/** The other person's pawn in a visit (the first one that is not this player's). */
+	AWTACharacter* OtherPerson() const;
+	/** The guide's pawn on this machine. */
+	AWTACharacter* GuidePerson() const;
+	/** Turn the camera to look at a person's head. */
+	void LookAtPerson(const AWTACharacter* Person);
 	/** The quiz steps shared by the talks and quiz phases: every question answered right, the result, the name, the certificate and its picture. */
 	void AddQuizSteps(const FString& Phase, const FString& Name, FName TalkId, const TArray<FWTAQuizQuestion>& Quiz, const TSharedRef<bool>& Ok, const FString& Tag);
 	/** Only when named: stands at each wax stage and watches a whole loop, for the acting shots and checks. */
@@ -163,6 +183,9 @@ private:
 
 	/** "only=<text>" phase tokens: the people and interact phases keep names containing one of these (empty = all). */
 	TArray<FString> PeopleFilter;
+
+	/** group_join: the guide's address ("host=<address>", else 127.0.0.1). */
+	FString GroupHost;
 
 	/** adapt phase: the step that is waiting before its shot. */
 	bool bAdaptWaited = false;

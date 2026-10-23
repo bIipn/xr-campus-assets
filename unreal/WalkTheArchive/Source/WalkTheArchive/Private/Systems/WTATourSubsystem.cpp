@@ -45,8 +45,25 @@ void UWTATourSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	CacheStops();
 }
 
+bool UWTATourSubsystem::RefuseWhileFollowing() const
+{
+	if (!bFollowing)
+	{
+		return false;
+	}
+	if (AWTAPlayerController* PC = ControllerOf(GetGameInstance()))
+	{
+		PC->ShowToast(WTAText(TEXT("Your guide leads the tour. The next stop comes when they move on.")), 0.f);
+	}
+	return true;
+}
+
 void UWTATourSubsystem::Start()
 {
+	if (RefuseWhileFollowing())
+	{
+		return;
+	}
 	CacheStops();
 	if (StopIds.Num() == 0)
 	{
@@ -58,6 +75,10 @@ void UWTATourSubsystem::Start()
 
 void UWTATourSubsystem::Next()
 {
+	if (RefuseWhileFollowing())
+	{
+		return;
+	}
 	if (!IsTouring())
 	{
 		Start();
@@ -78,6 +99,10 @@ void UWTATourSubsystem::Next()
 
 void UWTATourSubsystem::Back()
 {
+	if (RefuseWhileFollowing())
+	{
+		return;
+	}
 	if (!IsTouring())
 	{
 		return;
@@ -87,7 +112,7 @@ void UWTATourSubsystem::Back()
 
 void UWTATourSubsystem::End()
 {
-	if (!IsTouring())
+	if (!IsTouring() || RefuseWhileFollowing())
 	{
 		return;
 	}
@@ -132,26 +157,75 @@ void UWTATourSubsystem::ShowStop(int32 NewIndex)
 	}
 	Index = FMath::Clamp(NewIndex, 0, StopIds.Num() - 1);
 
-	const UWTAContentSubsystem* Content = GetGameInstance() ? GetGameInstance()->GetSubsystem<UWTAContentSubsystem>() : nullptr;
-	const FWTATourStopRow* Row = Content ? Content->FindTourStop(StopIds[Index]) : nullptr;
-	if (Row != nullptr)
+	FWTAView View;
+	if (GetStopView(Index, View))
 	{
-		// Exhibit stops carry no view of their own; stand where the exhibit's View says.
-		FWTAView View = Row->View;
-		if (!View.bValid && !Row->ItemId.IsNone())
-		{
-			if (const FWTAExhibitRow* Exhibit = Content->FindExhibit(Row->ItemId))
-			{
-				View = Exhibit->View;
-			}
-		}
 		if (AWTAPlayerController* PC = ControllerOf(GetGameInstance()))
 		{
 			PC->GoToView(View, true);
 		}
-		UE_LOG(LogWTA, Log, TEXT("Tour: stop %d of %d (%s)"), Index + 1, StopIds.Num(), *Row->Title.ToString());
+		FWTATourStopRow Row;
+		if (GetCurrentStop(Row))
+		{
+			UE_LOG(LogWTA, Log, TEXT("Tour: stop %d of %d (%s)"), Index + 1, StopIds.Num(), *Row.Title.ToString());
+		}
 	}
 	OnTourChanged.Broadcast(Index);
+}
+
+bool UWTATourSubsystem::GetStopView(int32 StopIndex, FWTAView& OutView) const
+{
+	if (!StopIds.IsValidIndex(StopIndex))
+	{
+		return false;
+	}
+	const UWTAContentSubsystem* Content = GetGameInstance() ? GetGameInstance()->GetSubsystem<UWTAContentSubsystem>() : nullptr;
+	const FWTATourStopRow* Row = Content ? Content->FindTourStop(StopIds[StopIndex]) : nullptr;
+	if (Row == nullptr)
+	{
+		return false;
+	}
+	// Exhibit stops carry no view of their own; stand where the exhibit's View says.
+	OutView = Row->View;
+	if (!OutView.bValid && !Row->ItemId.IsNone())
+	{
+		if (const FWTAExhibitRow* Exhibit = Content->FindExhibit(Row->ItemId))
+		{
+			OutView = Exhibit->View;
+		}
+	}
+	return OutView.bValid;
+}
+
+void UWTATourSubsystem::FollowStop(int32 NewIndex, const FWTAView& Spot, bool bWalk)
+{
+	CacheStops();
+	if (!StopIds.IsValidIndex(NewIndex))
+	{
+		return;
+	}
+	bFollowing = true;
+	Index = NewIndex;
+	if (AWTAPlayerController* PC = ControllerOf(GetGameInstance()))
+	{
+		PC->GoToView(Spot, bWalk);
+	}
+	UE_LOG(LogWTA, Log, TEXT("Tour: following the guide to stop %d of %d"), Index + 1, StopIds.Num());
+	OnTourChanged.Broadcast(Index);
+}
+
+void UWTATourSubsystem::StopFollowing()
+{
+	if (!bFollowing)
+	{
+		return;
+	}
+	bFollowing = false;
+	if (Index >= 0)
+	{
+		Index = -1;
+		OnTourChanged.Broadcast(-1);
+	}
 }
 
 void UWTATourSubsystem::CacheStops()

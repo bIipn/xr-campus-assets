@@ -4,6 +4,14 @@
 // sprint 560, jump 520, gravity scale 1.63, head-bob 2.6 cm with a 155 cm stride, landing dip spring.
 // WalkTo uses the NavMesh through UAIBlueprintHelperLibrary::SimpleMoveToLocation (adds a path-following
 // component to the player controller) and raises MaxWalkSpeed to clamp(PathLength / 2.3, 240, 1200) while it walks.
+//
+// Guided visits (UWTAVisitSubsystem): the pawn replicates, always relevant, and its owner's machine has the say over
+// where it is (client-authoritative movement: teleports, sitting and the tour's walks need no server correction).
+// Other people see it as a figure - a turned base, a tapered body, shoulders and a head that tilts with the
+// person's look, a light visor showing which way they face - in the person's colour (AWTAPlayerState), with their
+// name over it (UWTANameTagWidget). Nobody sees their own figure, and one within arm's reach of the camera hides.
+// Sitting reaches the others through ServerSetSeated (the seated figure is lower, on the seat). Players never
+// block each other.
 
 #pragma once
 
@@ -14,6 +22,9 @@
 #include "WTACharacter.generated.h"
 
 class UCameraComponent;
+class UMaterialInstanceDynamic;
+class UStaticMeshComponent;
+class UWidgetComponent;
 
 /** The player sat down on Seat (bSeated) or stood up from it. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWTASeatChanged, AActor*, Seat, bool, bSeated);
@@ -127,10 +138,88 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "WTA")
 	FWTASeatChanged OnSeatChanged;
 
+	// --- In a guided visit: the figure the others see --------------------------------
+
+	/** The figure's root, on the floor under the capsule. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA|Visit")
+	TObjectPtr<USceneComponent> Figure;
+
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<UStaticMeshComponent> FigureBase;
+
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<UStaticMeshComponent> FigureBody;
+
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<UStaticMeshComponent> FigureShoulders;
+
+	/** The neck: the head and visor turn about it with the person's look. */
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<USceneComponent> FigureNeck;
+
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<UStaticMeshComponent> FigureHead;
+
+	UPROPERTY(VisibleAnywhere, Category = "WTA|Visit")
+	TObjectPtr<UStaticMeshComponent> FigureVisor;
+
+	/** The name over the figure (screen space, so it reads at any distance; hidden behind walls). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WTA|Visit")
+	TObjectPtr<UWidgetComponent> NameTag;
+
+	/** Seated, as the others see it (its owner sets it through ServerSetSeated). */
+	UPROPERTY(ReplicatedUsing = OnRep_SeatedPose, BlueprintReadOnly, Category = "WTA|Visit")
+	bool bSeatedPose = false;
+
+	/** True when the figure shows on this machine (another person's pawn in a visit). */
+	UFUNCTION(BlueprintPure, Category = "WTA|Visit")
+	bool IsFigureShown() const { return bFigureShown; }
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void Landed(const FHitResult& Hit) override;
+	virtual void OnRep_PlayerState() override;
+
+	/** The owner sat down (Location = the seated capsule centre) or stood up (Location = where they stand). */
+	UFUNCTION(Server, Reliable)
+	void ServerSetSeated(bool bOn, FVector_NetQuantize Location, float Yaw);
+
+	UFUNCTION()
+	void OnRep_SeatedPose();
+
+	/** Tell the others about sitting down or standing up (the guide's own pawn sets the pose directly). */
+	void ShareSeated(bool bOn);
+
+	/** Every tick: show the figure only for another person's pawn in a visit, hide it at arm's reach of the camera
+	    and the name tag behind walls or far off, tilt the head with the look, follow the seated pose. */
+	void UpdateFigure(float DeltaSeconds);
+
+	/** Colours and the name tag from the player state (when they change). */
+	void RefreshFigureLook();
+
+	/** Lay the parts out standing or seated (lower and shorter, sitting on the seat). */
+	void LayoutFigure(bool bSitting);
+
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> FigureMaterial;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> HeadMaterial;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> VisorMaterial;
+
+	bool bFigureShown = false;
+	bool bFigureLaidSeated = false;
+	bool bTagHidden = true;
+	FString ShownName;
+	int32 ShownSlot = -1;
+	bool bShownGuide = false;
+	float SinceLook = 0.f;
+	float SinceTagCheck = 0.f;
 
 	/** Head-bob + landing-dip camera offset (port of playerFrame, nav.js). */
 	void UpdateCameraOffset(float DeltaSeconds);

@@ -27,7 +27,8 @@ public class WalkTheArchive : ModuleRules
 		});
 
 		// AudioCaptureCore: the Lost Stories booth's microphone (Audio::FAudioCapture; the AudioCapture plugin, on by
-		// default, loads the platform's capture back end).
-		PrivateDependencyModuleNames.AddRange(new string[] { "AnimationCore", "AudioCaptureCore" });
+		// default, loads the platform's capture back end). Sockets + Networking: the guided visits' beacon on the
+		// local network (UWTAVisitSubsystem); the visit itself runs on the engine's own net driver.
+		PrivateDependencyModuleNames.AddRange(new string[] { "AnimationCore", "AudioCaptureCore", "Sockets", "Networking" });
 	}
 }

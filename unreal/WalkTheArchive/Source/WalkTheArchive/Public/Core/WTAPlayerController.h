@@ -26,7 +26,15 @@
 //   Interact        LMB, E, Gamepad X         Back        Escape, Gamepad B
 //   ToggleCursor    Tab                       TourNext    T
 //   Places          M                         Chat        Enter
-// Handlers: OnMove/OnLook/OnJump/OnSprint/OnSprintEnd/OnInteract/OnBack/OnToggleCursor/OnTourNext/OnPlaces/OnChat/OnPhoto.
+//   Photo           P                         Visit       V (the Visit together card)
+//   Gather          G (the guide gathers the group; a visitor walks to the guide)
+// Handlers: OnMove/OnLook/OnJump/OnSprint/OnSprintEnd/OnInteract/OnBack/OnToggleCursor/OnTourNext/OnPlaces/OnChat/OnPhoto/
+// OnVisit/OnGather.
+//
+// Guided visits (UWTAVisitSubsystem): the controller owns the Visit together card, shows the HUD's visit chip,
+// sends the visitor's name to the guide's machine (ServerSetVisitName) and, on the guide's machine, puts each
+// visitor who joins at their place round the guide (OnPossess). After a map change made by a visit (leading,
+// leaving, the guide going away) the player stands where they stood, without the intro menu.
 // Config/DefaultInput.ini must keep the engine defaults (EnhancedPlayerInput + EnhancedInputComponent).
 //
 // GoToView(View, bWalk=true) walks the character to the floor point under View.Location (SimpleMoveToLocation),
@@ -51,6 +59,7 @@ class UWTAInteractionComponent;
 class UWTAMenuWidget;
 class UWTAPanelWidget;
 class UWTAPlayTest;
+class UWTAVisitWidget;
 struct FInputActionValue;
 
 /** Fired after SetUIMode: true when a panel, the chat or the menu is open. */
@@ -94,6 +103,10 @@ public:
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
 	TObjectPtr<UWTAPostcardWidget> Postcard;
 
+	/** The Visit together card (V, the menu). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|UI")
+	TObjectPtr<UWTAVisitWidget> VisitCard;
+
 	// --- Input objects (created in code, see the header comment) -----------
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
@@ -135,6 +148,12 @@ public:
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
 	TObjectPtr<UInputAction> PhotoAction;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> VisitAction;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> GatherAction;
 
 	// --- Feel --------------------------------------------------------------
 
@@ -238,6 +257,14 @@ public:
 	/** Open or close the menu (pause-style; the world keeps running). */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void ToggleMenu();
+
+	/** Open or close the Visit together card (V). Opening closes the menu, the chat and the panel. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void ToggleVisitCard();
+
+	/** The name the others see over this player in a guided visit (the visit card's name). */
+	UFUNCTION(Server, Reliable)
+	void ServerSetVisitName(const FString& Name);
 
 	/** True when the panel, the chat or the menu is open. */
 	UFUNCTION(BlueprintPure, Category = "WTA")
@@ -382,6 +409,8 @@ protected:
 	void OnPlaces(const FInputActionValue& Value);
 	void OnChat(const FInputActionValue& Value);
 	void OnPhoto(const FInputActionValue& Value);
+	void OnVisit(const FInputActionValue& Value);
+	void OnGather(const FInputActionValue& Value);
 
 	// Delegate sinks (subsystems and the interaction component broadcast; the controller updates the HUD).
 	UFUNCTION()
@@ -402,6 +431,10 @@ protected:
 	UFUNCTION()
 	void HandleProgressReset();
 
+	/** The visit's role or people changed: the HUD chip (and the card when open). */
+	UFUNCTION()
+	void HandleVisitChanged();
+
 	/** View to face once the current auto-walk ends (GoToView with bWalk). */
 	FWTAView PendingView;
 	bool bHasPendingView = false;
@@ -411,6 +444,8 @@ protected:
 	bool bUIMode = false;
 	/** A tour is running (last HandleTourChanged index >= 0). */
 	bool bTourActive = false;
+	/** This player was put back where they stood after a visit's map change (no intro menu then). */
+	bool bArrivedFromVisit = false;
 	/** The tour freed the cursor (so its bar's buttons can be clicked) and gives mouse look back when it ends. */
 	bool bCursorFreedForTour = false;
 	/** Story plaque sources: the exhibit under the crosshair and the wax scene the player stands in; what shows now. */

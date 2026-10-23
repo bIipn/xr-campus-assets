@@ -2,7 +2,19 @@
 
 #include "Core/WTACharacter.h"
 #include "Core/WTALog.h"
+#include "Core/WTAPlayerState.h"
 #include "Systems/WTAProgressSubsystem.h"
+#include "UI/WTANameTagWidget.h"
+#include "UI/WTAUIStyle.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Engine/StaticMesh.h"
+#include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+#include "Net/UnrealNetwork.h"
+#include "UObject/ConstructorHelpers.h"
 #include "AITypes.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
@@ -24,6 +36,28 @@ namespace
 
 	constexpr float CapsuleRadius = 30.f;
 	constexpr float CapsuleHalfHeight = 90.f;
+	/** A seated capsule: 120 cm tall, standing on the floor at the sit point. */
+	constexpr float SeatedHalfHeight = 60.f;
+
+	/** Size Part's mesh by Scale and stand its bounds' bottom at BottomZ (cm over the figure's root, the floor).
+	    The engine's basic shapes are 100 cm across; their bounds say where their pivot is. */
+	void PlacePart(UStaticMeshComponent* Part, float BottomZ, const FVector& Scale, float Forward = 0.f)
+	{
+		if (Part == nullptr)
+		{
+			return;
+		}
+		Part->SetRelativeScale3D(Scale);
+		FVector Offset(Forward, 0.f, BottomZ);
+		if (const UStaticMesh* Mesh = Part->GetStaticMesh())
+		{
+			const FBoxSphereBounds Bounds = Mesh->GetBounds();
+			Offset.X -= Bounds.Origin.X * Scale.X;
+			Offset.Y -= Bounds.Origin.Y * Scale.Y;
+			Offset.Z -= (Bounds.Origin.Z - Bounds.BoxExtent.Z) * Scale.Z;
+		}
+		Part->SetRelativeLocation(Offset);
+	}
 }
 
 AWTACharacter::AWTACharacter()
@@ -60,6 +94,86 @@ AWTACharacter::AWTACharacter()
 	// No body mesh in phase 0: the player is a camera on a capsule.
 	GetMesh()->SetVisibility(false);
 	GetMesh()->SetOwnerNoSee(true);
+
+	// Guided visits: everyone sees everyone wherever they are, and each machine has the say over its own player
+	// (a trusted group on one network), so teleports and seats need no server correction.
+	bAlwaysRelevant = true;
+	Move->bServerAcceptClientAuthoritativePosition = true;
+	Move->bIgnoreClientMovementErrorChecksAndCorrection = true;
+
+	// The figure the others see, from the engine's basic shapes coloured per person (BasicShapeMaterial's Color).
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMesh(TEXT("/Engine/BasicShapes/Cone.Cone"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> ShapeMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+
+	Figure = CreateDefaultSubobject<USceneComponent>(TEXT("Figure"));
+	Figure->SetupAttachment(GetCapsuleComponent());
+	Figure->SetRelativeLocation(FVector(0.f, 0.f, -CapsuleHalfHeight));
+
+	auto MakePart = [this, &ShapeMaterial](const TCHAR* Name, UStaticMesh* Mesh, USceneComponent* Parent)
+	{
+		UStaticMeshComponent* Part = CreateDefaultSubobject<UStaticMeshComponent>(Name);
+		Part->SetupAttachment(Parent);
+		Part->SetStaticMesh(Mesh);
+		if (ShapeMaterial.Succeeded())
+		{
+			Part->SetMaterial(0, ShapeMaterial.Object);
+		}
+		Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Part->SetGenerateOverlapEvents(false);
+		Part->SetCanEverAffectNavigation(false);
+		Part->SetOwnerNoSee(true);
+		Part->SetHiddenInGame(true);
+		Part->SetCastShadow(true);
+		return Part;
+	};
+	FigureBase = MakePart(TEXT("FigureBase"), CylinderMesh.Object, Figure);
+	FigureBody = MakePart(TEXT("FigureBody"), ConeMesh.Object, Figure);
+	FigureShoulders = MakePart(TEXT("FigureShoulders"), SphereMesh.Object, Figure);
+	FigureNeck = CreateDefaultSubobject<USceneComponent>(TEXT("FigureNeck"));
+	FigureNeck->SetupAttachment(Figure);
+	FigureHead = MakePart(TEXT("FigureHead"), SphereMesh.Object, FigureNeck);
+	FigureVisor = MakePart(TEXT("FigureVisor"), SphereMesh.Object, FigureNeck);
+	FigureVisor->SetCastShadow(false);
+
+	NameTag = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameTag"));
+	NameTag->SetupAttachment(Figure);
+	NameTag->SetWidgetSpace(EWidgetSpace::Screen);
+	NameTag->SetDrawAtDesiredSize(true);
+	NameTag->SetPivot(FVector2D(0.5f, 1.f));
+	NameTag->SetWidgetClass(UWTANameTagWidget::StaticClass());
+	NameTag->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	NameTag->SetGenerateOverlapEvents(false);
+	NameTag->SetHiddenInGame(true);
+
+	LayoutFigure(false);
+}
+
+void AWTACharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME_CONDITION(AWTACharacter, bSeatedPose, COND_SkipOwner);
+}
+
+void AWTACharacter::LayoutFigure(bool bSitting)
+{
+	bFigureLaidSeated = bSitting;
+	const float Half = GetCapsuleComponent() ? GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() : CapsuleHalfHeight;
+	Figure->SetRelativeLocation(FVector(0.f, 0.f, -Half));
+	// Standing: a turned base, a tapered body to 1.23 m, shoulders, the head at 1.46 m (the eye is at 1.62).
+	// Seated: no base, the body sitting on a 45 cm seat, the head at 1.27 m.
+	const float BodyBottom = bSitting ? 45.f : 5.f;
+	const float BodyHeight = bSitting ? 62.f : 118.f;
+	const float NeckZ = BodyBottom + BodyHeight + (bSitting ? 15.f : 17.f);
+	FigureBase->SetVisibility(!bSitting);
+	PlacePart(FigureBase, 0.f, FVector(0.46f, 0.46f, 0.05f));
+	PlacePart(FigureBody, BodyBottom, FVector(0.5f, 0.5f, BodyHeight / 100.f));
+	PlacePart(FigureShoulders, BodyBottom + BodyHeight - 9.f, FVector(0.36f, 0.36f, 0.13f));
+	FigureNeck->SetRelativeLocation(FVector(0.f, 0.f, NeckZ));
+	PlacePart(FigureHead, -9.f, FVector(0.27f, 0.27f, 0.29f));
+	PlacePart(FigureVisor, 2.f, FVector(0.07f, 0.19f, 0.075f), 11.f);
+	NameTag->SetRelativeLocation(FVector(0.f, 0.f, NeckZ + 40.f));
 }
 
 void AWTACharacter::BeginPlay()
@@ -68,6 +182,179 @@ void AWTACharacter::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = bSprinting ? SprintSpeed : WalkSpeed;
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+
+	// People in a visit walk through each other: a group at a stop never blocks itself or a doorway.
+	for (TActorIterator<AWTACharacter> It(GetWorld()); It; ++It)
+	{
+		if (*It != this)
+		{
+			GetCapsuleComponent()->IgnoreActorWhenMoving(*It, true);
+			It->GetCapsuleComponent()->IgnoreActorWhenMoving(this, true);
+		}
+	}
+}
+
+void AWTACharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	ShownSlot = -1;                                  // the look is read again on the next tick
+}
+
+void AWTACharacter::ShareSeated(bool bOn)
+{
+	if (GetNetMode() == NM_Standalone)
+	{
+		return;
+	}
+	if (HasAuthority())
+	{
+		bSeatedPose = bOn;                           // the guide's own pawn: the pose replicates from here
+		ForceNetUpdate();
+	}
+	else if (IsLocallyControlled())
+	{
+		ServerSetSeated(bOn, GetActorLocation(), static_cast<float>(GetActorRotation().Yaw));
+	}
+}
+
+void AWTACharacter::ServerSetSeated_Implementation(bool bOn, FVector_NetQuantize Location, float Yaw)
+{
+	bSeatedPose = bOn;
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	Capsule->SetCapsuleHalfHeight(bOn ? SeatedHalfHeight : CapsuleHalfHeight);
+	if (bOn)
+	{
+		Move->DisableMovement();
+	}
+	SetActorLocationAndRotation(Location, FRotator(0.f, Yaw, 0.f), false, nullptr, ETeleportType::TeleportPhysics);
+	if (!bOn)
+	{
+		Move->SetMovementMode(MOVE_Walking);
+	}
+	Move->Velocity = FVector::ZeroVector;
+	ForceNetUpdate();
+	LayoutFigure(bOn);
+}
+
+void AWTACharacter::OnRep_SeatedPose()
+{
+	// The others' copy: the capsule the owner has, so the figure stands (or sits) on the floor under it.
+	GetCapsuleComponent()->SetCapsuleHalfHeight(bSeatedPose ? SeatedHalfHeight : CapsuleHalfHeight);
+	LayoutFigure(bSeatedPose);
+}
+
+void AWTACharacter::RefreshFigureLook()
+{
+	const AWTAPlayerState* Person = GetPlayerState<AWTAPlayerState>();
+	if (Person == nullptr)
+	{
+		return;
+	}
+	const FString Name = Person->GetVisitName();
+	if (Name == ShownName && Person->Slot == ShownSlot && Person->bGuide == bShownGuide)
+	{
+		return;
+	}
+	ShownName = Name;
+	ShownSlot = Person->Slot;
+	bShownGuide = Person->bGuide;
+	const FLinearColor Color = Person->GetVisitColor();
+	if (FigureMaterial == nullptr && FigureBody->GetMaterial(0) != nullptr)
+	{
+		UMaterialInterface* Base = FigureBody->GetMaterial(0);
+		FigureMaterial = UMaterialInstanceDynamic::Create(Base, this);
+		HeadMaterial = UMaterialInstanceDynamic::Create(Base, this);
+		VisorMaterial = UMaterialInstanceDynamic::Create(Base, this);
+		FigureBase->SetMaterial(0, FigureMaterial);
+		FigureBody->SetMaterial(0, FigureMaterial);
+		FigureShoulders->SetMaterial(0, FigureMaterial);
+		FigureHead->SetMaterial(0, HeadMaterial);
+		FigureVisor->SetMaterial(0, VisorMaterial);
+	}
+	if (FigureMaterial != nullptr)
+	{
+		FigureMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+		HeadMaterial->SetVectorParameterValue(TEXT("Color"), FMath::Lerp(Color, WTAStyle::Bone(), 0.35f));
+		VisorMaterial->SetVectorParameterValue(TEXT("Color"), WTAStyle::FromHex(0x1b2622));
+	}
+	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(NameTag->GetUserWidgetObject()))
+	{
+		Tag->SetPerson(FText::FromString(Name), Person->bGuide, Color);
+	}
+	else
+	{
+		ShownSlot = -1;                              // the widget is made on the first draw: try again then
+	}
+}
+
+void AWTACharacter::UpdateFigure(float DeltaSeconds)
+{
+	bool bShow = GetNetMode() != NM_Standalone && !IsLocallyControlled() && GetPlayerState() != nullptr;
+	const APlayerController* Viewer = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	FVector Eye = FVector::ZeroVector;
+	if (bShow && Viewer != nullptr)
+	{
+		FRotator EyeRotation;
+		Viewer->GetPlayerViewPoint(Eye, EyeRotation);
+		// Never inside the camera: a figure within arm's reach of the eye hides.
+		const FVector Chest = Figure->GetComponentLocation() + FVector(0.f, 0.f, 110.f);
+		if (FVector::Dist2D(Eye, Chest) < 65.f && FMath::Abs(Eye.Z - Chest.Z) < 120.f)
+		{
+			bShow = false;
+		}
+	}
+	if (bShow != bFigureShown)
+	{
+		bFigureShown = bShow;
+		for (UStaticMeshComponent* Part : { FigureBase.Get(), FigureBody.Get(), FigureShoulders.Get(), FigureHead.Get(), FigureVisor.Get() })
+		{
+			Part->SetHiddenInGame(!bShow);
+		}
+		if (!bShow)
+		{
+			NameTag->SetHiddenInGame(true);
+			bTagHidden = true;
+		}
+	}
+	if (!bShow)
+	{
+		return;
+	}
+	SinceLook += DeltaSeconds;
+	if (ShownSlot < 0 || SinceLook > 0.5f)
+	{
+		SinceLook = 0.f;
+		RefreshFigureLook();
+	}
+	if (bSeatedPose != bFigureLaidSeated)
+	{
+		LayoutFigure(bSeatedPose);
+	}
+	// The head follows the person's look up and down (the body already turns with it).
+	const float Pitch = FMath::Clamp(static_cast<float>(FRotator::NormalizeAxis(GetBaseAimRotation().Pitch)), -35.f, 35.f);
+	FigureNeck->SetRelativeRotation(FRotator(Pitch, 0.f, 0.f));
+
+	// The name: within 30 m and not behind a wall (checked a few times a second).
+	SinceTagCheck += DeltaSeconds;
+	if (SinceTagCheck > 0.25f && Viewer != nullptr)
+	{
+		SinceTagCheck = 0.f;
+		const FVector Head = FigureHead->GetComponentLocation();
+		bool bHide = FVector::Dist(Eye, Head) > 3000.f;
+		if (!bHide)
+		{
+			FCollisionQueryParams Params(FName(TEXT("WTANameTag")), false, this);
+			Params.AddIgnoredActor(Viewer->GetPawn());
+			FHitResult Hit;
+			bHide = GetWorld()->LineTraceSingleByChannel(Hit, Eye, Head, ECC_Visibility, Params);
+		}
+		if (bHide != bTagHidden)
+		{
+			bTagHidden = bHide;
+			NameTag->SetHiddenInGame(bHide);
+		}
+	}
 }
 
 void AWTACharacter::Tick(float DeltaSeconds)
@@ -85,8 +372,12 @@ void AWTACharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	UpdateCameraOffset(DeltaSeconds);
-	NoteDistanceWalked();
+	if (IsLocallyControlled())
+	{
+		UpdateCameraOffset(DeltaSeconds);
+		NoteDistanceWalked();
+	}
+	UpdateFigure(DeltaSeconds);
 }
 
 void AWTACharacter::Landed(const FHitResult& Hit)
@@ -177,7 +468,6 @@ void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
 	}
 
 	// A seated capsule: 120 cm tall, standing on the floor at the sit point, with the eye at its seated height.
-	constexpr float SeatedHalfHeight = 60.f;
 	Move->DisableMovement();
 	Move->Velocity = FVector::ZeroVector;
 	Capsule->SetCapsuleHalfHeight(SeatedHalfHeight);
@@ -196,6 +486,7 @@ void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
 	DipVelocity = 0.f;
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+	ShareSeated(true);
 	OnSeatChanged.Broadcast(InSeat, true);
 }
 
@@ -231,6 +522,7 @@ void AWTACharacter::StandUp(bool bReturn)
 	Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - CapsuleHalfHeight));
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+	ShareSeated(false);
 	OnSeatChanged.Broadcast(WasSeat, false);
 }
 

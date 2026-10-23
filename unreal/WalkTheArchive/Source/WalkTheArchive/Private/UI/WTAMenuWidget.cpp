@@ -27,6 +27,7 @@ namespace
 {
 	const FName NAME_MenuEnter(TEXT("Enter"));
 	const FName NAME_MenuTour(TEXT("Tour"));
+	const FName NAME_MenuVisit(TEXT("Visit"));
 	const FName NAME_MenuGraphics(TEXT("Graphics"));
 	const FName NAME_MenuQuit(TEXT("Quit"));
 
@@ -102,7 +103,13 @@ void UWTAMenuWidget::NativeOnInitialized()
 	TourButton = MakeMenuButton(Tree, WTAText(TEXT("Take the tour")), NAME_MenuTour, -1,
 		WTAStyle::SecondaryButton(), WTAStyle::Font(15), WTAStyle::Bone());
 	TourButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
-	Column->AddChildToVerticalBox(TourButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));
+	Column->AddChildToVerticalBox(TourButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+
+	// Guided visits: lead a group, or join one on this network.
+	VisitButton = MakeMenuButton(Tree, WTAText(TEXT("Visit together")), NAME_MenuVisit, -1,
+		WTAStyle::SecondaryButton(), WTAStyle::Font(15), WTAStyle::Bone());
+	VisitButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
+	Column->AddChildToVerticalBox(VisitButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));
 
 	// Graphics presets.
 	GraphicsLabel = WTAWidgets::MakeText(Tree, WTAText(TEXT("GRAPHICS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
@@ -132,7 +139,7 @@ void UWTAMenuWidget::NativeOnInitialized()
 
 	// Controls line.
 	UTextBlock* Controls = WTAWidgets::MakeText(Tree,
-		WTAText(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 Esc menu")),
+		WTAText(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 V visit together \u00B7 Esc menu")),
 		WTAStyle::Font(11), WTAStyle::BoneDim(), true);
 	Controls->SetJustification(ETextJustify::Center);
 	Column->AddChildToVerticalBox(Controls);
@@ -207,6 +214,14 @@ void UWTAMenuWidget::HandleAction(FName Action, FName Arg, int32 Index)
 			{
 				Tour->Start();
 			}
+		}
+	}
+	else if (Action == NAME_MenuVisit)
+	{
+		if (PC != nullptr)
+		{
+			PC->CloseTopPanel();
+			PC->ToggleVisitCard();
 		}
 	}
 	else if (Action == NAME_MenuGraphics)

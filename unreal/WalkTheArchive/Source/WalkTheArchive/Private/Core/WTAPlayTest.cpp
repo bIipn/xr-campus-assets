@@ -15,7 +15,11 @@
 #include "Systems/WTAVisitLogSubsystem.h"
 #include "Systems/WTARoomSubsystem.h"
 #include "Systems/WTATourSubsystem.h"
+#include "Systems/WTAVisitSubsystem.h"
 #include "Systems/WTAVoiceSubsystem.h"
+#include "Core/WTAGameState.h"
+#include "Core/WTAPlayerState.h"
+#include "UI/WTAVisitWidget.h"
 #include "UI/WTAChatWidget.h"
 #include "UI/WTAHudWidget.h"
 #include "UI/WTAMenuWidget.h"
@@ -399,6 +403,11 @@ void UWTAPlayTest::Run(const FString& Phases)
 			SpeedDown = FCString::Atof(*Wanted[i].Mid(10));
 			Wanted.RemoveAt(i);
 		}
+		else if (Wanted[i].StartsWith(TEXT("host=")))
+		{
+			GroupHost = Wanted[i].Mid(5);
+			Wanted.RemoveAt(i);
+		}
 		else if (Wanted[i] == TEXT("fresh"))
 		{
 			bFresh = true;                                 // start from no progress: badges, stations, certificates all forgotten
@@ -550,6 +559,27 @@ void UWTAPlayTest::Run(const FString& Phases)
 	if (Wanted.Contains(TEXT("doors")))
 	{
 		AddDoorsPhase();
+	}
+	// Only when named, one per game: a guided visit between two games on this network.
+	if (Wanted.Contains(TEXT("group_lead")))
+	{
+		AddGroupLeadPhase();
+	}
+	if (Wanted.Contains(TEXT("group_guide")))
+	{
+		AddGroupGuidePhase();
+	}
+	if (Wanted.Contains(TEXT("group_join")))
+	{
+		AddGroupJoinPhase();
+	}
+	if (Wanted.Contains(TEXT("group_guest")))
+	{
+		AddGroupGuestPhase();
+	}
+	if (Wanted.Contains(TEXT("group_left")))
+	{
+		AddGroupLeftPhase();
 	}
 	Steps.Add({ TEXT("done"), [this]() -> float
 	{
@@ -4631,4 +4661,460 @@ void UWTAPlayTest::AddQuizPhase()
 		AddQuizSteps(TEXT("quiz"), Name, TalkId, Row->Quiz, Ok, Tag);
 		Steps.Add({ Name + TEXT(" close"), [this]() -> float { CloseAll(); return 0.3f; } });
 	}
+}
+
+// --- guided visits (two games) -------------------------------------------------------------------
+
+AWTACharacter* UWTAPlayTest::OtherPerson() const
+{
+	const AWTACharacter* Me = Player();
+	for (TActorIterator<AWTACharacter> It(GetWorld()); It; ++It)
+	{
+		if (*It != Me)
+		{
+			return *It;
+		}
+	}
+	return nullptr;
+}
+
+AWTACharacter* UWTAPlayTest::GuidePerson() const
+{
+	const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+	const AWTAPlayerState* Guide = State ? State->GetGuide() : nullptr;
+	return Guide ? Guide->GetPawn<AWTACharacter>() : nullptr;
+}
+
+void UWTAPlayTest::LookAtPerson(const AWTACharacter* Person)
+{
+	AWTAPlayerController* Controller = PC();
+	const AWTACharacter* Me = Player();
+	if (Controller == nullptr || Me == nullptr || Person == nullptr)
+	{
+		return;
+	}
+	const FVector Head = Person->GetActorLocation() + FVector(0.f, 0.f, 30.f);
+	const FRotator Aim = (Head - Me->GetEyeLocation()).Rotation();
+	Controller->SetControlRotation(FRotator(FMath::Clamp(static_cast<float>(Aim.Pitch), -25.f, 20.f), static_cast<float>(Aim.Yaw), 0.f));
+}
+
+namespace
+{
+	/** Everyone in the visit, "Name (slot n)" each, for the details. */
+	FString PeopleLine(const UObject* Context)
+	{
+		const UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(Context);
+		TArray<FString> Names;
+		if (Visit != nullptr)
+		{
+			for (const FWTAVisitPerson& Person : Visit->GetPeople())
+			{
+				Names.Add(Person.Name + (Person.bGuide ? TEXT(" (guide)") : TEXT("")) + (Person.bYou ? TEXT(" (this game)") : TEXT("")));
+			}
+		}
+		return Names.Num() > 0 ? FString::Join(Names, TEXT(", ")) : FString(TEXT("nobody"));
+	}
+
+	/** 2D distance from a pawn to a stop's view spot. */
+	float DistanceToStop(const UObject* Context, const AWTACharacter* Person, int32 Stop)
+	{
+		const UWTATourSubsystem* Tour = UWTATourSubsystem::Get(Context);
+		FWTAView View;
+		if (Person == nullptr || Tour == nullptr || !Tour->GetStopView(Stop, View))
+		{
+			return -1.f;
+		}
+		return static_cast<float>(FVector::Dist2D(Person->GetActorLocation(), View.Location));
+	}
+}
+
+void UWTAPlayTest::AddGroupLeadPhase()
+{
+	Steps.Add({ TEXT("group lead"), [this]() -> float
+	{
+		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		if (Visit == nullptr)
+		{
+			Report(TEXT("group"), EResult::Fail, TEXT("the visit subsystem"), TEXT("UWTAVisitSubsystem missing"));
+			return 0.f;
+		}
+		Visit->SetMyName(TEXT("Ms. Keller"));
+		Visit->SetPendingPlayTest(TEXT("group_guide"));
+		const bool bOk = Visit->LeadVisit();
+		Report(TEXT("group"), bOk ? EResult::Info : EResult::Fail, TEXT("leading a visit: the campus reloads as a listen server"),
+			bOk ? TEXT("the guide's part goes on after the reload") : TEXT("LeadVisit refused (not a standalone game?)"));
+		return bOk ? 180.f : 0.f;                             // the map change ends this run first
+	} });
+}
+
+void UWTAPlayTest::AddGroupGuidePhase()
+{
+	const TSharedRef<float> Waited = MakeShared<float>(0.f);
+	const FString P = TEXT("group");
+	Steps.Add({ TEXT("guide ready"), [this, Waited, P]() -> float
+	{
+		const bool bReady = GetWorld() != nullptr && GetWorld()->GetNetMode() == NM_ListenServer && Player() != nullptr;
+		if (!bReady && *Waited < 30.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		*Waited = 0.f;
+		const UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		Report(*P, bReady ? EResult::Pass : EResult::Fail, TEXT("the guide's campus is a listen server"),
+			FString::Printf(TEXT("net mode %d, guide %s, addresses %s"), GetWorld() ? static_cast<int32>(GetWorld()->GetNetMode()) : -1,
+				Visit ? *Visit->GetGuideName() : TEXT("?"), Visit ? *FString::Join(Visit->GetLocalAddresses(), TEXT(" ")) : TEXT("?")));
+		CloseAll();
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("guide waits for a visitor"), [this, Waited, P]() -> float
+	{
+		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+		const int32 Visitors = State ? State->NumVisitors() : 0;
+		if (Visitors < 1 && *Waited < 300.f)
+		{
+			*Waited += 1.f;
+			return -1.f;
+		}
+		Report(*P, Visitors >= 1 ? EResult::Pass : EResult::Fail, TEXT("a visitor joined"), FString::Printf(TEXT("%d after %.0f s: %s"), Visitors, *Waited, *PeopleLine(this)));
+		*Waited = 0.f;
+		return 8.f;                                           // they arrive, their name comes through
+	} });
+	Steps.Add({ TEXT("guide looks at the visitor"), [this]() -> float { LookAtPerson(OtherPerson()); return 2.f; } });
+	Steps.Add({ TEXT("guide sees the visitor"), [this, P]() -> float
+	{
+		const AWTACharacter* Visitor = OtherPerson();
+		const AWTACharacter* Me = Player();
+		const float Distance = Visitor && Me ? static_cast<float>(FVector::Dist2D(Visitor->GetActorLocation(), Me->GetActorLocation())) : -1.f;
+		const AWTAPlayerState* Person = Visitor ? Visitor->GetPlayerState<AWTAPlayerState>() : nullptr;
+		Report(*P, Visitor && Visitor->IsFigureShown() ? EResult::Pass : EResult::Fail, TEXT("the visitor shows as a figure with a name"),
+			FString::Printf(TEXT("%s, slot %d"), Person ? *Person->GetVisitName() : TEXT("no player state"), Person ? Person->Slot : -1));
+		Report(*P, Distance > 0.f && Distance < 600.f ? EResult::Pass : EResult::Fail, TEXT("the visitor arrived beside the guide"), FString::Printf(TEXT("%.0f cm away"), Distance));
+		Shot(TEXT("group_guide_sees_visitor"));
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("guide card"), [this]() -> float { if (PC()) { PC()->ToggleVisitCard(); } return 1.5f; } });
+	Steps.Add({ TEXT("guide card shot"), [this, P]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const bool bOpen = Controller && Controller->VisitCard && Controller->VisitCard->IsOpen();
+		Report(*P, bOpen ? EResult::Pass : EResult::Fail, TEXT("V opens the guide's Visit together card"), PeopleLine(this));
+		Shot(TEXT("group_guide_card"));
+		CloseAll();
+		return 1.f;
+	} });
+
+	// The tour: two stops, the visitor at their place round each.
+	for (int32 Stop = 0; Stop < 2; ++Stop)
+	{
+		Steps.Add({ FString::Printf(TEXT("guide stop %d"), Stop + 1), [this, Stop]() -> float
+		{
+			if (UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this))
+			{
+				if (Stop == 0)
+				{
+					Tour->Start();
+				}
+				else
+				{
+					Tour->Next();
+				}
+			}
+			return 1.f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("guide walks to stop %d"), Stop + 1), [this, Waited]() -> float
+		{
+			const AWTACharacter* Me = Player();
+			if (Me != nullptr && Me->IsAutoWalking() && *Waited < 45.f)
+			{
+				*Waited += 0.5f;
+				return -0.5f;
+			}
+			*Waited = 0.f;
+			return 7.f;                                       // the visitor's walk and the camera's easing
+		} });
+		Steps.Add({ FString::Printf(TEXT("guide checks stop %d"), Stop + 1), [this, Stop, P]() -> float
+		{
+			const float Distance = DistanceToStop(this, OtherPerson(), Stop);
+			Report(*P, Distance >= 0.f && Distance < 450.f ? EResult::Pass : EResult::Fail,
+				FString::Printf(TEXT("the visitor stands round stop %d with the guide"), Stop + 1), FString::Printf(TEXT("%.0f cm from the stop's spot"), Distance));
+			Shot(FString::Printf(TEXT("group_guide_stop%d"), Stop + 1));
+			if (AWTAPlayerController* Controller = PC())
+			{
+				const FRotator Now = Controller->GetControlRotation();
+				Controller->SetControlRotation(FRotator(-6.f, Now.Yaw + 180.f, 0.f));   // turn round to the group
+			}
+			return 1.5f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("guide shot group %d"), Stop + 1), [this, Stop]() -> float
+		{
+			Shot(FString::Printf(TEXT("group_guide_stop%d_group"), Stop + 1));
+			return 0.5f;
+		} });
+	}
+
+	// A gathering somewhere else: the Reading Room.
+	Steps.Add({ TEXT("guide moves"), [this]() -> float
+	{
+		const UWTAContentSubsystem* Content = UWTAContentSubsystem::Get(this);
+		const FWTAPlaceRow* Place = Content ? Content->FindPlace(FName(TEXT("library"))) : nullptr;
+		const UWTASettings* Settings = UWTASettings::Get();
+		StandAt(Place != nullptr && Place->View.bValid ? Place->View : Settings->SpawnView);
+		return 3.f;
+	} });
+	Steps.Add({ TEXT("guide gathers"), [this, P]() -> float
+	{
+		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		const bool bOk = Visit != nullptr && Visit->GatherHere();
+		Report(*P, bOk ? EResult::Info : EResult::Fail, TEXT("the guide gathers the group"), TEXT(""));
+		return 12.f;
+	} });
+	Steps.Add({ TEXT("guide checks the gathering"), [this, P]() -> float
+	{
+		const AWTACharacter* Visitor = OtherPerson();
+		const AWTACharacter* Me = Player();
+		const float Distance = Visitor && Me ? static_cast<float>(FVector::Dist2D(Visitor->GetActorLocation(), Me->GetActorLocation())) : -1.f;
+		Report(*P, Distance > 0.f && Distance < 500.f ? EResult::Pass : EResult::Fail, TEXT("the visitor came when gathered"), FString::Printf(TEXT("%.0f cm away"), Distance));
+		if (AWTAPlayerController* Controller = PC())
+		{
+			const FRotator Now = Controller->GetControlRotation();
+			Controller->SetControlRotation(FRotator(-6.f, Now.Yaw + 180.f, 0.f));
+		}
+		return 1.5f;
+	} });
+	Steps.Add({ TEXT("guide shot gathered"), [this]() -> float { Shot(TEXT("group_guide_gathered")); return 0.5f; } });
+	Steps.Add({ TEXT("guide ends the tour"), [this]() -> float
+	{
+		if (UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this))
+		{
+			Tour->End();
+		}
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guide waits for the visitor to leave"), [this, Waited, P]() -> float
+	{
+		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+		const int32 Visitors = State ? State->NumVisitors() : 0;
+		if (Visitors > 0 && *Waited < 240.f)
+		{
+			*Waited += 1.f;
+			return -1.f;
+		}
+		Report(*P, Visitors == 0 ? EResult::Pass : EResult::Fail, TEXT("the visitor left the visit"), FString::Printf(TEXT("%d left after %.0f s"), Visitors, *Waited));
+		*Waited = 0.f;
+		return 1.f;
+	} });
+}
+
+void UWTAPlayTest::AddGroupJoinPhase()
+{
+	Steps.Add({ TEXT("group join"), [this]() -> float
+	{
+		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		if (Visit == nullptr)
+		{
+			Report(TEXT("group"), EResult::Fail, TEXT("the visit subsystem"), TEXT("UWTAVisitSubsystem missing"));
+			return 0.f;
+		}
+		const FString Host = GroupHost.IsEmpty() ? FString(TEXT("127.0.0.1")) : GroupHost;
+		Visit->SetMyName(TEXT("Ana"));
+		Visit->SetPendingPlayTest(TEXT("group_guest"));
+		const bool bOk = Visit->JoinVisit(Host);
+		Report(TEXT("group"), bOk ? EResult::Info : EResult::Fail, FString::Printf(TEXT("joining the visit at %s"), *Host),
+			bOk ? TEXT("the visitor's part goes on after the map loads") : TEXT("JoinVisit refused"));
+		return bOk ? 180.f : 0.f;
+	} });
+}
+
+void UWTAPlayTest::AddGroupGuestPhase()
+{
+	const TSharedRef<float> Waited = MakeShared<float>(0.f);
+	const TSharedRef<int32> GatherBase = MakeShared<int32>(0);
+	const FString P = TEXT("group");
+	Steps.Add({ TEXT("guest ready"), [this, Waited, GatherBase, P]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		const AWTAPlayerState* Me = Controller ? Controller->GetPlayerState<AWTAPlayerState>() : nullptr;
+		const bool bReady = GetWorld() != nullptr && GetWorld()->GetNetMode() == NM_Client && Player() != nullptr && Me != nullptr && Me->Slot > 0;
+		if (!bReady && *Waited < 60.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		*Waited = 0.f;
+		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+		*GatherBase = State ? State->GatherSerial : 0;
+		Report(*P, bReady ? EResult::Pass : EResult::Fail, TEXT("joined the guide's campus as a visitor"),
+			FString::Printf(TEXT("net mode %d, slot %d"), GetWorld() ? static_cast<int32>(GetWorld()->GetNetMode()) : -1, Me ? Me->Slot : -1));
+		CloseAll();
+		return 0.5f;
+	} });
+	Steps.Add({ TEXT("guest knows the guide"), [this, Waited, P]() -> float
+	{
+		const UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		const FString Guide = Visit ? Visit->GetGuideName() : FString();
+		if (Guide != TEXT("Ms. Keller") && *Waited < 20.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		*Waited = 0.f;
+		Report(*P, Guide == TEXT("Ms. Keller") ? EResult::Pass : EResult::Fail, TEXT("the guide's name came through"), FString::Printf(TEXT("'%s'; people: %s"), *Guide, *PeopleLine(this)));
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guest beside the guide"), [this, P]() -> float
+	{
+		const AWTACharacter* Guide = GuidePerson();
+		const AWTACharacter* Me = Player();
+		const float Distance = Guide && Me ? static_cast<float>(FVector::Dist2D(Guide->GetActorLocation(), Me->GetActorLocation())) : -1.f;
+		Report(*P, Distance > 0.f && Distance < 600.f ? EResult::Pass : EResult::Fail, TEXT("the visitor arrived at the guide's side"), FString::Printf(TEXT("%.0f cm away"), Distance));
+		LookAtPerson(Guide);
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guest sees the guide"), [this, P]() -> float
+	{
+		const AWTACharacter* Guide = GuidePerson();
+		Report(*P, Guide && Guide->IsFigureShown() ? EResult::Pass : EResult::Fail, TEXT("the guide shows as a figure with a name"), Guide ? TEXT("") : TEXT("no guide pawn on this machine"));
+		Shot(TEXT("group_guest_sees_guide"));
+		return 0.5f;
+	} });
+
+	for (int32 Stop = 0; Stop < 2; ++Stop)
+	{
+		Steps.Add({ FString::Printf(TEXT("guest waits for stop %d"), Stop + 1), [this, Waited, Stop, P]() -> float
+		{
+			const UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+			const bool bThere = Tour && Tour->IsFollowing() && Tour->GetIndex() == Stop;
+			if (!bThere && *Waited < 240.f)
+			{
+				*Waited += 0.5f;
+				return -0.5f;
+			}
+			Report(*P, bThere ? EResult::Pass : EResult::Fail, FString::Printf(TEXT("the guide's tour brings the visitor to stop %d"), Stop + 1),
+				FString::Printf(TEXT("after %.0f s (following %d, stop %d)"), *Waited, Tour && Tour->IsFollowing() ? 1 : 0, Tour ? Tour->GetIndex() + 1 : 0));
+			*Waited = 0.f;
+			return 1.f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("guest walks to stop %d"), Stop + 1), [this, Waited]() -> float
+		{
+			const AWTACharacter* Me = Player();
+			if (Me != nullptr && Me->IsAutoWalking() && *Waited < 45.f)
+			{
+				*Waited += 0.5f;
+				return -0.5f;
+			}
+			*Waited = 0.f;
+			return 3.f;
+		} });
+		Steps.Add({ FString::Printf(TEXT("guest at stop %d"), Stop + 1), [this, Stop, P]() -> float
+		{
+			const float Distance = DistanceToStop(this, Player(), Stop);
+			Report(*P, Distance >= 0.f && Distance < 450.f ? EResult::Pass : EResult::Fail, FString::Printf(TEXT("the visitor stands round stop %d"), Stop + 1),
+				FString::Printf(TEXT("%.0f cm from the stop's spot"), Distance));
+			Shot(FString::Printf(TEXT("group_guest_stop%d"), Stop + 1));
+			if (Stop == 0)
+			{
+				// T on a visitor's machine: the guide leads, the stop stays.
+				UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+				const int32 Before = Tour ? Tour->GetIndex() : -2;
+				if (Tour != nullptr)
+				{
+					Tour->Next();
+				}
+				Report(*P, Tour && Tour->GetIndex() == Before ? EResult::Pass : EResult::Fail, TEXT("T leaves the tour to the guide"),
+					FString::Printf(TEXT("stop %d before, %d after"), Before + 1, Tour ? Tour->GetIndex() + 1 : -1));
+			}
+			return 0.5f;
+		} });
+	}
+
+	Steps.Add({ TEXT("guest waits for a gathering"), [this, Waited, GatherBase, P]() -> float
+	{
+		const AWTAGameState* State = GetWorld() ? GetWorld()->GetGameState<AWTAGameState>() : nullptr;
+		const bool bCalled = State != nullptr && State->GatherSerial > *GatherBase;
+		if (!bCalled && *Waited < 180.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		Report(*P, bCalled ? EResult::Pass : EResult::Fail, TEXT("the guide's gathering reaches the visitor"), FString::Printf(TEXT("after %.0f s"), *Waited));
+		*Waited = 0.f;
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guest comes"), [this, Waited]() -> float
+	{
+		const AWTACharacter* Me = Player();
+		if (Me != nullptr && Me->IsAutoWalking() && *Waited < 45.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		*Waited = 0.f;
+		return 3.f;
+	} });
+	Steps.Add({ TEXT("guest gathered"), [this, P]() -> float
+	{
+		const AWTACharacter* Guide = GuidePerson();
+		const AWTACharacter* Me = Player();
+		const float Distance = Guide && Me ? static_cast<float>(FVector::Dist2D(Guide->GetActorLocation(), Me->GetActorLocation())) : -1.f;
+		Report(*P, Distance > 0.f && Distance < 500.f ? EResult::Pass : EResult::Fail, TEXT("the visitor stands round the guide"), FString::Printf(TEXT("%.0f cm away"), Distance));
+		LookAtPerson(Guide);
+		return 2.f;
+	} });
+	Steps.Add({ TEXT("guest shot gathered"), [this]() -> float { Shot(TEXT("group_guest_gathered")); return 0.5f; } });
+	Steps.Add({ TEXT("guest waits for the tour to end"), [this, Waited, P]() -> float
+	{
+		const UWTATourSubsystem* Tour = UWTATourSubsystem::Get(this);
+		const bool bEnded = Tour != nullptr && !Tour->IsTouring();
+		if (!bEnded && *Waited < 90.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		Report(*P, bEnded ? EResult::Pass : EResult::Fail, TEXT("the tour ends for the visitor too"), FString::Printf(TEXT("after %.0f s"), *Waited));
+		*Waited = 0.f;
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("guest card"), [this]() -> float { if (PC()) { PC()->ToggleVisitCard(); } return 1.5f; } });
+	Steps.Add({ TEXT("guest card shot"), [this, P]() -> float
+	{
+		const AWTAPlayerController* Controller = PC();
+		Report(*P, Controller && Controller->VisitCard && Controller->VisitCard->IsOpen() ? EResult::Pass : EResult::Fail, TEXT("V opens the visitor's Visit together card"), PeopleLine(this));
+		Shot(TEXT("group_guest_card"));
+		CloseAll();
+		return 1.f;
+	} });
+	Steps.Add({ TEXT("guest leaves"), [this, P]() -> float
+	{
+		UWTAVisitSubsystem* Visit = UWTAVisitSubsystem::Get(this);
+		if (Visit == nullptr)
+		{
+			return 0.f;
+		}
+		Visit->SetPendingPlayTest(TEXT("group_left"));
+		Visit->LeaveVisit();
+		Report(*P, EResult::Info, TEXT("the visitor leaves the visit"), TEXT("back to their own campus"));
+		return 180.f;
+	} });
+}
+
+void UWTAPlayTest::AddGroupLeftPhase()
+{
+	const TSharedRef<float> Waited = MakeShared<float>(0.f);
+	Steps.Add({ TEXT("left ready"), [this, Waited]() -> float
+	{
+		const bool bReady = GetWorld() != nullptr && GetWorld()->GetNetMode() == NM_Standalone && Player() != nullptr;
+		if (!bReady && *Waited < 30.f)
+		{
+			*Waited += 0.5f;
+			return -0.5f;
+		}
+		const AWTAPlayerController* Controller = PC();
+		const bool bMenu = Controller && Controller->Menu && Controller->Menu->IsOpen();
+		Report(TEXT("group"), bReady ? EResult::Pass : EResult::Fail, TEXT("the visitor is back on their own campus"), FString::Printf(TEXT("net mode %d"), GetWorld() ? static_cast<int32>(GetWorld()->GetNetMode()) : -1));
+		Report(TEXT("group"), !bMenu ? EResult::Pass : EResult::Fail, TEXT("no intro menu after leaving a visit"), TEXT(""));
+		*Waited = 0.f;
+		return 3.f;
+	} });
+	Steps.Add({ TEXT("left shot"), [this]() -> float { Shot(TEXT("group_left")); return 0.5f; } });
 }

@@ -107,7 +107,8 @@
       "st_panel_b": {"set": "Fabric030", "tint": [0.17, 0.26, 0.20]},
       "st_panel_c": {"set": "Fabric030", "tint": [0.60, 0.40, 0.10]},
       "st_rug": {"set": "Carpet016", "tint": [0.52, 0.19, 0.11]},
-      "st_runner": {"set": "Carpet016", "tint": [0.15, 0.23, 0.24]}
+      "st_runner": {"set": "Carpet016", "tint": [0.15, 0.23, 0.24]},
+      "st_canvas": {"set": "Fabric030", "tint": [0.45, 0.38, 0.26]}
     }
   }
 }

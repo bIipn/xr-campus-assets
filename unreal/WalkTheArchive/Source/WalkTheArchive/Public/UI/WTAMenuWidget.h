@@ -1,9 +1,10 @@
 // Walk the Archive - the intro / pause menu (built in C++, no widget asset).
 //
-// Title "Walk the Archive", a subtitle line, then: Enter (or Resume when paused), Take the tour, a Graphics row
-// (Low, Medium, High, Epic, Cinematic, Auto; the current preset is printed next to it) and Quit.
-// Buttons go through HandleAction: "Enter" closes the menu, "Tour" closes it and starts the tour, "Graphics"
-// applies Index (0..4) or runs auto-detect for -1, "Quit" calls UKismetSystemLibrary::QuitGame.
+// Title "Walk the Archive", a subtitle line, then: Enter (or Resume when paused), Take the tour, Visit together, a
+// Graphics row (Low, Medium, High, Epic, Cinematic, Auto; the current preset is printed next to it) and Quit.
+// Buttons go through HandleAction: "Enter" closes the menu, "Tour" closes it and starts the tour, "Visit" opens the
+// Visit together card (guided visits), "Graphics" applies Index (0..4) or runs auto-detect for -1, "Quit" calls
+// UKismetSystemLibrary::QuitGame.
 
 #pragma once
 
@@ -53,6 +54,7 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> EnterButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> EnterText;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> TourButton;
+	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> VisitButton;
 	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> GraphicsRow;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> GraphicsLabel;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> QuitButton;

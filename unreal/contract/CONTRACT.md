@@ -42,7 +42,8 @@ Check on first import: the token mesh `token__t_coaster` (Yard) must sit near th
 Headers live in `Source/WalkTheArchive/Public/<Area>/`, sources in `Source/WalkTheArchive/Private/<Area>/`.
 Include as `#include "Area/File.h"`. Areas: `Core`, `Data`, `Interaction`, `World`, `Systems`, `UI`.
 Module dependencies (Build.cs, public): Core, CoreUObject, Engine, InputCore, EnhancedInput, UMG, Slate, SlateCore,
-AIModule, NavigationSystem, DeveloperSettings. Nothing else in phase 0.
+AIModule, NavigationSystem, DeveloperSettings, Json, JsonUtilities; private: AnimationCore, AudioCaptureCore (the Lost
+Stories microphone), Sockets and Networking (the guided visits' beacon).
 
 ### 4.1 Data (`Data/WTATypes.h`)
 Every struct in `contract/structs.json`, spelled exactly, all `USTRUCT(BlueprintType)`, rows derive `FTableRowBase`,
@@ -58,7 +59,9 @@ Values also written to `Config/DefaultGame.ini` section `[/Script/WalkTheArchive
 ### 4.3 Game framework (`Core/`)
 | Class | Parent | Must have |
 |---|---|---|
-| `AWTAGameMode` | `AGameModeBase` | DefaultPawnClass = `AWTACharacter`, PlayerControllerClass = `AWTAPlayerController`, HUDClass none |
+| `AWTAGameMode` | `AGameModeBase` | DefaultPawnClass = `AWTACharacter`, PlayerControllerClass = `AWTAPlayerController`, GameStateClass = `AWTAGameState`, PlayerStateClass = `AWTAPlayerState`, HUDClass none; `PostLogin` gives a guided visit's people their slots (0 the guide) |
+| `AWTAGameState` | `AGameStateBase` | Guided visits: replicated `TourStop`, `TourSerial`, `GatherSerial`, `GatherFloor`, `GatherYaw`; `LeadStop(int32)`, `Gather(FVector, float)` (server); OnReps hand them to `UWTAVisitSubsystem` |
+| `AWTAPlayerState` | `APlayerState` | Guided visits: replicated `bGuide`, `Slot`; `GetVisitColor()`, `GetVisitName()`, `SetVisitName(FString)` (server) |
 | `AWTAPlayerController` | `APlayerController` | Builds Enhanced Input **in code** at BeginPlay (NewObject `UInputAction`/`UInputMappingContext`, no assets). PC-game controls: WASD move, mouse look (captured), Shift sprint, Space jump, LMB or E interact with what the crosshair points at, Tab = free cursor (click UI / click floor to walk), T tour next, Esc close top panel / open menu, M map/places, Enter = chat focus, P = a framed postcard of the view written to `Saved/Postcards/`. Gamepad: left stick move, right stick look, A jump, X interact, B back, Y postcard. Owns `UWTAInteractionComponent* Interaction`. `UFUNCTION(BlueprintCallable) void GoToView(const FWTAView& View, bool bWalk)`; `void SetUIMode(bool bPanelOpen)` |
 | `AWTACharacter` | `ACharacter` | First-person camera at eye 162 cm (capsule half-height 90, radius 30), MaxWalkSpeed 300, sprint 560, JumpZVelocity 520, GravityScale 1.63, head-bob (2.6 cm, stride 155 cm). `UFUNCTION(BlueprintCallable) void WalkTo(FVector Dest)` (NavMesh, `UAIBlueprintHelperLibrary::SimpleMoveToLocation`), `void TeleportToView(const FWTAView& View)`, `bool IsAutoWalking() const` |
 
@@ -97,7 +100,8 @@ The pick volume is a `UBoxComponent` named `PickBox` (root), collision preset th
 |---|---|---|
 | `UWTAContentSubsystem` | `UGameInstanceSubsystem` | Loads every table from `UWTASettings` on Initialize (synchronous `LoadSynchronous`). Typed getters: `const FWTAExhibitRow* FindExhibit(FName) const` … one per row type, plus `TArray<FName> GetRowNames(<table>)`. |
 | `UWTAProgressSubsystem` | `UGameInstanceSubsystem` | `UWTASaveGame` in slot `"WalkTheArchive"`, user 0. Tracks badges, tokens, exhibits seen, pages read, wax scenes watched, distance walked. `bool CollectToken(FName)`, `bool AwardBadge(FName)`, `void NoteExhibit(FName)`, `void NotePage(FName Book, int32 Page)`, `void NoteWaxScene(FName)`, `void NoteDistance(float Cm)`, `bool HasToken(FName) const`, `int32 NumBadges() const`, `void ResetProgress()`. Delegates `OnBadgeAwarded(FName)`, `OnTokenCollected(FName, int32 Found, int32 Total)`. Badge rules: ports of the web (first-steps after 50 m, curator after all 15 gallery exhibits, reader after 10 pages, historian after 12 wax scenes, token hunter after all tokens …; see `docs/reference/systems.md` §U) |
-| `UWTATourSubsystem` | `UGameInstanceSubsystem` | `Start()`, `Next()`, `Back()`, `End()`, `bool IsTouring() const`, `int32 GetIndex() const`; each stop walks the player to its `View` (or the exhibit's View) and shows the tour bar |
+| `UWTATourSubsystem` | `UGameInstanceSubsystem` | `Start()`, `Next()`, `Back()`, `End()`, `bool IsTouring() const`, `int32 GetIndex() const`; each stop walks the player to its `View` (or the exhibit's View) and shows the tour bar; a guided visit's visitor follows the guide's stops (`FollowStop`, `StopFollowing`, `IsFollowing`, `GetStopView`) |
+| `UWTAVisitSubsystem` | `UGameInstanceSubsystem` | Guided visits (roadmap 16): `LeadVisit()` (the campus reloads as a listen server), `JoinVisit(Address)` (port 7777), `LeaveVisit()`, `GatherHere()`, `WalkToGuide()`, `GetRole()` (from the net mode), `GetPeople()`, the LAN beacon (UDP 47790: `StartSearch`, `GetFoundVisits`), `static GroupSpot(...)` (each person's place round a stop) |
 | `UWTADialogueSubsystem` | `UGameInstanceSubsystem` | `FWTAReply Ask(FName StaffId, const FString& Question)` → greeting if the question is just hi/hello (`GreetingShort`), then rules with `Order < 100` (`FRegexPattern`, case-insensitive, respecting `MaxWords`, `StaffOnly`, `StaffNot`), then place directions (an alias contained in the question → `Directions` + `GoPlace`), then exhibit/book title match (→ `OpenItem`/`OpenBook`), then rules with `Order >= 100`, then keyword search over Facts, Lessons and exhibit text (simple TF-IDF, best sentence), then the staff `Fallback`. `USTRUCT FWTAReply { FText Text; FName Action; FName ActionArg; }` (not a row; declared in `Systems/WTADialogueSubsystem.h`) |
 | `UWTARoomSubsystem` | `UWorldSubsystem` | `void EnterRoom(FName)`, `FName GetCurrentRoom() const`, `FName RoomAt(FVector) const` (from `DT_Rooms` boxes), delegate `OnRoomChanged(FName)`; first visit shows the room's `Sub` as a hint |
 | `UWTAVisitLogSubsystem` | `UWorldSubsystem` | the visit log for the library's reports: `Saved/Visits/visit_<time>.csv` per play session (rooms left with seconds stayed, cards opened, tokens, badges, a position sample every 2 s; no names); `void NoteCard(FName Kind, FName Id)`, `NoteToken`, `NoteBadge`; `unreal/Tools/common/visit_report.py` makes the report page with the dwell times, the most opened cards and a heatmap over the DT_Rooms plan |
@@ -115,7 +119,9 @@ Fonts: engine default (`/Engine/EngineFonts/Roboto`) via `FSlateFontInfo`; palet
 | `UWTAHudWidget` | room kicker/name/sub (top-left), crosshair dot, hover label under the crosshair, toast line, tour bar (title, date, text, Back/Next/End), caption line (wax scenes), badge counter, hint line |
 | `UWTAPanelWidget` | one modal panel for: exhibit catalog card (art image, kind, title, date, description, quote, sources, Prev/Next/Close), book reader (title, page heading, blocks, page x/y, Prev/Next/Close), station panel (kicker, title, steps, text, Close), ride card (name, text, note, Close), badges list. API: `ShowExhibit(FName)`, `ShowBook(FName, int32 Page)`, `ShowStation(FName)`, `ShowRide(FName)`, `ShowBadges()`, `Close()`, `bool IsOpen() const` |
 | `UWTAChatWidget` | staff name/role, message list (scroll box), text box + Send, suggestion chips (buttons), Close |
-| `UWTAMenuWidget` | the intro/pause menu: title "Walk the Archive", Enter / Take the tour / Graphics (Low, Medium, High, Epic, Cinematic, Auto) / Quit |
+| `UWTAMenuWidget` | the intro/pause menu: title "Walk the Archive", Enter / Take the tour / Visit together / Graphics (Low, Medium, High, Epic, Cinematic, Auto) / Quit |
+| `UWTAVisitWidget` | the Visit together card (V): your name, Lead a visit, the visits on this network with Join, join by address; in a visit who is here, Gather / Start the tour / Walk to the guide / Leave or End the visit |
+| `UWTANameTagWidget` | the name over another person's figure in a guided visit (their colour, GUIDE kicker for the guide) |
 
 `AWTAPlayerController` owns one instance of each and switches input mode (`FInputModeGameAndUI` + cursor when any
 panel/chat/menu is open; `FInputModeGameOnly` + no cursor otherwise).

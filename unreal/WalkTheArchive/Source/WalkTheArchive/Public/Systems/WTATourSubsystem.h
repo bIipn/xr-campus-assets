@@ -5,6 +5,10 @@
 // and the controller fills the HUD tour bar ("Stop n of 35", title, date label, body, Open button).
 // OpenCurrent() runs the stop's Action/ActionArg through AWTAPlayerController::RunAction. The last stop's
 // Next ends the tour ("Explore on your own").
+//
+// In a guided visit (UWTAVisitSubsystem) a visitor's tour follows the guide's: FollowStop shows the stop the guide
+// shows and walks the visitor to their own place round it, and while following Start/Next/Back/End only say that
+// the guide leads (the guide's own tour runs as above and is shared from OnTourChanged).
 
 #pragma once
 
@@ -64,6 +68,23 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	bool GetCurrentStop(FWTATourStopRow& OutStop) const;
 
+	/** The view a stop is shown from: its own View, else its exhibit's. False for no such stop. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool GetStopView(int32 StopIndex, FWTAView& OutView) const;
+
+	/** A visitor in a guided visit: show stop NewIndex as the guide does, standing at Spot (their place round it),
+	    walked there (bWalk) or put there. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void FollowStop(int32 NewIndex, const FWTAView& Spot, bool bWalk);
+
+	/** The guide's tour ended (or the visit did): stop following and hide the bar. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void StopFollowing();
+
+	/** True while this visitor's tour follows a guide's. */
+	UFUNCTION(BlueprintPure, Category = "WTA")
+	bool IsFollowing() const { return bFollowing; }
+
 	UPROPERTY(BlueprintAssignable, Category = "WTA")
 	FWTATourChanged OnTourChanged;
 
@@ -74,6 +95,10 @@ protected:
 	/** Read DT_Tour row names sorted by Index. */
 	void CacheStops();
 
+	/** While following, Start/Next/Back/End only remind the visitor that the guide leads; true when they did. */
+	bool RefuseWhileFollowing() const;
+
 	TArray<FName> StopIds;
 	int32 Index = -1;
+	bool bFollowing = false;
 };

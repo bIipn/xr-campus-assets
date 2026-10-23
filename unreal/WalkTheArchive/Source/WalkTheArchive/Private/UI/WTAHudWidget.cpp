@@ -98,6 +98,23 @@ void UWTAHudWidget::NativeOnInitialized()
 	BadgePlate->SetContent(BadgeText);
 	HudPlace(Canvas, BadgePlate, FAnchors(1.f, 0.f), FVector2D(1.f, 0.f), FVector2D(-24.f, 24.f));
 
+	// --- Guided visit chip, under the badges ------------------------------------------
+	VisitPlate = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	VisitPlate->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Plate(), 8.f, WTAStyle::BrassDim(), 1.f));
+	VisitPlate->SetPadding(FMargin(14.f, 8.f, 14.f, 9.f));
+	VisitPlate->SetVisibility(ESlateVisibility::Collapsed);
+	{
+		UVerticalBox* Box = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
+		VisitKickerText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Kicker(10), WTAStyle::Brass(), false);
+		VisitLineText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(13, true), WTAStyle::Bone(), false);
+		VisitLineText->SetJustification(ETextJustify::Right);
+		VisitKickerText->SetJustification(ETextJustify::Right);
+		Box->AddChildToVerticalBox(VisitKickerText)->SetPadding(FMargin(0.f, 0.f, 0.f, 2.f));
+		Box->AddChildToVerticalBox(VisitLineText);
+		VisitPlate->SetContent(Box);
+	}
+	HudPlace(Canvas, VisitPlate, FAnchors(1.f, 0.f), FVector2D(1.f, 0.f), FVector2D(-24.f, 66.f));
+
 	// --- Crosshair and hover label, centre -------------------------------------------
 	CrosshairDot = Tree->ConstructWidget<UBorder>(UBorder::StaticClass());
 	CrosshairDot->SetBrush(WTAStyle::EdgedBrush(WTAStyle::Bone(), 3.f, WTAStyle::Ink(), 1.f));
@@ -414,7 +431,11 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 		return;
 	}
 
-	TourStepText->SetText(FText::Format(WTAText(TEXT("STOP {0} OF {1}")), FText::AsNumber(Index + 1), FText::AsNumber(Total)));
+	TourIndex = Index;
+	TourTotal = Total;
+	TourStepText->SetText(bTourFollowing && !TourGuideName.IsEmpty()
+		? FText::Format(WTAText(TEXT("STOP {0} OF {1} \u00B7 WITH {2}")), FText::AsNumber(Index + 1), FText::AsNumber(Total), WTAUpper(TourGuideName))
+		: FText::Format(WTAText(TEXT("STOP {0} OF {1}")), FText::AsNumber(Index + 1), FText::AsNumber(Total)));
 	TourTitleText->SetText(Title);
 	TourDateText->SetText(DateLabel);
 	TourDateText->SetVisibility(DateLabel.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
@@ -422,7 +443,7 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 	TourBodyText->SetVisibility(Body.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 
 	TourBackButton->SetIsEnabled(Index > 0);
-	TourNextText->SetText(FText::FromString(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next (T)")));
+	TourNextText->SetText(WTAText(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next (T)")));
 
 	if (OpenLabel.IsEmpty())
 	{
@@ -436,6 +457,41 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 
 	bTourShowing = true;
 	TourPlate->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UWTAHudWidget::SetVisitChip(const FText& Kicker, const FText& Line)
+{
+	if (VisitPlate == nullptr)
+	{
+		return;
+	}
+	if (Line.IsEmpty())
+	{
+		VisitPlate->SetVisibility(ESlateVisibility::Collapsed);
+		return;
+	}
+	VisitKickerText->SetText(WTAUpper(Kicker));
+	VisitLineText->SetText(Line);
+	VisitPlate->SetVisibility(ESlateVisibility::HitTestInvisible);
+}
+
+void UWTAHudWidget::SetTourFollowing(bool bFollowing, const FText& GuideName)
+{
+	bTourFollowing = bFollowing;
+	TourGuideName = GuideName;
+	const ESlateVisibility Driving = bFollowing ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
+	if (TourBackButton != nullptr)
+	{
+		TourBackButton->SetVisibility(Driving);
+		TourNextButton->SetVisibility(Driving);
+		TourEndButton->SetVisibility(Driving);
+	}
+	if (TourStepText != nullptr && bTourShowing)
+	{
+		TourStepText->SetText(bFollowing && !GuideName.IsEmpty()
+			? FText::Format(WTAText(TEXT("STOP {0} OF {1} \u00B7 WITH {2}")), FText::AsNumber(TourIndex + 1), FText::AsNumber(TourTotal), WTAUpper(GuideName))
+			: FText::Format(WTAText(TEXT("STOP {0} OF {1}")), FText::AsNumber(TourIndex + 1), FText::AsNumber(TourTotal)));
+	}
 }
 
 void UWTAHudWidget::HideTour()

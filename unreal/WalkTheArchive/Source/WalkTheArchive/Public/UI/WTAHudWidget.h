@@ -7,6 +7,8 @@
 // title, first lines of the story, "Press E to read the full story"; it fades in). Toasts queue; each shows for
 // its seconds then the next one.
 // The tour bar's buttons call UWTATourSubsystem (Back/Next/End) and OpenCurrent (Open).
+// In a guided visit a chip under the badge counter says who leads and who is here (SetVisitChip), and a visitor's
+// tour bar follows the guide: "STOP n OF m - WITH <guide>", no Back / Next / End (SetTourFollowing).
 
 #pragma once
 
@@ -73,6 +75,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void SetBadgeCount(int32 Count, int32 Total);
 
+	/** The guided-visit chip under the badges: a kicker and a line ("You lead - 3 visitors"); an empty Line hides it. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetVisitChip(const FText& Kicker, const FText& Line);
+
+	/** A visitor's tour bar follows the guide: the step names the guide, Back / Next / End are hidden. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetTourFollowing(bool bFollowing, const FText& GuideName);
+
 	/** Hide the crosshair while the cursor is free or a panel is open. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void SetCrosshairVisible(bool bVisible);
@@ -130,12 +140,22 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> TourOpenButton;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> TourOpenText;
 
+	UPROPERTY(Transient) TObjectPtr<UBorder> VisitPlate;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> VisitKickerText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> VisitLineText;
+
 	UPROPERTY(Transient) TObjectPtr<UBorder> StoryPlate;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryKickerText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryYearText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryTitleText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StorySummaryText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryHintText;
+
+	/** The stop the tour bar shows (for the follower's step line). */
+	int32 TourIndex = 0;
+	int32 TourTotal = 0;
+	bool bTourFollowing = false;
+	FText TourGuideName;
 
 	TArray<FWTAToastEntry> ToastQueue;
 	float ToastTimeLeft = 0.f;
