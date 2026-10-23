@@ -1477,6 +1477,27 @@ void AWTAPlayerController::WTAFigures(int32 Count, float X, float Y, float Yaw, 
 	}
 	UE_LOG(LogWTA, Display, TEXT("WTA_FIGURES %d stand-ins round (%.0f, %.0f, %.0f) facing %.0f, %d seated"), Made, Floor.X, Floor.Y, Floor.Z,
 		Facing, FMath::Clamp(Seated, 0, Made));
+	// Once they have settled: how far each figure's hem is over the floor under it (look-dev of the layout).
+	FTimerHandle Settle;
+	GetWorldTimerManager().SetTimer(Settle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	{
+		UWorld* Here = GetWorld();
+		for (TActorIterator<AWTACharacter> It(Here); It; ++It)
+		{
+			if (!It->bStandIn || It->Figure == nullptr)
+			{
+				continue;
+			}
+			const FVector Root = It->Figure->GetComponentLocation();
+			FCollisionQueryParams Params(FName(TEXT("WTAFiguresFloor")), false, *It);
+			FHitResult Hit;
+			const bool bFloor = Here->LineTraceSingleByChannel(Hit, Root + FVector(0.f, 0.f, 50.f), Root - FVector(0.f, 0.f, 200.f), ECC_Visibility, Params);
+			const APlayerState* State = It->GetPlayerState();
+			UE_LOG(LogWTA, Display, TEXT("WTA_FIGURES %s: the figure's root %.1f cm over the floor (%s), movement mode %d"),
+				State ? *State->GetPlayerName() : TEXT("?"), bFloor ? Root.Z - Hit.ImpactPoint.Z : -1.f, bFloor ? *GetNameSafe(Hit.GetActor()) : TEXT("no floor"),
+				It->GetCharacterMovement() ? static_cast<int32>(It->GetCharacterMovement()->MovementMode.GetValue()) : -1);
+		}
+	}), 3.f, false);
 }
 
 void AWTAPlayerController::WTAChatTest()
