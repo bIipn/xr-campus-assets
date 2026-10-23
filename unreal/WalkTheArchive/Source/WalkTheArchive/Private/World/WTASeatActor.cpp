@@ -1,6 +1,7 @@
 // Walk the Archive - a seat.
 
 #include "World/WTASeatActor.h"
+#include "Core/WTAText.h"
 #include "Components/BoxComponent.h"
 #include "Core/WTACharacter.h"
 #include "Core/WTAPlayerController.h"
@@ -27,7 +28,7 @@ bool AWTASeatActor::IsOccupied() const
 
 FText AWTASeatActor::GetInteractLabel_Implementation() const
 {
-	return IsOccupied() ? LOCTEXT("StandUp", "Stand up") : Label;
+	return IsOccupied() ? WTAText(TEXT("Stand up")) : Label;
 }
 
 void AWTASeatActor::Interact_Implementation(AWTAPlayerController* Controller)
@@ -47,7 +48,7 @@ void AWTASeatActor::Interact_Implementation(AWTAPlayerController* Controller)
 
 void AWTASeatActor::ReadRow()
 {
-	Label = LOCTEXT("Sit", "Sit");
+	Label = WTAText(TEXT("Sit"));
 	// where to stand to look at it: a step in front of the seat, facing it (the QA's interact phase and anyone
 	// sent to it stand here)
 	const FVector Forward = FRotator(0.f, SeatYaw, 0.f).Vector();
