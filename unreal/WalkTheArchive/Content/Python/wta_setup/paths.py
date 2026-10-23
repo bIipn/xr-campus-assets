@@ -71,6 +71,10 @@ GAME_MODE_PATH = SCRIPT_MODULE + ".WTAGameMode"
 
 # Fixed asset list from the contract; manifest.json is preferred when present.
 DEFAULT_ASSETS = ["Museum", "WaxIntro", "WaxHall", "LibraryShell", "School", "Outside", "Yard", "OceanDive", "ReadingRoom"]
+# Wings whose textures are always fully loaded instead of streamed: the pop-up books' printed pages are small, seen
+# up close and swapped in while the visitor watches, and a streamed one could sit at its smallest mips (a smear of
+# colour) rather than arrive in time.
+NEVER_STREAM_ASSETS = ("PopUp",)
 
 # Tag every actor the setup spawns so a re-run can delete and respawn it.
 SETUP_TAG = "WTA_Setup"

@@ -144,6 +144,20 @@ def triangle_count(mesh):
     return -1
 
 
+def never_stream_textures(folder):
+    """Every texture under the wing's folder fully loaded rather than streamed (paths.NEVER_STREAM_ASSETS)."""
+    changed = 0
+    for path, tex in util.find_assets(folder, "Texture2D", recursive=True):
+        try:
+            if not tex.get_editor_property("never_stream"):
+                tex.set_editor_property("never_stream", True)
+                util.assets().save(tex)
+                changed += 1
+        except Exception as exc:
+            log.warn("%s: never_stream not set: %s" % (path, exc))
+    return changed
+
+
 def clear_folder_assets(folder, class_names):
     """Delete every asset of these classes under the wing's folder (the re-import makes them again)."""
     count = 0
@@ -232,6 +246,8 @@ def run():
         entry["nanite"] = nanite_on
         entry["collision"] = collision_on
         entry["tagged"] = tagged
+        if asset in paths.NEVER_STREAM_ASSETS:
+            entry["never_stream"] = never_stream_textures(dest)
         report["meshes"] += len(meshes)
         report["nanite"] += nanite_on
         report["collision"] += collision_on

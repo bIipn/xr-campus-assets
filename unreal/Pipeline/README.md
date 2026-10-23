@@ -225,7 +225,7 @@ is its own mesh, built standing open in place: `popup__<book>_s<n>_back`, `_floo
 actors step places from `out/popup/layout.json` (where the book is, which way the reader sits, the chair, and per book the
 DT_Books page each spread shows); it hinges every piece on its bottom edge and folds it toward the reader. The headings
 and covers come from the pack's books (its `content` folder, its language's DT_Books); a pack without these books gets
-none. The printed pages (`assets/tex/popup_*.png`) are painted on every run and travel in the GLB as JPEGs.
+none. The printed pages (`assets/tex/popup_*.png`) are painted on every run at the pages' proportions, saved at 1024 × 512 (a power of two, so Unreal mips them: a page seen from the chair is foreshortened several times over, and an unmipped one shimmers into grey) and travel in the GLB as JPEGs.
 
 ## A client pack, and the sheet a library fills in
 
