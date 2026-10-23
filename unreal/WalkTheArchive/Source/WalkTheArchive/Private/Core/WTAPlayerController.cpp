@@ -2757,7 +2757,7 @@ void AWTAPlayerController::UpdateVRPointer()
 	const bool bOnThing = OnScreen == nullptr && Interaction != nullptr && Interaction->HasHover();
 	const FVector End = OnScreen != nullptr ? FVector(PointerHit.ImpactPoint)
 		: (bVRWorldHit ? FVector(WorldHit.ImpactPoint) : Start + Direction * VRLaserReach);
-	Rig->SetLaser(End, OnScreen != nullptr || bVRWorldHit, bOnButton || bOnThing);
+	Rig->SetLaser(End, OnScreen != nullptr || bVRWorldHit, bOnButton || bOnThing, OnScreen != nullptr);
 	Rig->SetLabel(bOnThing ? Interaction->HoverLabel : FText::GetEmpty());
 }
 

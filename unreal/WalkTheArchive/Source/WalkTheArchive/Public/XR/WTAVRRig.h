@@ -54,8 +54,9 @@ public:
 	/** The simulation: aim the right hand at Target (what the middle of the view is on). */
 	void SetSimAimTarget(const FVector& Target);
 
-	/** Draw the laser to End: bHit = it lands on something (the dot shows), bActive = on something to open or press. */
-	void SetLaser(const FVector& End, bool bHit, bool bActive);
+	/** Draw the laser to End: bHit = it lands on something (the dot shows), bActive = on something to open or press,
+	    bOnScreen = on a VR screen (a smaller dot, over text). */
+	void SetLaser(const FVector& End, bool bHit, bool bActive, bool bOnScreen = false);
 
 	/** The label over the laser's dot; empty hides it. */
 	void SetLabel(const FText& Text);

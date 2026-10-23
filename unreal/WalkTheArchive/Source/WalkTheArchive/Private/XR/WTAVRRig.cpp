@@ -344,7 +344,7 @@ void UWTAVRRig::SetSimAimTarget(const FVector& Target)
 	}
 }
 
-void UWTAVRRig::SetLaser(const FVector& End, bool bHit, bool bActive)
+void UWTAVRRig::SetLaser(const FVector& End, bool bHit, bool bActive, bool bOnScreen)
 {
 	if (Beam == nullptr || RightHand == nullptr)
 	{
@@ -360,9 +360,10 @@ void UWTAVRRig::SetLaser(const FVector& End, bool bHit, bool bActive)
 	bLaserHit = bHit;
 	if (Dot != nullptr)
 	{
-		// The same size to the eye wherever it lands (about half a degree: 8 mm at a metre, 2.4 cm at three).
+		// The same size to the eye wherever it lands: about half a degree on the world (8 mm at a metre, 2.4 cm at
+		// three), a quarter on a screen, where it rests on text.
 		const float Away = static_cast<float>(FVector::Dist(GetEyeLocation(), LaserEnd));
-		const float Across = FMath::Clamp(Away * 0.008f, 0.6f, 8.f);
+		const float Across = FMath::Clamp(Away * (bOnScreen ? 0.0045f : 0.008f), 0.4f, 8.f);
 		Dot->SetWorldLocation(LaserEnd - Direction * (Across * 0.5f));
 		Dot->SetWorldScale3D(FVector(Across / 100.f));    // the basic sphere is a metre across
 		Dot->SetVisibility(bHit && !bVisualsHidden);
