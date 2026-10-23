@@ -1820,6 +1820,8 @@ void UWTAPlayTest::AddDoorsPhase()
 		{ TEXT("yard door"),      CampusToUE(31.0f,  0.00f,  -3.0f), CampusToUE( 37.0f, 0.0f,  -3.0f) },
 		{ TEXT("gallery doors"),  CampusToUE( 0.0f,  0.00f,  -9.0f), CampusToUE(  0.0f, 0.0f, -27.0f) },
 		{ TEXT("wax hall door"),  CampusToUE( 0.0f,  0.00f, -39.5f), CampusToUE(  0.0f, 0.0f, -43.9f) },
+		{ TEXT("training hall door"), CampusToUE(19.3f, 0.00f, -15.6f), CampusToUE(23.0f, 0.0f, -15.6f) },   // the auditorium's east wall
+		{ TEXT("training yard door"), CampusToUE(34.0f, 0.00f, -25.8f), CampusToUE(30.5f, 0.0f, -25.8f) },   // the double doorway from the yard
 	};
 	for (const FDoor& D : Doors)
 	{
