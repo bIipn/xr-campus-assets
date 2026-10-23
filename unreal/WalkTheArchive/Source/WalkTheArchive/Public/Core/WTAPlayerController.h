@@ -40,6 +40,17 @@
 // GoToView(View, bWalk=true) walks the character to the floor point under View.Location (SimpleMoveToLocation),
 // remembers the view, and once the walk ends Tick eases the control rotation to View.Yaw/Pitch with
 // 1 - exp(-4.5 dt) (the web's face-view easing). bWalk=false teleports (TeleportToView) instead.
+//
+// VR (docs/VR_MODE.md): EnterVR starts the headset with the VR controller bindings (WTAXR::BeginSession) or, with
+// bSimulate (-vrsim), the same presentation on the desktop. The player gets a UWTAVRRig (head, hands, laser); the
+// widgets leave the viewport for two screens in the world (AWTAVRScreenActor showing a UWTAVRRootWidget, see
+// AddToScreen): the card screen (Panel, Certificate, Chat, VisitCard, Menu: shown while one is open, placed 1.15 m in
+// front of the head when it appears) and the HUD screen (1.65 m off, a little low, turning after the head once it is
+// 35 degrees away; hidden while a card is open). The scrims go clear (the cards float). Every frame UpdateVRPointer
+// runs the laser: the card screen takes it anywhere on its face, the HUD screen only on a button, otherwise the world
+// (the interaction component traces along it). The trigger (or, simulated, the mouse / E) presses what the laser is
+// on: a button on a screen, an interactable, off a card (it closes), or the floor (a short fade and a step there).
+// GoToView travels by the same fade instead of walking. The right stick turns 30 degrees and scrolls the card.
 
 #pragma once
 
@@ -49,6 +60,7 @@
 #include "WTAPlayerController.generated.h"
 
 class AWTACharacter;
+class AWTAVRScreenActor;
 class UInputAction;
 class UInputMappingContext;
 class UWTACertificateWidget;
@@ -60,6 +72,9 @@ class UWTAMenuWidget;
 class UWTAPanelWidget;
 class UWTAPlayTest;
 class UWTAVisitWidget;
+class UWTAVRRig;
+class UWTAVRRootWidget;
+class UUserWidget;
 struct FInputActionValue;
 
 /** Fired after SetUIMode: true when a panel, the chat or the menu is open. */
@@ -154,6 +169,26 @@ public:
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
 	TObjectPtr<UInputAction> GatherAction;
+
+	/** VR: the controllers' bindings (added in VR, and given to OpenXR as the session starts). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputMappingContext> VRMappingContext;
+
+	/** VR: the right trigger (Started presses, Completed releases). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> VRSelectAction;
+
+	/** VR: the right stick's x (snap turns). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> VRTurnAction;
+
+	/** VR: the right stick's y (scrolls the card the laser is on). */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> VRScrollAction;
+
+	/** VR simulation: the mouse wheel scrolls the card the laser is on. */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "WTA|Input")
+	TObjectPtr<UInputAction> VRWheelAction;
 
 	// --- Feel --------------------------------------------------------------
 
@@ -329,6 +364,42 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	AWTACharacter* GetWTACharacter() const;
 
+	// --- VR (docs/VR_MODE.md) ----------------------------------------------------------
+
+	/** Go into VR: a headset (false when none is running), or with bSimulate the same presentation on the desktop. */
+	UFUNCTION(BlueprintCallable, Category = "WTA|VR")
+	bool EnterVR(bool bSimulate = false);
+
+	/** Back to the desktop (a headset stops drawing). */
+	UFUNCTION(BlueprintCallable, Category = "WTA|VR")
+	void ExitVR();
+
+	/** The menu's Enter VR / Leave VR: a headset when one is connected, else the simulation when -vrsim was given. */
+	UFUNCTION(BlueprintCallable, Category = "WTA|VR")
+	void ToggleVR();
+
+	UFUNCTION(BlueprintPure, Category = "WTA|VR")
+	bool IsVRMode() const { return bVRMode; }
+
+	UFUNCTION(BlueprintPure, Category = "WTA|VR")
+	bool IsVRHeadset() const { return bVRHeadset; }
+
+	/** The menu offers Enter VR: a headset is connected, -vrsim was given, or VR is on (Leave VR). */
+	UFUNCTION(BlueprintPure, Category = "WTA|VR")
+	bool CanEnterVR() const;
+
+	/** Console: WTAVR [on|sim|off]; no word toggles (the simulation when no headset is connected). */
+	UFUNCTION(Exec, Category = "WTA|VR")
+	void WTAVR(const FString& Mode = TEXT(""));
+
+	/** The VR screens (null on the desktop) and the player's VR rig (null on the desktop). */
+	AWTAVRScreenActor* GetCardScreen() const { return CardScreen; }
+	AWTAVRScreenActor* GetHudScreen() const { return HudScreen; }
+	UWTAVRRig* GetVRRig() const;
+
+	/** The laser rests on a VR screen this frame. */
+	bool IsVRPointerOnScreen() const { return bVRPointerOnScreen; }
+
 	/**
 	 * QA: closes the menu and panels, then visits every valid place view (DT_Places), every staff talk view (DT_Staff)
 	 * and a view of every Wax Hall stage from the aisle (DT_WaxScenes). At each it waits SecondsPerShot (Lumen and
@@ -496,4 +567,75 @@ protected:
 	/** WTAPlayTest: the scripted play test, created on first use. */
 	UPROPERTY(Transient)
 	TObjectPtr<UWTAPlayTest> PlayTest;
+
+	// --- VR ----------------------------------------------------------------------------
+
+	/** Put a widget where it shows: the viewport on the desktop; in VR the HUD screen (z 0) or the card screen. */
+	void AddToScreen(UUserWidget* Widget, int32 ZOrder);
+
+	/** Move the six widgets onto the VR screens (bVR) or back to the viewport. */
+	void MoveWidgetsToScreens(bool bVR);
+
+	/** Show, place and turn the two screens for what is open and where the head is. */
+	void UpdateVRScreens(float DeltaSeconds);
+
+	/** Stand the card screen square in front of the head at reading distance. */
+	void PlaceCardScreen();
+
+	/** How far a screen WidthCm wide can stand from Eye along Yaw (its middle Drop under the eye) before a wall:
+	    Distance, or nearer (never under 45 cm). */
+	float VRClearDistance(const FVector& Eye, float Yaw, float Distance, float Drop, float WidthCm) const;
+
+	/** The laser: what it is on (a screen, the world), the pointer's hit, the interaction ray, the laser's looks. */
+	void UpdateVRPointer();
+
+	/** The trigger pressed (or released) on what the laser is on. */
+	void VRSelect(bool bPressed);
+
+	/** Travel to View with a short fade (VR's GoToView). */
+	void VRTravel(const FWTAView& View);
+
+	/** A step to a floor point the laser is on (where the navigation mesh says one can stand, within 12 m). */
+	void VRStepToFloor(const FVector& Point);
+
+	/** EnterVR once the pawn is here (BeginPlay: a headset running, -headset or -vrsim). */
+	void StartVRWhenReady();
+
+	void OnInteractEnd(const FInputActionValue& Value);
+	void OnVRSelect(const FInputActionValue& Value);
+	void OnVRSelectEnd(const FInputActionValue& Value);
+	void OnVRTurn(const FInputActionValue& Value);
+	void OnVRTurnEnd(const FInputActionValue& Value);
+	void OnVRScroll(const FInputActionValue& Value);
+	void OnVRWheel(const FInputActionValue& Value);
+
+	UPROPERTY(Transient)
+	TObjectPtr<AWTAVRScreenActor> CardScreen;
+
+	UPROPERTY(Transient)
+	TObjectPtr<AWTAVRScreenActor> HudScreen;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UWTAVRRootWidget> CardRoot;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UWTAVRRootWidget> HudRoot;
+
+	bool bVRMode = false;
+	bool bVRHeadset = false;
+	/** The right stick has turned and waits to come back to the middle before the next turn. */
+	bool bTurnLatched = false;
+	/** The laser rests on a VR screen (on its face, or the HUD's buttons). */
+	bool bVRPointerOnScreen = false;
+	/** The trigger went down on a screen: its release goes there too. */
+	bool bVRPressedScreen = false;
+	/** The HUD screen's yaw, and whether it is turning after the head. */
+	float HudYaw = 0.f;
+	bool bHudTurning = false;
+	/** What the laser is on in the world this frame. */
+	FHitResult VRWorldHit;
+	bool bVRWorldHit = false;
+	FTimerHandle VRFadeTimer;
+	FTimerHandle VRStartTimer;
+	int32 VRStartTries = 0;
 };

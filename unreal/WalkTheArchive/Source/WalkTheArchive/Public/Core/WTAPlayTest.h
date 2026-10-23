@@ -42,6 +42,12 @@
 //             leaves. group_join joins host=<address> (127.0.0.1) and goes on as group_guest: the visitor arrives at
 //             the guide's side, follows both stops (T does not move the tour), comes when gathered, sees the tour
 //             end, leaves, and (group_left) is back on their own campus. Shots: play_NN_group_guide_* / _guest_*.
+//   vr        (only when named) VR on a desktop (the -vrsim presentation, entered if not on): the HUD on its screen in the
+//             world; the laser on an exhibit names it and the trigger opens its card on the card screen; the laser
+//             on the card's Close button closes it; B opens the menu there and its Resume button closes it; the
+//             trigger on the floor steps there; the right stick turns 30 degrees; stand-in people show their names in
+//             the world; the tour's Next button on the HUD screen moves the tour on; leaving VR puts every widget back
+//             in the viewport. Shots: play_NN_vr_*.
 // Tokens: "only=<text>" keeps the people / interactables whose name contains <text>; "speeddown=<stops per second>"
 // sets every post process volume's auto exposure Speed Down for this run (to compare adaptation speeds);
 // "host=<address>" is the guide group_join joins.
@@ -57,6 +63,7 @@
 class ACameraActor;
 class AWTACharacter;
 class AWTAPlayerController;
+class UUserWidget;
 
 UCLASS(ClassGroup = (WTA))
 class WALKTHEARCHIVE_API UWTAPlayTest : public UActorComponent
@@ -136,6 +143,13 @@ private:
 	void AddGroupJoinPhase();
 	void AddGroupGuestPhase();
 	void AddGroupLeftPhase();
+	/** vr: see the header. */
+	void AddVRPhase();
+	/** The centre, in the widget's own pixels, of Root's visible button whose action is Action (the smallest, when
+	    several are: a scrim's close button fills the screen). */
+	bool FindButtonPixel(UUserWidget* Root, FName Action, FVector2D& OutPixel) const;
+	/** Turn the view to look at Target (the simulation's laser goes where the view looks). */
+	void AimAt(const FVector& Target);
 	/** The other person's pawn in a visit (the first one that is not this player's). */
 	AWTACharacter* OtherPerson() const;
 	/** The guide's pawn on this machine. */

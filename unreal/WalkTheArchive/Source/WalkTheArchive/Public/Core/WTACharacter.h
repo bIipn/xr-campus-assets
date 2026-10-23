@@ -13,6 +13,11 @@
 // imported, the engine's basic shapes. Nobody sees their own figure, and one within arm's reach of the camera hides.
 // Sitting reaches the others through ServerSetSeated (the seated figure sits on the seat, hands on the lap).
 // Players never block each other.
+//
+// VR (docs/VR_MODE.md): StartVR puts a UWTAVRRig on the player (the head on a floor-level origin, the hands, the
+// laser); with a headset, TeleportToView puts the head (not the capsule) over the view's floor point facing its yaw,
+// sitting lowers the origin to a seated eye height, and the camera has no bob or dip. In VR the other people's name
+// tags draw in the world, facing the eye (a screen-space widget does not reach the headset).
 
 #pragma once
 
@@ -28,6 +33,7 @@ class UMaterialInterface;
 class UStaticMesh;
 class UStaticMeshComponent;
 class UWidgetComponent;
+class UWTAVRRig;
 
 /** The player sat down on Seat (bSeated) or stood up from it. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWTASeatChanged, AActor*, Seat, bool, bSeated);
@@ -192,6 +198,18 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// --- VR ----------------------------------------------------------------------------
+
+	/** Go into VR on this player (AWTAPlayerController::EnterVR): the rig with its hands and laser; bHeadset = a real
+	    headset, else the desktop simulation. */
+	void StartVR(bool bHeadset);
+
+	/** Back to the desktop camera. */
+	void StopVR();
+
+	/** The VR rig, or null on the desktop. */
+	UWTAVRRig* GetVRRig() const { return VRRig; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -252,6 +270,25 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<UMaterialInstanceDynamic> VisorMaterial;
 
+	UPROPERTY(Transient)
+	TObjectPtr<UWTAVRRig> VRRig;
+
+	/** In VR the name tag draws in the world, facing the eye (made on first use); NameTag is screen space. */
+	UPROPERTY(Transient)
+	TObjectPtr<UWidgetComponent> NameTagWorld;
+
+	/** The world-space name tag, made the first time VR needs it. */
+	UWidgetComponent* WorldNameTag();
+
+	/** The name tag in use: in the world in VR, else on the screen. */
+	UWidgetComponent* ActiveNameTag();
+
+	/** Both name tags at Relative over the figure's root. */
+	void PlaceNameTags(const FVector& Relative);
+
+	/** The tag in use is the world one (VR). */
+	bool bTagInWorld = false;
+
 	bool bFigureShown = false;
 	bool bFigureLaidSeated = false;
 	bool bTagHidden = true;
@@ -273,6 +310,8 @@ protected:
 	FVector StandLocation = FVector::ZeroVector;
 	/** The camera's height over the capsule centre while seated. */
 	float SeatedCameraZ = 0.f;
+	/** The eye's world height while seated (VR puts a headset's eyes there). */
+	float SeatedEyeZ = 0.f;
 
 	float BobPhase = 0.f;
 	/** 0..1 bob strength, eased toward the measured ground speed (web PLAYER.amp). */

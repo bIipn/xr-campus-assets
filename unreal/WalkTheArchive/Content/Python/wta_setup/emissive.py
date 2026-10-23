@@ -18,8 +18,9 @@ Unreal scene unchanged (lighting.py explains the exposure):
 Every glow and converted mesh stays out of Lumen's GI: small bright emitters only add noise there, and a
 display-referred one would feed the exposure back into the lighting. Glows also cast no shadow, except lit fabric
 round a light (KEEP_SHADOW: a lamp's shade, which throws the light down in a pool and up in a circle).
-It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards), and
-M_WTA_Figure, the people of a guided visit (AWTACharacter's figure).
+It also builds M_WTA_WidgetLit, the lit paper a world-space widget is drawn as (the Lost Stories wall's cards),
+M_WTA_Figure, the people of a guided visit (AWTACharacter's figure), and M_WTA_WidgetScreen, the screens VR draws
+the game's own widgets on (AWTAVRScreenActor, the laser's label, the visit's name tags in a headset).
 """
 import os
 
@@ -56,6 +57,8 @@ UNLIT_MASTER_TRANSLUCENT = paths.MATERIALS_PATH + "/M_WTA_UnlitTranslucent"
 WIDGET_LIT = paths.MATERIALS_PATH + "/M_WTA_WidgetLit"
 # The people of a guided visit (AWTACharacter's figure from bl/figure.py): one colour per person and part
 FIGURE_MATERIAL = paths.MATERIALS_PATH + "/M_WTA_Figure"
+# VR's screens (AWTAVRScreenActor, the laser's label, the name tags): the widgets as the desktop shows them
+WIDGET_SCREEN = paths.MATERIALS_PATH + "/M_WTA_WidgetScreen"
 INTERCHANGE_UNLIT = "/InterchangeAssets/gltf/MaterialInstances/MI_Unlit"
 UNLIT_POOL_ALPHA = 0.3
 WHITE_TEXTURE = "/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"
@@ -323,6 +326,81 @@ def build_figure_material(path=FIGURE_MATERIAL):
     return mat
 
 
+def build_widget_screen_material(path=WIDGET_SCREEN):
+    """An unlit, translucent, display-referred material for VR's screens: the widget as the desktop draws it.
+
+    Emissive = decode(SlateUI) x TintColorAndOpacity x Luminance / EyeAdaptation, so the exposure leaves it as the
+    viewport would show it; Opacity = lerp(1, SlateUI alpha, OpacityFromTexture) x the tint's alpha. The render target
+    holds the colours gamma encoded and, where the widget is see-through, already multiplied by its alpha (Slate blends
+    onto a clear target), so the colour is divided by the alpha before it is decoded and the blend multiplies it back.
+    Depth tested (the hands and the laser in front of a screen show over it; the player controller brings a screen
+    nearer when a wall is in the way), no fog, drawn after motion blur (crisp, out of the temporal upscaler's jitter),
+    one-sided (a screen faces the eye).
+    """
+    mel = unreal.MaterialEditingLibrary
+    assets = util.assets()
+    if assets.exists(path):
+        mat = assets.load(path)
+        mel.delete_all_material_expressions(mat)
+    else:
+        folder, name = path.rsplit("/", 1)
+        if not assets.directory_exists(folder):
+            assets.make_directory(folder)
+        mat = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, folder, unreal.Material,
+                                                                      unreal.MaterialFactoryNew())
+    props = {
+        "shading_model": util.enum_value("MaterialShadingModel", "MSM_UNLIT"),
+        "blend_mode": util.enum_value("BlendMode", "BLEND_TRANSLUCENT"),
+        "two_sided": False,
+        "disable_depth_test": False,
+        "use_translucency_vertex_fog": False,
+    }
+    after_blur = util.enum_value("MaterialTranslucencyPass", "MTP_AFTER_MOTION_BLUR")
+    if after_blur is not None:
+        props["translucency_pass"] = after_blur
+    util.set_props(mat, props, label=util.object_name(mat))
+    tex = _expression(mat, "MaterialExpressionTextureSampleParameter2D", -1400, -150,
+                      {"parameter_name": "SlateUI", "texture": unreal.load_asset(WHITE_TEXTURE)})
+    tint = _expression(mat, "MaterialExpressionVectorParameter", -1400, 250,
+                       {"parameter_name": "TintColorAndOpacity", "default_value": unreal.LinearColor(1.0, 1.0, 1.0, 1.0)})
+    from_tex = _expression(mat, "MaterialExpressionScalarParameter", -1400, 500,
+                           {"parameter_name": "OpacityFromTexture", "default_value": 1.0})
+    lum = _expression(mat, "MaterialExpressionScalarParameter", -700, 300,
+                      {"parameter_name": "Luminance", "default_value": 1.0})
+    eye = _expression(mat, "MaterialExpressionEyeAdaptation", -500, 420)
+    # Straight (not premultiplied) gamma-encoded colour, then linear.
+    safe_alpha = _expression(mat, "MaterialExpressionMax", -1150, 50, {"const_b": 0.004})
+    _connect(tex, "A", safe_alpha, "A")
+    straight = _expression(mat, "MaterialExpressionDivide", -1000, -100)
+    _connect(tex, "RGB", straight, "A")
+    _connect(safe_alpha, "", straight, "B")
+    clamped = _expression(mat, "MaterialExpressionSaturate", -870, -100)
+    _connect(straight, "", clamped, "")
+    decoded = _expression(mat, "MaterialExpressionPower", -740, -100, {"const_exponent": 2.2})
+    _connect(clamped, "", decoded, "Base")
+    tinted = _expression(mat, "MaterialExpressionMultiply", -600, 0)
+    _connect(decoded, "", tinted, "A")
+    _connect(tint, "", tinted, "B")
+    scaled = _expression(mat, "MaterialExpressionMultiply", -450, 100)
+    _connect(tinted, "", scaled, "A")
+    _connect(lum, "", scaled, "B")
+    shown = _expression(mat, "MaterialExpressionDivide", -250, 150)
+    _connect(scaled, "", shown, "A")
+    _connect(eye, "", shown, "B")
+    cut = _expression(mat, "MaterialExpressionLinearInterpolate", -900, 450, {"const_a": 1.0})
+    _connect(tex, "A", cut, "B")
+    _connect(from_tex, "", cut, "Alpha")
+    opacity = _expression(mat, "MaterialExpressionMultiply", -600, 500)
+    _connect(cut, "", opacity, "A")
+    _connect(tint, "A", opacity, "B")
+    for expr, prop in ((shown, "MP_EMISSIVE_COLOR"), (opacity, "MP_OPACITY")):
+        if not mel.connect_material_property(expr, "", getattr(unreal.MaterialProperty, prop)):
+            raise RuntimeError("could not connect %s of %s" % (prop, path))
+    mel.recompile_material(mat)
+    assets.save(mat)
+    return mat
+
+
 def horizon_colour(extent_m):
     """sRGB hex for the horizon ring this wide, or None."""
     width = max(extent_m[0], extent_m[2])
@@ -424,4 +502,9 @@ def run(report):
         report["figure_material"] = FIGURE_MATERIAL
     except Exception as exc:
         errors.append("figure material failed: %s" % exc)
+    try:
+        build_widget_screen_material()
+        report["widget_screen_material"] = WIDGET_SCREEN
+    except Exception as exc:
+        errors.append("widget screen material failed: %s" % exc)
     return errors

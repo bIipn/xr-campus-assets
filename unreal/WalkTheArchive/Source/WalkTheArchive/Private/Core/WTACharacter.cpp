@@ -6,6 +6,9 @@
 #include "Systems/WTAProgressSubsystem.h"
 #include "UI/WTANameTagWidget.h"
 #include "UI/WTAUIStyle.h"
+#include "XR/WTAVRRig.h"
+#include "XR/WTAVRScreenActor.h"
+#include "XR/WTAXR.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/StaticMesh.h"
@@ -199,7 +202,7 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 		FigureNeck->SetRelativeLocation(FVector(0.f, 0.f, JointZ));
 		FigureHead->SetRelativeLocation(FVector::ZeroVector);
 		FigureVisor->SetRelativeLocation(FVector::ZeroVector);
-		NameTag->SetRelativeLocation(FVector(0.f, 0.f, JointZ + 33.f));    // a hand over the crown (26 cm over the joint)
+		PlaceNameTags(FVector(0.f, 0.f, JointZ + 33.f));    // a hand over the crown (26 cm over the joint)
 		return;
 	}
 	// Standing: a turned base, a tapered body to 1.23 m, shoulders, the head at 1.46 m (the eye is at 1.62).
@@ -214,7 +217,52 @@ void AWTACharacter::LayoutFigure(bool bSitting)
 	FigureNeck->SetRelativeLocation(FVector(0.f, 0.f, NeckZ));
 	PlacePart(FigureHead, -9.f, FVector(0.27f, 0.27f, 0.29f));
 	PlacePart(FigureVisor, 2.f, FVector(0.07f, 0.19f, 0.075f), 11.f);
-	NameTag->SetRelativeLocation(FVector(0.f, 0.f, NeckZ + 40.f));
+	PlaceNameTags(FVector(0.f, 0.f, NeckZ + 40.f));
+}
+
+void AWTACharacter::PlaceNameTags(const FVector& Relative)
+{
+	NameTag->SetRelativeLocation(Relative);
+	if (NameTagWorld != nullptr)
+	{
+		NameTagWorld->SetRelativeLocation(Relative);
+	}
+}
+
+UWidgetComponent* AWTACharacter::WorldNameTag()
+{
+	if (NameTagWorld == nullptr)
+	{
+		// The screen tag's widget and place, drawn in the world (M_WTA_WidgetScreen: over everything, so the wall check
+		// in UpdateFigure decides when it shows, as for the screen tag); UpdateFigure turns it to the eye.
+		NameTagWorld = NewObject<UWidgetComponent>(this, TEXT("NameTagWorld"));
+		NameTagWorld->SetupAttachment(Figure);
+		NameTagWorld->SetUsingAbsoluteRotation(true);
+		NameTagWorld->SetUsingAbsoluteScale(true);
+		NameTagWorld->SetWidgetSpace(EWidgetSpace::World);
+		NameTagWorld->SetDrawAtDesiredSize(true);
+		NameTagWorld->SetPivot(FVector2D(0.5f, 1.f));
+		NameTagWorld->SetBlendMode(EWidgetBlendMode::Transparent);
+		NameTagWorld->SetTwoSided(false);
+		NameTagWorld->SetWindowFocusable(false);
+		NameTagWorld->SetWidgetClass(UWTANameTagWidget::StaticClass());
+		NameTagWorld->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		NameTagWorld->SetGenerateOverlapEvents(false);
+		NameTagWorld->SetCastShadow(false);
+		if (UMaterialInterface* Look = AWTAVRScreenActor::ScreenMaterial())
+		{
+			NameTagWorld->SetMaterial(0, Look);
+		}
+		NameTagWorld->SetRelativeLocation(NameTag->GetRelativeLocation());
+		NameTagWorld->SetHiddenInGame(true);
+		NameTagWorld->RegisterComponent();
+	}
+	return NameTagWorld;
+}
+
+UWidgetComponent* AWTACharacter::ActiveNameTag()
+{
+	return bTagInWorld ? WorldNameTag() : NameTag.Get();
 }
 
 void AWTACharacter::LoadFigureMeshes()
@@ -378,7 +426,7 @@ void AWTACharacter::RefreshFigureLook()
 		CollarMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.38f);
 		CollarMaterial->SetScalarParameterValue(TEXT("Sheen"), 0.2f);
 	}
-	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(NameTag->GetUserWidgetObject()))
+	if (UWTANameTagWidget* Tag = Cast<UWTANameTagWidget>(ActiveNameTag()->GetUserWidgetObject()))
 	{
 		Tag->SetPerson(FText::FromString(Name), Person->bGuide, Color);
 	}
@@ -418,12 +466,30 @@ void AWTACharacter::UpdateFigure(float DeltaSeconds)
 		if (!bShow)
 		{
 			NameTag->SetHiddenInGame(true);
+			if (NameTagWorld != nullptr)
+			{
+				NameTagWorld->SetHiddenInGame(true);
+			}
 			bTagHidden = true;
 		}
 	}
 	if (!bShow)
 	{
 		return;
+	}
+	// In VR the name tag draws in the world: change over when the presentation does (the next check shows it).
+	const bool bWorldTag = WTAXR::IsPresentationActive();
+	if (bWorldTag != bTagInWorld)
+	{
+		NameTag->SetHiddenInGame(true);
+		if (NameTagWorld != nullptr)
+		{
+			NameTagWorld->SetHiddenInGame(true);
+		}
+		bTagInWorld = bWorldTag;
+		bTagHidden = true;
+		SinceTagCheck = 1.f;
+		ShownSlot = -1;                                  // the person goes onto the tag now in use
 	}
 	SinceLook += DeltaSeconds;
 	if (ShownSlot < 0 || SinceLook > 0.5f)
@@ -453,20 +519,28 @@ void AWTACharacter::UpdateFigure(float DeltaSeconds)
 			FHitResult Hit;
 			bHide = GetWorld()->LineTraceSingleByChannel(Hit, Eye, Head, ECC_Visibility, Params);
 		}
+		UWidgetComponent* Tag = ActiveNameTag();
 		if (bHide != bTagHidden)
 		{
 			bTagHidden = bHide;
-			NameTag->SetHiddenInGame(bHide);
+			Tag->SetHiddenInGame(bHide);
 		}
 		if (!bHide && !bTagLogged)
 		{
 			bTagLogged = true;
-			const UUserWidget* TagWidget = NameTag->GetUserWidgetObject();
-			UE_LOG(LogWTA, Log, TEXT("WTA_FIGURE %s: %s figure, name tag %s (widget %s, slate %s, %.0f x %.0f)"), *ShownName,
-				bDesignedFigure ? TEXT("designed") : TEXT("basic"), NameTag->IsVisible() ? TEXT("visible") : TEXT("hidden"),
+			const UUserWidget* TagWidget = Tag->GetUserWidgetObject();
+			UE_LOG(LogWTA, Log, TEXT("WTA_FIGURE %s: %s figure, %s name tag %s (widget %s, slate %s, %.0f x %.0f)"), *ShownName,
+				bDesignedFigure ? TEXT("designed") : TEXT("basic"), bTagInWorld ? TEXT("world") : TEXT("screen"), Tag->IsVisible() ? TEXT("visible") : TEXT("hidden"),
 				TagWidget ? TEXT("made") : TEXT("missing"), TagWidget && TagWidget->GetCachedWidget().IsValid() ? TEXT("built") : TEXT("not built"),
 				TagWidget ? TagWidget->GetDesiredSize().X : 0.f, TagWidget ? TagWidget->GetDesiredSize().Y : 0.f);
 		}
+	}
+	// A tag in the world turns to the eye and keeps one size to it (about 0.05 degrees a pixel).
+	if (bTagInWorld && !bTagHidden && NameTagWorld != nullptr)
+	{
+		const FVector Where = NameTagWorld->GetComponentLocation();
+		NameTagWorld->SetWorldRotation((Eye - Where).Rotation());
+		NameTagWorld->SetWorldScale3D(FVector(FMath::Clamp(static_cast<float>(FVector::Dist(Eye, Where)) * 0.0009f, 0.05f, 4.f)));
 	}
 }
 
@@ -587,6 +661,7 @@ void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
 	const FVector Centre(SeatTop.X, SeatTop.Y, FloorZ + SeatedHalfHeight + 1.f);
 	SetActorLocation(Centre, false, nullptr, ETeleportType::TeleportPhysics);
 	SeatedCameraZ = SeatTop.Z + SeatEyeHeight - Centre.Z;
+	SeatedEyeZ = SeatTop.Z + SeatEyeHeight;
 	Camera->SetRelativeLocation(FVector(0.f, 0.f, SeatedCameraZ));
 	if (AController* OwnController = GetController())
 	{
@@ -599,6 +674,12 @@ void AWTACharacter::SitAt(AActor* InSeat, const FVector& SeatTop, float Yaw)
 	DipVelocity = 0.f;
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
+	if (VRRig != nullptr)
+	{
+		// A headset: face the seat's way about the head, the eyes at the seated height whatever the visitor's own.
+		VRRig->FaceYaw(Yaw);
+		VRRig->SetSeated(true, SeatedEyeZ);
+	}
 	ShareSeated(true);
 	OnSeatChanged.Broadcast(InSeat, true);
 }
@@ -633,6 +714,10 @@ void AWTACharacter::StandUp(bool bReturn)
 		OwnController->SetControlRotation(FRotator(0.f, Now.Yaw, 0.f));
 	}
 	Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - CapsuleHalfHeight));
+	if (VRRig != nullptr)
+	{
+		VRRig->SetSeated(false, 0.f);
+	}
 	LastFrameLocation = GetActorLocation();
 	bHasLastFrameLocation = true;
 	ShareSeated(false);
@@ -650,6 +735,14 @@ void AWTACharacter::TeleportToView(const FWTAView& View)
 		StandUp(false);                            // a tour stop or a place: the seat is left behind
 	}
 	StopWalking();
+	if (VRRig != nullptr && VRRig->IsHeadset())
+	{
+		// A headset: the head (not the capsule) over the view's floor point, facing its yaw; the pitch is the visitor's.
+		VRRig->StandHeadAt(FVector(View.Location.X, View.Location.Y, View.Location.Z - EyeHeight), View.Yaw);
+		LastFrameLocation = GetActorLocation();
+		bHasLastFrameLocation = true;
+		return;
+	}
 	// View.Location is the eye; the capsule centre sits EyeHeight below it plus the half height.
 	FVector Location = View.Location;
 	Location.Z = View.Location.Z - EyeHeight + GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
@@ -712,6 +805,10 @@ void AWTACharacter::AddMoveInput(FVector2D Axis)
 
 void AWTACharacter::UpdateCameraOffset(float DeltaSeconds)
 {
+	if (VRRig != nullptr && VRRig->IsHeadset())
+	{
+		return;                                    // the headset places the camera
+	}
 	if (bSeated)
 	{
 		Camera->SetRelativeLocation(FVector(0.f, 0.f, SeatedCameraZ));
@@ -719,6 +816,12 @@ void AWTACharacter::UpdateCameraOffset(float DeltaSeconds)
 	}
 	if (Camera == nullptr || DeltaSeconds <= 0.f)
 	{
+		return;
+	}
+	if (VRRig != nullptr)
+	{
+		// The VR simulation: no bob or dip (in a headset nothing moves the head but the head).
+		Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 		return;
 	}
 	const UCharacterMovementComponent* Move = GetCharacterMovement();
@@ -754,6 +857,44 @@ void AWTACharacter::UpdateCameraOffset(float DeltaSeconds)
 
 	const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	Camera->SetRelativeLocation(FVector(0.f, 0.f, EyeHeight - HalfHeight + Bob + DipOffset));
+}
+
+void AWTACharacter::StartVR(bool bHeadset)
+{
+	if (VRRig != nullptr)
+	{
+		if (VRRig->IsHeadset() == bHeadset)
+		{
+			return;
+		}
+		StopVR();
+	}
+	VRRig = NewObject<UWTAVRRig>(this, MakeUniqueObjectName(this, UWTAVRRig::StaticClass(), TEXT("WTAVRRig")));
+	VRRig->RegisterComponent();
+	VRRig->Start(bHeadset);
+	if (bSeated)
+	{
+		VRRig->SetSeated(true, SeatedEyeZ);
+	}
+	BobPhase = 0.f;
+	BobAmount = 0.f;
+	DipOffset = 0.f;
+	DipVelocity = 0.f;
+}
+
+void AWTACharacter::StopVR()
+{
+	if (VRRig == nullptr)
+	{
+		return;
+	}
+	VRRig->Stop();
+	VRRig->DestroyComponent();
+	VRRig = nullptr;
+	if (bSeated)
+	{
+		Camera->SetRelativeLocation(FVector(0.f, 0.f, SeatedCameraZ));
+	}
 }
 
 void AWTACharacter::NoteDistanceWalked()

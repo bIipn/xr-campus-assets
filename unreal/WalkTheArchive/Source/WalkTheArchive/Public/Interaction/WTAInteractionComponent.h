@@ -1,7 +1,8 @@
 // Walk the Archive - hover trace and interact dispatch (lives on the player controller).
 //
 // Every tick: one line trace on ECC_Visibility up to MaxDistance from the camera through the screen centre, or
-// from the mouse cursor when bUseMouseCursor is set (Tab / panel open). The first blocking actor that implements
+// from the mouse cursor when bUseMouseCursor is set (Tab / panel open), or in VR along the right hand's laser
+// (SetRayOverride; a laser resting on a VR screen sees nothing in the world). The first blocking actor that implements
 // IWTAInteractable becomes Hovered and OnHoverChanged broadcasts its label (empty text when nothing is hovered).
 // TryInteract() runs Execute_Interact on the hovered actor; LastHit keeps the full hit so the controller can walk
 // to a clicked floor point when the cursor is free.
@@ -65,6 +66,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WTA")
 	bool HasHover() const;
 
+	/** VR: trace along this ray (the laser) instead of the camera's or the cursor's; bBlocked = the laser rests on a VR
+	    screen, so nothing in the world is under it. bOn false gives the camera back. */
+	void SetRayOverride(bool bOn, const FVector& Start = FVector::ZeroVector, const FVector& Direction = FVector::ForwardVector, bool bBlocked = false);
+
 	/** The last trace result, interactable or not (floor clicks use this). */
 	const FHitResult& GetLastHit() const { return LastHit; }
 
@@ -82,4 +87,9 @@ protected:
 	void SetHovered(AActor* NewActor);
 
 	FHitResult LastHit;
+
+	bool bRayOverride = false;
+	bool bRayBlocked = false;
+	FVector RayStart = FVector::ZeroVector;
+	FVector RayDirection = FVector::ForwardVector;
 };

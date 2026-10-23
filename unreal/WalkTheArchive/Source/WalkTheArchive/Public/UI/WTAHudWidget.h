@@ -9,6 +9,8 @@
 // The tour bar's buttons call UWTATourSubsystem (Back/Next/End) and OpenCurrent (Open).
 // In a guided visit a chip under the badge counter says who leads and who is here (SetVisitChip), and a visitor's
 // tour bar follows the guide: "STOP n OF m - WITH <guide>", no Back / Next / End (SetTourFollowing).
+// In VR (SetVRMode) the HUD is drawn on a screen in the world (AWTAVRScreenActor): no crosshair and no hover label
+// (the laser and its own label take their place), and the tour's Next button names the A button.
 
 #pragma once
 
@@ -83,6 +85,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void SetTourFollowing(bool bFollowing, const FText& GuideName);
 
+	/** VR: no crosshair, no hover label (the laser's label instead), "Next (A)". */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void SetVRMode(bool bOn);
+
 	/** Hide the crosshair while the cursor is free or a panel is open. */
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void SetCrosshairVisible(bool bVisible);
@@ -150,6 +156,9 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryTitleText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StorySummaryText;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> StoryHintText;
+
+	/** VR presentation (SetVRMode). */
+	bool bVRMode = false;
 
 	/** The stop the tour bar shows (for the follower's step line). */
 	int32 TourIndex = 0;

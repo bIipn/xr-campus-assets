@@ -343,7 +343,24 @@ void UWTAHudWidget::SetHoverLabel(const FText& Label)
 		return;
 	}
 	HoverLabelText->SetText(Label);
-	HoverPlate->SetVisibility(Label.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	HoverPlate->SetVisibility(Label.IsEmpty() || bVRMode ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
+void UWTAHudWidget::SetVRMode(bool bOn)
+{
+	bVRMode = bOn;
+	if (CrosshairDot != nullptr)
+	{
+		CrosshairDot->SetVisibility(bOn ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	}
+	if (bOn && HoverPlate != nullptr)
+	{
+		HoverPlate->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (TourNextText != nullptr && bTourShowing && TourIndex < TourTotal - 1)
+	{
+		TourNextText->SetText(WTAText(bOn ? TEXT("Next (A)") : TEXT("Next (T)")));
+	}
 }
 
 void UWTAHudWidget::ShowToast(const FText& Text, float Seconds)
@@ -443,7 +460,7 @@ void UWTAHudWidget::ShowTour(int32 Index, int32 Total, const FText& Title, const
 	TourBodyText->SetVisibility(Body.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 
 	TourBackButton->SetIsEnabled(Index > 0);
-	TourNextText->SetText(WTAText(Index >= Total - 1 ? TEXT("Explore on your own") : TEXT("Next (T)")));
+	TourNextText->SetText(WTAText(Index >= Total - 1 ? TEXT("Explore on your own") : (bVRMode ? TEXT("Next (A)") : TEXT("Next (T)"))));
 
 	if (OpenLabel.IsEmpty())
 	{
@@ -524,7 +541,7 @@ void UWTAHudWidget::SetCrosshairVisible(bool bVisible)
 {
 	if (CrosshairDot != nullptr)
 	{
-		CrosshairDot->SetVisibility(bVisible ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+		CrosshairDot->SetVisibility(bVisible && !bVRMode ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 	}
 }
 

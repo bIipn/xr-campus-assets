@@ -1,10 +1,12 @@
 // Walk the Archive - the intro / pause menu (built in C++, no widget asset).
 //
-// Title "Walk the Archive", a subtitle line, then: Enter (or Resume when paused), Take the tour, Visit together, a
-// Graphics row (Low, Medium, High, Epic, Cinematic, Auto; the current preset is printed next to it) and Quit.
+// Title "Walk the Archive", a subtitle line, then: Enter (or Resume when paused), Take the tour, Visit together,
+// Enter VR / Leave VR (only when a headset is connected, -vrsim was given, or VR is on), a Graphics row (Low, Medium,
+// High, Epic, Cinematic, Auto; the current preset is printed next to it) and Quit, over a line of the controls (the
+// headset's in VR).
 // Buttons go through HandleAction: "Enter" closes the menu, "Tour" closes it and starts the tour, "Visit" opens the
-// Visit together card (guided visits), "Graphics" applies Index (0..4) or runs auto-detect for -1, "Quit" calls
-// UKismetSystemLibrary::QuitGame.
+// Visit together card (guided visits), "VR" closes it and goes into or out of VR (AWTAPlayerController::ToggleVR),
+// "Graphics" applies Index (0..4) or runs auto-detect for -1, "Quit" calls UKismetSystemLibrary::QuitGame.
 
 #pragma once
 
@@ -40,6 +42,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WTA")
 	void RefreshGraphicsLabel();
 
+	/** Show or hide Enter VR / Leave VR, and the controls line, for the VR state now. */
+	UFUNCTION(BlueprintCallable, Category = "WTA")
+	void RefreshVR();
+
 protected:
 	virtual void NativeOnInitialized() override;
 
@@ -55,6 +61,9 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> EnterText;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> TourButton;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> VisitButton;
+	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> VRButton;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> VRText;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> ControlsText;
 	UPROPERTY(Transient) TObjectPtr<UHorizontalBox> GraphicsRow;
 	UPROPERTY(Transient) TObjectPtr<UTextBlock> GraphicsLabel;
 	UPROPERTY(Transient) TObjectPtr<UWTAActionButton> QuitButton;

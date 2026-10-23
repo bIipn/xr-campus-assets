@@ -26,7 +26,13 @@
 #include "UI/WTAMenuWidget.h"
 #include "UI/WTAPanelWidget.h"
 #include "UI/WTAVisitWidget.h"
+#include "UI/WTAVRRootWidget.h"
 #include "World/WTAExhibitActor.h"
+#include "XR/WTAVRRig.h"
+#include "XR/WTAVRScreenActor.h"
+#include "XR/WTAXR.h"
+#include "Components/Border.h"
+#include "Components/WidgetInteractionComponent.h"
 #include "World/WTATalkActor.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/PlayerCameraManager.h"
@@ -101,6 +107,30 @@ namespace
 		if (Subsystem != nullptr)
 		{
 			Subsystem->AddMappingContext(Context, 0);
+		}
+	}
+
+	/** VR: the card screen 1.15 m in front of the eye and 12 cm under it; the HUD screen 1.65 m off and 14 cm under. */
+	constexpr float VRCardDistance = 115.f;
+	constexpr float VRCardDrop = 12.f;
+	constexpr float VRHudDistance = 165.f;
+	constexpr float VRHudDrop = 14.f;
+	/** The card screen is 1280 x 800 pixels on 1.12 m, the HUD screen 1600 x 900 on 1.85 m (the HUD's own layout). */
+	const FIntPoint VRCardPixels(1280, 800);
+	constexpr float VRCardWidth = 112.f;
+	const FIntPoint VRHudPixels(1600, 900);
+	constexpr float VRHudWidth = 185.f;
+	/** How far the laser reaches, and the longest step it takes on the floor. */
+	constexpr float VRLaserReach = 2000.f;
+	constexpr float VRStepReach = 1200.f;
+
+	/** A card's full-screen scrim (its root border) shows on the desktop and goes clear in VR, so the card floats. */
+	void ShowScrim(UUserWidget* Widget, bool bShow)
+	{
+		UBorder* Root = Widget != nullptr && Widget->WidgetTree != nullptr ? Cast<UBorder>(Widget->WidgetTree->RootWidget) : nullptr;
+		if (Root != nullptr)
+		{
+			Root->SetBrushColor(FLinearColor(1.f, 1.f, 1.f, bShow ? 1.f : 0.f));
 		}
 	}
 
@@ -217,6 +247,13 @@ void AWTAPlayerController::BeginPlay()
 		Menu->Open(true);
 	}
 	SetUIMode(IsAnyPanelOpen());
+
+	// VR from the start: a headset still running (a guided visit changed the map), -headset, or -vrsim.
+	if (WTAXR::IsHeadsetEnabled() || WTAXR::IsHeadsetRequested() || WTAXR::IsSimulationRequested())
+	{
+		VRStartTries = 0;
+		StartVRWhenReady();
+	}
 }
 
 void AWTAPlayerController::SetupInputComponent()
@@ -250,6 +287,13 @@ void AWTAPlayerController::SetupInputComponent()
 	Input->BindAction(PhotoAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnPhoto);
 	Input->BindAction(VisitAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnVisit);
 	Input->BindAction(GatherAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnGather);
+	Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &AWTAPlayerController::OnInteractEnd);
+	Input->BindAction(VRSelectAction, ETriggerEvent::Started, this, &AWTAPlayerController::OnVRSelect);
+	Input->BindAction(VRSelectAction, ETriggerEvent::Completed, this, &AWTAPlayerController::OnVRSelectEnd);
+	Input->BindAction(VRTurnAction, ETriggerEvent::Triggered, this, &AWTAPlayerController::OnVRTurn);
+	Input->BindAction(VRTurnAction, ETriggerEvent::Completed, this, &AWTAPlayerController::OnVRTurnEnd);
+	Input->BindAction(VRScrollAction, ETriggerEvent::Triggered, this, &AWTAPlayerController::OnVRScroll);
+	Input->BindAction(VRWheelAction, ETriggerEvent::Triggered, this, &AWTAPlayerController::OnVRWheel);
 }
 
 void AWTAPlayerController::Tick(float DeltaSeconds)
@@ -260,6 +304,15 @@ void AWTAPlayerController::Tick(float DeltaSeconds)
 	if (InsideStageIds.Num() > 1)
 	{
 		UpdateFacedStage();
+	}
+
+	// VR: the screens follow what is open and where the head is, and the laser does what the crosshair does.
+	// Nothing walks the player there (GoToView travels by a fade), so the walking camera below has nothing to do.
+	if (bVRMode)
+	{
+		UpdateVRScreens(DeltaSeconds);
+		UpdateVRPointer();
+		return;
 	}
 
 	AWTACharacter* PlayerCharacter = GetWTACharacter();
@@ -357,6 +410,11 @@ void AWTAPlayerController::OnPossess(APawn* InPawn)
 	}
 	bHasPendingView = false;
 	bFaceTravelDirection = false;
+	// In VR a new pawn gets the rig too (a respawn keeps the headset view).
+	if (bVRMode && PlayerCharacter != nullptr && IsLocalController())
+	{
+		PlayerCharacter->StartVR(bVRHeadset);
+	}
 }
 
 // --- Setup -----------------------------------------------------------------------
@@ -422,6 +480,61 @@ void AWTAPlayerController::CreateInputObjects()
 	MappingContext->MapKey(PhotoAction, EKeys::Gamepad_FaceButton_Top);
 	MappingContext->MapKey(VisitAction, EKeys::V);
 	MappingContext->MapKey(GatherAction, EKeys::G);
+
+	// --- VR ---------------------------------------------------------------------------------------
+	// The controllers' keys live in their own context, added only in VR. OpenXR turns a context into an action set
+	// and each action into an OpenXR action (named after the descriptions; identical descriptions are not allowed),
+	// when a session starts: WTAXR::BeginSession hands it this one.
+	VRSelectAction = MakeAction(this, TEXT("IA_VRSelect"), EInputActionValueType::Boolean);
+	VRTurnAction   = MakeAction(this, TEXT("IA_VRTurn"), EInputActionValueType::Axis1D);
+	VRScrollAction = MakeAction(this, TEXT("IA_VRScroll"), EInputActionValueType::Axis1D);
+	VRWheelAction  = MakeAction(this, TEXT("IA_VRWheel"), EInputActionValueType::Axis1D);
+	MoveAction->ActionDescription = FText::FromString(TEXT("Walk"));
+	BackAction->ActionDescription = FText::FromString(TEXT("Back or menu"));
+	TourNextAction->ActionDescription = FText::FromString(TEXT("Next tour stop"));
+	PlacesAction->ActionDescription = FText::FromString(TEXT("Places"));
+	PhotoAction->ActionDescription = FText::FromString(TEXT("Postcard"));
+	VRSelectAction->ActionDescription = FText::FromString(TEXT("Point and select"));
+	VRTurnAction->ActionDescription = FText::FromString(TEXT("Turn"));
+	VRScrollAction->ActionDescription = FText::FromString(TEXT("Scroll"));
+	VRWheelAction->ActionDescription = FText::FromString(TEXT("Scroll wheel"));
+
+	// The simulation scrolls a card with the mouse wheel (nothing else in the game uses it).
+	MappingContext->MapKey(VRWheelAction, EKeys::MouseWheelAxis);
+
+	VRMappingContext = NewObject<UInputMappingContext>(this, FName(TEXT("IMC_WalkTheArchive_VR")));
+	VRMappingContext->ContextDescription = FText::FromString(TEXT("Walk the Archive in VR"));
+	// Left stick (Vive: trackpad) walks; right stick x turns, y scrolls; right trigger points and selects.
+	for (const FKey& Key : { EKeys::OculusTouch_Left_Thumbstick_2D, EKeys::ValveIndex_Left_Thumbstick_2D, EKeys::MixedReality_Left_Thumbstick_2D, EKeys::Vive_Left_Trackpad_2D })
+	{
+		AddDeadZone(this, VRMappingContext->MapKey(MoveAction, Key));
+	}
+	for (const FKey& Key : { EKeys::OculusTouch_Right_Thumbstick_X, EKeys::ValveIndex_Right_Thumbstick_X, EKeys::MixedReality_Right_Thumbstick_X, EKeys::Vive_Right_Trackpad_X })
+	{
+		VRMappingContext->MapKey(VRTurnAction, Key);
+	}
+	for (const FKey& Key : { EKeys::OculusTouch_Right_Thumbstick_Y, EKeys::ValveIndex_Right_Thumbstick_Y, EKeys::MixedReality_Right_Thumbstick_Y, EKeys::Vive_Right_Trackpad_Y })
+	{
+		VRMappingContext->MapKey(VRScrollAction, Key);
+	}
+	for (const FKey& Key : { EKeys::OculusTouch_Right_Trigger_Click, EKeys::ValveIndex_Right_Trigger_Click, EKeys::MixedReality_Right_Trigger_Click, EKeys::Vive_Right_Trigger_Click })
+	{
+		VRMappingContext->MapKey(VRSelectAction, Key);
+	}
+	// A: the tour's next stop. B and the left menu button: back (close the card, stand up, the menu).
+	for (const FKey& Key : { EKeys::OculusTouch_Right_A_Click, EKeys::ValveIndex_Right_A_Click, EKeys::MixedReality_Right_Trackpad_Click, EKeys::Vive_Right_Trackpad_Click })
+	{
+		VRMappingContext->MapKey(TourNextAction, Key);
+	}
+	for (const FKey& Key : { EKeys::OculusTouch_Right_B_Click, EKeys::ValveIndex_Right_B_Click, EKeys::MixedReality_Right_Menu_Click, EKeys::Vive_Right_Menu_Click,
+		EKeys::OculusTouch_Left_Menu_Click, EKeys::ValveIndex_Left_B_Click, EKeys::MixedReality_Left_Menu_Click, EKeys::Vive_Left_Menu_Click })
+	{
+		VRMappingContext->MapKey(BackAction, Key);
+	}
+	// Left Y (Index: left A) the places list; left X a postcard.
+	VRMappingContext->MapKey(PlacesAction, EKeys::OculusTouch_Left_Y_Click);
+	VRMappingContext->MapKey(PlacesAction, EKeys::ValveIndex_Left_A_Click);
+	VRMappingContext->MapKey(PhotoAction, EKeys::OculusTouch_Left_X_Click);
 }
 
 void AWTAPlayerController::CreateWidgets()
@@ -431,7 +544,7 @@ void AWTAPlayerController::CreateWidgets()
 		Hud = CreateWidget<UWTAHudWidget>(this, UWTAHudWidget::StaticClass());
 		if (Hud != nullptr)
 		{
-			Hud->AddToViewport(0);
+			AddToScreen(Hud, 0);
 		}
 	}
 	if (Panel == nullptr)
@@ -439,7 +552,7 @@ void AWTAPlayerController::CreateWidgets()
 		Panel = CreateWidget<UWTAPanelWidget>(this, UWTAPanelWidget::StaticClass());
 		if (Panel != nullptr)
 		{
-			Panel->AddToViewport(10);
+			AddToScreen(Panel, 10);
 			Panel->Close();
 		}
 	}
@@ -448,7 +561,7 @@ void AWTAPlayerController::CreateWidgets()
 		Chat = CreateWidget<UWTAChatWidget>(this, UWTAChatWidget::StaticClass());
 		if (Chat != nullptr)
 		{
-			Chat->AddToViewport(20);
+			AddToScreen(Chat, 20);
 			Chat->Close();
 		}
 	}
@@ -457,7 +570,7 @@ void AWTAPlayerController::CreateWidgets()
 		VisitCard = CreateWidget<UWTAVisitWidget>(this, UWTAVisitWidget::StaticClass());
 		if (VisitCard != nullptr)
 		{
-			VisitCard->AddToViewport(25);
+			AddToScreen(VisitCard, 25);
 			VisitCard->Close();
 		}
 	}
@@ -466,7 +579,7 @@ void AWTAPlayerController::CreateWidgets()
 		Menu = CreateWidget<UWTAMenuWidget>(this, UWTAMenuWidget::StaticClass());
 		if (Menu != nullptr)
 		{
-			Menu->AddToViewport(30);
+			AddToScreen(Menu, 30);
 			Menu->Close();
 		}
 	}
@@ -474,6 +587,23 @@ void AWTAPlayerController::CreateWidgets()
 
 void AWTAPlayerController::UpdateInputMode()
 {
+	if (bVRMode)
+	{
+		// VR: no cursor; the laser is the pointer (and, simulated, the mouse looks even with a card open).
+		FInputModeGameOnly Mode;
+		Mode.SetConsumeCaptureMouseDown(false);
+		SetInputMode(Mode);
+		bShowMouseCursor = false;
+		if (Interaction != nullptr)
+		{
+			Interaction->bUseMouseCursor = false;
+		}
+		if (Hud != nullptr)
+		{
+			Hud->SetCrosshairVisible(false);
+		}
+		return;
+	}
 	const bool bPanelOpen = IsAnyPanelOpen();
 	const bool bCursor = bPanelOpen || bCursorFree;
 	if (bCursor)
@@ -806,7 +936,7 @@ void AWTAPlayerController::ShowCertificate(FName TalkId, const FString& Name)
 		return;
 	}
 	Certificate->Build(*Row, TalkId, Name, CertificateDate(), false);
-	Certificate->AddToViewport(15);
+	AddToScreen(Certificate, 15);
 	SetUIMode(true);
 	UE_LOG(LogWTA, Log, TEXT("Certificate: '%s' made out to %s"), *Row->Title.ToString(), *Name);
 }
@@ -1026,7 +1156,9 @@ void AWTAPlayerController::ShowStoryPlaque(FName ItemId)
 		return;
 	}
 	const FText Kicker = (Row->bWax && !Row->Hall.IsEmpty()) ? Row->Hall : Row->Kind;
-	const FText Hint = bCursorFree
+	const FText Hint = bVRMode
+		? WTAText(TEXT("Pull the trigger to read the full story"))
+		: bCursorFree
 		? WTAText(TEXT("Click to read the full story"))
 		: WTAText(TEXT("Press E to read the full story"));
 	Hud->ShowStory(Kicker, Row->Date, Row->Title, WTAStorySummary(Row->Description, 200), Hint);
@@ -1216,6 +1348,25 @@ void AWTAPlayerController::GoToView(const FWTAView& View, bool bWalk)
 	{
 		return;
 	}
+	if (bVRMode)
+	{
+		// VR never walks the player (a camera moving on its own is what makes people sick): a short fade instead.
+		bHasPendingView = false;
+		bFaceTravelDirection = false;
+		if (bWalk)
+		{
+			VRTravel(View);
+		}
+		else
+		{
+			PlayerCharacter->TeleportToView(View);
+			if (CardScreen != nullptr && CardScreen->IsShown())
+			{
+				PlaceCardScreen();                     // the open card comes along
+			}
+		}
+		return;
+	}
 	if (!bWalk)
 	{
 		PlayerCharacter->TeleportToView(View);
@@ -1280,9 +1431,9 @@ void AWTAPlayerController::SetUIMode(bool bPanelOpen)
 
 void AWTAPlayerController::SetCursorFree(bool bFree)
 {
-	if (bCursorFree == bFree)
+	if (bCursorFree == bFree || (bVRMode && bFree))
 	{
-		return;
+		return;                                    // VR has no cursor: the laser points
 	}
 	bCursorFree = bFree;
 	UpdateInputMode();
@@ -1728,9 +1879,9 @@ void AWTAPlayerController::OnMove(const FInputActionValue& Value)
 
 void AWTAPlayerController::OnLook(const FInputActionValue& Value)
 {
-	if (bUIMode || bCursorFree)
+	if (bVRMode ? bVRHeadset : (bUIMode || bCursorFree))
 	{
-		return;
+		return;                                    // a headset looks with the head; the simulation's mouse aims the laser
 	}
 	const FVector2D Look = Value.Get<FVector2D>();
 	if (Look.IsNearlyZero())
@@ -1746,7 +1897,7 @@ void AWTAPlayerController::OnLook(const FInputActionValue& Value)
 
 void AWTAPlayerController::OnLookStick(const FInputActionValue& Value)
 {
-	if (bUIMode)
+	if (bVRMode ? bVRHeadset : bUIMode)
 	{
 		return;
 	}
@@ -1809,6 +1960,11 @@ void AWTAPlayerController::OnSprintEnd(const FInputActionValue& Value)
 
 void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 {
+	if (bVRMode)
+	{
+		VRSelect(true);                            // the simulation's mouse and E are the trigger
+		return;
+	}
 	if (bUIMode || Interaction == nullptr)
 	{
 		return;
@@ -1849,15 +2005,23 @@ void AWTAPlayerController::OnInteract(const FInputActionValue& Value)
 
 void AWTAPlayerController::OnBack(const FInputActionValue& Value)
 {
-	if (!CloseTopPanel())
+	if (CloseTopPanel())
 	{
-		ToggleMenu();
+		return;
 	}
+	// VR: B stands up from a seat (there is no E or Space at hand), then opens the menu.
+	AWTACharacter* Seated = bVRMode ? GetWTACharacter() : nullptr;
+	if (Seated != nullptr && Seated->IsSeated())
+	{
+		Seated->StandUp(true);
+		return;
+	}
+	ToggleMenu();
 }
 
 void AWTAPlayerController::OnToggleCursor(const FInputActionValue& Value)
 {
-	if (bUIMode)
+	if (bUIMode || bVRMode)
 	{
 		return;
 	}
@@ -1985,6 +2149,10 @@ FString AWTAPlayerController::TakePostcard()
 	{
 		Hud->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	if (UWTAVRRig* Rig = GetVRRig())
+	{
+		Rig->SetVisualsHidden(true);               // the hands and the laser stay out of the picture
+	}
 	FScreenshotRequest::RequestScreenshot(File, true, false);
 	LastPostcard = File;
 	UE_LOG(LogWTA, Display, TEXT("WTA postcard %s"), *File);
@@ -2001,6 +2169,10 @@ void AWTAPlayerController::FinishPostcard()
 	if (Hud != nullptr)
 	{
 		Hud->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	if (UWTAVRRig* Rig = GetVRRig())
+	{
+		Rig->SetVisualsHidden(false);
 	}
 	ShowToast(FText::Format(WTAText(TEXT("Postcard saved to {0}")), FText::FromString(LastPostcard)), 6.f);
 }
@@ -2111,6 +2283,11 @@ void AWTAPlayerController::HandleTourChanged(int32 Index)
 		// A visitor's tour follows the guide: no buttons to click, so the mouse keeps looking around.
 		ShowToast(FText::Format(WTAText(TEXT("{0} is starting the tour. You walk to each stop with the group.")), GuideName), 0.f);
 	}
+	else if (bTouring && !bTourActive && bVRMode)
+	{
+		// VR: the tour bar's buttons are pressed with the laser; nothing to free.
+		ShowToast(WTAText(TEXT("Tour: press A or point at Next. B ends the tour.")), 0.f);
+	}
 	else if (bTouring && !bTourActive)
 	{
 		if (!bCursorFree)
@@ -2153,4 +2330,645 @@ void AWTAPlayerController::HandleProgressReset()
 		}
 	}
 	ShowToast(WTAText(TEXT("Progress reset. The tokens are back in their hiding places.")), 0.f);
+}
+
+// --- VR ----------------------------------------------------------------------------------------
+
+UWTAVRRig* AWTAPlayerController::GetVRRig() const
+{
+	const AWTACharacter* Me = GetWTACharacter();
+	return Me != nullptr ? Me->GetVRRig() : nullptr;
+}
+
+bool AWTAPlayerController::CanEnterVR() const
+{
+	return bVRMode || WTAXR::IsHeadsetConnected() || WTAXR::IsSimulationRequested();
+}
+
+void AWTAPlayerController::AddToScreen(UUserWidget* Widget, int32 ZOrder)
+{
+	if (Widget == nullptr)
+	{
+		return;
+	}
+	// The postcard's frame (z 40) stays on the viewport: it is part of the picture taken of it.
+	UWTAVRRootWidget* Root = (!bVRMode || ZOrder >= 40) ? nullptr : (ZOrder == 0 ? HudRoot.Get() : CardRoot.Get());
+	if (Root != nullptr)
+	{
+		Root->AddLayer(Widget, ZOrder);
+		ShowScrim(Widget, false);
+		return;
+	}
+	Widget->RemoveFromParent();
+	Widget->AddToViewport(ZOrder);
+	ShowScrim(Widget, true);
+}
+
+void AWTAPlayerController::MoveWidgetsToScreens(bool bVR)
+{
+	UUserWidget* Layers[] = { Hud.Get(), Panel.Get(), Certificate.Get(), Chat.Get(), VisitCard.Get(), Menu.Get() };
+	const int32 Orders[] = { 0, 10, 15, 20, 25, 30 };
+	for (int32 i = 0; i < 6; ++i)
+	{
+		if (Layers[i] != nullptr)
+		{
+			AddToScreen(Layers[i], Orders[i]);
+		}
+	}
+	UE_LOG(LogWTA, Log, TEXT("WTA_VR widgets on the %s"), bVR ? TEXT("VR screens") : TEXT("viewport"));
+}
+
+bool AWTAPlayerController::EnterVR(bool bSimulate)
+{
+	AWTACharacter* Me = GetWTACharacter();
+	UWorld* World = GetWorld();
+	if (!IsLocalController() || Me == nullptr || World == nullptr)
+	{
+		return false;
+	}
+	if (bVRMode)
+	{
+		if (bVRHeadset == !bSimulate)
+		{
+			return true;
+		}
+		ExitVR();
+	}
+	CreateInputObjects();
+	bool bHeadset = false;
+	if (!bSimulate)
+	{
+		const bool bRunning = WTAXR::IsHeadsetEnabled();
+		bHeadset = bRunning || WTAXR::BeginSession(VRMappingContext);
+		if (!bHeadset)
+		{
+			ShowToast(WTAText(TEXT("No headset is running. Start Meta Quest Link or SteamVR, put the headset on, then choose Enter VR again.")), 7.f);
+			UE_LOG(LogWTA, Warning, TEXT("WTA_VR no headset to go into (%s)"), *WTAXR::HeadsetName());
+			return false;
+		}
+		if (bRunning && !WTAXR::HasGameBindings())
+		{
+			UE_LOG(LogWTA, Warning, TEXT("WTA_VR the headset started before the game (the engine's -vr), so the controllers have no bindings: start with -headset instead"));
+		}
+		WTAXR::UseFloorTracking();
+	}
+	bVRMode = true;
+	bVRHeadset = bHeadset;
+	WTAXR::SetPresentationActive(true);
+	bCursorFree = false;
+	bCursorFreedForTour = false;
+	bTurnLatched = false;
+	bHasPendingView = false;
+	bFaceTravelDirection = false;
+	if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			Subsystem->AddMappingContext(VRMappingContext, 1);
+		}
+	}
+
+	// The two screens, and the widgets onto them.
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	CardRoot = CreateWidget<UWTAVRRootWidget>(this, UWTAVRRootWidget::StaticClass());
+	HudRoot = CreateWidget<UWTAVRRootWidget>(this, UWTAVRRootWidget::StaticClass());
+	CardScreen = World->SpawnActor<AWTAVRScreenActor>(AWTAVRScreenActor::StaticClass(), FTransform::Identity, Params);
+	HudScreen = World->SpawnActor<AWTAVRScreenActor>(AWTAVRScreenActor::StaticClass(), FTransform::Identity, Params);
+	if (CardScreen != nullptr)
+	{
+		CardScreen->Init(CardRoot, VRCardPixels, VRCardWidth);
+	}
+	if (HudScreen != nullptr)
+	{
+		HudScreen->Init(HudRoot, VRHudPixels, VRHudWidth);
+	}
+	MoveWidgetsToScreens(true);
+	if (Hud != nullptr)
+	{
+		Hud->SetVRMode(true);
+		Hud->SetHoverLabel(FText::GetEmpty());
+	}
+	Me->StartVR(bHeadset);
+	if (Menu != nullptr)
+	{
+		Menu->RefreshVR();
+	}
+	if (!ShownStoryId.IsNone())
+	{
+		ShowStoryPlaque(ShownStoryId);              // the plaque's hint names the trigger now
+	}
+	UpdateInputMode();
+	SetUIMode(IsAnyPanelOpen());
+	ShowToast(WTAText(TEXT("VR: the left stick walks, the right stick turns, the trigger opens what the laser is on or steps where it points. B goes back.")), 7.f);
+	UE_LOG(LogWTA, Display, TEXT("WTA_VR on: %s (%s)"), bHeadset ? TEXT("headset") : TEXT("desktop simulation"), *WTAXR::HeadsetName());
+	return true;
+}
+
+void AWTAPlayerController::ExitVR()
+{
+	if (!bVRMode)
+	{
+		return;
+	}
+	if (bVRPressedScreen)
+	{
+		VRSelect(false);
+	}
+	if (AWTACharacter* Me = GetWTACharacter())
+	{
+		Me->StopVR();
+	}
+	bVRMode = false;
+	WTAXR::SetPresentationActive(false);
+	MoveWidgetsToScreens(false);
+	for (AWTAVRScreenActor* Screen : { CardScreen.Get(), HudScreen.Get() })
+	{
+		if (Screen != nullptr)
+		{
+			Screen->Destroy();
+		}
+	}
+	CardScreen = nullptr;
+	HudScreen = nullptr;
+	CardRoot = nullptr;
+	HudRoot = nullptr;
+	if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			Subsystem->RemoveMappingContext(VRMappingContext);
+		}
+	}
+	if (Interaction != nullptr)
+	{
+		Interaction->SetRayOverride(false);
+	}
+	bVRPointerOnScreen = false;
+	bVRWorldHit = false;
+	GetWorldTimerManager().ClearTimer(VRFadeTimer);
+	if (PlayerCameraManager != nullptr)
+	{
+		PlayerCameraManager->StopCameraFade();
+	}
+	if (Hud != nullptr)
+	{
+		Hud->SetVRMode(false);
+	}
+	if (bVRHeadset)
+	{
+		WTAXR::EnableHeadset(false);
+	}
+	bVRHeadset = false;
+	if (Menu != nullptr)
+	{
+		Menu->RefreshVR();
+	}
+	if (!ShownStoryId.IsNone())
+	{
+		ShowStoryPlaque(ShownStoryId);
+	}
+	UpdateInputMode();
+	SetUIMode(IsAnyPanelOpen());
+	UE_LOG(LogWTA, Display, TEXT("WTA_VR off"));
+}
+
+void AWTAPlayerController::ToggleVR()
+{
+	if (bVRMode)
+	{
+		ExitVR();
+		return;
+	}
+	EnterVR(!WTAXR::IsHeadsetConnected() && WTAXR::IsSimulationRequested());
+}
+
+void AWTAPlayerController::WTAVR(const FString& Mode)
+{
+	const FString Word = Mode.TrimStartAndEnd().ToLower();
+	if (Word == TEXT("off"))
+	{
+		ExitVR();
+	}
+	else if (Word == TEXT("sim"))
+	{
+		EnterVR(true);
+	}
+	else if (Word == TEXT("on") || Word == TEXT("headset"))
+	{
+		EnterVR(false);
+	}
+	else if (bVRMode)
+	{
+		ExitVR();
+	}
+	else
+	{
+		EnterVR(!WTAXR::IsHeadsetConnected());
+	}
+}
+
+void AWTAPlayerController::StartVRWhenReady()
+{
+	if (bVRMode || !IsLocalController())
+	{
+		return;
+	}
+	if (GetWTACharacter() == nullptr)
+	{
+		if (VRStartTries++ < 40)
+		{
+			GetWorldTimerManager().SetTimer(VRStartTimer, this, &AWTAPlayerController::StartVRWhenReady, 0.25f, false);
+		}
+		return;
+	}
+	const bool bHeadset = WTAXR::IsHeadsetEnabled() || WTAXR::IsHeadsetRequested();
+	if (bHeadset && EnterVR(false))
+	{
+		return;
+	}
+	if (WTAXR::IsSimulationRequested())
+	{
+		EnterVR(true);
+	}
+}
+
+void AWTAPlayerController::UpdateVRScreens(float DeltaSeconds)
+{
+	const UWTAVRRig* Rig = GetVRRig();
+	FVector Eye;
+	float HeadYaw = 0.f;
+	if (Rig != nullptr)
+	{
+		Eye = Rig->GetEyeLocation();
+		HeadYaw = Rig->GetHeadYaw();
+	}
+	else
+	{
+		FRotator Look;
+		GetPlayerViewPoint(Eye, Look);
+		HeadYaw = static_cast<float>(Look.Yaw);
+	}
+	const bool bCards = IsAnyPanelOpen();
+	if (CardScreen != nullptr)
+	{
+		if (bCards && !CardScreen->IsShown())
+		{
+			// A card appears square in front of the head at reading distance and stays put while cards are open.
+			PlaceCardScreen();
+			CardScreen->SetShown(true);
+		}
+		else if (!bCards && CardScreen->IsShown())
+		{
+			CardScreen->SetShown(false);
+		}
+	}
+	if (HudScreen != nullptr)
+	{
+		if (!bCards && !HudScreen->IsShown())
+		{
+			HudYaw = HeadYaw;
+			bHudTurning = false;
+			HudScreen->SetShown(true);
+		}
+		else if (bCards && HudScreen->IsShown())
+		{
+			HudScreen->SetShown(false);                     // a card takes the view; the HUD comes back after
+		}
+		if (HudScreen->IsShown())
+		{
+			// Ahead and a little low, going where the head goes; it turns after the head once the head is 35 degrees
+			// away, and settles in front of it again.
+			const float Off = FMath::FindDeltaAngleDegrees(HudYaw, HeadYaw);
+			if (FMath::Abs(Off) > 35.f)
+			{
+				bHudTurning = true;
+			}
+			if (bHudTurning)
+			{
+				HudYaw += Off * (1.f - FMath::Exp(-4.f * DeltaSeconds));
+				if (FMath::Abs(FMath::FindDeltaAngleDegrees(HudYaw, HeadYaw)) < 2.f)
+				{
+					bHudTurning = false;
+				}
+			}
+			// Nearer, and smaller by as much, when a wall is in the way: it looks the same and never goes into the wall.
+			const float Distance = VRClearDistance(Eye, HudYaw, VRHudDistance, VRHudDrop, VRHudWidth);
+			const float Shrink = Distance / VRHudDistance;
+			HudScreen->SetSizeScale(Shrink);
+			HudScreen->PlaceFacing(Eye, HudYaw, Distance, VRHudDrop * Shrink);
+		}
+	}
+}
+
+void AWTAPlayerController::UpdateVRPointer()
+{
+	AWTACharacter* Me = GetWTACharacter();
+	UWTAVRRig* Rig = Me != nullptr ? Me->GetVRRig() : nullptr;
+	UWorld* World = GetWorld();
+	if (Rig == nullptr || World == nullptr)
+	{
+		return;
+	}
+	FCollisionQueryParams Params(FName(TEXT("WTAVRLaser")), false, Me);
+	AWTAVRScreenActor* Screens[] = { CardScreen.Get(), HudScreen.Get() };
+	// What a screen does with a ray: the card screen takes it anywhere on its face, the HUD screen only on a button.
+	auto TraceScreens = [this, &Screens](const FVector& From, const FVector& Along, float& Reach, AWTAVRScreenActor*& OutScreen, FVector2D& OutPixel)
+	{
+		for (AWTAVRScreenActor* Screen : Screens)
+		{
+			float Distance = 0.f;
+			FVector2D Pixel;
+			if (Screen != nullptr && Screen->Trace(From, Along, Reach, Distance, Pixel) && (Screen == CardScreen || Screen->IsInteractiveAt(Pixel)))
+			{
+				Reach = Distance;
+				OutScreen = Screen;
+				OutPixel = Pixel;
+			}
+		}
+	};
+	// The screens draw over everything (no depth test), so a screen in the laser's way wins over the world, however
+	// near a wall is.
+	if (!bVRHeadset)
+	{
+		// The simulation: the right hand aims at what the middle of the view is on (a screen first).
+		const FVector Eye = Me->GetEyeLocation();
+		const FVector Look = GetControlRotation().Vector();
+		float Reach = VRLaserReach;
+		AWTAVRScreenActor* Seen = nullptr;
+		FVector2D SeenPixel;
+		TraceScreens(Eye, Look, Reach, Seen, SeenPixel);
+		FHitResult EyeHit;
+		if (Seen == nullptr && World->LineTraceSingleByChannel(EyeHit, Eye, Eye + Look * VRLaserReach, ECC_Visibility, Params))
+		{
+			Reach = EyeHit.Distance;
+		}
+		Rig->SetSimAimTarget(Eye + Look * Reach);
+	}
+	FVector Start;
+	FVector Direction;
+	Rig->GetAimRay(Start, Direction);
+	float Reach = VRLaserReach;
+	AWTAVRScreenActor* OnScreen = nullptr;
+	FVector2D Pixel = FVector2D::ZeroVector;
+	TraceScreens(Start, Direction, Reach, OnScreen, Pixel);
+	bVRPointerOnScreen = OnScreen != nullptr;
+	FHitResult WorldHit;
+	bVRWorldHit = OnScreen == nullptr && World->LineTraceSingleByChannel(WorldHit, Start, Start + Direction * VRLaserReach, ECC_Visibility, Params);
+	VRWorldHit = bVRWorldHit ? WorldHit : FHitResult();
+
+	// The screens' pointer gets a hit on a screen, or none (its line still set, so it knows where it points).
+	FHitResult PointerHit;
+	PointerHit.TraceStart = Start;
+	PointerHit.TraceEnd = Start + Direction * VRLaserReach;
+	if (OnScreen != nullptr)
+	{
+		PointerHit.bBlockingHit = true;
+		PointerHit.Distance = Reach;
+		PointerHit.Location = Start + Direction * Reach;
+		PointerHit.ImpactPoint = PointerHit.Location;
+		PointerHit.Normal = OnScreen->GetActorForwardVector();
+		PointerHit.ImpactNormal = PointerHit.Normal;
+		PointerHit.Component = OnScreen->Screen.Get();
+		PointerHit.HitObjectHandle = FActorInstanceHandle(OnScreen);
+	}
+	if (UWidgetInteractionComponent* Pointer = Rig->GetPointer())
+	{
+		Pointer->SetCustomHitResult(PointerHit);
+	}
+	// The world under the laser, unless a screen is in the way.
+	if (Interaction != nullptr)
+	{
+		Interaction->SetRayOverride(true, Start, Direction, OnScreen != nullptr);
+	}
+	const bool bOnButton = OnScreen != nullptr && OnScreen->IsInteractiveAt(Pixel);
+	const bool bOnThing = OnScreen == nullptr && Interaction != nullptr && Interaction->HasHover();
+	const FVector End = OnScreen != nullptr ? FVector(PointerHit.ImpactPoint)
+		: (bVRWorldHit ? FVector(WorldHit.ImpactPoint) : Start + Direction * VRLaserReach);
+	Rig->SetLaser(End, OnScreen != nullptr || bVRWorldHit, bOnButton || bOnThing);
+	Rig->SetLabel(bOnThing ? Interaction->HoverLabel : FText::GetEmpty());
+}
+
+void AWTAPlayerController::VRSelect(bool bPressed)
+{
+	UWTAVRRig* Rig = GetVRRig();
+	UWidgetInteractionComponent* Pointer = Rig != nullptr ? Rig->GetPointer() : nullptr;
+	if (!bPressed)
+	{
+		if (bVRPressedScreen && Pointer != nullptr)
+		{
+			Pointer->ReleasePointerKey(EKeys::LeftMouseButton);
+		}
+		bVRPressedScreen = false;
+		return;
+	}
+	if (Rig == nullptr)
+	{
+		return;
+	}
+	// A button (or anywhere on a card's screen): the press goes there, and its release after it.
+	if (bVRPointerOnScreen && Pointer != nullptr)
+	{
+		Pointer->PressPointerKey(EKeys::LeftMouseButton);
+		bVRPressedScreen = true;
+		return;
+	}
+	// Away from an open card: as a click outside it.
+	if (IsAnyPanelOpen())
+	{
+		CloseTopPanel();
+		return;
+	}
+	if (Interaction != nullptr && Interaction->TryInteract())
+	{
+		return;
+	}
+	// The floor: a step there.
+	if (bVRWorldHit && VRWorldHit.ImpactNormal.Z > 0.7f)
+	{
+		VRStepToFloor(VRWorldHit.ImpactPoint);
+		return;
+	}
+	// In a wax scene with nothing else under the laser: the scene's story, as E does.
+	if (!StageStoryId.IsNone())
+	{
+		OpenExhibit(StageStoryId);
+	}
+}
+
+void AWTAPlayerController::VRStepToFloor(const FVector& Point)
+{
+	AWTACharacter* Me = GetWTACharacter();
+	UWTAVRRig* Rig = Me != nullptr ? Me->GetVRRig() : nullptr;
+	if (Rig == nullptr || FVector::Dist2D(Rig->GetEyeLocation(), Point) > VRStepReach)
+	{
+		return;                                        // too far for one step
+	}
+	FVector Floor = Point;
+	if (UNavigationSystemV1* Nav = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
+	{
+		FNavLocation Projected;
+		if (!Nav->ProjectPointToNavigation(Point, Projected, FVector(40.f, 40.f, 100.f)))
+		{
+			return;                                    // nowhere a person stands (a table top, a ledge)
+		}
+		Floor = Projected.Location;
+	}
+	const FRotator Head = Rig->GetHeadRotation();
+	FWTAView View;
+	View.Location = Floor + FVector(0.f, 0.f, Me->EyeHeight);
+	View.Yaw = static_cast<float>(Head.Yaw);
+	View.Pitch = static_cast<float>(Head.Pitch);
+	View.bValid = true;
+	UE_LOG(LogWTA, Log, TEXT("WTA_VR step to %s"), *Floor.ToCompactString());
+	VRTravel(View);
+}
+
+void AWTAPlayerController::VRTravel(const FWTAView& View)
+{
+	// A tenth of a second to black, the move, then back in a fifth: quick enough to keep the place in mind.
+	if (PlayerCameraManager != nullptr)
+	{
+		PlayerCameraManager->StartCameraFade(0.f, 1.f, 0.1f, FLinearColor::Black, false, true);
+	}
+	GetWorldTimerManager().SetTimer(VRFadeTimer, FTimerDelegate::CreateWeakLambda(this, [this, View]()
+	{
+		if (AWTACharacter* Me = GetWTACharacter())
+		{
+			Me->TeleportToView(View);
+		}
+		// An open card comes along (an exhibit's card opens as the player goes to its view spot).
+		if (CardScreen != nullptr && CardScreen->IsShown())
+		{
+			PlaceCardScreen();
+		}
+		if (PlayerCameraManager != nullptr)
+		{
+			PlayerCameraManager->StartCameraFade(1.f, 0.f, 0.18f, FLinearColor::Black, false, false);
+		}
+	}), 0.1f, false);
+}
+
+void AWTAPlayerController::PlaceCardScreen()
+{
+	if (CardScreen == nullptr)
+	{
+		return;
+	}
+	const UWTAVRRig* Rig = GetVRRig();
+	FVector Eye;
+	float HeadYaw = 0.f;
+	if (Rig != nullptr)
+	{
+		Eye = Rig->GetEyeLocation();
+		HeadYaw = Rig->GetHeadYaw();
+	}
+	else
+	{
+		FRotator Look;
+		GetPlayerViewPoint(Eye, Look);
+		HeadYaw = static_cast<float>(Look.Yaw);
+	}
+	const float Distance = VRClearDistance(Eye, HeadYaw, VRCardDistance, VRCardDrop, VRCardWidth);
+	const float Shrink = Distance / VRCardDistance;
+	CardScreen->SetSizeScale(Shrink);
+	CardScreen->PlaceFacing(Eye, HeadYaw, Distance, VRCardDrop * Shrink);
+}
+
+float AWTAPlayerController::VRClearDistance(const FVector& Eye, float Yaw, float Distance, float Drop, float WidthCm) const
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+	{
+		return Distance;
+	}
+	// Three rays from the eye to the screen's middle and its two sides: the nearest wall along the way, less a hand.
+	FCollisionQueryParams Params(FName(TEXT("WTAVRScreenRoom")), false, GetPawn());
+	const FVector Forward = FRotator(0.f, Yaw, 0.f).Vector();
+	const FVector Right = FRotator(0.f, Yaw + 90.f, 0.f).Vector();
+	float Clear = Distance;
+	for (const float Side : { 0.f, -0.5f, 0.5f })
+	{
+		const FVector Target = Eye + Forward * Distance + Right * (Side * WidthCm) - FVector(0.f, 0.f, Drop);
+		FHitResult Hit;
+		if (World->LineTraceSingleByChannel(Hit, Eye, Target, ECC_Visibility, Params))
+		{
+			Clear = FMath::Min(Clear, static_cast<float>(FVector::DotProduct(Hit.ImpactPoint - Eye, Forward)) - 8.f);
+		}
+	}
+	return FMath::Clamp(Clear, 45.f, Distance);
+}
+
+void AWTAPlayerController::OnInteractEnd(const FInputActionValue& Value)
+{
+	if (bVRMode)
+	{
+		VRSelect(false);
+	}
+}
+
+void AWTAPlayerController::OnVRSelect(const FInputActionValue& Value)
+{
+	if (bVRMode)
+	{
+		VRSelect(true);
+	}
+}
+
+void AWTAPlayerController::OnVRSelectEnd(const FInputActionValue& Value)
+{
+	if (bVRMode)
+	{
+		VRSelect(false);
+	}
+}
+
+void AWTAPlayerController::OnVRTurn(const FInputActionValue& Value)
+{
+	if (!bVRMode || bUIMode)
+	{
+		return;
+	}
+	// One 30 degree turn per push of the stick; it turns again once the stick has come back to the middle.
+	const float X = Value.Get<float>();
+	if (!bTurnLatched && FMath::Abs(X) > 0.7f)
+	{
+		bTurnLatched = true;
+		if (UWTAVRRig* Rig = GetVRRig())
+		{
+			Rig->SnapTurn(X > 0.f ? 30.f : -30.f);
+		}
+	}
+	else if (bTurnLatched && FMath::Abs(X) < 0.3f)
+	{
+		bTurnLatched = false;
+	}
+}
+
+void AWTAPlayerController::OnVRTurnEnd(const FInputActionValue& Value)
+{
+	bTurnLatched = false;
+}
+
+void AWTAPlayerController::OnVRScroll(const FInputActionValue& Value)
+{
+	UWTAVRRig* Rig = bVRMode && bVRPointerOnScreen ? GetVRRig() : nullptr;
+	UWidgetInteractionComponent* Pointer = Rig != nullptr ? Rig->GetPointer() : nullptr;
+	const float Y = Value.Get<float>();
+	if (Pointer != nullptr && FMath::Abs(Y) > 0.2f)
+	{
+		// Up scrolls up, as a wheel does: about ten notches a second at full tilt.
+		const float DeltaSeconds = GetWorld() != nullptr ? GetWorld()->GetDeltaSeconds() : 0.016f;
+		Pointer->ScrollWheel(Y * DeltaSeconds * 10.f);
+	}
+}
+
+void AWTAPlayerController::OnVRWheel(const FInputActionValue& Value)
+{
+	UWTAVRRig* Rig = bVRMode && bVRPointerOnScreen ? GetVRRig() : nullptr;
+	if (UWidgetInteractionComponent* Pointer = Rig != nullptr ? Rig->GetPointer() : nullptr)
+	{
+		Pointer->ScrollWheel(Value.Get<float>());
+	}
 }

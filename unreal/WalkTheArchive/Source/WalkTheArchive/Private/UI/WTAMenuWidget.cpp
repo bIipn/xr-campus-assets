@@ -28,6 +28,7 @@ namespace
 	const FName NAME_MenuEnter(TEXT("Enter"));
 	const FName NAME_MenuTour(TEXT("Tour"));
 	const FName NAME_MenuVisit(TEXT("Visit"));
+	const FName NAME_MenuVR(TEXT("VR"));
 	const FName NAME_MenuGraphics(TEXT("Graphics"));
 	const FName NAME_MenuQuit(TEXT("Quit"));
 
@@ -109,7 +110,17 @@ void UWTAMenuWidget::NativeOnInitialized()
 	VisitButton = MakeMenuButton(Tree, WTAText(TEXT("Visit together")), NAME_MenuVisit, -1,
 		WTAStyle::SecondaryButton(), WTAStyle::Font(15), WTAStyle::Bone());
 	VisitButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
-	Column->AddChildToVerticalBox(VisitButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 24.f));
+	Column->AddChildToVerticalBox(VisitButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+
+	// VR: into the headset, or back out of it (shown when there is a headset to go into).
+	UTextBlock* VRLabel = nullptr;
+	VRButton = MakeMenuButton(Tree, WTAText(TEXT("Enter VR")), NAME_MenuVR, -1,
+		WTAStyle::SecondaryButton(), WTAStyle::Font(15), WTAStyle::Brass(), &VRLabel);
+	VRText = VRLabel;
+	VRButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
+	VRButton->SetVisibility(ESlateVisibility::Collapsed);
+	Column->AddChildToVerticalBox(VRButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 10.f));
+	Column->AddChildToVerticalBox(Tree->ConstructWidget<USpacer>(USpacer::StaticClass()))->SetPadding(FMargin(0.f, 0.f, 0.f, 14.f));
 
 	// Graphics presets.
 	GraphicsLabel = WTAWidgets::MakeText(Tree, WTAText(TEXT("GRAPHICS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
@@ -137,12 +148,11 @@ void UWTAMenuWidget::NativeOnInitialized()
 	QuitButton->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 	Column->AddChildToVerticalBox(QuitButton)->SetPadding(FMargin(0.f, 0.f, 0.f, 18.f));
 
-	// Controls line.
-	UTextBlock* Controls = WTAWidgets::MakeText(Tree,
-		WTAText(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 V visit together \u00B7 Esc menu")),
-		WTAStyle::Font(11), WTAStyle::BoneDim(), true);
-	Controls->SetJustification(ETextJustify::Center);
-	Column->AddChildToVerticalBox(Controls);
+	// Controls line (the headset's in VR: RefreshVR).
+	ControlsText = WTAWidgets::MakeText(Tree, FText::GetEmpty(), WTAStyle::Font(11), WTAStyle::BoneDim(), true);
+	ControlsText->SetJustification(ETextJustify::Center);
+	Column->AddChildToVerticalBox(ControlsText);
+	RefreshVR();
 
 	bOpen = false;
 	SetVisibility(ESlateVisibility::Collapsed);
@@ -163,9 +173,30 @@ void UWTAMenuWidget::Open(bool bInIntro)
 			: TEXT("The campus keeps running while this is open. Resume to carry on where you were.")));
 	}
 	RefreshGraphicsLabel();
+	RefreshVR();
 
 	bOpen = true;
 	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}
+
+void UWTAMenuWidget::RefreshVR()
+{
+	const AWTAPlayerController* PC = Cast<AWTAPlayerController>(GetOwningPlayer());
+	const bool bVR = PC != nullptr && PC->IsVRMode();
+	if (VRButton != nullptr)
+	{
+		VRButton->SetVisibility(PC != nullptr && PC->CanEnterVR() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	}
+	if (VRText != nullptr)
+	{
+		VRText->SetText(WTAText(bVR ? TEXT("Leave VR") : TEXT("Enter VR")));
+	}
+	if (ControlsText != nullptr)
+	{
+		ControlsText->SetText(bVR
+			? WTAText(TEXT("Left stick walk \u00B7 right stick turns \u00B7 trigger points, opens and steps where it points \u00B7 A next stop \u00B7 B back \u00B7 menu button: this menu"))
+			: WTAText(TEXT("WASD walk \u00B7 mouse look \u00B7 Shift sprint \u00B7 E or click opens things \u00B7 Tab frees the cursor \u00B7 T tour \u00B7 M places \u00B7 Enter asks the staff \u00B7 P postcard \u00B7 V visit together \u00B7 Esc menu")));
+	}
 }
 
 void UWTAMenuWidget::Close()
@@ -222,6 +253,14 @@ void UWTAMenuWidget::HandleAction(FName Action, FName Arg, int32 Index)
 		{
 			PC->CloseTopPanel();
 			PC->ToggleVisitCard();
+		}
+	}
+	else if (Action == NAME_MenuVR)
+	{
+		if (PC != nullptr)
+		{
+			PC->CloseTopPanel();
+			PC->ToggleVR();
 		}
 	}
 	else if (Action == NAME_MenuGraphics)

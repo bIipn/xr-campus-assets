@@ -27,6 +27,12 @@ bool UWTAInteractionComponent::ComputeTraceRay(FVector& OutStart, FVector& OutDi
 	{
 		return false;
 	}
+	if (bRayOverride)
+	{
+		OutStart = RayStart;
+		OutDirection = RayDirection;
+		return !bRayBlocked && !RayDirection.IsNearlyZero();
+	}
 	if (bUseMouseCursor)
 	{
 		FVector WorldLocation;
@@ -106,6 +112,14 @@ AActor* UWTAInteractionComponent::GetHovered() const
 bool UWTAInteractionComponent::HasHover() const
 {
 	return Hovered.IsValid();
+}
+
+void UWTAInteractionComponent::SetRayOverride(bool bOn, const FVector& Start, const FVector& Direction, bool bBlocked)
+{
+	bRayOverride = bOn;
+	bRayBlocked = bOn && bBlocked;
+	RayStart = Start;
+	RayDirection = Direction.GetSafeNormal();
 }
 
 bool UWTAInteractionComponent::GetLastHitLocation(FVector& OutLocation, FVector& OutNormal) const
