@@ -128,7 +128,7 @@ def setup_materials():
     material('st_onair_e', 'stories_onair', emission=True, emission_strength=0.9)
     material('st_bulb_e', color=(1, 1, 1, 1), emission=(1.0, 0.82, 0.55, 1), emission_strength=4.0)
     material('st_shade_e', color=(0.95, 0.88, 0.75, 1), emission=(1.0, 0.80, 0.55, 1), emission_strength=1.2)
-    material('st_canvas', color=(0.62, 0.53, 0.40, 1), roughness=0.92)                  # the tote on the coat rail
+    material('st_canvas', color=(0.30, 0.24, 0.155, 1), roughness=0.92)                 # the tote on the coat rail (khaki)
     material('st_led_e', color=(1, 0.1, 0.05, 1), emission=(1.0, 0.1, 0.05, 1), emission_strength=6.0)
     material('st_mark', color=(0.2, 0.2, 0.2, 1), roughness=0.9)
 

@@ -40,7 +40,7 @@ BLENDER_NITS = {
     "laylight_e": 2500.0,     # the glazing under the museum's laylights and the Reading Room's
     "oculus_e": 6000.0,       # the sky in the rotunda's oculus
     "bulb_e": 3000.0,
-    "st_shade_e": 14.0,       # the Lost Stories cabin's linen drum shade, lit from inside (before "shade_e": it matches)
+    "st_shade_e": 10.0,       # the Lost Stories cabin's linen drum shade, lit from inside (before "shade_e": it matches)
     "shade_e": 60.0,          # the reading lamps' green cased glass: a faint glow through it
     "shadein_e": 1500.0,      # their warm opal lining, lit by the tube under it
 }
