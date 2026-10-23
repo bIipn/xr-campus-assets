@@ -50,7 +50,7 @@ namespace
 		{
 			Out.AppendChar(Words[i][0]);
 		}
-		return Out.ToUpper();
+		return WTAUpper(Out);
 	}
 
 	UTextBlock* CentredText(UWidgetTree* Tree, UVerticalBox* Column, const FText& Text, const FSlateFontInfo& Font, const FLinearColor& Colour, float Below)
@@ -165,7 +165,7 @@ UWidget* UWTACertificateWidget::MakeSheet(float S)
 	UVerticalBox* Column = Tree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass());
 	Inner->SetContent(Column);
 
-	CentredText(Tree, Column, FText::FromString(Org.ToString().ToUpper() + (Campus.IsEmpty() ? FString() : TEXT("  ·  ") + Campus.ToUpper())),
+	CentredText(Tree, Column, FText::FromString(WTAUpper(Org.ToString()) + (Campus.IsEmpty() ? FString() : TEXT("  ·  ") + WTAUpper(Campus))),
 		WTAStyle::Kicker(FMath::RoundToInt(16.f * S)), WTAStyle::BrassDark(), 26.f * S);
 	CentredText(Tree, Column, !Row.Certificate.Title.IsEmpty() ? Row.Certificate.Title : WTAText(TEXT("Certificate of Completion")),
 		WTAStyle::Serif(FMath::RoundToInt(72.f * S)), WTAStyle::CardInk(), 10.f * S);

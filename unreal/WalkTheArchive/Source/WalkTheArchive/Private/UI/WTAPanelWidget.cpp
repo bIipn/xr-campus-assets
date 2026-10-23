@@ -74,7 +74,7 @@ namespace
 
 	FText PanelUpper(const FText& Text)
 	{
-		return FText::FromString(Text.ToString().ToUpper());
+		return WTAUpper(Text);
 	}
 
 	FText PanelText(const TCHAR* Text)

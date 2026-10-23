@@ -21,3 +21,15 @@ inline FText WTAText(const FString& English)
 {
 	return UWTAContentSubsystem::Tr(English);
 }
+
+/** Capitals for a kicker in any language: FText::ToUpper (ICU) turns "formación" into "FORMACIÓN", where
+    FString::ToUpper only knows a to z. */
+inline FString WTAUpper(const FString& Text)
+{
+	return FText::FromString(Text).ToUpper().ToString();
+}
+
+inline FText WTAUpper(const FText& Text)
+{
+	return Text.ToUpper();
+}

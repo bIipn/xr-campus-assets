@@ -200,7 +200,7 @@ int32 AWTAGalleryWallActor::Refresh()
 
 	// The title plate above the row.
 	MakePlane(FVector(0.f, 0.f, RowHeightCm + PictureHeightCm / 2.f + 46.f), 190.f, 22.f, 1.f, PlainMaterial, nullptr, BrassColour);
-	MakeText(FVector(0.f, 0.f, RowHeightCm + PictureHeightCm / 2.f + 54.f), Title.ToString().ToUpper(), 9.f, InkColour);
+	MakeText(FVector(0.f, 0.f, RowHeightCm + PictureHeightCm / 2.f + 54.f), WTAUpper(Title.ToString()), 9.f, InkColour);
 
 	if (Pictures.Num() == 0 || UnlitMaterial == nullptr)
 	{

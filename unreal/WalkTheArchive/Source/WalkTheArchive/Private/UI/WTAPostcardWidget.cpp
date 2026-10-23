@@ -1,6 +1,7 @@
 // Walk the Archive - the postcard frame (photo mode).
 
 #include "UI/WTAPostcardWidget.h"
+#include "Core/WTAText.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/CanvasPanel.h"
@@ -30,7 +31,7 @@ namespace
 
 	FText Upper(const FString& Text)
 	{
-		return FText::FromString(Text.ToUpper());
+		return FText::FromString(WTAUpper(Text));
 	}
 }
 

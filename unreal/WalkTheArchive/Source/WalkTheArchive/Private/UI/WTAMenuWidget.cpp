@@ -82,7 +82,7 @@ void UWTAMenuWidget::NativeOnInitialized()
 	const UWTASettings* Settings = UWTASettings::Get();
 	const FString ClientName = Settings != nullptr && !Settings->ClientName.IsEmpty() ? Settings->ClientName : TEXT("XR Libraries");
 	const FString CampusTitle = Settings != nullptr && !Settings->CampusTitle.IsEmpty() ? Settings->CampusTitle : TEXT("Walk the Archive");
-	UTextBlock* Kicker = WTAWidgets::MakeText(Tree, FText::FromString(ClientName.Replace(TEXT(" "), TEXT("")).ToUpper() + TEXT(" CAMPUS")), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
+	UTextBlock* Kicker = WTAWidgets::MakeText(Tree, WTAUpper(FText::Format(WTAText(TEXT("{0} Campus")), FText::FromString(ClientName.Replace(TEXT(" "), TEXT(""))))), WTAStyle::Font(12, true), WTAStyle::Brass(), false);
 	Column->AddChildToVerticalBox(Kicker)->SetPadding(FMargin(0.f, 0.f, 0.f, 6.f));
 
 	TitleText = WTAWidgets::MakeText(Tree, FText::FromString(CampusTitle), WTAStyle::Font(34, true), WTAStyle::Bone(), true);
@@ -110,11 +110,11 @@ void UWTAMenuWidget::NativeOnInitialized()
 
 	GraphicsRow = Tree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 	{
-		const TCHAR* Labels[] = { TEXT("Low"), TEXT("Medium"), TEXT("High"), TEXT("Epic"), TEXT("Cinematic"), TEXT("Auto") };
+		const FText Labels[] = { WTAText(TEXT("Low")), WTAText(TEXT("Medium")), WTAText(TEXT("High")), WTAText(TEXT("Epic")), WTAText(TEXT("Cinematic")), WTAText(TEXT("Auto")) };
 		const int32 Levels[] = { 0, 1, 2, 3, 4, -1 };
 		for (int32 i = 0; i < 6; ++i)
 		{
-			UWTAActionButton* Button = MakeMenuButton(Tree, FText::FromString(Labels[i]), NAME_MenuGraphics, Levels[i],
+			UWTAActionButton* Button = MakeMenuButton(Tree, Labels[i], NAME_MenuGraphics, Levels[i],
 				WTAStyle::SecondaryButton(), WTAStyle::Font(12), WTAStyle::Bone());
 			Button->OnAction.AddDynamic(this, &UWTAMenuWidget::HandleAction);
 			UHorizontalBoxSlot* ButtonSlot = GraphicsRow->AddChildToHorizontalBox(Button);
@@ -174,7 +174,7 @@ void UWTAMenuWidget::RefreshGraphicsLabel()
 		return;
 	}
 	const int32 Level = UWTAGraphicsLibrary::GetQualityPreset();
-	const FString Name = UWTAGraphicsLibrary::GetQualityPresetLabel(Level).ToString().ToUpper();
+	const FString Name = WTAUpper(UWTAGraphicsLibrary::GetQualityPresetLabel(Level).ToString());
 	GraphicsLabel->SetText(FText::Format(WTAText(TEXT("GRAPHICS \u00B7 {0}")), FText::FromString(Name)));
 }
 

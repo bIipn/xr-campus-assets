@@ -310,7 +310,7 @@ void UWTAHudWidget::SetRoom(const FText& Kicker, const FText& Name, const FText&
 		RoomPlate->SetVisibility(ESlateVisibility::Collapsed);
 		return;
 	}
-	RoomKickerText->SetText(FText::FromString(Kicker.ToString().ToUpper()));
+	RoomKickerText->SetText(WTAUpper(Kicker));
 	RoomKickerText->SetVisibility(Kicker.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 	RoomNameText->SetText(Name);
 	RoomNameText->SetVisibility(Name.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
@@ -481,7 +481,7 @@ void UWTAHudWidget::ShowStory(const FText& Kicker, const FText& Year, const FTex
 	// Re-showing the same story (e.g. looking away and back) keeps it on screen without a new fade.
 	const bool bSameStory = bStoryShowing && StoryTitleText != nullptr && StoryTitleText->GetText().EqualTo(Title);
 
-	HudSetOptional(StoryKickerText, FText::FromString(Kicker.ToString().ToUpper()));
+	HudSetOptional(StoryKickerText, WTAUpper(Kicker));
 	HudSetOptional(StoryYearText, Year);
 	HudSetOptional(StoryTitleText, Title);
 	HudSetOptional(StorySummaryText, Summary);
