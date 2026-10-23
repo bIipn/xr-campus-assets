@@ -105,7 +105,9 @@ def calibrate_glows(mis, facts, report):
         if GLOW_MARK not in name and blender is None:
             continue
         fact = facts.get(name)
-        if fact is None or fact["strength"] is None:
+        # A Blender fixture's luminance comes from BLENDER_NITS, so it needs no strength from the GLB (the exporter
+        # writes none for a strength of 1 or less: the reading lamps' glass).
+        if fact is None or (fact["strength"] is None and blender is None):
             unmatched.append(name)
             continue
         target = blender if blender is not None else glow_nits(fact["asset"], float(fact["strength"]), fact["emissive"])
