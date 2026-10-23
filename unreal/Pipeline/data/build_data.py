@@ -794,7 +794,10 @@ def build_wax(L):
         act = acting.get(w['id'], {})
         beats = act.get('figures', {})
         figures = []
+        place = act.get('place', {})
         for c in w.get('cast', []):
+            # a figure the acting data re-places (wax_acting.json scenes[id].place[var]: at, ry) stands there instead
+            c = dict(c, **place.get(c['var'], {}))
             figure = wax_figure(w['id'], c)
             figure['Beats'] = [wax_beat(b) for b in beats.get(c['var'], [])]
             figures.append(figure)

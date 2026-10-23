@@ -3,7 +3,8 @@ doorway from both sides (straight on and from either side, looking up at the hea
 from 35 degrees either way, every room toward each wall, the library's displayed books, the walls trees stand near,
 and each Wax Hall stage from far and near, four frames each.
 
-    python3 unreal/Tools/qa/make_survey_views.py      # -> survey_doors.txt, survey_walls.txt, survey_wax.txt here
+    python3 unreal/Tools/qa/make_survey_views.py      # -> survey_doors.txt, survey_walls.txt, survey_wax.txt,
+                                                      #    survey_fixes.txt (Ev's Oct 23 list, checked) here
 
 On the PC: copy one to WalkTheArchive/Saved/QA/ and run `WTAShotList 3 <file>` in -game.
 """
@@ -131,8 +132,36 @@ def wax_views():
                 out.append('wax_%s_%s_%d | %.0f %.0f %.0f | %.1f %.1f' % (r['Name'], tag, k, cx, cy, 162, look, pitch))
     return out
 
+def look(name, eye, at):
+    """A camera at eye looking at at (campus metres)."""
+    dx, dy, dz = at[0] - eye[0], at[1] - eye[1], at[2] - eye[2]
+    return line(name, eye[0], eye[1], eye[2], math.degrees(math.atan2(dz, dx)), math.degrees(math.atan2(dy, math.hypot(dx, dz))))
+
+def fix_views():
+    """Ev's Oct 23 list, checked: the museum's glass cases (the third one turning: three frames), the exhibits in
+    their gilt panels, the museum's doorway heads, the library's display covers, the trees by the galleries, the Wax
+    Hall's reading rails and the scenes whose acting changed (near, four frames each)."""
+    out = []
+    for (n, z) in (('headset', -12.0), ('playbooks', -24.0)):
+        out.append(look('case_%s' % n, (-0.7, 1.65, z + 1.1), (-2.6, 1.3, z)))
+    for k in range(3):
+        out.append(look('case_spin_%d' % k, (-1.3, 1.55, -35.2), (-2.6, 1.4, -36.0)))
+    ex = {r['Name']: r for r in json.load(open(os.path.join(REPO, 'WalkTheArchive/Data/Exhibits.json')))}
+    for n in ('ca-200', 'nv-2017', 'dialysis', 'mission', 'cil-talks', 'ukraine'):
+        v = ex[n]['View']; L = v['Location']
+        out.append('ex_%s | %.0f %.0f %.0f | %.1f %.1f' % (n, L['X'], L['Y'], L['Z'], v['Yaw'], v.get('Pitch', 0)))
+    out.append(look('gallery2_west', (1.5, EYE, -20.0), (-6.0, 2.6, -25.0)))
+    doors = [d for d in door_views() if d.split(' ')[0].endswith(('ac', 'bc')) and '_mus_' in d.split(' ')[0]]
+    out += doors + library_views()[:4] + tree_views()[:4]
+    for (n, x, z, s) in (('2016', -4.42, -49.78, 1), ('2017a', 4.42, -46.42, -1)):
+        out.append(look('rail_%s' % n, (x + 1.8 * s, 1.6, z + 1.2), (x, 0.92, z)))
+    for (n, x) in (('2024', -2.66), ('2025', 5.64)):
+        out.append(look('rail_%s' % n, (x, 1.6, -74.9), (x, 0.92, -76.92)))
+    out += [w for w in wax_views() if '_near_' in w and 'wax-2018a' not in w]
+    return out
+
 OUT = os.path.dirname(os.path.abspath(__file__))
-files = {'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
+files = {'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
 for fn, ls in files.items():
     open(os.path.join(OUT, fn), "w").write('\n'.join(ls) + '\n')
     print(fn, len(ls))

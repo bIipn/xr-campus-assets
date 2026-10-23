@@ -1,5 +1,5 @@
 {
- "_doc": "What each Wax Hall reenactor does over the scene's loop. Hand-authored from parts/waxscenes.js: the web scenes pose joint angles frame by frame, Unreal plays retargeted motion capture instead, so each figure gets a list of beats. A beat is {t: seconds into the loop, a: action id, y: degrees added to the figure's yaw while it plays, r: play rate, b: crossfade seconds, l: centimetres to lift the figure (seated clips sit at the clip's own seat height)}. The action id names an AnimSequence at /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<id>, retargeted from Mixamo by Content/Python/wta_mocap. The last beat runs to the end of the loop and crossfades back into the first, so the loop is seamless. Props ride the figures: each key is {t, f: figure (empty = stands still in the stage's own frame), s: socket (head/hand_l/hand_r/chest), o: offset cm, r: rotation deg, b: seconds to travel from the previous key}. A key in a hand needs no offset: the stage sets the prop's own frame in the palm (+X along the fingers, +Y out of the palm) and closes that hand's fingers round it (World/WTAWaxStageActor.cpp WaxGrip); o and r there are extras on top of that. A prop's web is the index of the S.carry call that made it in parts/waxscenes.js: the web export (unreal/Pipeline/web/export_campus.py) writes that object as the mesh prop__<scene>_<web> of Props.glb, in its own frame, and the stage rides it instead of a block. Carries the acting data does not ride (a laptop on a desk, a case lid) still come across: build_data.py adds them from out/campus/props_rest.json, standing where the web left them.",
+ "_doc": "What each Wax Hall reenactor does over the scene's loop. Hand-authored from parts/waxscenes.js: the web scenes pose joint angles frame by frame, Unreal plays retargeted motion capture instead, so each figure gets a list of beats. A beat is {t: seconds into the loop, a: action id, y: degrees added to the figure's yaw while it plays, r: play rate, b: crossfade seconds, l: centimetres to lift the figure (seated clips sit at the clip's own seat height)}. The action id names an AnimSequence at /Game/WTA/Characters/Common/Anims/Mocap/AS_WTA_<id>, retargeted from Mixamo by Content/Python/wta_mocap. The last beat runs to the end of the loop and crossfades back into the first, so the loop is seamless. Props ride the figures: each key is {t, f: figure (empty = stands still in the stage's own frame), s: socket (head/hand_l/hand_r/chest), o: offset cm, r: rotation deg, b: seconds to travel from the previous key}. A key in a hand needs no offset: the stage sets the prop's own frame in the palm (+X along the fingers, +Y out of the palm) and closes that hand's fingers round it (World/WTAWaxStageActor.cpp WaxGrip); o and r there are extras on top of that. A prop's web is the index of the S.carry call that made it in parts/waxscenes.js: the web export (unreal/Pipeline/web/export_campus.py) writes that object as the mesh prop__<scene>_<web> of Props.glb, in its own frame, and the stage rides it instead of a block. Carries the acting data does not ride (a laptop on a desk, a case lid) still come across: build_data.py adds them from out/campus/props_rest.json, standing where the web left them. A scene's place {var: {at, ry}} stands that figure somewhere other than the web put it (web metres in the stage group's frame, +z toward the walkway).",
  "actions": {
   "idle": {
    "loop": true,
@@ -54,7 +54,7 @@
   "point": {
    "loop": true,
    "seated": false,
-   "note": "Pointing Gesture"
+   "note": "Pointing Gesture (drops into a deep knee bend mid-gesture, the knees to 87 degrees: the scenes point with point_fwd)"
   },
   "point_fwd": {
    "loop": true,
@@ -164,7 +164,7 @@
   "floor_cross": {
    "loop": true,
    "seated": true,
-   "note": "Sitting cross legged"
+   "note": "Sitting cross legged (on a chair, not the floor: the hips ride at seat height, 67 cm)"
   },
   "sit_kid": {
    "loop": true,
@@ -191,7 +191,7 @@
      },
      {
       "t": 6.6,
-      "a": "point",
+      "a": "point_fwd",
       "y": -14
      },
      {
@@ -241,7 +241,7 @@
      },
      {
       "t": 2.4,
-      "a": "point",
+      "a": "point_fwd",
       "y": 16
      },
      {
@@ -309,11 +309,12 @@
     "tech": [
      {
       "t": 0,
-      "a": "crate"
+      "a": "crouch"
      },
      {
       "t": 3.4,
-      "a": "pick_one"
+      "a": "reach",
+      "b": 0.8
      },
      {
       "t": 5.2,
@@ -321,7 +322,7 @@
      },
      {
       "t": 7.6,
-      "a": "point",
+      "a": "point_fwd",
       "y": -24
      },
      {
@@ -330,7 +331,8 @@
      },
      {
       "t": 12.2,
-      "a": "crate"
+      "a": "crouch",
+      "b": 0.8
      }
     ],
     "lib": [
@@ -348,7 +350,7 @@
      },
      {
       "t": 9.2,
-      "a": "point",
+      "a": "point_fwd",
       "y": 20
      },
      {
@@ -363,20 +365,21 @@
      },
      {
       "t": 4.0,
-      "a": "shelf"
-     },
-     {
-      "t": 6.6,
       "a": "carry",
-      "y": 25
+      "y": 25,
+      "b": 1.0
      },
      {
-      "t": 10.0,
-      "a": "crate"
+      "t": 8.0,
+      "a": "carry",
+      "y": -12,
+      "b": 1.0
      },
      {
-      "t": 12.6,
-      "a": "carry"
+      "t": 11.5,
+      "a": "carry",
+      "y": 0,
+      "b": 1.0
      }
     ]
    },
@@ -477,7 +480,15 @@
      ],
      "web": 3
     }
-   ]
+   ],
+   "place": {
+    "tech": {
+     "at": [
+      -0.82,
+      -1.2
+     ]
+    }
+   }
   },
   "wax-2017b": {
    "_note": "The reader holds a picture book open and reads to two children sitting on the floor; a teen plays VR games behind them.",
@@ -511,26 +522,44 @@
       "a": "floor_idle"
      },
      {
-      "t": 5.0,
-      "a": "floor_cross"
+      "t": 4.8,
+      "a": "floor_idle",
+      "y": 14,
+      "b": 1.2
      },
      {
-      "t": 9.8,
-      "a": "floor_idle"
+      "t": 9.6,
+      "a": "floor_idle",
+      "y": 0,
+      "b": 1.2
      }
     ],
     "k2": [
      {
       "t": 0,
-      "a": "floor_cross"
+      "a": "kneel"
      },
      {
-      "t": 6.0,
-      "a": "floor_idle"
+      "t": 3.6,
+      "a": "kneel_point",
+      "y": -10,
+      "b": 0.6
      },
      {
-      "t": 11.0,
-      "a": "floor_cross"
+      "t": 5.6,
+      "a": "kneel",
+      "b": 0.6
+     },
+     {
+      "t": 9.0,
+      "a": "kneel_point",
+      "y": -6,
+      "b": 0.6
+     },
+     {
+      "t": 11.2,
+      "a": "kneel",
+      "b": 0.6
      }
     ],
     "teen": [
@@ -774,11 +803,11 @@
     "lib": [
      {
       "t": 0,
-      "a": "crate"
+      "a": "reach"
      },
      {
       "t": 1.6,
-      "a": "pick_one"
+      "a": "present"
      },
      {
       "t": 3.0,
@@ -788,7 +817,8 @@
      {
       "t": 4.6,
       "a": "kneel",
-      "y": -34
+      "y": -34,
+      "b": 0.8
      },
      {
       "t": 8.0,
@@ -802,11 +832,12 @@
      },
      {
       "t": 12.4,
-      "a": "present"
+      "a": "present",
+      "b": 0.8
      },
      {
       "t": 14.2,
-      "a": "crate"
+      "a": "reach"
      }
     ]
    },
@@ -820,7 +851,7 @@
        "f": "",
        "o": [
         -175,
-        -195,
+        195,
         82
        ],
        "r": [
@@ -930,7 +961,7 @@
      },
      {
       "t": 2.4,
-      "a": "point",
+      "a": "point_fwd",
       "y": 24
      },
      {
@@ -963,7 +994,8 @@
      },
      {
       "t": 2.4,
-      "a": "idle"
+      "a": "idle",
+      "b": 0.8
      },
      {
       "t": 3.8,
@@ -984,7 +1016,8 @@
      },
      {
       "t": 12.6,
-      "a": "crouch"
+      "a": "crouch",
+      "b": 0.8
      }
     ],
     "boy": [
@@ -994,7 +1027,7 @@
      },
      {
       "t": 6.0,
-      "a": "point",
+      "a": "point_fwd",
       "y": -30
      },
      {
@@ -1022,17 +1055,19 @@
      },
      {
       "t": 4.0,
-      "a": "point",
+      "a": "point_fwd",
       "y": -30
      },
      {
       "t": 6.0,
-      "a": "crouch"
+      "a": "crouch",
+      "b": 0.8
      },
      {
       "t": 8.0,
       "a": "talk",
-      "y": -40
+      "y": -40,
+      "b": 0.8
      },
      {
       "t": 10.0,
@@ -1142,7 +1177,7 @@
      },
      {
       "t": 6.6,
-      "a": "point",
+      "a": "point_fwd",
       "y": -24
      },
      {
@@ -1266,7 +1301,7 @@
      },
      {
       "t": 2.0,
-      "a": "point",
+      "a": "point_fwd",
       "y": -40
      },
      {
@@ -1442,7 +1477,7 @@
      },
      {
       "t": 2.6,
-      "a": "point",
+      "a": "point_fwd",
       "y": -14
      },
      {
@@ -1452,7 +1487,7 @@
      },
      {
       "t": 5.8,
-      "a": "point"
+      "a": "point_fwd"
      },
      {
       "t": 7.4,
@@ -1572,7 +1607,8 @@
      {
       "t": 2.4,
       "a": "kneel",
-      "y": -30
+      "y": -30,
+      "b": 0.8
      },
      {
       "t": 4.2,
@@ -1591,7 +1627,8 @@
      },
      {
       "t": 12.0,
-      "a": "idle"
+      "a": "idle",
+      "b": 0.8
      }
     ],
     "kid": [
@@ -1601,7 +1638,7 @@
      },
      {
       "t": 3.0,
-      "a": "point",
+      "a": "point_fwd",
       "y": 40
      },
      {
@@ -1722,7 +1759,7 @@
      },
      {
       "t": 3.0,
-      "a": "point",
+      "a": "point_fwd",
       "y": -20
      },
      {
@@ -1753,7 +1790,7 @@
      },
      {
       "t": 4.6,
-      "a": "point",
+      "a": "point_fwd",
       "y": -16
      },
      {

@@ -63,7 +63,7 @@
      },
      {
       "Time": 6.6,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -14.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -173,7 +173,7 @@
      },
      {
       "Time": 2.4,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": 16.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -288,7 +288,7 @@
    {
     "Person": "wax-2017a-tech",
     "Offset": {
-     "X": -158.0,
+     "X": -120.0,
      "Y": 82.0,
      "Z": 0.0
     },
@@ -296,7 +296,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "crate",
+      "Action": "crouch",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -304,10 +304,10 @@
      },
      {
       "Time": 3.4,
-      "Action": "pick_one",
+      "Action": "reach",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -320,7 +320,7 @@
      },
      {
       "Time": 7.6,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -24.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -336,10 +336,10 @@
      },
      {
       "Time": 12.2,
-      "Action": "crate",
+      "Action": "crouch",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      }
     ]
@@ -379,7 +379,7 @@
      },
      {
       "Time": 9.2,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": 20.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -414,34 +414,26 @@
      },
      {
       "Time": 4.0,
-      "Action": "shelf",
-      "Yaw": 0.0,
-      "Rate": 1.0,
-      "Blend": 0.35,
-      "Lift": 0.0
-     },
-     {
-      "Time": 6.6,
       "Action": "carry",
       "Yaw": 25.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 1.0,
       "Lift": 0.0
      },
      {
-      "Time": 10.0,
-      "Action": "crate",
-      "Yaw": 0.0,
+      "Time": 8.0,
+      "Action": "carry",
+      "Yaw": -12.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 1.0,
       "Lift": 0.0
      },
      {
-      "Time": 12.6,
+      "Time": 11.5,
       "Action": "carry",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 1.0,
       "Lift": 0.0
      }
     ]
@@ -672,19 +664,19 @@
       "Lift": 0.0
      },
      {
-      "Time": 5.0,
-      "Action": "floor_cross",
-      "Yaw": 0.0,
+      "Time": 4.8,
+      "Action": "floor_idle",
+      "Yaw": 14.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 1.2,
       "Lift": 0.0
      },
      {
-      "Time": 9.8,
+      "Time": 9.6,
       "Action": "floor_idle",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 1.2,
       "Lift": 0.0
      }
     ]
@@ -700,26 +692,42 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "floor_cross",
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
       "Lift": 0.0
      },
      {
-      "Time": 6.0,
-      "Action": "floor_idle",
-      "Yaw": 0.0,
+      "Time": 3.6,
+      "Action": "kneel_point",
+      "Yaw": -10.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.6,
       "Lift": 0.0
      },
      {
-      "Time": 11.0,
-      "Action": "floor_cross",
+      "Time": 5.6,
+      "Action": "kneel",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.6,
+      "Lift": 0.0
+     },
+     {
+      "Time": 9.0,
+      "Action": "kneel_point",
+      "Yaw": -6.0,
+      "Rate": 1.0,
+      "Blend": 0.6,
+      "Lift": 0.0
+     },
+     {
+      "Time": 11.2,
+      "Action": "kneel",
+      "Yaw": 0.0,
+      "Rate": 1.0,
+      "Blend": 0.6,
       "Lift": 0.0
      }
     ]
@@ -1239,7 +1247,7 @@
     "Beats": [
      {
       "Time": 0.0,
-      "Action": "crate",
+      "Action": "reach",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1247,7 +1255,7 @@
      },
      {
       "Time": 1.6,
-      "Action": "pick_one",
+      "Action": "present",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1266,7 +1274,7 @@
       "Action": "kneel",
       "Yaw": -34.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -1290,12 +1298,12 @@
       "Action": "present",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
       "Time": 14.2,
-      "Action": "crate",
+      "Action": "reach",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1316,7 +1324,7 @@
       "Socket": "",
       "Offset": {
        "X": -175,
-       "Y": -195,
+       "Y": 195,
        "Z": 82
       },
       "Rotation": {
@@ -1528,7 +1536,7 @@
      },
      {
       "Time": 2.4,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": 24.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1692,7 +1700,7 @@
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -1732,7 +1740,7 @@
       "Action": "crouch",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      }
     ]
@@ -1756,7 +1764,7 @@
      },
      {
       "Time": 6.0,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -30.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1815,7 +1823,7 @@
      },
      {
       "Time": 4.0,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -30.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -1826,7 +1834,7 @@
       "Action": "crouch",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -1834,7 +1842,7 @@
       "Action": "talk",
       "Yaw": -40.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -2036,7 +2044,7 @@
      },
      {
       "Time": 6.6,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -24.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -2248,7 +2256,7 @@
      },
      {
       "Time": 2.0,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -40.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -2571,7 +2579,7 @@
      },
      {
       "Time": 2.6,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -14.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -2587,7 +2595,7 @@
      },
      {
       "Time": 5.8,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": 0.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -2885,7 +2893,7 @@
       "Action": "kneel",
       "Yaw": -30.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      },
      {
@@ -2917,7 +2925,7 @@
       "Action": "idle",
       "Yaw": 0.0,
       "Rate": 1.0,
-      "Blend": 0.35,
+      "Blend": 0.8,
       "Lift": 0.0
      }
     ]
@@ -2941,7 +2949,7 @@
      },
      {
       "Time": 3.0,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": 40.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -3190,7 +3198,7 @@
      },
      {
       "Time": 3.0,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -20.0,
       "Rate": 1.0,
       "Blend": 0.35,
@@ -3257,7 +3265,7 @@
      },
      {
       "Time": 4.6,
-      "Action": "point",
+      "Action": "point_fwd",
       "Yaw": -16.0,
       "Rate": 1.0,
       "Blend": 0.35,
