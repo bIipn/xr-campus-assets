@@ -160,8 +160,20 @@ def fix_views():
     out += [w for w in wax_views() if '_near_' in w and 'wax-2018a' not in w]
     return out
 
+def fix2_views():
+    """Ev's second Oct 23 list: the walk from the visit's start to the front door, the reference desk's sign, the staff
+    and the wax figures' feet, the holders standing still (every stage near, four frames)."""
+    out = [look('spawn_view', (0.0, -0.75 + EYE, 24.0), (0.0, 1.4, 12.0)),
+           look('stage_walk', (0.0, -0.35 + EYE, 21.5), (0.0, 1.4, 12.0)),
+           look('desk_front', (-18.6, 1.6, -3.8), (-18.6, 0.7, -6.5)),
+           look('desk_oblique', (-15.6, 1.4, -4.4), (-18.0, 0.7, -6.5)),
+           look('rosa_feet', (-15.4, 1.3, -6.6), (-17.2, 0.3, -7.75)),
+           look('margaret_feet', (0.68, 1.3, -1.4), (0.68, 0.4, -4.0))]
+    out += [w for w in wax_views() if '_near_' in w]
+    return out
+
 OUT = os.path.dirname(os.path.abspath(__file__))
-files = {'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
+files = {'survey_fixes2.txt': fix2_views(), 'survey_fixes.txt': fix_views(), 'survey_doors.txt': door_views(), 'survey_walls.txt': exhibit_views() + room_views() + library_views() + tree_views(), 'survey_wax.txt': wax_views()}
 for fn, ls in files.items():
     open(os.path.join(OUT, fn), "w").write('\n'.join(ls) + '\n')
     print(fn, len(ls))
