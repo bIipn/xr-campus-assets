@@ -236,9 +236,12 @@ def run():
             if util.mesh_tag(name):
                 tagged.append(name)
             translucent = name in glass or ue_mesh_is_translucent(mesh)
-            if set_nanite(mesh, not translucent) and not translucent:
+            # Nanite stores positions quantised to about a thousandth of the mesh's size: half a millimetre on a
+            # pop-up book's pieces, whose prints and paper layers lie fractions of a millimetre apart.
+            nanite = not translucent and asset not in paths.NO_NANITE_ASSETS
+            if set_nanite(mesh, nanite) and nanite:
                 nanite_on += 1
-            if translucent:
+            if not nanite:
                 report["non_nanite"].append(name)
             if set_complex_collision(mesh):
                 collision_on += 1

@@ -75,6 +75,10 @@ DEFAULT_ASSETS = ["Museum", "WaxIntro", "WaxHall", "LibraryShell", "School", "Ou
 # up close and swapped in while the visitor watches, and a streamed one could sit at its smallest mips (a smear of
 # colour) rather than arrive in time.
 NEVER_STREAM_ASSETS = ("PopUp",)
+# Wings kept off Nanite: the pop-up books' paper is layered at fractions of a millimetre (a print 0.4 mm over its
+# page, cut-outs 0.35 mm apart), finer than Nanite's position quantisation for meshes that size, so the layers
+# z-fought into stripes; at 18k triangles they need no Nanite.
+NO_NANITE_ASSETS = ("PopUp",)
 
 # Tag every actor the setup spawns so a re-run can delete and respawn it.
 SETUP_TAG = "WTA_Setup"

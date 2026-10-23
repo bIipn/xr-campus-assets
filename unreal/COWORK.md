@@ -95,7 +95,7 @@ then runs `UnrealEditor-Cmd <uproject> -ExecutePythonScript=unreal/WalkTheArchiv
 | Step | What it does |
 |---|---|
 | `probe` | Checks the engine, Python and that the C++ module loaded |
-| `import_meshes` | Imports the 9 campus meshes (`unreal/Pipeline/out/ue/*.glb`) with Nanite and walkable collision (double-sided, so no wall can be walked through from behind) |
+| `import_meshes` | Imports the campus meshes (`unreal/Pipeline/out/ue/*.glb`) with Nanite (not the pop-up books, whose paper layers are finer than Nanite's precision) and walkable collision (double-sided, so no wall can be walked through from behind) |
 | `import_art` | Imports the exhibit artwork |
 | `import_art` (talks) | Besides the exhibit art, the talks' slides from `unreal/Pipeline/out/slides/<talk>/<nn>.png` (drawn by `bl/slides.py`) become `/Game/WTA/Slides/T_Slide_<talk>_<nn>`. The talks' voice lines (`unreal/Tools/voice/make_talk_voices.py`, Kokoro) go to `C:\dev\wta_tools\voiceover` and in with `run_py.ps1 -Script C:\dev\wta_tools\import_voice.py` (or `wta_voice.build.run()` in the editor) |
 | `surfaces` | Real surfaces on the built rooms: imports the CC0 texture sets listed in `unreal/Pipeline/content/surfaces.json` from the textures folder (`WTA_TEXTURES`, default `C:\dev\wta_assets\textures`; `C:\dev\wta_tools\download_textures.ps1` fetches them from ambientCG), builds the world-aligned `M_WTA_Surface` master once and one instance per set, and puts them on the campus meshes' material slots by builder material name. Run it again after any `import_meshes` of a listed asset, which brings the glTF materials back |

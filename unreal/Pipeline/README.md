@@ -272,7 +272,7 @@ exhibit is itself again. The play QA's `season` phase does exactly this with the
 | Training | 37 | 8k | Blender: the Training Wing's room and its five stations; `spot__training_f0`, `seat__training_*` |
 | Maker | 33 | 5k | Blender: Room 101's 360 storytelling course props; `spot__studio_f90`, `seat__studio_edit_f90` |
 | Stories | 38 | 8k | Blender: the Lost Stories cabin at the path's end (porch, booth, story board, shelves); `seat__stories_teller_f0`, `_guest_f180`, `_bench_f270`, `_porch_f270` |
-| PopUp | 46 | 18k | Blender: the pop-up books on the Reading Room's south table, every moving piece its own `popup__` mesh (the actors step's `AWTAPopUpBookActor` places and folds them) |
+| PopUp | 46 | 18k | Blender: the pop-up books on the Reading Room's south table, every moving piece its own `popup__` mesh (the actors step's `AWTAPopUpBookActor` places and folds them); not Nanite (its paper lies fractions of a millimetre apart) and its textures never stream |
 | OceanDive | 76 | 134k | The reef 420 m east of the campus |
 
 Left out on purpose: the sky dome, wind grass, particles, people (MetaHumans replace them), web-only invisible helpers,
